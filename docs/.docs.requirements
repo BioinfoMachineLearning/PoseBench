@@ -12,8 +12,12 @@ nbsphinx-link
 nbstripout
 pandas
 pandoc
+posebusters
+prody
 pydocstyle
 pypdb
+rdkit
+rdkit-pypi
 rootutils
 sphinx
 sphinx-copybutton
