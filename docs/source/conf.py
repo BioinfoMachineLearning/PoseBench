@@ -4,11 +4,6 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 import datetime
-import os
-import sys
-
-# -- Path setup --------------------------------------------------------------
-sys.path.insert(0, os.path.abspath("../../"))
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information

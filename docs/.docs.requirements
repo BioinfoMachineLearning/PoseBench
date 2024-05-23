@@ -1,3 +1,4 @@
+beartype
 ipython
 furo
 lxml_html_clean
@@ -6,8 +7,10 @@ matplotlib
 nbsphinx
 nbsphinx-link
 nbstripout
+pandas
 pandoc
 pydocstyle
+rootutils
 sphinx
 sphinx-copybutton
 sphinx-inline-tabs
