@@ -8,8 +8,8 @@ Welcome to PoseBench's documentation!
 
 
 .. mdinclude:: ../../README.md
-    :start-line: 3
-    :end-line: 9
+    :start-line: 4
+    :end-line: 12
 
 .. image:: ./_static/PoseBench.png
   :alt: Overview of PoseBench
@@ -17,8 +17,8 @@ Welcome to PoseBench's documentation!
   :width: 600
 
 .. mdinclude:: ../../README.md
-    :start-line: 16
-    :end-line: 18
+    :start-line: 18
+    :end-line: 20
 
 
 .. toctree::
@@ -53,14 +53,14 @@ Welcome to PoseBench's documentation!
    :hidden:
    :caption: API Reference
 
-   modules/complex_alignment
-   modules/inference_relaxation
-   modules/minimize_energy
-   modules/ensemble_generation
-   modules/data_utils
-   modules/model_utils
-   modules/utils
-   modules/resolvers
+   modules/src.complex_alignment
+   modules/src.inference_relaxation
+   modules/src.minimize_energy
+   modules/src.ensemble_generation
+   modules/src.data_utils
+   modules/src.model_utils
+   modules/src.utils
+   modules/src.resolvers
 
 Indices and tables
 ==================

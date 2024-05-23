@@ -2,5 +2,5 @@ Acknowledgements
 ================
 
 .. mdinclude:: ../../README.md
-    :start-line: 804
-    :end-line: 820
+    :start-line: 806
+    :end-line: 822

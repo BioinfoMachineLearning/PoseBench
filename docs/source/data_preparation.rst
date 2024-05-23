@@ -2,5 +2,5 @@ How to prepare `PoseBench` data
 ================
 
 .. mdinclude:: ../../README.md
-    :start-line: 128
-    :end-line: 263
+    :start-line: 130
+    :end-line: 265
