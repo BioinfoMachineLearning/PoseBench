@@ -3,6 +3,7 @@
 # PoseBench
 
 [![Paper](http://img.shields.io/badge/arXiv-Coming.Soon-B31B1B.svg)](TODO)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11199233.svg)](https://doi.org/10.5281/zenodo.11199233)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Docs](https://assets.readthedocs.org/static/projects/badges/passing-flat.svg)](https://posebench.github.io/)
 <a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/config-hydra-89b8cd"></a>
