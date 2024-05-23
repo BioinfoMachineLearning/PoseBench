@@ -4,12 +4,6 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 import datetime
-import os
-import sys
-
-# -- Module path setup -------------------------------------------------------
-for x in os.walk("../../src"):
-    sys.path.insert(0, x[0])
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
