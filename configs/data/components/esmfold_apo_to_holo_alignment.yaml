@@ -1,0 +1,5 @@
+dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`)
+data_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/ # where the processed PoseBusters Benchmark and Astex Diverse sets are placed
+esmfold_structures_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_esmfold_structures # where the ESMFold-predicted protein structures are placed
+output_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_esmfold_structures # where the holo-aligned ESMFold apo structures should be stored
+num_workers: 1 # number of CPU workers for parallel processing

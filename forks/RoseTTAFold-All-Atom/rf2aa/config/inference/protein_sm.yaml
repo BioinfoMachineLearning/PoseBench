@@ -1,0 +1,24 @@
+defaults:
+  - base
+job_name: "T1188"
+
+protein_inputs:
+  A:
+    fasta_file: examples/protein/T1188_A.fasta
+
+sm_inputs:
+  B:
+    input: CN1CNC2C1C(O)N(CCCN1C(O)C3C(NCN3C)N(C)C1O)C(O)N2C
+    input_type: "smiles"
+  C:
+    input: Cn1cnc2c1c(=O)n(CCCn1c(=O)c3c(ncn3C)n(C)c1=O)c(=O)n2C
+    input_type: "smiles"
+  D:
+    input: [Cd+2]
+    input_type: "smiles"
+  E:
+    input: [Cd]
+    input_type: "smiles"
+  F:
+    input: [Co]
+    input_type: "smiles"

@@ -1,0 +1,3 @@
+dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`)
+data_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set # where the processed PoseBusters Benchmark and Astex Diverse sets are placed
+out_file: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_sequences.fasta # the output FASTA file to produce

@@ -1,0 +1,44 @@
+name: ADFR
+channels:
+  - defaults
+  - hcc
+  - conda-forge
+dependencies:
+  - _libgcc_mutex=0.1=conda_forge
+  - _openmp_mutex=4.5=2_gnu
+  - adfr-suite=1.0=0
+  - blas=1.0=mkl
+  - ca-certificates=2023.12.12=h06a4308_0
+  - certifi=2020.6.20=pyhd3eb1b0_3
+  - intel-openmp=2023.1.0=hdb19cb5_46306
+  - libffi=3.4.4=h6a678d5_0
+  - libgcc-ng=13.2.0=h807b86a_5
+  - libgfortran-ng=7.5.0=ha8ba4b0_17
+  - libgfortran4=7.5.0=ha8ba4b0_17
+  - libgomp=13.2.0=h807b86a_5
+  - libstdcxx-ng=11.2.0=h1234567_1
+  - libuuid=2.38.1=h0b41bf4_0
+  - libxcb=1.15=h7f8727e_0
+  - mkl=2018.0.3=1
+  - mkl_fft=1.0.6=py27h7dd41cf_0
+  - mkl_random=1.0.1=py27h4414c95_1
+  - ncurses=6.4=h6a678d5_0
+  - numpy=1.15.0=py27h1b885b7_0
+  - numpy-base=1.15.0=py27h3dfced4_0
+  - pip=19.3.1=py27_0
+  - python=2.7.18=h42bf7aa_3
+  - readline=8.2=h5eee18b_0
+  - setuptools=44.0.0=py27_0
+  - sqlite=3.41.2=h5eee18b_0
+  - tbb=2021.8.0=hdb19cb5_0
+  - tbb4py=2019.8=py27hfd86e86_0
+  - tk=8.6.12=h1ccaba5_0
+  - wheel=0.37.1=pyhd3eb1b0_0
+  - xorg-kbproto=1.0.7=h7f98852_1002
+  - xorg-libice=1.1.1=hd590300_0
+  - xorg-libsm=1.2.4=h7391055_0
+  - xorg-libx11=1.8.7=h8ee46fc_0
+  - xorg-xextproto=7.3.0=h0b41bf4_1003
+  - xorg-xproto=7.0.31=h27cfd23_1007
+  - zlib=1.2.13=h5eee18b_0
+prefix: forks/Vina/ADFR

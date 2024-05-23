@@ -1,0 +1,7 @@
+dataset: casp15 # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `casp15`)
+input_data_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set # the input protein-ligand complex directory to recursively parse
+input_protein_data_dir: null # the input protein structure directory to recursively parse during inference
+output_csv_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind/inference/dynamicbind_${dataset}_inputs # the output CSV directory to which to write the parsed ligand SMILES strings
+posebusters_ccd_ids_filepath: ${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt # the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts
+protein_filepath: null # the path to the protein structure file to use
+ligand_smiles: null # the ligand SMILES string for which to predict the binding pose

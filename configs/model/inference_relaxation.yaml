@@ -1,0 +1,26 @@
+method: diffdock # the method for which to relax predictions - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `rfaa`, `vina`, `tulip`)
+vina_binding_site_method: diffdock # the method to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `rfaa`)
+dataset: posebusters_benchmark # the dataset for which to relax predictions - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `casp15`)
+ensemble_ranking_method: consensus # the method with which to rank-order and select the top ensemble prediction for each target - NOTE: must be one of (`consensus`, `ff`)
+num_processes: 1 # the number of parallel processes to use for relaxation
+temp_dir: ${method}_${dataset}_cache_dir # temporary directory
+add_solvent: false # whether to add solvent during relaxation
+name: null # name of the relaxation target
+prep_only: false # only prepare the input files
+platform: "fastest" # platform on which to run relaxation
+cuda_device_index: 0 # CUDA device index
+log_level: "INFO" # logging level
+protein_dir: ${resolve_method_protein_dir:${method},${dataset},${repeat_index}} # the directory from which to load (potentially inferred) proteins
+ligand_dir: ${resolve_method_ligand_dir:${method},${dataset},${vina_binding_site_method},${repeat_index}} # the directory from which to load inferred ligands
+output_dir: ${resolve_method_output_dir:${method},${dataset},${vina_binding_site_method},${ensemble_ranking_method},${repeat_index}} # the output directory to which to save the relaxed predictions
+relax_protein: false # whether to relax the protein - NOTE: currently periodically yields unpredictable protein-ligand separation
+remove_initial_protein_hydrogens: false # whether to remove hydrogens from the initial protein
+assign_each_ligand_unique_force: false # when relaxing the protein, whether to assign each ligand a unique force constant
+model_ions: false # whether to model ions
+cache_files: false # whether to cache the prepared relaxation files
+assign_partial_charges_manually: false # whether to assign partial charges manually
+report_initial_energy_only: false # skip relaxation and return only the initial energy of the complex structure
+max_final_e_value: 1000.0 # when relaxing the protein, maximum final energy value to permit
+max_num_attempts: 5 # when relaxing the protein, maximum number of relaxation attempts to perform
+skip_existing: true # whether to skip existing relaxed predictions
+repeat_index: 1 # the repeat index which was used for inference

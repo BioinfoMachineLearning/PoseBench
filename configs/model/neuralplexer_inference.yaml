@@ -1,0 +1,28 @@
+python_exec_path: ${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/NeuralPLexer/bin/python3 # the Python executable to use
+neuralplexer_exec_dir: ${oc.env:PROJECT_ROOT}/forks/NeuralPLexer # the NeuralPLexer directory in which to execute the inference scripts
+dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `casp15`)
+input_csv_path: ${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/inference/neuralplexer_${dataset}_inputs.csv # the input CSV filepath to which parsed input data has been written
+skip_existing: true # whether to skip existing predictions
+task: batched_structure_sampling # the task to run - NOTE: must be one of (`single_sample_trajectory`, `batched_structure_sampling`, `structure_prediction_benchmarking`, `pdbbind_benchmarking`, `binding_site_recovery_benchmarking`)
+sample_id: 0 # the sample ID to use for inference
+template_id: 0 # the template ID to use for inference
+cuda_device_index: 0 # the CUDA device to use for inference, or `null` to use CPU
+model_checkpoint: ${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/neuralplexermodels_downstream_datasets_predictions/models/complex_structure_prediction.ckpt # the model checkpoint to use for inference
+out_path: ${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/inference/neuralplexer_${dataset}_outputs_${repeat_index} # the output directory to which to write the predictions
+n_samples: 40 # the number of conformations to generate per complex
+chunk_size: 10 # the number of conformations to generate in parallel per complex
+num_steps: 40 # the number of steps to take in the sampling process
+latent_model: null # which type of latent model to use - NOTE: must be one of (`null`)
+sampler: langevin_simulated_annealing # the sampler to use - NOTE: must be one of (`DDIM`, `VPSDE`, `simulated_annealing_simple`, `langevin_simulated_annealing`)
+start_time: "1.0" # the start time at which to start sampling - NOTE: must be a string representation of a float
+max_chain_encoding_k: -1 # the maximum chain encoding `k` to use
+exact_prior: false # whether to use the exact prior
+discard_ligand: false # whether to discard the ligand
+discard_sdf_coords: true # whether to discard the SDF coordinates
+detect_covalent: false # whether to detect covalent bonds
+use_template: true # whether to use the input template protein structure
+separate_pdb: true # whether to separate the predicted protein structures into dedicated PDB files
+rank_outputs_by_confidence: true # whether to rank the output conformations, by default, by ligand confidence (if available) and by protein confidence otherwise
+plddt_ranking_type: ligand # the type of plDDT ranking to apply to generated samples - NOTE: must be one of (`protein`, `ligand`, `protein_ligand`)
+csv_path: null # the CSV filepath from which to parse benchmarking input data
+repeat_index: 1 # the repeat index to use for inference

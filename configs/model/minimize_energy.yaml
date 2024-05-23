@@ -1,0 +1,21 @@
+protein_file: ??? # input protein file
+ligand_file: ??? # input ligand file
+output_file: ??? # ligand output file
+protein_output_file: null # optional protein output file
+complex_output_file: null # optional complex output file
+temp_dir: "cache_dir" # temporary directory
+add_solvent: false # whether to add solvent during relaxation
+name: null # name of the relaxation target
+prep_only: false # only prepare the input files
+platform: "fastest" # platform on which to run relaxation
+cuda_device_index: 0 # CUDA device index
+log_level: "INFO" # logging level
+relax_protein: false # whether to relax the protein
+remove_initial_protein_hydrogens: false # whether to remove hydrogens from the initial protein
+assign_each_ligand_unique_force: false # whether to assign each ligand a unique force constant
+model_ions: false # whether to model ions
+cache_files: true # whether to cache the prepared relaxation files
+assign_partial_charges_manually: false # whether to assign partial charges manually
+report_initial_energy_only: false # skip relaxation and return only the initial energy of the complex structure
+max_final_e_value: 1000.0 # when relaxing the protein, maximum final energy value to permit
+max_num_attempts: 5 # when relaxing the protein, maximum number of relaxation attempts to perform

@@ -1,0 +1,6 @@
+dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `casp15`)
+prediction_outputs_dir: ${oc.env:PROJECT_ROOT}/forks/TULIP/outputs/${dataset}_${repeat_index}
+inference_outputs_dir: ${oc.env:PROJECT_ROOT}/forks/TULIP/inference/tulip_${dataset}_outputs_${repeat_index}
+posebusters_ccd_ids_filepath: ${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt # the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts
+method_top_n_to_select: 5 # the number of top models for each target to select for analysis
+repeat_index: 1 # the repeat index to use

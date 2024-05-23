@@ -1,0 +1,7 @@
+dataset: casp15 # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `casp15`)
+input_data_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set # the input protein-ligand complex directory to recursively parse
+output_scripts_path: ${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/prediction_inputs/${dataset} # the output directory in which to save the input files
+posebusters_ccd_ids_filepath: ${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt # the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts
+protein_filepath: null # the path to the protein structure file to use
+ligand_smiles: null # the ligand SMILES string for which to predict the binding pose
+input_id: null # the input ID to use for inference

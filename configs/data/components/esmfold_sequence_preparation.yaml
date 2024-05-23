@@ -1,0 +1,3 @@
+dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`)
+input_fasta_file: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_sequences.fasta # the input FASTA file to modify
+output_fasta_file: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_esmfold_sequences.fasta # the input FASTA file to modify

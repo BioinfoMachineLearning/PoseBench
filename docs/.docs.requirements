@@ -1,0 +1,18 @@
+ipython
+furo
+m2r2
+nbsphinx
+nbsphinx-link
+nbstripout
+pandoc
+pydocstyle
+sphinx
+sphinx-copybutton
+sphinx-inline-tabs
+sphinx_mdinclude
+sphinxext-opengraph
+sphinxcontrib-gtagjs
+sphinxcontrib-jquery
+watermark
+sphinx_codeautolink
+docutils==0.20.1 # NOTE: currently required due to an `m2r2` bug: https://github.com/CrossNox/m2r2/issues/68

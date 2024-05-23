@@ -1,0 +1,24 @@
+dataset: casp15 # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `casp15`)
+method: diffdock # the method from which to use binding site predictions - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `ensemble`)
+ensemble_ranking_method: consensus # the method with which to rank-order and select the top ensemble prediction for each target - NOTE: must be one of (`consensus`, `ff`)
+python2_exec_path: ${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/bin/python # the path to the Python 2 executable
+prepare_receptor_script_path: ${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/CCSBpckgs/AutoDockTools/Utilities24/prepare_receptor4.py # the path to the prepare_receptor.py script
+input_dir: ${resolve_method_output_dir:${method},${dataset},${method},${ensemble_ranking_method},${repeat_index}} # the input directory with which to run inference
+input_protein_structure_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_esmfold_structures # the input protein structure directory to parse
+output_dir: ${oc.env:PROJECT_ROOT}/data/test_cases/${dataset}/vina_${method}_${dataset}_outputs_${repeat_index} # the output directory to which to save the inference results
+cpu: 0 # the number of CPU workers to use with AutoDock Vina for parallel processing, 0 for all available
+seed: null # the random seed to use with AutoDock Vina
+exhaustiveness: 32 # the exhaustiveness to use with AutoDock Vina
+ligand_ligand_distance_threshold: 25.0 # the distance threshold (in Angstrom) to use for finding shared binding sites amongst ligands
+protein_ligand_distance_threshold: 4.0 # the heavy-atom distance threshold (in Angstrom) to use for finding protein binding sites amongst grouped ligands
+binding_site_size_x: 25.0 # the x-axis size of the binding site box to use with AutoDock Vina
+binding_site_size_y: 25.0 # the y-axis size of the binding site box to use with AutoDock Vina
+binding_site_size_z: 25.0 # the z-axis size of the binding site box to use with AutoDock Vina
+binding_site_spacing: 1.0 # the spacing of the binding site box (in Angstrom) to use with AutoDock Vina
+num_modes: 40 # the number of binding modes (i.e., poses) to generate with AutoDock Vina
+skip_existing: true # whether to skip existing output files
+protein_filepath: null # the protein file path to use for inference
+ligand_filepaths: null # the ligand file paths to use for inference
+apo_protein_filepath: null # the apo protein file path to use for inference
+input_id: null # the input ID to use for inference
+repeat_index: 1 # the repeat index to use for inference

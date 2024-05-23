@@ -1,0 +1,8 @@
+pytorch-lightning <2.0.0
+torch-scatter
+fairscale
+mendeleev
+DLLogger @ git+https://github.com/NVIDIA/dllogger.git@0540a43971f4a8a16693a9de9de73c1072020769
+openfold @ git+https://github.com/amorehead/openfold.git@fe1275099639bf7e617e09ef24d6af778647dd64
+power-spherical @ git+https://git@github.com/zrqiao/power_spherical.git@290b1630c5f84e3bb0d61711046edcf6e47200d4
+seaborn
