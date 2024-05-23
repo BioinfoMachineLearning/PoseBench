@@ -1,6 +1,8 @@
 ipython
 furo
+lxml_html_clean
 m2r2
+matplotlib
 nbsphinx
 nbsphinx-link
 nbstripout
