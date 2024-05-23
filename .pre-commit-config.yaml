@@ -18,7 +18,7 @@ repos:
       - id: check-toml
       - id: check-case-conflict
       - id: check-added-large-files
-        args: ["--maxkb=2000"]
+        args: ["--maxkb=15000"]
 
   # python code formatting
   - repo: https://github.com/psf/black
