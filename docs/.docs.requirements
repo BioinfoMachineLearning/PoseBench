@@ -1,6 +1,9 @@
 beartype
-ipython
+biopandas
+biopython
+docutils==0.20.1 # NOTE: currently required due to an `m2r2` bug: https://github.com/CrossNox/m2r2/issues/68
 furo
+ipython
 lxml_html_clean
 m2r2
 matplotlib
@@ -10,6 +13,7 @@ nbstripout
 pandas
 pandoc
 pydocstyle
+pypdb
 rootutils
 sphinx
 sphinx-copybutton
@@ -18,6 +22,6 @@ sphinx_mdinclude
 sphinxext-opengraph
 sphinxcontrib-gtagjs
 sphinxcontrib-jquery
-watermark
 sphinx_codeautolink
-docutils==0.20.1 # NOTE: currently required due to an `m2r2` bug: https://github.com/CrossNox/m2r2/issues/68
+timeout_decorator
+watermark
