@@ -28,7 +28,7 @@ jobs:
           mamba install -c conda-forge -n base -y openff-amber-ff-ports openff-forcefields openff-interchange openff-interchange-base openff-models openff-toolkit openff-toolkit-base openff-units openff-utilities openmm openmmforcefields && pip install -e . && pip install -r docs/.docs.requirements
       - name: Sphinx build
         run: |
-          conda activate base && rm -rf docs/build/ && sphinx-build docs/source/ docs/build/
+          . /root/mambaforge/etc/profile.d/conda.sh && conda activate base && rm -rf docs/build/ && sphinx-build docs/source/ docs/build/
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
