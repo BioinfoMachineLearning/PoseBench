@@ -1,0 +1,55 @@
+name: PoseBench-Documentation
+channels:
+  - ostrokach-forge
+  - pytorch
+  - omnia
+  - senyan.dev
+  - nvidia
+  - defaults
+  - conda-forge
+dependencies:
+  - openff-amber-ff-ports=0.0.4=pyhca7485f_0
+  - openff-forcefields=2023.11.0=pyhca7485f_0
+  - openff-interchange=0.3.18=pyhd8ed1ab_0
+  - openff-interchange-base=0.3.18=pyhd8ed1ab_0
+  - openff-models=0.1.1=pyhca7485f_0
+  - openff-toolkit=0.14.5=pyhd8ed1ab_1
+  - openff-toolkit-base=0.14.5=pyhd8ed1ab_1
+  - openff-units=0.2.1=pyh1a96a4e_0
+  - openff-utilities=0.1.12=pyhd8ed1ab_0
+  - openmm=8.1.0=py39he81762f_1
+  - openmmforcefields=0.11.2=pyhd8ed1ab_1
+  - pip:
+    - beartype
+    - biopandas
+    - biopython
+    - docutils==0.20.1 # NOTE: currently required due to an `m2r2` bug: https://github.com/CrossNox/m2r2/issues/68
+    - furo
+    - ipython
+    - lxml_html_clean
+    - m2r2
+    - matplotlib
+    - nbsphinx
+    - nbsphinx-link
+    - nbstripout
+    - pandas
+    - pandoc
+    - pdb4amber
+    - posebusters
+    - prody
+    - pydocstyle
+    - pypdb
+    - rdkit
+    - rdkit-pypi
+    - rootutils
+    - sphinx
+    - sphinx-copybutton
+    - sphinx-inline-tabs
+    - sphinx_mdinclude
+    - sphinxext-opengraph
+    - sphinxcontrib-gtagjs
+    - sphinxcontrib-jquery
+    - sphinx_codeautolink
+    - timeout_decorator
+    - tqdm
+    - watermark
