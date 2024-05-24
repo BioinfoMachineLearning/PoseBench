@@ -2,7 +2,7 @@
 
 # PoseBench
 
-[![Paper](http://img.shields.io/badge/arXiv-Coming.Soon-B31B1B.svg)](TODO)
+[![Paper](http://img.shields.io/badge/arXiv-2405.14108-B31B1B.svg)](https://arxiv.org/abs/2405.14108)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11199233.svg)](https://doi.org/10.5281/zenodo.11199233)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Docs](https://assets.readthedocs.org/static/projects/badges/passing-flat.svg)](https://bioinfomachinelearning.github.io/PoseBench/)
