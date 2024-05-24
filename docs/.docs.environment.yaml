@@ -35,6 +35,7 @@ dependencies:
     - pandas
     - pandoc
     - pdb4amber
+    - pip
     - posebusters
     - prody
     - pydocstyle

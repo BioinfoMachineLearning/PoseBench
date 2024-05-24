@@ -28,7 +28,7 @@ jobs:
           pip install -e .
       - name: Sphinx build
         run: |
-          rm -rf docs/build/ && sphinx-build docs/source/ docs/build/
+          rm -rf docs/build/ && $CONDA/envs/PoseBench-Documentation/bin/sphinx-build docs/source/ docs/build/
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
