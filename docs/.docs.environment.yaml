@@ -19,6 +19,7 @@ dependencies:
   - openff-utilities=0.1.12=pyhd8ed1ab_0
   - openmm=8.1.0=py39he81762f_1
   - openmmforcefields=0.11.2=pyhd8ed1ab_1
+  - pdbfixer=1.9=pyh1a96a4e_0
   - pip:
     - beartype
     - biopandas
