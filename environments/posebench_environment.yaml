@@ -10,7 +10,7 @@ channels:
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_kmp_llvm
-  - ambertools
+  - ambertools=23.3=py39h7fa913e_6
   - antlr-python-runtime=4.9.3=pyhd8ed1ab_1
   - argon2-cffi=23.1.0=pyhd8ed1ab_0
   - argon2-cffi-bindings=21.2.0=py39hd1e30aa_4
@@ -37,7 +37,7 @@ dependencies:
   - bson=0.5.9=py_0
   - bzip2=1.0.8=h7f98852_4
   - c-ares=1.25.0=hd590300_0
-  - c-blosc2
+  - c-blosc2=2.13.2=hb4ffafa_0
   - ca-certificates=2024.2.2=hbcca054_0
   - cachecontrol=0.13.1=pyhd8ed1ab_0
   - cachecontrol-with-filecache=0.13.1=pyhd8ed1ab_0
@@ -242,7 +242,7 @@ dependencies:
   - openh264=2.1.1=h780b84a_0
   - openjpeg=2.4.0=hb52868f_1
   - openmm=8.1.0=py39he81762f_1
-  - openmmforcefields
+  - openmmforcefields=0.11.2=pyhd8ed1ab_1
   - openssl=3.3.0=hd590300_0
   - ordered-set=4.1.0=py39h06a4308_0
   - orjson=3.8.8=py39h52d8a92_0
@@ -285,7 +285,7 @@ dependencies:
   - pyproject_hooks=1.0.0=py39h06a4308_0
   - pyrsistent=0.18.0=py39heee7806_0
   - pysocks=1.7.1=pyha2e5f31_6
-  - pytables
+  - pytables=3.9.2=py39hfbd31a7_1
   - pytest=7.4.0=py39h06a4308_0
   - python=3.9.17=h0755675_0_cpython
   - python-build=0.10.0=py39h06a4308_0
