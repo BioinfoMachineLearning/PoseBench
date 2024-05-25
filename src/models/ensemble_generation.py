@@ -246,6 +246,7 @@ echo "Calling dynamicbind_inference.py!"
     cuda_device_index={cfg.cuda_device_index} \\
     python_exec_path={cfg.dynamicbind_python_exec_path} \\
     dynamicbind_exec_dir={cfg.dynamicbind_exec_dir} \\
+    dataset={cfg.dynamicbind_dataset} \\
     input_data_dir={cfg.dynamicbind_input_protein_data_dir} \\
     input_ligand_csv_dir={cfg.dynamicbind_input_ligand_csv_dir} \\
     samples_per_complex={min(cfg.dynamicbind_samples_per_complex, cfg.max_method_predictions)} \\
