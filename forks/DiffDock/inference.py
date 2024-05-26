@@ -202,7 +202,7 @@ for ligand_description_group in ligand_description_groups:
     complex_name_list, protein_path_list, protein_sequence_list, ligand_description_list = [], [], [], []
     for i in range(len(ligand_description_group["ligand_descriptions"])):
         name = ligand_description_group["complex_names"][i].split("_")[0]
-        if args.skip_existing and name is not None and os.path.exists(f'{args.out_dir}/{name}/rank1.sdf'):
+        if args.skip_existing and name is not None and len(glob.glob(f'{args.out_dir}/{name}/rank1*.sdf')):
             print(f"HAPPENING | Skipping inference for {name} as it already has output files.")
             continue
         complex_name_list.append(ligand_description_group["complex_names"][i])
