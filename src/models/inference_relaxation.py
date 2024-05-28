@@ -89,6 +89,7 @@ def relax_inference_results(
                         and filepath.name.endswith(".sdf")
                     )
                 )
+                and "relaxed" not in filepath.stem
                 and "relaxed" not in filepath.parent.stem
             ]
         elif cfg.method == "rfaa":
