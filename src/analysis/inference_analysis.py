@@ -507,7 +507,7 @@ def create_mol_table(
                     else None
                 )
             if mol_table["mol_pred"].isna().sum() > 0:
-                if cfg.method in ["diffdock", "vina", "tulip"]:
+                if cfg.method in ["diffdock", "dynamicbind", "vina", "tulip"]:
                     logger.warning(
                         f"Skipping imputing missing (relaxed) predictions for {mol_table['mol_pred'].isna().sum()} molecules regarding the following conditioning inputs: {mol_table[mol_table['mol_pred'].isna()]['mol_cond'].tolist()}."
                     )
