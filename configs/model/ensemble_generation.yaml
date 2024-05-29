@@ -75,7 +75,7 @@ neuralplexer_exec_dir: ${oc.env:PROJECT_ROOT}/forks/NeuralPLexer # the NeuralPLe
 neuralplexer_input_data_dir: null # the input protein-ligand complex directory to recursively parse
 neuralplexer_input_receptor_structure_dir: null # if not `null`, the input template protein structure directory to parse
 neuralplexer_input_csv_path: ${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/inference/neuralplexer_ensemble_inputs.csv # the input CSV filepath with which to run inference
-neuralplexer_skip_existing: false # whether to skip existing predictions
+neuralplexer_skip_existing: true # whether to skip existing predictions
 neuralplexer_task: batched_structure_sampling # the task to run - NOTE: must be one of (`single_sample_trajectory`, `batched_structure_sampling`, `structure_prediction_benchmarking`, `pdbbind_benchmarking`, `binding_site_recovery_benchmarking`)
 neuralplexer_sample_id: 0 # the sample ID to use for inference
 neuralplexer_template_id: 0 # the template ID to use for inference

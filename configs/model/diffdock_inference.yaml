@@ -13,4 +13,4 @@ batch_size: 10 # the batch size to use for inference
 actual_steps: 19 # the actual number of inference steps to run (i.e., after how many steps to halt the reverse diffusion process)
 no_final_step_noise: true # whether to disable the final inference step's noise from being added
 repeat_index: 1 # the repeat index to use for inference
-skip_existing: false # whether to skip inference for existing output directories
+skip_existing: true # whether to skip inference for existing output directories
