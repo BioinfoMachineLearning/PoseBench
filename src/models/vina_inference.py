@@ -255,10 +255,16 @@ def run_vina_inference(
                     f"RDKit failed to embed molecule: {ligand_filepath.replace('.sdf', '_prepped.sdf')} due to: {e}. Skipping..."
                 )
                 return None
-            AllChem.UFFOptimizeMolecule(
-                temp_ligand_mol,
-                maxIters=5000,  # run more iterations than the default 200 in case of convergence issues
-            )  # minimize the energy of the random conformation using `UFF`
+            try:
+                AllChem.UFFOptimizeMolecule(
+                    temp_ligand_mol,
+                    maxIters=5000,  # run more iterations than the default 200 in case of convergence issues
+                )  # minimize the energy of the random conformation using `UFF`
+            except Exception as e:
+                logger.warning(
+                    f"RDKit failed to minimize molecule: {ligand_filepath.replace('.sdf', '_prepped.sdf')} due to: {e}. Skipping..."
+                )
+                return None
             preparator = MoleculePreparation(add_atom_types=MEEKO_ATOM_TYPES_TO_ADD)
             mol_setups = preparator.prepare(temp_ligand_mol)
             assert len(mol_setups) == 1, "Only one molecule setup per SDF file is supported."
