@@ -271,10 +271,16 @@ def run_vina_inference(
                 if pdbqt_string:
                     with open(prepared_ligand_filepath, "w") as f:
                         f.write(pdbqt_string)
-            assert os.path.exists(
-                prepared_ligand_filepath
-            ), f"Prepared ligand file not found: {prepared_ligand_filepath}"
-            prepared_ligand_filepaths.append(prepared_ligand_filepath)
+            try:
+                assert os.path.exists(
+                    prepared_ligand_filepath
+                ), f"Prepared ligand file not found: {prepared_ligand_filepath}"
+                prepared_ligand_filepaths.append(prepared_ligand_filepath)
+            except AssertionError as e:
+                logger.warning(
+                    f"Prepared ligand file not found: {prepared_ligand_filepath}. Skipping..."
+                )
+                return None
 
         # run AutoDock Vina
         binding_site = ligand_binding_site_mapping[ligand_filepaths]
