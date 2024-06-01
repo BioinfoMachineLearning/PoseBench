@@ -576,6 +576,7 @@ def main(cfg: DictConfig):
             # NOTE: we use the `redock` mode here since with each method we implicitly perform cognate (e.g., apo or ab initio) docking,
             # and we have access to the ground-truth ligand structures in SDF format
             buster = PoseBusters(config="redock", top_n=None)
+            buster.config["loading"]["mol_true"]["load_all"] = False
             bust_results = buster.bust_table(mol_table, full_report=cfg.full_report)
 
             bust_results.to_csv(bust_results_filepath, index=False)
