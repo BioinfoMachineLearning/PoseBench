@@ -70,7 +70,11 @@ def save_aligned_complex(
         return
     if predicted_ligand_sdf is not None:
         predicted_ligand = read_molecule(predicted_ligand_sdf, remove_hs=True, sanitize=True)
+        if predicted_ligand is None:
+            predicted_ligand = read_molecule(predicted_ligand_sdf, remove_hs=True, sanitize=False)
     reference_ligand = read_molecule(reference_ligand_sdf, remove_hs=True, sanitize=True)
+    if reference_ligand is None:
+        reference_ligand = read_molecule(reference_ligand_sdf, remove_hs=True, sanitize=False)
     try:
         predicted_calpha_coords = extract_receptor_structure(
             predicted_rec, reference_ligand, filter_out_hetero_residues=True
@@ -335,11 +339,7 @@ def main(cfg: DictConfig):
         # parse protein files
         if cfg.method == "diffdock":
             output_protein_files = sorted(
-                list(
-                    (Path(cfg.input_data_dir).parent / "ensemble_proteins").rglob(
-                        "*.pdb"
-                    )
-                )
+                list((Path(cfg.input_data_dir).parent / "ensemble_proteins").rglob("*.pdb"))
             )
             output_protein_files = sorted(
                 [
