@@ -258,6 +258,7 @@ dependencies:
   - pytorch-cuda=11.8=h7e8668a_5
   - pytorch-mutex=1.0=cuda
   - pyyaml=6.0.1=py310h2372a71_1
+  - rdkit=2023.03.3=py310h399bcf7_0
   - readline=8.2=h8228510_1
   - referencing=0.35.1=pyhd8ed1ab_0
   - reportlab=3.5.68=py310h94fcab3_1
@@ -458,7 +459,6 @@ dependencies:
       - pytraj==2.0.6
       - pytz==2022.4
       - pyzmq==25.1.1
-      - rdkit==2023.9.6
       - regex==2023.10.3
       - requests-cache==1.1.0
       - rich==13.7.1
