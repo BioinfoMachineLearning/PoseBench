@@ -370,7 +370,18 @@ def main(cfg: DictConfig):
             raise ValueError(f"Invalid method: {cfg.method}")
 
         if len(output_ligand_files) < len(output_protein_files):
-            if cfg.method == "rfaa":
+            if cfg.method == "neuralplexer":
+                output_protein_files = sorted(
+                    [
+                        file
+                        for file in list(output_dir.rglob(f"prot_rank{cfg.rank_to_align}_*.pdb"))
+                        if "_aligned" not in file.stem
+                        and any(
+                            [file.parent.stem in item.parent.stem for item in output_ligand_files]
+                        )
+                    ]
+                )
+            elif cfg.method == "rfaa":
                 output_protein_files = sorted(
                     [
                         item
