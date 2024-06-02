@@ -507,25 +507,15 @@ def create_mol_table(
                     else None
                 )
             if mol_table["mol_pred"].isna().sum() > 0:
-                if cfg.method in ["diffdock", "fabind", "dynamicbind", "vina", "tulip"]:
-                    logger.warning(
-                        f"Skipping imputing missing (relaxed) predictions for {mol_table['mol_pred'].isna().sum()} molecules regarding the following conditioning inputs: {mol_table[mol_table['mol_pred'].isna()]['mol_cond'].tolist()}."
-                    )
-                    mol_table = mol_table.dropna(subset=["mol_pred"])
-                else:
-                    raise ValueError(
-                        f"After imputing missing (relaxed) predictions, still missing predictions for {mol_table['mol_pred'].isna().sum()} molecules regarding the following conditioning inputs: {mol_table[mol_table['mol_pred'].isna()]['mol_cond'].tolist()}."
-                    )
-        else:
-            if cfg.method in ["diffdock", "fabind", "dynamicbind", "vina", "tulip"]:
                 logger.warning(
-                    f"Skipping missing predictions for {mol_table['mol_pred'].isna().sum()} molecules regarding the following conditioning inputs: {mol_table[mol_table['mol_pred'].isna()]['mol_cond'].tolist()}."
+                    f"Skipping imputing missing (relaxed) predictions for {mol_table['mol_pred'].isna().sum()} molecules regarding the following conditioning inputs: {mol_table[mol_table['mol_pred'].isna()]['mol_cond'].tolist()}."
                 )
                 mol_table = mol_table.dropna(subset=["mol_pred"])
-            else:
-                raise ValueError(
-                    f"Missing predictions for {mol_table['mol_pred'].isna().sum()} molecules regarding the following conditioning inputs: {mol_table[mol_table['mol_pred'].isna()]['mol_cond'].tolist()}."
-                )
+        else:
+            logger.warning(
+                f"Skipping missing predictions for {mol_table['mol_pred'].isna().sum()} molecules regarding the following conditioning inputs: {mol_table[mol_table['mol_pred'].isna()]['mol_cond'].tolist()}."
+            )
+            mol_table = mol_table.dropna(subset=["mol_pred"])
 
     if cfg.dataset == "casp15":
         mol_table.reset_index(drop=True, inplace=True)
