@@ -36,7 +36,7 @@ dependencies:
   - c-ares=1.28.1=hd590300_0
   - c-blosc2=2.14.4=hb4ffafa_1
   - c-compiler=1.5.0=h166bdaf_0
-  - ca-certificates=2024.2.2=hbcca054_0
+  - ca-certificates=2024.6.2=hbcca054_0
   - cached-property=1.5.2=hd8ed1ab_1
   - cached_property=1.5.2=pyha770c72_1
   - cachetools=5.3.3=pyhd8ed1ab_0
