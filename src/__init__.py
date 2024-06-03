@@ -52,20 +52,30 @@ def resolve_method_title(method: str) -> str:
     return METHOD_TITLE_MAPPING.get(method, method)
 
 
-def resolve_method_protein_dir(method: str, dataset: str, repeat_index: int) -> str:
+def resolve_method_protein_dir(
+    method: str, dataset: str, repeat_index: int, pocket_only_baseline: bool
+) -> str:
     """Resolve the protein directory for a given method.
 
     :param method: The method name.
     :param dataset: The dataset name.
     :param repeat_index: The repeat index for the method.
+    :param pocket_only_baseline: Whether to return protein files for a pocket-only baseline.
     :return: The protein directory for the given method.
     """
+    pocket_postfix = "_bs_cropped" if pocket_only_baseline else ""
     if method in STANDARDIZED_DIR_METHODS or method in ["vina", "tulip"]:
         return (
-            os.path.join("data", f"{dataset}_set", f"{dataset}_holo_aligned_esmfold_structures")
+            os.path.join(
+                "data",
+                f"{dataset}_set",
+                f"{dataset}_holo_aligned_esmfold_structures{pocket_postfix}",
+            )
             if os.path.exists(
                 os.path.join(
-                    "data", f"{dataset}_set", f"{dataset}_holo_aligned_esmfold_structures"
+                    "data",
+                    f"{dataset}_set",
+                    f"{dataset}_holo_aligned_esmfold_structures{pocket_postfix}",
                 )
             )
             else os.path.join(
@@ -225,8 +235,8 @@ def register_custom_omegaconf_resolvers():
     )
     OmegaConf.register_new_resolver(
         "resolve_method_protein_dir",
-        lambda method, dataset, repeat_index: resolve_method_protein_dir(
-            method, dataset, repeat_index
+        lambda method, dataset, repeat_index, pocket_only_baseline: resolve_method_protein_dir(
+            method, dataset, repeat_index, pocket_only_baseline
         ),
     )
     OmegaConf.register_new_resolver(

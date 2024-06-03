@@ -1,4 +1,4 @@
-dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `casp15`)
+dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
 prediction_inputs_dir: ${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/prediction_inputs/${dataset}
 prediction_outputs_dir: ${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/prediction_outputs/${dataset}_${repeat_index}
 inference_outputs_dir: ${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/inference/rfaa_${dataset}_outputs_${repeat_index}

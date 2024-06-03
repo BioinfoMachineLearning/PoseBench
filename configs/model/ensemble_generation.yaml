@@ -37,8 +37,9 @@ casp_author: "001" # group number to report in CASP format
 casp_method: "Ligand_Predictor" # the method name to report in CASP format
 combine_casp_output_files: false # whether to combine the CASP protein and ligand output files into a single file
 generate_hpc_scripts: false # whether to generate HPC scripts for running the ensemble generation; if `false`, then local scripts will be generated instead
+pocket_only_baseline: false # whether to run ensemble generation with only pocket-based baseline methods
 ensemble_benchmarking: false # whether to run ensemble benchmarking
-ensemble_benchmarking_dataset: posebusters_benchmark # the dataset to use for ensemble benchmarking - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `casp15`)
+ensemble_benchmarking_dataset: posebusters_benchmark # the dataset to use for ensemble benchmarking - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
 ensemble_benchmarking_repeat_index: 1 # the repeat index to use for ensemble benchmarking
 ensemble_ranking_method: consensus # the method with which to rank-order and select the top ensemble prediction for each target - NOTE: must be one of (`consensus`, `ff`)
 ensemble_benchmarking_apo_protein_dir: ${oc.env:PROJECT_ROOT}/data/${ensemble_benchmarking_dataset}_set/${ensemble_benchmarking_dataset}_holo_aligned_esmfold_structures # the directory containing the apo proteins to use for ensemble benchmarking

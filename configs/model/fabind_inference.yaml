@@ -1,7 +1,7 @@
 cuda_device_index: 0 # the CUDA device to use for inference, or `null` to use CPU
 python_exec_path: ${oc.env:PROJECT_ROOT}/forks/FABind/FABind/bin/python3 # the Python executable to use
 fabind_exec_dir: ${oc.env:PROJECT_ROOT}/forks/FABind/fabind # the FABind directory in which to execute the inference scripts
-dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `casp15`)
+dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
 input_csv_path: ${oc.env:PROJECT_ROOT}/forks/FABind/inference/fabind_${dataset}_inputs.csv # the input CSV filepath with which to run inference
 input_data_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_esmfold_structures # the input protein-ligand complex directory to recursively parse
 num_threads: 1 # the number of threads to use for inference
@@ -10,3 +10,4 @@ save_mols_dir: ${oc.env:PROJECT_ROOT}/forks/FABind/inference/fabind_${dataset}_t
 ckpt_path: ${oc.env:PROJECT_ROOT}/forks/FABind/ckpt/best_model.bin # the checkpoint path to use for inference
 output_dir: ${oc.env:PROJECT_ROOT}/forks/FABind/inference/fabind_${dataset}_output_${repeat_index} # the output directory to which to save the inference results
 repeat_index: 1 # the repeat index to use for inference
+pocket_only_baseline: false # whether to run the pocket-only baseline

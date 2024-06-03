@@ -1,6 +1,6 @@
 python_exec_path: ${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/RFAA/bin/python3 # the Python executable to use
 rfaa_exec_dir: ${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom # the RoseTTAFold-All-Atom directory in which to execute the inference scripts
-dataset: casp15 # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `casp15`)
+dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
 input_dir: ${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/prediction_inputs/${dataset} # the input directory with which to run inference
 config_dir: ${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/rf2aa/config/inference # the config directory with which to run inference
 output_dir: ${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/prediction_outputs/${dataset}_${repeat_index} # the output directory to which to save the inference results

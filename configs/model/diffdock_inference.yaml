@@ -1,7 +1,7 @@
 cuda_device_index: 0 # the CUDA device to use for inference, or `null` to use CPU
 python_exec_path: ${oc.env:PROJECT_ROOT}/forks/DiffDock/DiffDock/bin/python3 # the Python executable to use
 diffdock_exec_dir: ${oc.env:PROJECT_ROOT}/forks/DiffDock # the DiffDock directory in which to execute the inference scripts
-dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `casp15`)
+dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
 input_csv_path: ${oc.env:PROJECT_ROOT}/forks/DiffDock/inference/diffdock_${dataset}_inputs.csv # the input CSV filepath with which to run inference
 inference_config_path: ${oc.env:PROJECT_ROOT}/forks/DiffDock/default_inference_args.yaml # the inference configuration file to use
 output_dir: ${oc.env:PROJECT_ROOT}/forks/DiffDock/inference/diffdock_${dataset}_output_${repeat_index} # the output directory to which to save the inference results

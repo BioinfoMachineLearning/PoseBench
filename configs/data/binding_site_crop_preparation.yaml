@@ -1,0 +1,5 @@
+dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`)
+input_data_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set # the input protein-ligand complex directory to recursively parse
+input_protein_structure_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_esmfold_structures # the input protein structure directory to parse
+protein_ligand_distance_threshold: 4.0 # the heavy-atom distance threshold (in Angstrom) to use for finding protein binding site residues in interaction with ligand heavy atoms
+num_buffer_residues: 7 # the number of sequence-regional buffer residues to include around the native binding site residues
