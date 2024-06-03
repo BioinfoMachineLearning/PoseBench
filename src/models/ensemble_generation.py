@@ -780,6 +780,23 @@ def get_method_predictions(
             [file for file in ligand_output_files if "relaxed" not in os.path.basename(file)],
             key=rank_key,
         )[: cfg.method_top_n_to_select]
+        if len(protein_output_files) < len(ligand_output_files):
+            ligand_output_files = [
+                file
+                for file in ligand_output_files
+                if Path(file).stem.replace("_ligand_", "_receptor_")
+                in {Path(protein_file).stem for protein_file in protein_output_files}
+            ]
+        elif len(ligand_output_files) < len(protein_output_files):
+            protein_output_files = [
+                file
+                for file in protein_output_files
+                if Path(file).stem.replace("_receptor_", "_ligand_")
+                in {Path(ligand_file).stem for ligand_file in ligand_output_files}
+            ]
+        assert len(protein_output_files) == len(
+            ligand_output_files
+        ), "The number of DynamicBind protein and ligand files must match."
     elif method == "neuralplexer":
         ensemble_benchmarking_output_dir = (
             Path(cfg.input_dir if cfg.input_dir else cfg.neuralplexer_out_path).parent
