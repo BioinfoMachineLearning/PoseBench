@@ -244,7 +244,7 @@ dependencies:
   - pydantic-core=2.18.3=py310he421c4c_0
   - pyedr=0.8.0=pyhd8ed1ab_0
   - pygments=2.18.0=pyhd8ed1ab_0
-  - pyparsing=3.1.2=pyhd8ed1ab_0
+  - pyparsing=3.1.1=pyhd8ed1ab_0
   - pysocks=1.7.1=pyha2e5f31_6
   - pytables=3.9.2=py310hd76cd5d_2
   - python=3.10.14=hd12c33a_0_cpython
