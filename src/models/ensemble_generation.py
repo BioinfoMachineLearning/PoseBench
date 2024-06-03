@@ -886,7 +886,7 @@ def get_method_predictions(
             key=rank_key,
         )[: cfg.method_top_n_to_select]
         if not len(ligand_output_files):
-            # NOTE: when predicting e.g., with Vina-RFAA, if no ligand predictions are found, skip the protein prediction as well
+            # NOTE: when predicting e.g., with DiffDock-Vina, if no ligand predictions are found, skip the protein prediction as well
             protein_output_files = []
         assert len(protein_output_files) == len(
             ligand_output_files
