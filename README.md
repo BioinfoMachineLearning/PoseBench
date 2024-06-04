@@ -3,7 +3,7 @@
 # PoseBench
 
 [![Paper](http://img.shields.io/badge/arXiv-2405.14108-B31B1B.svg)](https://arxiv.org/abs/2405.14108)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11199233.svg)](https://doi.org/10.5281/zenodo.11199233)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11477766.svg)](https://doi.org/10.5281/zenodo.11477766)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Docs](https://assets.readthedocs.org/static/projects/badges/passing-flat.svg)](https://bioinfomachinelearning.github.io/PoseBench/)
 <a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/config-hydra-89b8cd"></a>
@@ -133,10 +133,10 @@ of how to extend `PoseBench`, as outlined below.
 ```bash
 # fetch, extract, and clean-up preprocessed Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 data (~3 GB) #
 cd data/
-wget https://zenodo.org/records/11199233/files/astex_diverse_set.tar.gz
-wget https://zenodo.org/records/11199233/files/posebusters_benchmark_set.tar.gz
-wget https://zenodo.org/records/11199233/files/dockgen_set.tar.gz
-wget https://zenodo.org/records/11199233/files/casp15_set.tar.gz
+wget https://zenodo.org/records/11477766/files/astex_diverse_set.tar.gz
+wget https://zenodo.org/records/11477766/files/posebusters_benchmark_set.tar.gz
+wget https://zenodo.org/records/11477766/files/dockgen_set.tar.gz
+wget https://zenodo.org/records/11477766/files/casp15_set.tar.gz
 tar -xzf astex_diverse_set.tar.gz
 tar -xzf posebusters_benchmark_set.tar.gz
 tar -xzf dockgen_set.tar.gz
@@ -154,56 +154,53 @@ cd ../
 # fetch, extract, and clean-up benchmark method predictions to reproduce paper results (~19 GB) #
 # DiffDock predictions and results
 cd forks/DiffDock/
-wget https://zenodo.org/records/11199233/files/diffdock_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/11477766/files/diffdock_benchmark_method_predictions.tar.gz
 tar -xzf diffdock_benchmark_method_predictions.tar.gz
 rm diffdock_benchmark_method_predictions.tar.gz
 # FABind predictions and results
 cd forks/FABind/
-wget https://zenodo.org/records/11199233/files/fabind_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/11477766/files/fabind_benchmark_method_predictions.tar.gz
 tar -xzf fabind_benchmark_method_predictions.tar.gz
 rm fabind_benchmark_method_predictions.tar.gz
 # DynamicBind predictions and results
 cd forks/DynamicBind/
-wget https://zenodo.org/records/11199233/files/dynamicbind_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/11477766/files/dynamicbind_benchmark_method_predictions.tar.gz
 tar -xzf dynamicbind_benchmark_method_predictions.tar.gz
 rm dynamicbind_benchmark_method_predictions.tar.gz
 # NeuralPLexer predictions and results
 cd forks/NeuralPLexer/
-wget https://zenodo.org/records/11199233/files/neuralplexer_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/11477766/files/neuralplexer_benchmark_method_predictions.tar.gz
 tar -xzf neuralplexer_benchmark_method_predictions.tar.gz
 rm neuralplexer_benchmark_method_predictions.tar.gz
 # RoseTTAFold-All-Atom predictions and results
 cd forks/RoseTTAFold-All-Atom/
-wget https://zenodo.org/records/11199233/files/rfaa_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/11477766/files/rfaa_benchmark_method_predictions.tar.gz
 tar -xzf rfaa_benchmark_method_predictions.tar.gz
 rm rfaa_benchmark_method_predictions.tar.gz
 # TULIP predictions and results
 cd forks/TULIP/
-wget https://zenodo.org/records/11199233/files/tulip_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/11477766/files/tulip_benchmark_method_predictions.tar.gz
 tar -xzf tulip_benchmark_method_predictions.tar.gz
 rm tulip_benchmark_method_predictions.tar.gz
 # AutoDock Vina predictions and results
 cd forks/Vina/
-wget https://zenodo.org/records/11199233/files/vina_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/11477766/files/vina_benchmark_method_predictions.tar.gz
 tar -xzf vina_benchmark_method_predictions.tar.gz
 rm vina_benchmark_method_predictions.tar.gz
-# Astex Diverse, PoseBusters Benchmark, PoseBusters Benchmark (pocket-only), DockGen, and CASP15 consensus ensemble predictions and results
+# Astex Diverse, PoseBusters Benchmark (w/ pocket-only results), DockGen, and CASP15 consensus ensemble predictions and results
 cd data/test_cases/
-wget https://zenodo.org/records/11199233/files/astex_diverse_ensemble_benchmark_method_predictions.tar.gz
-wget https://zenodo.org/records/11199233/files/posebusters_benchmark_ensemble_benchmark_method_predictions.tar.gz
-wget https://zenodo.org/records/11199233/files/posebusters_benchmark_pocket_only_ensemble_benchmark_method_predictions.tar.gz
-wget https://zenodo.org/records/11199233/files/dockgen_ensemble_benchmark_method_predictions.tar.gz
-wget https://zenodo.org/records/11199233/files/casp15_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/11477766/files/astex_diverse_ensemble_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/11477766/files/posebusters_benchmark_ensemble_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/11477766/files/dockgen_ensemble_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/11477766/files/casp15_ensemble_benchmark_method_predictions.tar.gz
 tar -xzf astex_diverse_ensemble_benchmark_method_predictions.tar.gz
 tar -xzf posebusters_benchmark_ensemble_benchmark_method_predictions.tar.gz
-tar -xzf posebusters_benchmark_pocket_only_ensemble_benchmark_method_predictions.tar.gz
 tar -xzf dockgen_ensemble_benchmark_method_predictions.tar.gz
-tar -xzf casp15_benchmark_method_predictions.tar.gz
+tar -xzf casp15_ensemble_benchmark_method_predictions.tar.gz
 rm astex_diverse_ensemble_benchmark_method_predictions.tar.gz
 rm posebusters_benchmark_ensemble_benchmark_method_predictions.tar.gz
-rm posebusters_benchmark_pocket_only_ensemble_benchmark_method_predictions.tar.gz
 rm dockgen_ensemble_benchmark_method_predictions.tar.gz
-rm casp15_benchmark_method_predictions.tar.gz
+rm casp15_ensemble_benchmark_method_predictions.tar.gz
 ```
 
 **NOTE:** One can reproduce the *pocket-only* experiments with the PoseBusters Benchmark set by adding the argument `pocket_only_baseline=true` to each command below used to run PoseBusters Benchmark dataset inference with all the baseline methods, since the pocket-only versions of the dataset's holo-aligned predicted protein structures have also been included in the downloadable Zenodo archive `posebusters_benchmark_set.tar.gz` referenced above. However, be aware that one then needs to *rename* any existing directories containing PoseBusters Benchmark dataset inference results for each baseline method, to prevent these existing inference directories from being merged with new pocket-only results. Please see the config files within `configs/data/`, `configs/model/`, and `configs/analysis/` for more details.
@@ -272,7 +269,7 @@ python3 src/data/components/esmfold_apo_to_holo_alignment.py dataset=posebusters
 python3 src/data/components/esmfold_apo_to_holo_alignment.py dataset=astex_diverse num_workers=1
 ```
 
-**NOTE:** The preprocessed DockGen and CASP15 data available via [Zenodo](https://doi.org/10.5281/zenodo.11199233) provide pre-holo-aligned predicted protein structures for these respective datasets.
+**NOTE:** The preprocessed DockGen and CASP15 data available via [Zenodo](https://doi.org/10.5281/zenodo.11477766) provide pre-holo-aligned predicted protein structures for these respective datasets.
 
 </details>
 
@@ -710,7 +707,7 @@ python3 src/analysis/inference_analysis_casp.py method=vina vina_binding_site_me
 
 ### How to run inference with `TULIP`
 
-Gather all template ligands pre-generated by `TULIP` and collate the resulting ligand fragment SDF files
+Gather all template ligands generated by `TULIP` via its dedicated [GitHub repository](https://github.com/BioinfoMachineLearning/tulip) and collate the resulting ligand fragment SDF files
 
 ```bash
 python3 src/data/tulip_output_extraction.py dataset=posebusters_benchmark
