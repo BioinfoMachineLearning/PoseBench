@@ -1,5 +1,6 @@
 name: RFAA
 channels:
+  - predector
   - pyg
   - bioconda
   - pytorch
@@ -368,6 +369,7 @@ dependencies:
   - scikit-learn=1.4.1.post1=py310h1fdf081_0
   - send2trash=1.8.3=pyh0d859eb_0
   - setuptools=69.1.1=pyhd8ed1ab_0
+  - signalp6=6.0g=1
   - sip=6.7.12=py310hc6cd4ac_0
   - six=1.16.0=pyh6c4a22f_0
   - smirnoff99frosst=1.1.0=pyh44b312d_0
@@ -481,7 +483,6 @@ dependencies:
       - scipy==1.13.0
       - sentry-sdk==1.41.0
       - shortuuid==1.0.12
-      - signalp6==6.0+h
       - smmap==5.0.1
       - subprocess32==3.5.4
       - timeout-decorator==0.5.0

@@ -3,7 +3,7 @@ Code for RoseTTAFold All-Atom
 <p align="right">
   <img style="float: right" src="./img/RFAA.png" alt="alt text" width="600px" align="right"/>
 </p>
-RoseTTAFold All-Atom is a biomolecular structure prediction neural network that can predict a broad range of biomolecular assemblies including proteins, nucleic acids, small molecules, covalent modifications and metals as outlined in the RFAA paper. 
+RoseTTAFold All-Atom is a biomolecular structure prediction neural network that can predict a broad range of biomolecular assemblies including proteins, nucleic acids, small molecules, covalent modifications and metals as outlined in the <a href='https://www.science.org/doi/10.1126/science.adl2528'>RFAA paper</a>. 
 
 RFAA is not accurate for all cases, but produces useful error estimates to allow users to identify accurate predictions. Below are the instructions for setting up and using the model. 
 
@@ -54,16 +54,11 @@ mv $CONDA_PREFIX/lib/python3.10/site-packages/signalp/model_weights/distilled_mo
 ```
 bash install_dependencies.sh
 ```
-6. Add BLAST patch
-```
-wget https://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/2.2.26/blast-2.2.26-x64-linux.tar.gz
-tar -zxvf blast-2.2.26-x64-linux.tar.gz
-```
-6. Download the model weights.
+6. Download the model weights (if not already downloaded)
 ```
 wget http://files.ipd.uw.edu/pub/RF-All-Atom/weights/RFAA_paper_weights.pt
 ```
-7. Download sequence databases for MSA and template generation.
+7. Download sequence databases for MSA and template generation
 ```
 # uniref30 [46G]
 wget http://wwwuser.gwdg.de/~compbiol/uniclust/2020_06/UniRef30_2020_06_hhsuite.tar.gz
@@ -79,7 +74,17 @@ tar xfz bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt.tar.gz -C ./bfd
 wget https://files.ipd.uw.edu/pub/RoseTTAFold/pdb100_2021Mar03.tar.gz
 tar xfz pdb100_2021Mar03.tar.gz
 ```
+**NOTE:** Make sure to update `DB_UR30` and `DB_BFD` (on Lines 19 and 20 of `make_msa.sh`) as well as `database_params.hhdb` (on Line 6 of `rf2aa/config/inference/base.yaml`) to list the absolute (base) paths to these respective local databases. For example, one may set these values to `DB_UR30="/bmlfast/rfaa_databases/uniref30/UniRef30_2020_06"`, `DB_BFD="/bmlfast/rfaa_databases/bfd/bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt"`, and `hhdb: "/bmlfast/rfaa_databases/pdb100_2021Mar03/pdb100_2021Mar03"`.
 
+8. Download `BLAST`
+```
+wget https://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/2.2.26/blast-2.2.26-x64-linux.tar.gz
+mkdir -p blast-2.2.26
+tar -xf blast-2.2.26-x64-linux.tar.gz -C blast-2.2.26
+cp -r blast-2.2.26/blast-2.2.26/ blast-2.2.26_bk
+rm -r blast-2.2.26
+mv blast-2.2.26_bk/ blast-2.2.26
+```
 <a id="inference-config"></a>
 ### Inference Configs Using Hydra
 
@@ -150,27 +155,28 @@ python -m rf2aa.run_inference --config-name nucleic_acid
 <a id="p-sm-complex"></a>
 ### Predicting Protein Small Molecule Complexes
 To predict protein small molecule complexes, the syntax to input the protein remains the same. Adding in the small molecule works similarly to other inputs. 
-Here is an example (from `rf2aa/config/inference/protein_complex_sm.yaml`):
+Here is an example (from `rf2aa/config/inference/protein_sm.yaml`):
 ```
 defaults:
   - base
-
-job_name: 7qxr
+job_name: "3fap"
 
 protein_inputs:
-  A: 
-    fasta_file: examples/protein/7qxr.fasta
+  A:
+    fasta_file: examples/protein/3fap_A.fasta
+  B: 
+    fasta_file: examples/protein/3fap_B.fasta
 
 sm_inputs:
-  B:
-    input: examples/small_molecule/NSW_ideal.sdf
+  C:
+    input: examples/small_molecule/ARD_ideal.sdf
     input_type: "sdf"
 ```
 Small molecule inputs are provided as sdf files or smiles strings and users are **required** to provide both an input and an input_type field for every small molecule that they want to provide. Metal ions can also be provided as sdf files or smiles strings. 
 
 To predict the example:
 ```
-python -m rf2aa.run_inference --config-name protein_complex_sm
+python -m rf2aa.run_inference --config-name protein_sm
 ```
 <a id="higher-order"></a>
 ### Predicting Higher Order Complexes
