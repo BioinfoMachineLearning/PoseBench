@@ -715,12 +715,19 @@ def get_method_predictions(
                 diffdock_input_csv[diffdock_input_csv.complex_name == target].protein_path.item()
                 for _ in range(cfg.method_top_n_to_select)
             ]
+        diffdock_target = (
+            "_".join(target.split("_")[:3])
+            if cfg.ensemble_benchmarking and cfg.ensemble_benchmarking_dataset == "dockgen"
+            else target
+        )
         ligand_output_files = sorted(
             [
                 file
                 for file in map(
                     str,
-                    Path(os.path.join(ensemble_benchmarking_output_dir, target)).rglob("*.sdf"),
+                    Path(os.path.join(ensemble_benchmarking_output_dir, diffdock_target)).rglob(
+                        "*.sdf"
+                    ),
                 )
                 if "rank" in os.path.basename(file)
                 and "confidence" in os.path.basename(file)
@@ -736,7 +743,7 @@ def get_method_predictions(
                 == target
             ), "Protein files must be for the designated target."
             assert (
-                Path(ligand_output_file).parent.stem == target
+                Path(ligand_output_file).parent.stem == diffdock_target
             ), "Ligand files must be for the designated target."
     elif method == "dynamicbind":
         target_dir_name = (
@@ -888,13 +895,18 @@ def get_method_predictions(
             ), "Input protein filepath must be provided for Vina predictions when not ensemble-benchmarking."
             protein_output_files = [input_protein_filepath]
         # NOTE: Vina saves only the top-ranked ligand prediction per target
+        vina_target = (
+            "_".join(target.split("_")[:3])
+            if cfg.ensemble_benchmarking and cfg.ensemble_benchmarking_dataset == "dockgen"
+            else target
+        )
         ligand_output_files = sorted(
             [
                 file
                 for file in map(
                     str,
-                    Path(os.path.join(ensemble_benchmarking_output_dir, target)).rglob(
-                        f"{target}*.sdf"
+                    Path(os.path.join(ensemble_benchmarking_output_dir, vina_target)).rglob(
+                        f"{vina_target}*.sdf"
                     ),
                 )
                 if "relaxed" not in os.path.basename(file)
@@ -1977,6 +1989,13 @@ def main(cfg: DictConfig):
         )
 
     if cfg.ensemble_benchmarking:
+        if cfg.pocket_only_baseline:
+            # NOTE: this is necessary to support protein pocket-based experiments
+            with open_dict(cfg):
+                cfg.ensemble_benchmarking_apo_protein_dir += "_bs_cropped"
+            assert os.path.exists(
+                cfg.ensemble_benchmarking_apo_protein_dir
+            ), "Ensemble benchmarking for protein pocket-based experiments requires `ensemble_benchmarking_apo_protein_dir` to be set to a valid directory."
         if not os.path.exists(cfg.ensemble_benchmarking_apo_protein_dir):
             # NOTE: this is necessary to support e.g., CASP15 ensemble benchmarking
             with open_dict(cfg):

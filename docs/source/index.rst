@@ -53,6 +53,7 @@ Welcome to PoseBench's documentation!
    :hidden:
    :caption: API Reference
 
+   modules/src.binding_site_crop_preparation
    modules/src.complex_alignment
    modules/src.inference_relaxation
    modules/src.minimize_energy

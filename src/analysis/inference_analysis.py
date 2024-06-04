@@ -117,15 +117,20 @@ def create_mol_table(
     :param relaxed: Whether to use the relaxed poses.
     :return: Molecule table DataFrame.
     """
+    pdb_ids = None
+    if cfg.dataset == "dockgen" and cfg.dockgen_test_ids_filepath is not None:
+        # NOTE: for DockGen, we have each method predict for all 189 complexes
+        # but evaluate them here on an ESMFold RMSD-filtered subset of 91 complexes
+        assert os.path.exists(
+            cfg.dockgen_test_ids_filepath
+        ), f"Invalid test IDs file path for DockGen: {os.path.exists(cfg.dockgen_test_ids_filepath)}."
+        with open(cfg.dockgen_test_ids_filepath) as f:
+            pdb_ids = {line.replace(" ", "-") for line in f.read().splitlines()}
+
     if cfg.method in ["dynamicbind", "rfaa"]:
         # NOTE: for methods such as DynamicBind and RoseTTAFold-All-Atom,
         # the input CSV file needs to be created manually from the input data directory
-        ccd_ids_filepath = (
-            cfg.posebusters_ccd_ids_filepath if cfg.dataset == "posebusters_benchmark" else None
-        )
-        input_smiles_and_pdb_ids = parse_inference_inputs_from_dir(
-            input_data_dir, ccd_ids_filepath=ccd_ids_filepath
-        )
+        input_smiles_and_pdb_ids = parse_inference_inputs_from_dir(input_data_dir, pdb_ids=pdb_ids)
         input_table = pd.DataFrame(input_smiles_and_pdb_ids, columns=["smiles", "pdb_id"])
     else:
         input_table = pd.read_csv(input_csv_path)
@@ -135,6 +140,8 @@ def create_mol_table(
             input_table.rename(columns={"name": "pdb_id"}, inplace=True)
         if "pdb_id" not in input_table.columns:
             input_table["pdb_id"] = input_table["complex_name"].copy()
+        if cfg.dataset == "dockgen":
+            input_table = input_table[input_table["pdb_id"].isin(pdb_ids)]
 
     # parse molecule (e.g., protein-)conditioning files
     mol_table = pd.DataFrame()
@@ -197,17 +204,26 @@ def create_mol_table(
             else None
         )
     else:
+        pocket_postfix = "_bs_cropped" if cfg.pocket_only_baseline else ""
         protein_structure_input_dir = (
-            os.path.join(input_data_dir, f"{cfg.dataset}_holo_aligned_esmfold_structures")
+            os.path.join(
+                input_data_dir, f"{cfg.dataset}_holo_aligned_esmfold_structures{pocket_postfix}"
+            )
             if os.path.exists(
-                os.path.join(input_data_dir, f"{cfg.dataset}_holo_aligned_esmfold_structures")
+                os.path.join(
+                    input_data_dir,
+                    f"{cfg.dataset}_holo_aligned_esmfold_structures{pocket_postfix}",
+                )
             )
             else os.path.join(input_data_dir, f"{cfg.dataset}_esmfold_structures")
         )
         protein_structure_file_postfix = (
             "_holo_aligned_esmfold_protein"
             if os.path.exists(
-                os.path.join(input_data_dir, f"{cfg.dataset}_holo_aligned_esmfold_structures")
+                os.path.join(
+                    input_data_dir,
+                    f"{cfg.dataset}_holo_aligned_esmfold_structures{pocket_postfix}",
+                )
             )
             and cfg.dataset != "casp15"
             else ""
@@ -224,8 +240,9 @@ def create_mol_table(
             else None
         )
     # parse true molecule files
+    mol_true_file_ext = ".pdb" if cfg.dataset == "dockgen" else ".sdf"
     mol_table["mol_true"] = input_table["pdb_id"].apply(
-        lambda x: os.path.join(input_data_dir, x, f"{x}_ligand.sdf")
+        lambda x: os.path.join(input_data_dir, x, f"{x}_ligand{mol_true_file_ext}")
     )
     # parse predicted molecule files
     if cfg.method == "dynamicbind":
@@ -263,20 +280,24 @@ def create_mol_table(
             else None
         )
     elif cfg.method == "vina":
-        mol_table["mol_pred"] = input_table["pdb_id"].apply(
-            lambda x: list(
-                (Path(str(inference_dir).replace("_relaxed", ""))).rglob(
-                    f"{x}{'_relaxed' if relaxed else ''}.sdf"
-                )
-            )[0]
-            if len(
-                list(
+        mol_table["mol_pred"] = (
+            input_table["pdb_id"]
+            .transform(lambda x: "_".join(x.split("_")[:3]))
+            .apply(
+                lambda x: list(
                     (Path(str(inference_dir).replace("_relaxed", ""))).rglob(
                         f"{x}{'_relaxed' if relaxed else ''}.sdf"
                     )
+                )[0]
+                if len(
+                    list(
+                        (Path(str(inference_dir).replace("_relaxed", ""))).rglob(
+                            f"{x}{'_relaxed' if relaxed else ''}.sdf"
+                        )
+                    )
                 )
+                else None
             )
-            else None
         )
     elif cfg.method == "tulip":
         mol_table["mol_pred"] = input_table["pdb_id"].apply(
@@ -318,7 +339,12 @@ def create_mol_table(
         )
     else:
         if cfg.method in RANKED_METHODS:
-            mol_table["mol_pred"] = input_table["pdb_id"].apply(
+            pdb_ids = (
+                input_table["pdb_id"].transform(lambda x: "_".join(x.split("_")[:3]))
+                if cfg.method == "diffdock"
+                else input_table["pdb_id"]
+            )
+            mol_table["mol_pred"] = pdb_ids.apply(
                 lambda x: glob.glob(
                     os.path.join(
                         (
@@ -382,7 +408,12 @@ def create_mol_table(
                 else None
             )
         else:
-            mol_table["mol_pred"] = input_table["pdb_id"].apply(
+            pdb_ids = (
+                input_table["pdb_id"].transform(lambda x: "_".join(x.split("_")[:3]))
+                if cfg.method == "diffdock"
+                else input_table["pdb_id"]
+            )
+            mol_table["mol_pred"] = pdb_ids.apply(
                 lambda x: glob.glob(
                     os.path.join(
                         inference_dir,

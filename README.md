@@ -128,19 +128,22 @@ of how to extend `PoseBench`, as outlined below.
 
 <details>
 
-### Downloading Astex, PoseBusters, and CASP15 data
+### Downloading Astex, PoseBusters, DockGen, and CASP15 data
 
 ```bash
-# fetch, extract, and clean-up preprocessed Astex Diverse and PoseBusters Benchmark data (~2 GB) #
+# fetch, extract, and clean-up preprocessed Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 data (~3 GB) #
 cd data/
 wget https://zenodo.org/records/11199233/files/astex_diverse_set.tar.gz
 wget https://zenodo.org/records/11199233/files/posebusters_benchmark_set.tar.gz
+wget https://zenodo.org/records/11199233/files/dockgen_set.tar.gz
 wget https://zenodo.org/records/11199233/files/casp15_set.tar.gz
 tar -xzf astex_diverse_set.tar.gz
 tar -xzf posebusters_benchmark_set.tar.gz
+tar -xzf dockgen_set.tar.gz
 tar -xzf casp15_set.tar.gz
 rm astex_diverse_set.tar.gz
 rm posebusters_benchmark_set.tar.gz
+rm dockgen_set.tar.gz
 rm casp15_set.tar.gz
 cd ../
 ```
@@ -160,7 +163,7 @@ wget https://zenodo.org/records/11199233/files/fabind_benchmark_method_predictio
 tar -xzf fabind_benchmark_method_predictions.tar.gz
 rm fabind_benchmark_method_predictions.tar.gz
 # DynamicBind predictions and results
-cd forks/DynamicBind/inference/outputs/
+cd forks/DynamicBind/
 wget https://zenodo.org/records/11199233/files/dynamicbind_benchmark_method_predictions.tar.gz
 tar -xzf dynamicbind_benchmark_method_predictions.tar.gz
 rm dynamicbind_benchmark_method_predictions.tar.gz
@@ -184,18 +187,26 @@ cd forks/Vina/
 wget https://zenodo.org/records/11199233/files/vina_benchmark_method_predictions.tar.gz
 tar -xzf vina_benchmark_method_predictions.tar.gz
 rm vina_benchmark_method_predictions.tar.gz
-# Astex Diverse, PoseBusters Benchmark, and CASP15 consensus ensemble predictions and results
+# Astex Diverse, PoseBusters Benchmark, PoseBusters Benchmark (pocket-only), DockGen, and CASP15 consensus ensemble predictions and results
 cd data/test_cases/
 wget https://zenodo.org/records/11199233/files/astex_diverse_ensemble_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/11199233/files/posebusters_benchmark_ensemble_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/11199233/files/posebusters_benchmark_pocket_only_ensemble_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/11199233/files/dockgen_ensemble_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/11199233/files/casp15_benchmark_method_predictions.tar.gz
 tar -xzf astex_diverse_ensemble_benchmark_method_predictions.tar.gz
 tar -xzf posebusters_benchmark_ensemble_benchmark_method_predictions.tar.gz
+tar -xzf posebusters_benchmark_pocket_only_ensemble_benchmark_method_predictions.tar.gz
+tar -xzf dockgen_ensemble_benchmark_method_predictions.tar.gz
 tar -xzf casp15_benchmark_method_predictions.tar.gz
 rm astex_diverse_ensemble_benchmark_method_predictions.tar.gz
 rm posebusters_benchmark_ensemble_benchmark_method_predictions.tar.gz
+rm posebusters_benchmark_pocket_only_ensemble_benchmark_method_predictions.tar.gz
+rm dockgen_ensemble_benchmark_method_predictions.tar.gz
 rm casp15_benchmark_method_predictions.tar.gz
 ```
+
+**NOTE:** One can reproduce the *pocket-only* experiments with the PoseBusters Benchmark set by adding the argument `pocket_only_baseline=true` to each command below used to run PoseBusters Benchmark dataset inference with all the baseline methods, since the pocket-only versions of the dataset's holo-aligned predicted protein structures have also been included in the downloadable Zenodo archive `posebusters_benchmark_set.tar.gz` referenced above. However, be aware that one then needs to *rename* any existing directories containing PoseBusters Benchmark dataset inference results for each baseline method, to prevent these existing inference directories from being merged with new pocket-only results. Please see the config files within `configs/data/`, `configs/model/`, and `configs/analysis/` for more details.
 
 ### Downloading sequence databases (required only for RoseTTAFold-All-Atom inference)
 
@@ -261,7 +272,7 @@ python3 src/data/components/esmfold_apo_to_holo_alignment.py dataset=posebusters
 python3 src/data/components/esmfold_apo_to_holo_alignment.py dataset=astex_diverse num_workers=1
 ```
 
-**NOTE:** The preprocessed CASP15 data available via the Zenodo download link above provides pre-holo-aligned predicted protein structures for the CASP15 dataset.
+**NOTE:** The preprocessed DockGen and CASP15 data available via [Zenodo](https://doi.org/10.5281/zenodo.11199233) provide pre-holo-aligned predicted protein structures for these respective datasets.
 
 </details>
 
@@ -273,38 +284,38 @@ python3 src/data/components/esmfold_apo_to_holo_alignment.py dataset=astex_diver
 
 #### Fixed Protein Methods
 
-| Name            | Source                                                                | PoseBusters Benchmarked | CASP Benchmarked |
-| --------------- | --------------------------------------------------------------------- | ----------------------- | ---------------- |
-| `DiffDock`      | [Corso et al.](https://openreview.net/forum?id=UfBIxpTK10)            | ✓                       | ✓                |
-| `FABind`        | [Pei et al.](https://openreview.net/forum?id=PnWakgg1RL)              | ✓                       | ✗                |
-| `AutoDock Vina` | [Eberhardt et al.](https://pubs.acs.org/doi/10.1021/acs.jcim.1c00203) | ✓                       | ✓                |
-| `TULIP`         |                                                                       | ✓                       | ✓                |
+| Name            | Source                                                                | Astex Benchmarked | PoseBusters Benchmarked | DockGen Benchmarked | CASP Benchmarked |
+| --------------- | --------------------------------------------------------------------- | ----------------- | ----------------------- | ------------------- | ---------------- |
+| `DiffDock`      | [Corso et al.](https://openreview.net/forum?id=UfBIxpTK10)            | ✓                 | ✓                       | ✓                   | ✓                |
+| `FABind`        | [Pei et al.](https://openreview.net/forum?id=PnWakgg1RL)              | ✓                 | ✓                       | ✓                   | ✗                |
+| `AutoDock Vina` | [Eberhardt et al.](https://pubs.acs.org/doi/10.1021/acs.jcim.1c00203) | ✓                 | ✓                       | ✓                   | ✓                |
+| `TULIP`         |                                                                       | ✓                 | ✓                       | ✗                   | ✓                |
 
 #### Flexible Protein Methods
 
-| Name                   | Source                                                                | PoseBusters Benchmarked | CASP Benchmarked |
-| ---------------------- | --------------------------------------------------------------------- | ----------------------- | ---------------- |
-| `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)       | ✓                       | ✓                |
-| `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)     | ✓                       | ✓                |
-| `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528) | ✓                       | ✓                |
+| Name                   | Source                                                                | Astex Benchmarked | PoseBusters Benchmarked | DockGen Benchmarked | CASP Benchmarked |
+| ---------------------- | --------------------------------------------------------------------- | ----------------- | ----------------------- | ------------------- | ---------------- |
+| `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)       | ✓                 | ✓                       | ✓                   | ✓                |
+| `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)     | ✓                 | ✓                       | ✓                   | ✓                |
+| `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528) | ✓                 | ✓                       | ✓                   | ✓                |
 
 ### Methods available for ensembling
 
 #### Fixed Protein Methods
 
-| Name            | Source                                                                | PoseBusters Benchmarked | CASP Benchmarked |
-| --------------- | --------------------------------------------------------------------- | ----------------------- | ---------------- |
-| `DiffDock`      | [Corso et al.](https://openreview.net/forum?id=UfBIxpTK10)            | ✓                       | ✓                |
-| `AutoDock Vina` | [Eberhardt et al.](https://pubs.acs.org/doi/10.1021/acs.jcim.1c00203) | ✓                       | ✓                |
-| `TULIP`         |                                                                       | ✓                       | ✓                |
+| Name            | Source                                                                | Astex Benchmarked | PoseBusters Benchmarked | DockGen Benchmarked | CASP Benchmarked |
+| --------------- | --------------------------------------------------------------------- | ----------------- | ----------------------- | ------------------- | ---------------- |
+| `DiffDock`      | [Corso et al.](https://openreview.net/forum?id=UfBIxpTK10)            | ✓                 | ✓                       | ✓                   | ✓                |
+| `AutoDock Vina` | [Eberhardt et al.](https://pubs.acs.org/doi/10.1021/acs.jcim.1c00203) | ✓                 | ✓                       | ✓                   | ✓                |
+| `TULIP`         |                                                                       | ✓                 | ✓                       | ✗                   | ✓                |
 
 #### Flexible Protein Methods
 
-| Name                   | Source                                                                | PoseBusters Benchmarked | CASP Benchmarked |
-| ---------------------- | --------------------------------------------------------------------- | ----------------------- | ---------------- |
-| `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)       | ✓                       | ✓                |
-| `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)     | ✓                       | ✓                |
-| `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528) | ✓                       | ✓                |
+| Name                   | Source                                                                | Astex Benchmarked | PoseBusters Benchmarked | DockGen Benchmarked | CASP Benchmarked |
+| ---------------------- | --------------------------------------------------------------------- | ----------------- | ----------------------- | ------------------- | ---------------- |
+| `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)       | ✓                 | ✓                       | ✓                   | ✓                |
+| `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)     | ✓                 | ✓                       | ✓                   | ✓                |
+| `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528) | ✓                 | ✓                       | ✓                   | ✓                |
 
 **NOTE**: Have a new method to add? Please let us know by creating a pull request. We would be happy to work with you to integrate new methodology into this benchmark!
 
@@ -321,6 +332,7 @@ Prepare CSV input files
 ```bash
 python3 src/data/diffdock_input_preparation.py dataset=posebusters_benchmark
 python3 src/data/diffdock_input_preparation.py dataset=astex_diverse
+python3 src/data/diffdock_input_preparation.py dataset=dockgen
 python3 src/data/diffdock_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets input_protein_structure_dir="$PWD"/data/casp15_set/predicted_structures
 ```
 
@@ -330,6 +342,8 @@ Run inference on each dataset
 python3 src/models/diffdock_inference.py dataset=posebusters_benchmark repeat_index=1
 ...
 python3 src/models/diffdock_inference.py dataset=astex_diverse repeat_index=1
+...
+python3 src/models/diffdock_inference.py dataset=dockgen repeat_index=1
 ...
 python3 src/models/diffdock_inference.py dataset=casp15 batch_size=1 repeat_index=1
 ...
@@ -342,6 +356,8 @@ python3 src/models/inference_relaxation.py method=diffdock dataset=posebusters_b
 ...
 python3 src/models/inference_relaxation.py method=diffdock dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
+python3 src/models/inference_relaxation.py method=diffdock dataset=dockgen remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
+...
 ```
 
 **NOTE**: Increase `num_processes` according to your available CPU/GPU resources to improve throughput
@@ -352,6 +368,8 @@ Analyze inference results for each dataset
 python3 src/analysis/inference_analysis.py method=diffdock dataset=posebusters_benchmark repeat_index=1
 ...
 python3 src/analysis/inference_analysis.py method=diffdock dataset=astex_diverse repeat_index=1
+...
+python3 src/analysis/inference_analysis.py method=diffdock dataset=dockgen repeat_index=1
 ...
 ```
 
@@ -375,6 +393,7 @@ Prepare CSV input files
 ```bash
 python3 src/data/fabind_input_preparation.py dataset=posebusters_benchmark
 python3 src/data/fabind_input_preparation.py dataset=astex_diverse
+python3 src/data/fabind_input_preparation.py dataset=dockgen
 ```
 
 Run inference on each dataset
@@ -384,6 +403,8 @@ python3 src/models/fabind_inference.py dataset=posebusters_benchmark repeat_inde
 ...
 python3 src/models/fabind_inference.py dataset=astex_diverse repeat_index=1
 ...
+python3 src/models/fabind_inference.py dataset=dockgen repeat_index=1
+...
 ```
 
 Relax the generated ligand structures inside of their respective protein pockets
@@ -392,6 +413,8 @@ Relax the generated ligand structures inside of their respective protein pockets
 python3 src/models/inference_relaxation.py method=fabind dataset=posebusters_benchmark remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
 python3 src/models/inference_relaxation.py method=fabind dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
+...
+python3 src/models/inference_relaxation.py method=fabind dataset=dockgen remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
 ```
 
@@ -404,6 +427,8 @@ python3 src/analysis/inference_analysis.py method=fabind dataset=posebusters_ben
 ...
 python3 src/analysis/inference_analysis.py method=fabind dataset=astex_diverse repeat_index=1
 ...
+python3 src/analysis/inference_analysis.py method=fabind dataset=dockgen repeat_index=1
+...
 ```
 
 ### How to run inference with `DynamicBind`
@@ -413,6 +438,7 @@ Prepare CSV input files
 ```bash
 python3 src/data/dynamicbind_input_preparation.py dataset=posebusters_benchmark
 python3 src/data/dynamicbind_input_preparation.py dataset=astex_diverse
+python3 src/data/dynamicbind_input_preparation.py dataset=dockgen
 python3 src/data/dynamicbind_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets
 ```
 
@@ -422,6 +448,8 @@ Run inference on each dataset
 python3 src/models/dynamicbind_inference.py dataset=posebusters_benchmark repeat_index=1
 ...
 python3 src/models/dynamicbind_inference.py dataset=astex_diverse repeat_index=1
+...
+python3 src/models/dynamicbind_inference.py dataset=dockgen repeat_index=1
 ...
 python3 src/models/dynamicbind_inference.py dataset=casp15 batch_size=1 input_data_dir="$PWD"/data/casp15_set/predicted_structures repeat_index=1
 ...
@@ -434,6 +462,8 @@ python3 src/models/inference_relaxation.py method=dynamicbind dataset=posebuster
 ...
 python3 src/models/inference_relaxation.py method=dynamicbind dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
+python3 src/models/inference_relaxation.py method=dynamicbind dataset=dockgen remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
+...
 ```
 
 **NOTE**: Increase `num_processes` according to your available CPU/GPU resources to improve throughput
@@ -444,6 +474,8 @@ Analyze inference results for each dataset
 python3 src/analysis/inference_analysis.py method=dynamicbind dataset=posebusters_benchmark repeat_index=1
 ...
 python3 src/analysis/inference_analysis.py method=dynamicbind dataset=astex_diverse repeat_index=1
+...
+python3 src/analysis/inference_analysis.py method=dynamicbind dataset=dockgen repeat_index=1
 ...
 ```
 
@@ -467,6 +499,7 @@ Prepare CSV input files
 ```bash
 python3 src/data/neuralplexer_input_preparation.py dataset=posebusters_benchmark
 python3 src/data/neuralplexer_input_preparation.py dataset=astex_diverse
+python3 src/data/neuralplexer_input_preparation.py dataset=dockgen
 python3 src/data/neuralplexer_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets input_receptor_structure_dir="$PWD"/data/casp15_set/predicted_structures
 ```
 
@@ -476,6 +509,8 @@ Run inference on each dataset
 python3 src/models/neuralplexer_inference.py dataset=posebusters_benchmark repeat_index=1
 ...
 python3 src/models/neuralplexer_inference.py dataset=astex_diverse repeat_index=1
+...
+python3 src/models/neuralplexer_inference.py dataset=dockgen repeat_index=1
 ...
 python3 src/models/neuralplexer_inference.py dataset=casp15 repeat_index=1
 ...
@@ -488,6 +523,8 @@ python3 src/models/inference_relaxation.py method=neuralplexer dataset=posebuste
 ...
 python3 src/models/inference_relaxation.py method=neuralplexer dataset=astex_diverse num_processes=1 remove_initial_protein_hydrogens=true assign_partial_charges_manually=true cache_files=false repeat_index=1
 ...
+python3 src/models/inference_relaxation.py method=neuralplexer dataset=dockgen num_processes=1 remove_initial_protein_hydrogens=true assign_partial_charges_manually=true cache_files=false repeat_index=1
+...
 ```
 
 **NOTE**: Increase `num_processes` according to your available CPU/GPU resources to improve throughput
@@ -499,6 +536,8 @@ python3 src/analysis/complex_alignment.py method=neuralplexer dataset=posebuster
 ...
 python3 src/analysis/complex_alignment.py method=neuralplexer dataset=astex_diverse repeat_index=1
 ...
+python3 src/analysis/complex_alignment.py method=neuralplexer dataset=dockgen repeat_index=1
+...
 ```
 
 Analyze inference results for each dataset
@@ -507,6 +546,8 @@ Analyze inference results for each dataset
 python3 src/analysis/inference_analysis.py method=neuralplexer dataset=posebusters_benchmark repeat_index=1
 ...
 python3 src/analysis/inference_analysis.py method=neuralplexer dataset=astex_diverse repeat_index=1
+...
+python3 src/analysis/inference_analysis.py method=neuralplexer dataset=dockgen repeat_index=1
 ...
 ```
 
@@ -530,6 +571,7 @@ Prepare CSV input files
 ```bash
 python3 src/data/rfaa_input_preparation.py dataset=posebusters_benchmark
 python3 src/data/rfaa_input_preparation.py dataset=astex_diverse
+python3 src/data/rfaa_input_preparation.py dataset=dockgen
 python3 src/data/rfaa_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets
 ```
 
@@ -539,6 +581,7 @@ Run inference on each dataset
 conda activate forks/RoseTTAFold-All-Atom/RFAA/
 python3 src/models/rfaa_inference.py dataset=posebusters_benchmark run_inference_directly=true
 python3 src/models/rfaa_inference.py dataset=astex_diverse run_inference_directly=true
+python3 src/models/rfaa_inference.py dataset=dockgen run_inference_directly=true
 python3 src/models/rfaa_inference.py dataset=casp15 run_inference_directly=true
 conda deactivate
 ```
@@ -548,6 +591,7 @@ Extract predictions into separate files for proteins and ligands
 ```bash
 python3 src/data/rfaa_output_extraction.py dataset=posebusters_benchmark
 python3 src/data/rfaa_output_extraction.py dataset=astex_diverse
+python3 src/data/rfaa_output_extraction.py dataset=dockgen
 python3 src/data/rfaa_output_extraction.py dataset=casp15
 ```
 
@@ -556,6 +600,7 @@ Relax the generated ligand structures inside of their respective protein pockets
 ```bash
 python3 src/models/inference_relaxation.py method=rfaa dataset=posebusters_benchmark num_processes=1 remove_initial_protein_hydrogens=true
 python3 src/models/inference_relaxation.py method=rfaa dataset=astex_diverse num_processes=1 remove_initial_protein_hydrogens=true
+python3 src/models/inference_relaxation.py method=rfaa dataset=dockgen num_processes=1 remove_initial_protein_hydrogens=true
 ```
 
 **NOTE**: Increase `num_processes` according to your available CPU/GPU resources to improve throughput
@@ -565,6 +610,7 @@ Align predicted protein-ligand structures to ground-truth complex structures
 ```bash
 python3 src/analysis/complex_alignment.py method=rfaa dataset=posebusters_benchmark
 python3 src/analysis/complex_alignment.py method=rfaa dataset=astex_diverse
+python3 src/analysis/complex_alignment.py method=rfaa dataset=dockgen
 ```
 
 Analyze inference results for each dataset
@@ -572,6 +618,7 @@ Analyze inference results for each dataset
 ```bash
 python3 src/analysis/inference_analysis.py method=rfaa dataset=posebusters_benchmark
 python3 src/analysis/inference_analysis.py method=rfaa dataset=astex_diverse
+python3 src/analysis/inference_analysis.py method=rfaa dataset=dockgen
 ```
 
 Analyze inference results for the CASP15 dataset
@@ -594,6 +641,7 @@ Prepare CSV input files
 ```bash
 cp forks/DiffDock/inference/diffdock_posebusters_benchmark_inputs.csv forks/Vina/inference/vina_posebusters_benchmark_inputs.csv
 cp forks/DiffDock/inference/diffdock_astex_diverse_inputs.csv forks/Vina/inference/vina_astex_diverse_inputs.csv
+cp forks/DiffDock/inference/diffdock_dockgen_inputs.csv forks/Vina/inference/vina_dockgen_inputs.csv
 cp forks/DiffDock/inference/diffdock_casp15_inputs.csv forks/Vina/inference/vina_casp15_inputs.csv
 ```
 
@@ -603,6 +651,8 @@ Run inference on each dataset
 python3 src/models/vina_inference.py dataset=posebusters_benchmark method=diffdock repeat_index=1 # NOTE: DiffDock-L's binding pockets are recommended as the default Vina input
 ...
 python3 src/models/vina_inference.py dataset=astex_diverse method=diffdock repeat_index=1
+...
+python3 src/models/vina_inference.py dataset=dockgen method=diffdock repeat_index=1
 ...
 python3 src/models/vina_inference.py dataset=casp15 method=diffdock repeat_index=1
 ...
@@ -615,6 +665,8 @@ mkdir -p forks/Vina/inference/vina_diffdock_posebusters_benchmark_outputs_1 && c
 ...
 mkdir -p forks/Vina/inference/vina_diffdock_astex_diverse_outputs_1 && cp -r data/test_cases/astex_diverse/vina_diffdock_astex_diverse_outputs_1/* forks/Vina/inference/vina_diffdock_astex_diverse_outputs_1
 ...
+mkdir -p forks/Vina/inference/vina_diffdock_dockgen_outputs_1 && cp -r data/test_cases/dockgen/vina_diffdock_dockgen_outputs_1/* forks/Vina/inference/vina_diffdock_dockgen_outputs_1
+...
 mkdir -p forks/Vina/inference/vina_diffdock_casp15_outputs_1 && cp -r data/test_cases/casp15/vina_diffdock_casp15_outputs_1/* forks/Vina/inference/vina_diffdock_casp15_outputs_1
 ...
 ```
@@ -626,6 +678,8 @@ python3 src/models/inference_relaxation.py method=vina vina_binding_site_method=
 ...
 python3 src/models/inference_relaxation.py method=vina vina_binding_site_method=diffdock dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
+python3 src/models/inference_relaxation.py method=vina vina_binding_site_method=diffdock dataset=dockgen remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
+...
 ```
 
 **NOTE**: Increase `num_processes` according to your available CPU/GPU resources to improve throughput
@@ -636,6 +690,8 @@ Analyze inference results for each dataset
 python3 src/analysis/inference_analysis.py method=vina vina_binding_site_method=diffdock dataset=posebusters_benchmark repeat_index=1
 ...
 python3 src/analysis/inference_analysis.py method=vina vina_binding_site_method=diffdock dataset=astex_diverse repeat_index=1
+...
+python3 src/analysis/inference_analysis.py method=vina vina_binding_site_method=diffdock dataset=dockgen repeat_index=1
 ...
 ```
 
@@ -728,6 +784,10 @@ python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/pos
 python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/astex_diverse/ensemble_inputs.csv output_dir=data/test_cases/astex_diverse/top_consensus_ensemble_predictions_1 max_method_predictions=40 export_top_n=1 export_file_format=null skip_existing=true relax_method_ligands_post_ranking=false resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=astex_diverse ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
 python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/astex_diverse/ensemble_inputs.csv output_dir=data/test_cases/astex_diverse/top_consensus_ensemble_predictions_1 max_method_predictions=40 export_top_n=1 export_file_format=null skip_existing=true relax_method_ligands_post_ranking=true resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=astex_diverse ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
 ...
+# benchmark using the DockGen dataset e.g., after generating 40 complexes per target with each method
+python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/dockgen/ensemble_inputs.csv output_dir=data/test_cases/dockgen/top_consensus_ensemble_predictions_1 max_method_predictions=40 export_top_n=1 export_file_format=null skip_existing=true relax_method_ligands_post_ranking=false resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=dockgen ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
+python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/dockgen/ensemble_inputs.csv output_dir=data/test_cases/dockgen/top_consensus_ensemble_predictions_1 max_method_predictions=40 export_top_n=1 export_file_format=null skip_existing=true relax_method_ligands_post_ranking=true resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=dockgen ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
+...
 # benchmark using the CASP15 dataset e.g., after generating 40 complexes per target with each method
 python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_consensus_ensemble_predictions_1 combine_casp_output_files=true max_method_predictions=40 export_top_n=5 export_file_format=casp15 skip_existing=true relax_method_ligands_post_ranking=false resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
 python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_consensus_ensemble_predictions_1 combine_casp_output_files=true max_method_predictions=40 export_top_n=5 export_file_format=casp15 skip_existing=true relax_method_ligands_post_ranking=true resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
@@ -737,6 +797,9 @@ python3 src/analysis/inference_analysis.py method=ensemble dataset=posebusters_b
 ...
 # analyze benchmarking results for the Astex Diverse dataset
 python3 src/analysis/inference_analysis.py method=ensemble dataset=astex_diverse repeat_index=1
+...
+# analyze benchmarking results for the DockGen dataset
+python3 src/analysis/inference_analysis.py method=ensemble dataset=dockgen repeat_index=1
 ...
 # analyze benchmarking results for the CASP15 dataset
 python3 src/analysis/inference_analysis_casp.py method=ensemble dataset=casp15 ensemble_ranking_method=consensus repeat_index=1
@@ -757,6 +820,8 @@ Execute (and customize as desired) notebooks to prepare paper-ready result plots
 
 ```bash
 jupyter notebook notebooks/posebusters_astex_inference_results_plotting.ipynb
+jupyter notebook notebooks/posebusters_pocket_only_inference_results_plotting.ipynb
+jupyter notebook notebooks/dockgen_inference_results_plotting.ipynb
 jupyter notebook notebooks/casp15_inference_results_plotting.ipynb
 ```
 

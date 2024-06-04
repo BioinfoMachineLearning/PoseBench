@@ -109,6 +109,11 @@ def main(cfg: DictConfig):
                 smiles_strings = [
                     Chem.MolToSmiles(Chem.MolFromMolFile(sdf)) for sdf in sdf_filepaths
                 ]
+                if not fasta_filepaths or not sdf_filepaths or not smiles_strings:
+                    logger.error(
+                        f"Failed to find all required files for item `{item}`. Skipping..."
+                    )
+                    continue
                 assert not any(
                     smiles is None for smiles in smiles_strings
                 ), f"Failed to parse all SMILES strings from ligand files for item `{item}`."

@@ -68,6 +68,22 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
+    pdb_ids = None
+    if cfg.dataset == "posebusters_benchmark" and cfg.posebusters_ccd_ids_filepath is not None:
+        assert os.path.exists(
+            cfg.posebusters_ccd_ids_filepath
+        ), f"Invalid CCD IDs file path for PoseBusters Benchmark: {os.path.exists(cfg.posebusters_ccd_ids_filepath)}."
+        with open(cfg.posebusters_ccd_ids_filepath) as f:
+            pdb_ids = set(f.read().splitlines())
+    elif cfg.dataset == "dockgen" and cfg.dockgen_test_ids_filepath is not None:
+        assert os.path.exists(
+            cfg.dockgen_test_ids_filepath
+        ), f"Invalid test IDs file path for DockGen: {os.path.exists(cfg.dockgen_test_ids_filepath)}."
+        with open(cfg.dockgen_test_ids_filepath) as f:
+            pdb_ids = {line.replace(" ", "-") for line in f.read().splitlines()}
+    elif cfg.dataset not in ["posebusters_benchmark", "astex_diverse", "dockgen", "casp15"]:
+        raise ValueError(f"Dataset `{cfg.dataset}` not supported.")
+
     if cfg.input_protein_data_dir and not os.path.exists(cfg.input_protein_data_dir):
         os.makedirs(cfg.input_protein_data_dir, exist_ok=True)
     if not os.path.exists(cfg.output_csv_dir):
@@ -88,11 +104,9 @@ def main(cfg: DictConfig):
             ligand_smiles=cfg.ligand_smiles,
         )
     else:
-        ccd_ids_filepath = (
-            cfg.posebusters_ccd_ids_filepath if cfg.dataset == "posebusters_benchmark" else None
-        )
         smiles_and_pdb_id_list = parse_inference_inputs_from_dir(
-            cfg.input_data_dir, ccd_ids_filepath=ccd_ids_filepath
+            cfg.input_data_dir,
+            pdb_ids=pdb_ids,
         )
         write_input_csv(
             smiles_and_pdb_id_list,

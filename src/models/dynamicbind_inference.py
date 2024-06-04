@@ -31,8 +31,9 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
+    pocket_postfix = "_bs_cropped" if cfg.pocket_only_baseline else ""
     os.environ["MKL_THREADING_LAYER"] = "GNU"  # address MKL threading issue
-    protein_filepaths = find_protein_files(Path(cfg.input_data_dir))
+    protein_filepaths = find_protein_files(Path(cfg.input_data_dir + pocket_postfix))
     ligand_filepaths = [
         ligand_filepath
         for ligand_filepath in find_ligand_files(Path(cfg.input_ligand_csv_dir), extension="csv")
@@ -45,9 +46,19 @@ def main(cfg: DictConfig):
         protein_filepaths = [
             protein_filepath
             for protein_filepath in protein_filepaths
-            if any(
-                ligand_filepath.stem.split("_")[0] in protein_filepath.stem
-                for ligand_filepath in ligand_filepaths
+            if (
+                cfg.dataset == "dockgen"
+                and any(
+                    "_".join(ligand_filepath.stem.split("_")[:4]) in protein_filepath.stem
+                    for ligand_filepath in ligand_filepaths
+                )
+            )
+            or (
+                cfg.dataset != "dockgen"
+                and any(
+                    ligand_filepath.stem.split("_")[0] in protein_filepath.stem
+                    for ligand_filepath in ligand_filepaths
+                )
             )
         ]
     for ligand_filepath in ligand_filepaths:
@@ -56,7 +67,14 @@ def main(cfg: DictConfig):
                 next(
                     protein_filepath
                     for protein_filepath in protein_filepaths
-                    if ligand_filepath.stem.split("_")[0] in protein_filepath.stem
+                    if (
+                        "_".join(cfg.dataset == "dockgen" and ligand_filepath.stem.split("_")[:4])
+                        in protein_filepath.stem
+                    )
+                    or (
+                        cfg.dataset != "dockgen"
+                        and ligand_filepath.stem.split("_")[0] in protein_filepath.stem
+                    )
                 )
             )
     assert len(protein_filepaths) == len(
@@ -68,6 +86,10 @@ def main(cfg: DictConfig):
         assert (
             protein_filepath.stem.split("_")[0] == ligand_filepath.stem.split("_")[0]
         ), "Protein and ligand files must have the same ID."
+        if cfg.dataset == "dockgen":
+            assert "_".join(protein_filepath.stem.split("_")[:4]) == "_".join(
+                ligand_filepath.stem.split("_")[:4]
+            ), "Protein and ligand files must have the same ID."
         ligand_output_filepaths = list(
             glob.glob(
                 os.path.join(

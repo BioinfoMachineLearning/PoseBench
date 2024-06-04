@@ -13,8 +13,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import pypdb
+import rootutils
 from beartype import beartype
-from beartype.typing import List, Optional, Tuple, Union
+from beartype.typing import Any, List, Optional, Set, Tuple, Union
 from Bio import PDB
 from Bio.PDB import PDBParser
 from Bio.PDB.Structure import Structure
@@ -23,25 +24,25 @@ from prody import parsePDB, writePDB, writePDBStream
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
+rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
+
+from src.data.components.esmfold_apo_to_holo_alignment import read_molecule
+
 logging.basicConfig(format="[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
 @beartype
 def parse_inference_inputs_from_dir(
-    input_data_dir: Union[str, Path], ccd_ids_filepath: Optional[str] = None
+    input_data_dir: Union[str, Path], pdb_ids: Optional[Set[Any]] = None
 ) -> List[Tuple[str, str]]:
     """Parse a data directory containing subdirectories of protein-ligand complexes and return
     corresponding SMILES strings and PDB IDs.
 
     :param input_data_dir: Path to the input data directory.
-    :param ccd_ids_filepath: Optional path to a file containing CCD IDs.
+    :param pdb_ids: Optional set of IDs by which to filter processing.
     :return: A list of tuples each containing a SMILES string and a PDB ID.
     """
-    ccd_ids = None
-    if ccd_ids_filepath is not None:
-        with open(ccd_ids_filepath) as f:
-            ccd_ids = set(f.read().splitlines())
     smiles_and_pdb_id_list = []
     casp_dataset_requested = os.path.basename(input_data_dir) == "targets"
     if casp_dataset_requested:
@@ -64,16 +65,36 @@ def parse_inference_inputs_from_dir(
             if any(substr in pdb_name.lower() for substr in ["sequence", "structure"]):
                 # e.g., skip ESMFold sequence files and structure directories
                 continue
-            if ccd_ids is not None and pdb_name not in ccd_ids:
+            if pdb_ids is not None and pdb_name not in pdb_ids:
                 # e.g., skip PoseBusters Benchmark PDBs that contain crystal contacts
                 # reference: https://github.com/maabuu/posebusters/issues/26
                 continue
             pdb_dir = os.path.join(input_data_dir, pdb_name)
             if os.path.isdir(pdb_dir):
+                mol = None
                 pdb_id = os.path.split(pdb_dir)[-1]
-                mol_filepath = os.path.join(pdb_dir, f"{pdb_id}_ligand.sdf")
-                mol_supplier = Chem.SDMolSupplier(mol_filepath, sanitize=True, removeHs=True)
-                mol = mol_supplier[0]
+                # NOTE: we first try to parse `.sdf` files if they exist for the current dataset
+                if os.path.exists(os.path.join(pdb_dir, f"{pdb_id}_ligand.sdf")):
+                    mol = read_molecule(
+                        os.path.join(pdb_dir, f"{pdb_id}_ligand.sdf"),
+                        remove_hs=True,
+                        sanitize=True,
+                    )
+                # NOTE: DockGen uses `.pdb` files to store its ligands
+                if mol is None and os.path.exists(os.path.join(pdb_dir, f"{pdb_id}_ligand.pdb")):
+                    mol = read_molecule(
+                        os.path.join(pdb_dir, f"{pdb_id}_ligand.pdb"),
+                        remove_hs=True,
+                        sanitize=True,
+                    )
+                    if mol is None:
+                        mol = read_molecule(
+                            os.path.join(pdb_dir, f"{pdb_id}_ligand.pdb"),
+                            remove_hs=True,
+                            sanitize=False,
+                        )
+                if mol is None:
+                    raise ValueError(f"No ligand file found for PDB ID {pdb_id}")
                 mol_smiles = Chem.MolToSmiles(mol)
                 if mol_smiles is not None:
                     smiles_and_pdb_id_list.append((mol_smiles, pdb_id))
@@ -424,6 +445,8 @@ def create_sdf_file_from_smiles(smiles: str, output_sdf_file: str) -> str:
     :return: Path to the output SDF file.
     """
     mol = Chem.MolFromSmiles(smiles)
+    if mol is None:
+        mol = Chem.MolFromSmiles(smiles, sanitize=False)
     writer = Chem.SDWriter(output_sdf_file)
     writer.write(mol)
     return output_sdf_file

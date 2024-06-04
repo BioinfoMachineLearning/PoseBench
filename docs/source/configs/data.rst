@@ -33,6 +33,12 @@ Method data parsers
 
 These data parser configurations are used to modify how the input (output) protein-ligand complex structures of each method are prepared (extracted).
 
+Binding site crop preparation
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/data/binding_site_crop_preparation.yaml
+    :language: yaml
+    :caption: :file:`data/binding_site_crop_preparation.yaml`
+
 DiffDock input preparation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 .. literalinclude:: ../../../configs/data/diffdock_input_preparation.yaml

@@ -7,6 +7,7 @@ import logging
 import multiprocessing
 import os
 import subprocess  # nosec
+from collections import defaultdict
 from pathlib import Path
 
 import hydra
@@ -106,7 +107,20 @@ def relax_inference_results(
     ligand_filepaths = sorted(ligand_filepaths)
     if len(ligand_filepaths) < len(protein_filepaths):
         # NOTE: the performance of these loops could likely be improved
-        if cfg.method == "dynamicbind":
+        if cfg.method == "diffdock":
+            protein_filepaths = [
+                protein_filepath
+                for protein_filepath in protein_filepaths
+                if any(
+                    "_".join(protein_filepath.stem.split("_")[:2]) in ligand_filepath.stem
+                    for ligand_filepath in ligand_filepaths
+                )
+                or any(
+                    "_".join(protein_filepath.stem.split("_")[:2]) in ligand_filepath.parent.stem
+                    for ligand_filepath in ligand_filepaths
+                )
+            ]
+        elif cfg.method == "dynamicbind":
             protein_filepaths = [
                 protein_filepath
                 for protein_filepath in protein_filepaths
@@ -120,14 +134,44 @@ def relax_inference_results(
             protein_filepaths = [
                 protein_filepath
                 for protein_filepath in protein_filepaths
-                if any(
-                    "_".join(protein_filepath.stem.split("_")[:2]) in ligand_filepath.stem
-                    for ligand_filepath in ligand_filepaths
+                if (
+                    cfg.dataset == "dockgen"
+                    and any(
+                        "_".join(protein_filepath.stem.split("_")[:4]) in ligand_filepath.stem
+                        for ligand_filepath in ligand_filepaths
+                    )
+                    or any(
+                        "_".join(protein_filepath.stem.split("_")[:4])
+                        in ligand_filepath.parent.stem
+                        for ligand_filepath in ligand_filepaths
+                    )
                 )
-                or any(
-                    "_".join(protein_filepath.stem.split("_")[:2]) in ligand_filepath.parent.stem
-                    for ligand_filepath in ligand_filepaths
+                or (
+                    cfg.dataset != "dockgen"
+                    and any(
+                        "_".join(protein_filepath.stem.split("_")[:2]) in ligand_filepath.stem
+                        for ligand_filepath in ligand_filepaths
+                    )
+                    or any(
+                        "_".join(protein_filepath.stem.split("_")[:2])
+                        in ligand_filepath.parent.stem
+                        for ligand_filepath in ligand_filepaths
+                    )
                 )
+            ]
+        if (
+            cfg.dataset == "dockgen"
+            and cfg.method == "diffdock"
+            or (cfg.method == "vina" and cfg.vina_binding_site_method == "diffdock")
+        ):
+            # NOTE: due to its multi-ligand support, e.g., DiffDock groups complexes
+            # by the first three parts of their `complex_names`, not the first four as expected
+            grouped_protein_filepaths = defaultdict(list)
+            for protein_filepath in protein_filepaths:
+                protein_id = "_".join(protein_filepath.stem.split("_")[:3])
+                grouped_protein_filepaths[protein_id].append(protein_filepath)
+            protein_filepaths = [
+                protein_filepaths[0] for protein_filepaths in grouped_protein_filepaths.values()
             ]
         if cfg.method in ["diffdock", "rfaa"]:
             ligand_filepaths = [
@@ -156,6 +200,21 @@ def relax_inference_results(
             == ligand_filepath.parent.stem.split("_")[0]
             or protein_filepath.stem.split("_")[0] == ligand_filepath.parent.stem.split("_")[0]
         ), f"Protein ({protein_filepath}) and ligand ({ligand_filepath}) files must have the same ID."
+        if cfg.dataset == "dockgen":
+            id_parts = (
+                3
+                if cfg.method == "diffdock"
+                or (cfg.method == "vina" and cfg.vina_binding_site_method == "diffdock")
+                else 4
+            )
+            assert (
+                "_".join(protein_filepath.stem.split("_")[:id_parts])
+                == "_".join(ligand_filepath.stem.split("_")[:id_parts])
+                or "_".join(protein_filepath.parent.stem.split("_")[:id_parts])
+                == "_".join(ligand_filepath.parent.stem.split("_")[:id_parts])
+                or "_".join(protein_filepath.stem.split("_")[:id_parts])
+                == "_".join(ligand_filepath.parent.stem.split("_")[:id_parts])
+            ), f"Protein ({protein_filepath}) and ligand ({ligand_filepath}) files must have the same ID for DockGen."
         pool.apply_async(
             relax_single_filepair,
             args=(protein_filepath, ligand_filepath, output_file_dir, temp_directory, cfg),

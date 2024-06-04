@@ -417,14 +417,26 @@ def main(cfg: DictConfig):
                 protein_id, ligand_id = protein_file.parent.stem, ligand_file.parent.stem
             if protein_id != ligand_id:
                 raise ValueError(f"Protein and ligand IDs do not match: {protein_id}, {ligand_id}")
+            pocket_postfix = "_bs_cropped" if cfg.pocket_only_baseline else ""
             reference_protein_pdbs = [
                 item
                 for item in input_data_dir.rglob(
-                    f"*{protein_id.split(f'{cfg.dataset}_')[-1]}{'_lig.pdb' if cfg.dataset == 'casp15' else '*_protein.pdb'}"
+                    f"*{protein_id.split(f'{cfg.dataset}_')[-1]}{'_lig.pdb' if cfg.dataset == 'casp15' else f'*_protein{pocket_postfix}.pdb'}"
                 )
                 if "esmfold_structures" not in str(item)
             ]
-            if cfg.dataset == "casp15":
+            if cfg.dataset == "dockgen":
+                reference_protein_pdbs = [
+                    item
+                    for item in (input_data_dir / protein_id).rglob(
+                        f"{protein_id}_protein_processed.pdb"
+                    )
+                ]
+                reference_ligand_sdfs = [
+                    item
+                    for item in (input_data_dir / protein_id).rglob(f"{protein_id}_ligand.pdb")
+                ]
+            elif cfg.dataset == "casp15":
                 reference_protein_pdbs = [None]
             else:
                 reference_ligand_sdfs = [

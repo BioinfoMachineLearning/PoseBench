@@ -13,10 +13,10 @@ This config file is used to determine how a predicted protein-ligand complex str
     :caption: :file:`analysis/complex_alignment.yaml`
 
 
-Inference analysis (PoseBusters and Astex)
+Inference analysis (PoseBusters, Astex, and DockGen)
 --------------------------
 
-This config file is used to determine how to score a predicted protein-ligand complex from the PoseBusters Benchmark or Astex Diverse datasets.
+This config file is used to determine how to score a predicted protein-ligand complex from the PoseBusters Benchmark, Astex Diverse, or DockGen datasets.
 
 .. literalinclude:: ../../../configs/analysis/inference_analysis.yaml
     :language: yaml

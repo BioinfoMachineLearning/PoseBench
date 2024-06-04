@@ -444,6 +444,12 @@ def main(cfg: DictConfig):
             cfg.input_protein_structure_dir = str(
                 Path(cfg.input_protein_structure_dir).parent / "predicted_structures"
             )
+    elif cfg.pocket_only_baseline:
+        with open_dict(cfg):
+            cfg.input_protein_structure_dir += "_bs_cropped"
+    assert os.path.exists(
+        cfg.input_protein_structure_dir
+    ), f"Input protein structure directory not found: {cfg.input_protein_structure_dir}"
 
     if not os.path.exists(cfg.input_dir):
         raise FileNotFoundError(f"Input directory not found: {cfg.input_dir}")
@@ -463,26 +469,32 @@ def main(cfg: DictConfig):
             else os.path.join(cfg.input_dir, item)
         )
         if os.path.isdir(item_path):
-            apo_protein_filepath = os.path.join(
-                cfg.input_protein_structure_dir,
-                f"{item.replace('casp15_', '')}{'' if cfg.dataset == 'casp15' else '_holo_aligned_esmfold_protein'}.pdb",
+            apo_protein_filepaths = glob.glob(
+                os.path.join(
+                    cfg.input_protein_structure_dir,
+                    f"{item.replace('casp15_', '')}{'' if cfg.dataset == 'casp15' else '*_holo_aligned_esmfold_protein'}.pdb",
+                )
             )
-            if not os.path.exists(apo_protein_filepath):
+            if not apo_protein_filepaths:
                 logger.warning(
-                    f"Apo protein file not found: {apo_protein_filepath}. Skipping {item}..."
+                    f"Apo protein file not found: {apo_protein_filepaths}. Skipping {item}..."
                 )
                 continue
+            apo_protein_filepath = apo_protein_filepaths[0]
             if cfg.method == "diffdock":
-                protein_filepath = os.path.join(
-                    cfg.input_protein_structure_dir,
-                    f"{item}{'' if cfg.dataset == 'casp15' else '_holo_aligned_esmfold_protein'}.pdb",
+                protein_filepaths = glob.glob(
+                    os.path.join(
+                        cfg.input_protein_structure_dir,
+                        f"{item}{'' if cfg.dataset == 'casp15' else '*_holo_aligned_esmfold_protein'}.pdb",
+                    )
                 )
                 ligand_filepath = os.path.join(item_path, "rank1.sdf")
-                if not os.path.exists(protein_filepath) or not os.path.exists(ligand_filepath):
+                if not protein_filepaths or not os.path.exists(ligand_filepath):
                     logger.warning(
-                        f"DiffDock protein or ligand file not found: {protein_filepath}, {ligand_filepath}. Skipping {item}..."
+                        f"DiffDock protein or ligand file not found: {protein_filepaths}, {ligand_filepath}. Skipping {item}..."
                     )
                     continue
+                protein_filepath = protein_filepaths[0]
             elif cfg.method == "dynamicbind":
                 protein_filepaths = glob.glob(
                     os.path.join(item_path, "index0_idx_0", "rank1_ligand*.sdf")

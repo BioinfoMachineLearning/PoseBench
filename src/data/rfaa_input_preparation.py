@@ -31,6 +31,8 @@ def write_scripts(
     smiles_and_pdb_id_list: List[Tuple[Any, str]],
     input_data_dir: str,
     output_scripts_path: str,
+    dataset: str,
+    pocket_only_baseline: bool = False,
     protein_filepath: Optional[str] = None,
     ligand_smiles: Optional[Any] = None,
     input_id: Optional[str] = None,
@@ -40,6 +42,9 @@ def write_scripts(
     :param smiles_and_pdb_id_list: A list of tuples each containing a SMILES string and a PDB ID.
     :param input_data_dir: Path to directory of input protein-ligand complex subdirectories.
     :param output_scripts_path: Path to directory of output FASTA sequence and ligand SDF files.
+    :param dataset: Dataset name.
+    :param pocket_only_baseline: Whether to provide only the protein pocket as a baseline
+        experiment.
     :param protein_filepath: Optional path to the protein structure file.
     :param ligand_smiles: Optional SMILES string of the ligand.
     :param input_id: Optional input ID.
@@ -86,15 +91,40 @@ def write_scripts(
                     for i, smiles in enumerate(smiles_string.split("|"), start=1)
                 ]
             else:
-                protein_filepath = os.path.join(input_data_dir, pdb_id, f"{pdb_id}_protein.pdb")
-                ligand_filepaths = [
-                    path
-                    for path in glob.glob(os.path.join(input_data_dir, pdb_id, f"{pdb_id}_*.sdf"))
-                    if not any(
-                        x in path
-                        for x in ["protein", "lig.sdf", "ligand.sdf", "multicom", "start_conf"]
+                if pocket_only_baseline:
+                    protein_filepath = os.path.join(
+                        input_data_dir,
+                        f"{dataset}_holo_aligned_esmfold_structures_bs_cropped",
+                        f"{pdb_id}_holo_aligned_esmfold_protein.pdb",
                     )
-                ]
+                    if not os.path.exists(protein_filepath):
+                        logger.warning(
+                            f"Protein structure file not found for PDB ID {pdb_id}. Skipping..."
+                        )
+                        continue
+                else:
+                    dockgen_postfix = "_processed" if dataset == "dockgen" else ""
+                    protein_filepath = os.path.join(
+                        input_data_dir, pdb_id, f"{pdb_id}_protein{dockgen_postfix}.pdb"
+                    )
+                if dataset == "dockgen":
+                    ligand_filepaths = [
+                        create_sdf_file_from_smiles(
+                            smiles, os.path.join(output_dir, f"{pdb_id}_{i}.sdf")
+                        )
+                        for i, smiles in enumerate(smiles_string.split("|"), start=1)
+                    ]
+                else:
+                    ligand_filepaths = [
+                        path
+                        for path in glob.glob(
+                            os.path.join(input_data_dir, pdb_id, f"{pdb_id}_*.sdf")
+                        )
+                        if not any(
+                            x in path
+                            for x in ["protein", "lig.sdf", "ligand.sdf", "multicom", "start_conf"]
+                        )
+                    ]
             protein_sequence_list = [
                 seq
                 for seq in extract_sequences_from_protein_structure_file(protein_filepath)
@@ -105,7 +135,7 @@ def write_scripts(
                     os.path.join(output_dir, f"{pdb_id}_chain_{chain_index}.fasta"), "w"
                 ) as f:
                     f.write(f">{pdb_id}|Chain {chain_index}\n{sequence}\n")
-            if not casp_dataset_requested:
+            if not casp_dataset_requested and dataset != "dockgen":
                 for ligand_filepath in ligand_filepaths:
                     shutil.copy(ligand_filepath, output_dir)
 
@@ -121,26 +151,44 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
+    pdb_ids = None
+    if cfg.dataset == "posebusters_benchmark" and cfg.posebusters_ccd_ids_filepath is not None:
+        assert os.path.exists(
+            cfg.posebusters_ccd_ids_filepath
+        ), f"Invalid CCD IDs file path for PoseBusters Benchmark: {os.path.exists(cfg.posebusters_ccd_ids_filepath)}."
+        with open(cfg.posebusters_ccd_ids_filepath) as f:
+            pdb_ids = set(f.read().splitlines())
+    elif cfg.dataset == "dockgen" and cfg.dockgen_test_ids_filepath is not None:
+        assert os.path.exists(
+            cfg.dockgen_test_ids_filepath
+        ), f"Invalid test IDs file path for DockGen: {os.path.exists(cfg.dockgen_test_ids_filepath)}."
+        with open(cfg.dockgen_test_ids_filepath) as f:
+            pdb_ids = {line.replace(" ", "-") for line in f.read().splitlines()}
+    elif cfg.dataset not in ["posebusters_benchmark", "astex_diverse", "dockgen", "casp15"]:
+        raise ValueError(f"Dataset `{cfg.dataset}` not supported.")
+
     if cfg.protein_filepath is not None and cfg.ligand_smiles is None:
         write_scripts(
             [],
             cfg.input_data_dir,
             cfg.output_scripts_path,
+            dataset=cfg.dataset,
+            pocket_only_baseline=cfg.pocket_only_baseline,
             protein_filepath=cfg.protein_filepath,
             ligand_smiles=cfg.ligand_smiles,
             input_id=cfg.input_id,
         )
     else:
-        ccd_ids_filepath = (
-            cfg.posebusters_ccd_ids_filepath if cfg.dataset == "posebusters_benchmark" else None
-        )
         smiles_and_pdb_id_list = parse_inference_inputs_from_dir(
-            cfg.input_data_dir, ccd_ids_filepath=ccd_ids_filepath
+            cfg.input_data_dir,
+            pdb_ids=pdb_ids,
         )
         write_scripts(
             smiles_and_pdb_id_list,
             cfg.input_data_dir,
             cfg.output_scripts_path,
+            dataset=cfg.dataset,
+            pocket_only_baseline=cfg.pocket_only_baseline,
             protein_filepath=cfg.protein_filepath,
             ligand_smiles=cfg.ligand_smiles,
             input_id=cfg.input_id,

@@ -2,6 +2,7 @@
 # Following code curated for PoseBench: (https://github.com/BioinfoMachineLearning/PoseBench)
 # -------------------------------------------------------------------------------------------------------------------------------------
 
+import glob
 import logging
 import os
 
@@ -45,8 +46,9 @@ def main(cfg: DictConfig):
     assert cfg.dataset in [
         "posebusters_benchmark",
         "astex_diverse",
+        "dockgen",
         "casp15",
-    ], "Dataset must be one of 'posebusters_benchmark', 'astex_diverse', 'casp15'."
+    ], "Dataset must be one of 'posebusters_benchmark', 'astex_diverse', 'dockgen', 'casp15'."
     if cfg.complex_filepath is not None:
         # process single-complex inputs
         assert os.path.exists(
@@ -93,7 +95,15 @@ def main(cfg: DictConfig):
                     intermediate_output_filepath = os.path.join(output_item_path, file)
                     final_output_filepath = os.path.join(cfg.inference_outputs_dir, item, file)
                     os.makedirs(os.path.dirname(final_output_filepath), exist_ok=True)
-                    if cfg.dataset in ["posebusters_benchmark", "astex_diverse"]:
+                    if cfg.dataset in ["posebusters_benchmark", "astex_diverse", "dockgen"]:
+                        if cfg.dataset == "dockgen":
+                            input_filepaths = glob.glob(
+                                input_filepath.replace("_ligands.sdf", "*.sdf")
+                            )
+                            assert (
+                                len(input_filepaths) == 1
+                            ), f"Expected 1 DockGen ligand SDF file, but found {len(input_filepaths)}."
+                            input_filepath = input_filepaths[0]
                         assert os.path.exists(
                             input_filepath
                         ), f"Ligand SDF file not found: {input_filepath}"
