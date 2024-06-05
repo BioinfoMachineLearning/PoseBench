@@ -879,6 +879,7 @@ rm -rf docs/build/ && sphinx-build docs/source/ docs/build/ # NOTE: errors can s
 - [posebusters_em](https://github.com/maabuu/posebusters_em)
 - [ProteinWorkshop](https://github.com/a-r-j/ProteinWorkshop)
 - [RoseTTAFold-All-Atom](https://github.com/baker-laboratory/RoseTTAFold-All-Atom)
+- [tulip](https://github.com/BioinfoMachineLearning/tulip)
 
 We thank all their contributors and maintainers!
 
