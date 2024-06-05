@@ -794,12 +794,19 @@ def get_method_predictions(
                 if Path(file).stem.replace("_ligand_", "_receptor_")
                 in {Path(protein_file).stem for protein_file in protein_output_files}
             ]
-        elif len(ligand_output_files) < len(protein_output_files):
+        if len(ligand_output_files) < len(protein_output_files):
             protein_output_files = [
                 file
                 for file in protein_output_files
                 if Path(file).stem.replace("_receptor_", "_ligand_")
                 in {Path(ligand_file).stem for ligand_file in ligand_output_files}
+            ]
+        if len(protein_output_files) < len(ligand_output_files):
+            ligand_output_files = [
+                file
+                for file in ligand_output_files
+                if Path(file).stem.replace("_ligand_", "_receptor_")
+                in {Path(protein_file).stem for protein_file in protein_output_files}
             ]
         assert len(protein_output_files) == len(
             ligand_output_files
