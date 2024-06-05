@@ -1,0 +1,2 @@
+protein_input,ligand_smiles,name,ligand_numbers,ligand_names,ligand_tasks
+,O[C@H]1CO[C@@H](O)[C@H](O)[C@H]1O:O[C@H]1CO[C@@H](O)[C@H](O)[C@H]1O:O[C@H]1OO[C@@H](O)[C@H](O)[C@H]1C,5S8I_2LY_ligand_only,[1],['LIG'],P
