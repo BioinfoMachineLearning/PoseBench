@@ -1905,14 +1905,6 @@ def save_ranked_predictions(
             output_protein_filepaths, protein_input_filepath
         )
 
-        gap_insertion_point = (
-            # NOTE: for target `T1124` from CASP15, we have to insert a one-step gap starting at
-            # residue `243` in chain `B` for methods that predict holo protein PDB files ab initio
-            # to properly score these predictions
-            "B:243"
-            if name == "T1124" and method in METHODS_PREDICTING_HOLO_PROTEIN_AB_INITIO
-            else None
-        )
         for i, (protein_output_filepath, ligand_output_filepath) in enumerate(
             zip(output_protein_filepaths, output_ligand_filepaths), start=1
         ):
@@ -1926,6 +1918,15 @@ def save_ranked_predictions(
                     os.path.dirname(ligand_output_filepath),
                     f"{name}LG{cfg.casp_author}_protein_{i}",
                 )
+            )
+            method = os.path.basename(ligand_output_filepath).split("_")[0]
+            gap_insertion_point = (
+                # NOTE: for target `T1124` from CASP15, we have to insert a one-step gap starting at
+                # residue `243` in chain `B` for methods that predict holo protein PDB files ab initio
+                # to properly score these predictions
+                "B:243"
+                if name == "T1124" and method in METHODS_PREDICTING_HOLO_PROTEIN_AB_INITIO
+                else None
             )
             export_proteins_in_casp_format(
                 [protein_output_filepath],
