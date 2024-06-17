@@ -1,0 +1,71 @@
+.. PoseBench documentation master file, created by
+   sphinx-quickstart on Sun May 12 14:49:07 2024.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to PoseBench's documentation!
+============================================
+
+
+.. mdinclude:: ../../README.md
+    :start-line: 4
+    :end-line: 12
+
+.. image:: ./_static/PoseBench.png
+  :alt: Overview of PoseBench
+  :align: center
+  :width: 600
+
+.. mdinclude:: ../../README.md
+    :start-line: 18
+    :end-line: 20
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   installation
+   tutorials
+   data_preparation
+   available_methods
+   method_inference
+   ensemble_inference
+   comparative_plots
+   for_developers
+   acknowledgements
+   citing_this_work
+   bonus
+
+.. toctree::
+   :glob:
+   :maxdepth: 2
+   :hidden:
+   :caption: Default Configs
+
+   configs/analysis
+   configs/data
+   configs/model
+
+.. toctree::
+   :glob:
+   :maxdepth: 1
+   :hidden:
+   :caption: API Reference
+
+   modules/src.binding_site_crop_preparation
+   modules/src.complex_alignment
+   modules/src.inference_relaxation
+   modules/src.minimize_energy
+   modules/src.ensemble_generation
+   modules/src.data_utils
+   modules/src.model_utils
+   modules/src.utils
+   modules/src.resolvers
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
