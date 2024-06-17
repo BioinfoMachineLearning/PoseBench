@@ -888,9 +888,10 @@ We thank all their contributors and maintainers!
 If you use the code or benchmark method predictions associated with this repository or otherwise find this work useful, please cite:
 
 ```bibtex
-@article{morehead2024posebench,
+@inproceedings{morehead2024posebench,
   title={Deep Learning for Protein-Ligand Docking: Are We There Yet?},
   author={Morehead, Alex and Giri, Nabin and Liu, Jian and Cheng, Jianlin},
+  booktitle={ICML AI4Science Workshop},
   year={2024}
 }
 ```
