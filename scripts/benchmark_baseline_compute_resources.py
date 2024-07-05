@@ -26,14 +26,14 @@ def assemble_baseline_command(cfg: DictConfig) -> List[str]:
     :param cfg: The configuration object.
     :return: The baseline command as a list of strings (i.e., command segments).
     """
-    if cfg.method in ["diffdock", "fabind", "dynamicbind", "neuralplexer", "vina"]:
+    if cfg.method in ["diffdock", "fabind", "dynamicbind", "neuralplexer", "rfaa", "vina"]:
+        # NOTE: When running RoseTTAFold-All-Atom, the `RFAA` Conda environment must be activated instead of the `PoseBenchmark` environment
         vina_postfix = f" method={cfg.vina_binding_site_method}" if cfg.method == "vina" else ""
         cuda_device_postfix = (
             "" if cfg.method == "vina" else f" cuda_device_index={cfg.cuda_device_index}"
         )
-        return f"python3 src/models/{cfg.method}_inference.py dataset={cfg.dataset} repeat_index={cfg.repeat_index} max_num_inputs={cfg.max_num_inputs}{vina_postfix}{cuda_device_postfix}".split()
-    elif cfg.method in ["rfaa"]:
-        return f"conda activate forks/RoseTTAFold-All-Atom/RFAA/ && python3 src/models/{cfg.method}_inference.py dataset={cfg.dataset} repeat_index={cfg.repeat_index} max_num_inputs={cfg.max_num_inputs} cuda_device_index={cfg.cuda_device_index} run_inference_directly=true && conda deactivate".split()
+        rfaa_postfix = " run_inference_directly=true" if cfg.method == "rfaa" else ""
+        return f"python3 src/models/{cfg.method}_inference.py dataset={cfg.dataset} repeat_index={cfg.repeat_index} max_num_inputs={cfg.max_num_inputs}{vina_postfix}{cuda_device_postfix}{rfaa_postfix}".split()
     else:
         raise ValueError(f"Invalid method: {cfg.method}")
 
