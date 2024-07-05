@@ -16,6 +16,7 @@ METHOD_TITLE_MAPPING = {
     "rfaa": "RoseTTAFold-All-Atom",
     "vina": "Vina",
     "tulip": "TULIP",
+    "p2rank": "P2Rank",
 }
 
 STANDARDIZED_DIR_METHODS = ["diffdock", "fabind"]
@@ -174,7 +175,7 @@ def resolve_method_output_dir(
             "results",
             f"{dataset}_{repeat_index}",
         )
-    elif method == "vina":
+    elif method in ["vina", "p2rank"]:
         return os.path.join(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method),

@@ -215,7 +215,7 @@ dependencies:
       - autopage==0.5.1
       - backcall==0.2.0
       - biopandas==0.5.1.dev0
-      - biopython==1.76
+      - biopython==1.79
       - bioservices==1.11.2
       - boto3==1.28.66
       - botocore==1.31.66
@@ -282,7 +282,7 @@ dependencies:
       - natsort==8.4.0
       - networkx==2.8.7
       - ninja==1.11.1
-      - numpy==1.23.0
+      - numpy==1.23.5
       - omegaconf==2.3.0
       - git+https://github.com/amorehead/openfold.git@fe1275099639bf7e617e09ef24d6af778647dd64
       - opt-einsum==3.3.0
@@ -296,7 +296,7 @@ dependencies:
       - pickleshare==0.7.5
       - plotly==5.17.0
       - prettytable==3.8.0
-      - prody==2.2.0
+      - prody==2.4.1
       - prompt-toolkit==3.0.39
       - protobuf==4.24.1
       - pure-eval==0.2.2

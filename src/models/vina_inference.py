@@ -7,10 +7,12 @@ import logging
 import os
 import shutil
 import tempfile
+from collections import defaultdict
 from pathlib import Path
 
 import hydra
 import numpy as np
+import pandas as pd
 import rootutils
 from beartype.typing import Dict, List, Optional, Tuple
 from biopandas.pdb import PandasPdb
@@ -90,28 +92,49 @@ def extract_binding_sites(
     ).astype(int)
 
     # Group ligand filepaths based on cluster labels
-    ligand_filepath_indices = {}
-    ligand_filepath_groups = {}
-    ligand_smiles_string_groups = {}
+    ligand_filepath_indices = defaultdict(list)
+    ligand_filepath_groups = defaultdict(list)
+    ligand_smiles_string_groups = defaultdict(list)
     for label, (ligand_index, ligand_filepath) in zip(
         ligand_mol_labels, enumerate(ligand_filepaths)
     ):
-        if label not in ligand_filepath_indices:
-            ligand_filepath_indices[label] = []
-        if label not in ligand_filepath_groups:
-            ligand_filepath_groups[label] = []
-        if label not in ligand_smiles_string_groups:
-            ligand_smiles_string_groups[label] = []
         ligand_filepath_indices[label].append(ligand_index)
         ligand_filepath_groups[label].append(ligand_filepath)
         ligand_smiles_string_groups[label].append(ligand_smiles_strings[ligand_index])
 
     # Find the coordinates of any protein heavy atoms that are within e.g., 4 Å of any ligand heavy atom,
     # and report their average coordinates (i.e., centroid)
-    protein_df = PandasPdb().read_pdb(protein_filepath).df["ATOM"]
-    protein_coords = protein_df[protein_df["element_symbol"] != "H"][
-        ["x_coord", "y_coord", "z_coord"]
-    ].values
+    if cfg.method == "p2rank":
+        # Alternatively, use P2Rank to (arbitrarily) associate a binding site with each ligand group
+        temp_p2rank_output_dir = tempfile.mkdtemp()
+        command = [
+            cfg.p2rank_exec_path,
+            cfg.p2rank_exec_utility,
+            "-f",
+            protein_filepath,
+            "-c",
+            cfg.p2rank_config,
+            "-o",
+            temp_p2rank_output_dir,
+        ]
+        if not cfg.p2rank_enable_pymol_visualizations:
+            command.extend(["-visualizations", "0"])
+        os.system(" ".join(command))  # nosec
+        p2rank_ligand_group_binding_sites = pd.read_csv(
+            os.path.join(
+                temp_p2rank_output_dir, f"{os.path.basename(protein_filepath)}_predictions.csv"
+            ),
+            skipinitialspace=True,
+        )[["center_x", "center_y", "center_z"]].values
+        shutil.rmtree(temp_p2rank_output_dir)
+        assert len(p2rank_ligand_group_binding_sites) >= len(
+            ligand_filepath_groups
+        ), "P2Rank binding site predictions must be available for all ligand groups."
+    else:
+        protein_df = PandasPdb().read_pdb(protein_filepath).df["ATOM"]
+        protein_coords = protein_df[protein_df["element_symbol"] != "H"][
+            ["x_coord", "y_coord", "z_coord"]
+        ].values
     for (
         ligand_filepaths_index,
         ligand_filepath_group_index,
@@ -124,21 +147,28 @@ def extract_binding_sites(
         ligand_indices = ligand_filepath_indices[ligand_filepaths_index]
         ligand_filepath_group = ligand_filepath_groups[ligand_filepath_group_index]
         ligand_smiles_string_group = ligand_smiles_string_groups[ligand_smiles_string_group_index]
-        ligand_coords = np.concatenate(
-            [
-                # NOTE: we only want to get heavy atoms here
-                Chem.SDMolSupplier(ligand_filepath, removeHs=True)[0].GetConformer().GetPositions()
-                for ligand_filepath in ligand_filepath_group
+        if cfg.method == "p2rank":
+            binding_site_x, binding_site_y, binding_site_z = p2rank_ligand_group_binding_sites[
+                ligand_filepath_group_index
             ]
-        )
-        protein_ligand_dists = np.linalg.norm(
-            protein_coords[..., None, :] - ligand_coords[None, ...], axis=-1
-        )
-        binding_site_mask = np.any(
-            protein_ligand_dists < cfg.protein_ligand_distance_threshold, axis=1
-        )
-        binding_site_coords = protein_coords[binding_site_mask]
-        binding_site_x, binding_site_y, binding_site_z = binding_site_coords.mean(axis=0)
+        else:
+            ligand_coords = np.concatenate(
+                [
+                    # NOTE: we only want to get heavy atoms here
+                    Chem.SDMolSupplier(ligand_filepath, removeHs=True)[0]
+                    .GetConformer()
+                    .GetPositions()
+                    for ligand_filepath in ligand_filepath_group
+                ]
+            )
+            protein_ligand_dists = np.linalg.norm(
+                protein_coords[..., None, :] - ligand_coords[None, ...], axis=-1
+            )
+            binding_site_mask = np.any(
+                protein_ligand_dists < cfg.protein_ligand_distance_threshold, axis=1
+            )
+            binding_site_coords = protein_coords[binding_site_mask]
+            binding_site_x, binding_site_y, binding_site_z = binding_site_coords.mean(axis=0)
         binding_site_mapping[tuple(ligand_filepath_group)] = {
             "ligand_indices": ligand_indices,
             "ligand_smiles_strings": ligand_smiles_string_group,
@@ -408,12 +438,16 @@ def main(cfg: DictConfig):
                 Chem.MolToMolFile(ligand_mol_frag, temp_pred.name)
                 ligand_filepaths.append(temp_pred.name)
             ligand_smiles_strings.append(Chem.MolToSmiles(ligand_mol_frag))
-        ligand_binding_site_mapping = extract_binding_sites(
-            protein_filepath=cfg.protein_filepath,
-            ligand_filepaths=ligand_filepaths,
-            ligand_smiles_strings=ligand_smiles_strings,
-            cfg=cfg,
-        )
+        try:
+            ligand_binding_site_mapping = extract_binding_sites(
+                protein_filepath=cfg.protein_filepath,
+                ligand_filepaths=ligand_filepaths,
+                ligand_smiles_strings=ligand_smiles_strings,
+                cfg=cfg,
+            )
+        except Exception as e:
+            logger.warning(f"AutoDock Vina inference failed for {cfg.input_id} due to: {e}")
+            raise e
         group_output_filepaths = run_vina_inference(
             cfg.apo_protein_filepath, ligand_binding_site_mapping, cfg.input_id, cfg
         )
@@ -451,6 +485,18 @@ def main(cfg: DictConfig):
         cfg.input_protein_structure_dir
     ), f"Input protein structure directory not found: {cfg.input_protein_structure_dir}"
 
+    if cfg.method == "p2rank":
+        # support P2Rank input parsing
+        with open_dict(cfg):
+            cfg.input_dir = os.path.join(
+                "forks",
+                "DiffDock",
+                "inference",
+                f"diffdock_{cfg.dataset}_output_{cfg.repeat_index}",
+            )
+            assert os.path.exists(
+                cfg.input_dir
+            ), f"DiffDock directory must exist to enable P2Rank input parsing: {cfg.input_dir}"
     if not os.path.exists(cfg.input_dir):
         raise FileNotFoundError(f"Input directory not found: {cfg.input_dir}")
     input_dirs = (
@@ -462,6 +508,7 @@ def main(cfg: DictConfig):
         item for item in input_dirs if "relaxed" not in item
     ]  # NOTE: Vina docking starts with a random conformation, so pre-relaxation is unnecessary
 
+    num_dir_items_found = 0
     for item in input_dirs:
         item_path = (
             os.path.join(os.path.dirname(cfg.input_dir), item)
@@ -469,6 +516,12 @@ def main(cfg: DictConfig):
             else os.path.join(cfg.input_dir, item)
         )
         if os.path.isdir(item_path):
+            num_dir_items_found += 1
+            if cfg.max_num_inputs and num_dir_items_found > cfg.max_num_inputs:
+                logger.info(
+                    f"Maximum number of input directories reached ({cfg.max_num_inputs}). Exiting inference loop."
+                )
+                break
             apo_protein_filepaths = glob.glob(
                 os.path.join(
                     cfg.input_protein_structure_dir,
@@ -543,6 +596,20 @@ def main(cfg: DictConfig):
                         f"RoseTTAFold-All-Atom protein or ligand file not found: {protein_filepath}, {ligand_filepath}. Skipping {item}..."
                     )
                     continue
+            elif cfg.method == "p2rank":
+                protein_filepaths = glob.glob(
+                    os.path.join(
+                        cfg.input_protein_structure_dir,
+                        f"{item}{'' if cfg.dataset == 'casp15' else '*_holo_aligned_esmfold_protein'}.pdb",
+                    )
+                )
+                ligand_filepath = os.path.join(item_path, "rank1.sdf")
+                if not protein_filepaths or not os.path.exists(ligand_filepath):
+                    logger.warning(
+                        f"P2Rank (DiffDock-)surrogate protein or ligand file not found: {protein_filepaths}, {ligand_filepath}. Skipping {item}..."
+                    )
+                    continue
+                protein_filepath = protein_filepaths[0]
             elif cfg.method == "ensemble":
                 protein_filepaths = [
                     item
@@ -587,12 +654,16 @@ def main(cfg: DictConfig):
                     ligand_filepaths.append(temp_pred.name)
                 ligand_smiles_strings.append(Chem.MolToSmiles(ligand_mol_frag))
 
-            ligand_binding_site_mapping = extract_binding_sites(
-                protein_filepath,
-                ligand_filepaths,
-                ligand_smiles_strings,
-                cfg,
-            )
+            try:
+                ligand_binding_site_mapping = extract_binding_sites(
+                    protein_filepath,
+                    ligand_filepaths,
+                    ligand_smiles_strings,
+                    cfg,
+                )
+            except Exception as e:
+                logger.warning(f"AutoDock Vina inference failed for {item}. Skipping due to: {e}")
+                continue
             group_output_filepaths = run_vina_inference(
                 apo_protein_filepath, ligand_binding_site_mapping, item, cfg
             )

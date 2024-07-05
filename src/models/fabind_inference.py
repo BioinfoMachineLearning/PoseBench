@@ -28,13 +28,19 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
+    input_csv_path = (
+        cfg.input_csv_path.replace(".csv", f"_first_{cfg.max_num_inputs}.csv")
+        if cfg.max_num_inputs
+        else cfg.input_csv_path
+    )
+    assert os.path.exists(input_csv_path), f"Input CSV file `{input_csv_path}` not found."
     try:
         subprocess.run(
             [
                 cfg.python_exec_path,
                 os.path.join(cfg.fabind_exec_dir, "inference_preprocess_mol_confs.py"),
                 "--index_csv",
-                cfg.input_csv_path,
+                input_csv_path,
                 "--save_mols_dir",
                 cfg.save_mols_dir,
                 "--num_threads",
@@ -44,9 +50,7 @@ def main(cfg: DictConfig):
         )  # nosec
     except Exception as e:
         raise e
-    logger.info(
-        f"FABind molecule preprocessing for CSV input file `{cfg.input_csv_path}` complete."
-    )
+    logger.info(f"FABind molecule preprocessing for CSV input file `{input_csv_path}` complete.")
 
     try:
         subprocess.run(
@@ -66,9 +70,7 @@ def main(cfg: DictConfig):
         )  # nosec
     except Exception as e:
         raise e
-    logger.info(
-        f"FABind protein preprocessing for CSV input file `{cfg.input_csv_path}` complete."
-    )
+    logger.info(f"FABind protein preprocessing for CSV input file `{input_csv_path}` complete.")
 
     try:
         subprocess.run(
@@ -88,7 +90,7 @@ def main(cfg: DictConfig):
                 "--sdf-output-path-post-optim",
                 cfg.output_dir,
                 "--index-csv",
-                cfg.input_csv_path,
+                input_csv_path,
                 "--preprocess-dir",
                 cfg.save_pt_dir,
                 "--cuda_device_index",
@@ -98,7 +100,7 @@ def main(cfg: DictConfig):
         )  # nosec
     except Exception as e:
         raise e
-    logger.info(f"FABind inference for CSV input file `{cfg.input_csv_path}` complete.")
+    logger.info(f"FABind inference for CSV input file `{input_csv_path}` complete.")
 
 
 if __name__ == "__main__":

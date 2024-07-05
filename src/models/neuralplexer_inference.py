@@ -31,7 +31,13 @@ def main(cfg: DictConfig):
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
     os.makedirs(cfg.out_path, exist_ok=True)
-    for _, row in pd.read_csv(cfg.input_csv_path).iterrows():
+    input_csv_path = (
+        cfg.input_csv_path.replace(".csv", f"_first_{cfg.max_num_inputs}.csv")
+        if cfg.max_num_inputs
+        else cfg.input_csv_path
+    )
+    assert os.path.exists(input_csv_path), f"Input CSV file `{input_csv_path}` not found."
+    for _, row in pd.read_csv(input_csv_path).iterrows():
         out_dir = os.path.join(cfg.out_path, row.id)
         os.makedirs(out_dir, exist_ok=True)
         out_protein_filepath = os.path.join(out_dir, "prot_rank1_*.pdb")

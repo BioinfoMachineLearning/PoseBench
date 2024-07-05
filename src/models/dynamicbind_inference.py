@@ -82,6 +82,12 @@ def main(cfg: DictConfig):
     ), f"Number of protein ({len(protein_filepaths)}) and ligand ({len(ligand_filepaths)}) files must be equal."
     protein_filepaths = sorted(protein_filepaths)
     ligand_filepaths = sorted(ligand_filepaths)
+    if cfg.max_num_inputs and protein_filepaths and ligand_filepaths:
+        protein_filepaths = protein_filepaths[: cfg.max_num_inputs]
+        ligand_filepaths = ligand_filepaths[: cfg.max_num_inputs]
+        assert (
+            len(protein_filepaths) > 0 and len(ligand_filepaths) > 0
+        ), "No input files found after subsetting with `max_num_inputs`."
     for protein_filepath, ligand_filepath in zip(protein_filepaths, ligand_filepaths):
         assert (
             protein_filepath.stem.split("_")[0] == ligand_filepath.stem.split("_")[0]

@@ -87,9 +87,16 @@ def main(cfg: DictConfig):
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
     if cfg.run_inference_directly:
+        num_dir_items_found = 0
         for item in os.listdir(cfg.input_dir):
             item_path = os.path.join(cfg.input_dir, item)
             if os.path.isdir(item_path):
+                num_dir_items_found += 1
+                if cfg.max_num_inputs and num_dir_items_found > cfg.max_num_inputs:
+                    logger.info(
+                        f"Maximum number of input directories reached ({cfg.max_num_inputs}). Exiting inference loop."
+                    )
+                    break
                 if (
                     cfg.skip_existing
                     and os.path.exists(os.path.join(cfg.output_dir, item, f"{item}.pdb"))
@@ -139,9 +146,16 @@ def main(cfg: DictConfig):
                     with open(os.path.join(cfg.output_dir, item, "error_log.txt"), "w") as f:
                         traceback.print_exception(type(e), e, e.__traceback__, file=f)
     else:
+        num_dir_items_found = 0
         for item in os.listdir(cfg.input_dir):
             item_path = os.path.join(cfg.input_dir, item)
             if os.path.isdir(item_path):
+                num_dir_items_found += 1
+                if cfg.max_num_inputs and num_dir_items_found > cfg.max_num_inputs:
+                    logger.info(
+                        f"Maximum number of input directories reached ({cfg.max_num_inputs}). Exiting inference loop."
+                    )
+                    break
                 fasta_filepaths = sorted(
                     list(glob.glob(os.path.join(item_path, "*.fasta"))), key=protein_file_sort_key
                 )

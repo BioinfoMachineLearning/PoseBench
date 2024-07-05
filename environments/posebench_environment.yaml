@@ -212,6 +212,7 @@ dependencies:
   - openff-units=0.2.2=pyhca7485f_0
   - openff-utilities=0.1.12=pyhd8ed1ab_0
   - openh264=2.1.1=h780b84a_0
+  - openjdk=11.0.1=h600c080_1018
   - openjpeg=2.5.0=h7d73246_0
   - openmm=8.1.1=py310h43b6314_1
   - openmmforcefields=0.12.0=pyhd8ed1ab_0

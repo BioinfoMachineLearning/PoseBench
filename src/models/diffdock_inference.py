@@ -28,6 +28,12 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
+    input_csv_path = (
+        cfg.input_csv_path.replace(".csv", f"_first_{cfg.max_num_inputs}.csv")
+        if cfg.max_num_inputs
+        else cfg.input_csv_path
+    )
+    assert os.path.exists(input_csv_path), f"Input CSV file `{input_csv_path}` not found."
     try:
         cmd = [
             cfg.python_exec_path,
@@ -35,7 +41,7 @@ def main(cfg: DictConfig):
             "--config",
             cfg.inference_config_path,
             "--protein_ligand_csv",
-            cfg.input_csv_path,
+            input_csv_path,
             "--out_dir",
             cfg.output_dir,
             "--inference_steps",
@@ -59,7 +65,7 @@ def main(cfg: DictConfig):
         subprocess.run(cmd, check=True)  # nosec
     except Exception as e:
         raise e
-    logger.info(f"DiffDock inference for CSV input file `{cfg.input_csv_path}` complete.")
+    logger.info(f"DiffDock inference for CSV input file `{input_csv_path}` complete.")
 
 
 if __name__ == "__main__":

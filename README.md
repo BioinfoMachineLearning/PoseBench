@@ -85,6 +85,10 @@ cd forks/RoseTTAFold-All-Atom/rf2aa/SE3Transformer/ && pip3 install --no-cache-d
 # - AutoDock Vina Tools environment (~1 GB)
 mamba env create -f environments/adfr_environment.yaml --prefix forks/Vina/ADFR/
 conda activate forks/Vina/ADFR/  # NOTE: one still needs to use `conda` to (de)activate environments
+# - P2Rank (~0.5 GB)
+wget -P forks/P2Rank/ https://github.com/rdk/p2rank/releases/download/2.4.2/p2rank_2.4.2.tar.gz
+tar -xzf forks/P2Rank/p2rank_2.4.2.tar.gz -C forks/P2Rank/
+rm forks/P2Rank/p2rank_2.4.2.tar.gz
 ```
 
 Download checkpoints (~8.25 GB total)
@@ -132,7 +136,6 @@ of how to extend `PoseBench`, as outlined below.
 
 ```bash
 # fetch, extract, and clean-up preprocessed Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 data (~3 GB) #
-cd data/
 wget https://zenodo.org/records/11477766/files/astex_diverse_set.tar.gz
 wget https://zenodo.org/records/11477766/files/posebusters_benchmark_set.tar.gz
 wget https://zenodo.org/records/11477766/files/dockgen_set.tar.gz
@@ -145,7 +148,6 @@ rm astex_diverse_set.tar.gz
 rm posebusters_benchmark_set.tar.gz
 rm dockgen_set.tar.gz
 rm casp15_set.tar.gz
-cd ../
 ```
 
 ### Downloading benchmark method predictions
@@ -153,42 +155,34 @@ cd ../
 ```bash
 # fetch, extract, and clean-up benchmark method predictions to reproduce paper results (~19 GB) #
 # DiffDock predictions and results
-cd forks/DiffDock/
 wget https://zenodo.org/records/11477766/files/diffdock_benchmark_method_predictions.tar.gz
 tar -xzf diffdock_benchmark_method_predictions.tar.gz
 rm diffdock_benchmark_method_predictions.tar.gz
 # FABind predictions and results
-cd forks/FABind/
 wget https://zenodo.org/records/11477766/files/fabind_benchmark_method_predictions.tar.gz
 tar -xzf fabind_benchmark_method_predictions.tar.gz
 rm fabind_benchmark_method_predictions.tar.gz
 # DynamicBind predictions and results
-cd forks/DynamicBind/
 wget https://zenodo.org/records/11477766/files/dynamicbind_benchmark_method_predictions.tar.gz
 tar -xzf dynamicbind_benchmark_method_predictions.tar.gz
 rm dynamicbind_benchmark_method_predictions.tar.gz
 # NeuralPLexer predictions and results
-cd forks/NeuralPLexer/
 wget https://zenodo.org/records/11477766/files/neuralplexer_benchmark_method_predictions.tar.gz
 tar -xzf neuralplexer_benchmark_method_predictions.tar.gz
 rm neuralplexer_benchmark_method_predictions.tar.gz
 # RoseTTAFold-All-Atom predictions and results
-cd forks/RoseTTAFold-All-Atom/
 wget https://zenodo.org/records/11477766/files/rfaa_benchmark_method_predictions.tar.gz
 tar -xzf rfaa_benchmark_method_predictions.tar.gz
 rm rfaa_benchmark_method_predictions.tar.gz
 # TULIP predictions and results
-cd forks/TULIP/
 wget https://zenodo.org/records/11477766/files/tulip_benchmark_method_predictions.tar.gz
 tar -xzf tulip_benchmark_method_predictions.tar.gz
 rm tulip_benchmark_method_predictions.tar.gz
 # AutoDock Vina predictions and results
-cd forks/Vina/
 wget https://zenodo.org/records/11477766/files/vina_benchmark_method_predictions.tar.gz
 tar -xzf vina_benchmark_method_predictions.tar.gz
 rm vina_benchmark_method_predictions.tar.gz
 # Astex Diverse, PoseBusters Benchmark (w/ pocket-only results), DockGen, and CASP15 consensus ensemble predictions and results
-cd data/test_cases/
 wget https://zenodo.org/records/11477766/files/astex_diverse_ensemble_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/11477766/files/posebusters_benchmark_ensemble_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/11477766/files/dockgen_ensemble_benchmark_method_predictions.tar.gz
@@ -892,7 +886,8 @@ If you use the code or benchmark method predictions associated with this reposit
   title={Deep Learning for Protein-Ligand Docking: Are We There Yet?},
   author={Morehead, Alex and Giri, Nabin and Liu, Jian and Cheng, Jianlin},
   booktitle={ICML AI4Science Workshop},
-  year={2024}
+  year={2024},
+  note={selected as a spotlight presentation},
 }
 ```
 

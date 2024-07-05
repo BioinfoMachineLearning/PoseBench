@@ -1,0 +1,6 @@
+method: diffdock # the method for which to score predictions - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `rfaa`, `vina`, `ensemble`)
+vina_binding_site_method: diffdock # the method to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `rfaa`, `p2rank`)
+dataset: astex_diverse # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
+repeat_index: 1 # the repeat index which was used for inference
+max_num_inputs: 20 # the number of (dataset subset) inputs over which to benchmark each baseline method's compute resource usage
+cuda_device_index: 0 # the CUDA device index to use for inference (for all methods except AutoDock-Vina)

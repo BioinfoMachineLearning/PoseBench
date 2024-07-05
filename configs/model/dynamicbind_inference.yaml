@@ -13,3 +13,4 @@ num_workers: 1 # the number of workers to use for native relaxation during infer
 skip_existing: true # whether to skip existing predictions
 repeat_index: 1 # the repeat index to use for inference
 pocket_only_baseline: false # whether to run the pocket-only baseline
+max_num_inputs: null # if provided, the number of (dataset subset) inputs over which to run inference

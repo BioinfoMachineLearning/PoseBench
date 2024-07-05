@@ -162,7 +162,7 @@ def relax_inference_results(
         if (
             cfg.dataset == "dockgen"
             and cfg.method == "diffdock"
-            or (cfg.method == "vina" and cfg.vina_binding_site_method == "diffdock")
+            or (cfg.method == "vina" and cfg.vina_binding_site_method in ["diffdock", "p2rank"])
         ):
             # NOTE: due to its multi-ligand support, e.g., DiffDock groups complexes
             # by the first three parts of their `complex_names`, not the first four as expected
@@ -204,7 +204,9 @@ def relax_inference_results(
             id_parts = (
                 3
                 if cfg.method == "diffdock"
-                or (cfg.method == "vina" and cfg.vina_binding_site_method == "diffdock")
+                or (
+                    cfg.method == "vina" and cfg.vina_binding_site_method in ["diffdock", "p2rank"]
+                )
                 else 4
             )
             assert (

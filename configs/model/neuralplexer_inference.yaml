@@ -26,3 +26,4 @@ rank_outputs_by_confidence: true # whether to rank the output conformations, by 
 plddt_ranking_type: ligand # the type of plDDT ranking to apply to generated samples - NOTE: must be one of (`protein`, `ligand`, `protein_ligand`)
 csv_path: null # the CSV filepath from which to parse benchmarking input data
 repeat_index: 1 # the repeat index to use for inference
+max_num_inputs: null # if provided, the number of (dataset subset) inputs over which to run inference

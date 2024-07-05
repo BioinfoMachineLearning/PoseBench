@@ -11,3 +11,4 @@ ckpt_path: ${oc.env:PROJECT_ROOT}/forks/FABind/ckpt/best_model.bin # the checkpo
 output_dir: ${oc.env:PROJECT_ROOT}/forks/FABind/inference/fabind_${dataset}_output_${repeat_index} # the output directory to which to save the inference results
 repeat_index: 1 # the repeat index to use for inference
 pocket_only_baseline: false # whether to run the pocket-only baseline
+max_num_inputs: null # if provided, the number of (dataset subset) inputs over which to run inference
