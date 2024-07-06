@@ -10,6 +10,7 @@ http://docs.openmm.org/latest/userguide
 
 from __future__ import annotations
 
+import copy
 import logging
 import os
 import shutil
@@ -542,12 +543,12 @@ def compute_ligand_local_geometry_violations(
         ref_ligand_atom_coords, local_geometry_mask = get_all_ligand_non_hydrogen_atoms(
             ref_input_sdf_filepath,
             input_sdf_filepath,
-            ref_mol=ligand_frag,
+            ref_mol=copy.deepcopy(ligand_frag),
         )
         ligand_atom_coords, _ = get_all_ligand_non_hydrogen_atoms(
             input_sdf_filepath,
             ref_input_sdf_filepath,
-            input_mol=ligand_frag,
+            input_mol=copy.deepcopy(ligand_frag),
         )
         assert len(ref_ligand_atom_coords) == len(
             ligand_atom_coords
@@ -1302,7 +1303,7 @@ def minimize_energy(cfg: DictConfig):
 
             # measure initial protein violations
             protein_score, violation_residue_idx = compute_protein_local_geometry_violations(
-                temp_protein_file_path
+                str(temp_protein_file_path)
             )
             num_attempts = 0
             while (
@@ -1341,7 +1342,7 @@ def minimize_energy(cfg: DictConfig):
                 shutil.copyfile(protein_output_file_path, temp_protein_file_path)
                 # measure subsequent protein violations
                 protein_score, violation_residue_idx = compute_protein_local_geometry_violations(
-                    temp_protein_file_path
+                    str(temp_protein_file_path)
                 )
             # measure final ligand violations
             ligand_score = compute_ligand_local_geometry_violations(
