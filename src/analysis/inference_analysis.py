@@ -118,6 +118,7 @@ def create_mol_table(
     :return: Molecule table DataFrame.
     """
     pdb_ids = None
+    relaxed_protein = relaxed and cfg.relax_protein
     if cfg.dataset == "dockgen" and cfg.dockgen_test_ids_filepath is not None:
         # NOTE: for DockGen, we have each method predict for all 189 complexes
         # but evaluate them here on an ESMFold RMSD-filtered subset of 91 complexes
@@ -150,13 +151,13 @@ def create_mol_table(
             lambda x: list(
                 Path(
                     str(inference_dir).replace("_relaxed", "") + f"_{x}_{cfg.repeat_index}"
-                ).rglob("*rank1_receptor_*.pdb")
+                ).rglob(f"*rank1_receptor_*{'relaxed*' if relaxed_protein else ''}.pdb")
             )[0]
             if len(
                 list(
                     Path(
                         str(inference_dir).replace("_relaxed", "") + f"_{x}_{cfg.repeat_index}"
-                    ).rglob("*rank1_receptor_*.pdb")
+                    ).rglob(f"*rank1_receptor_*{'_relaxed' if relaxed_protein else ''}.pdb")
                 )
             )
             else None
@@ -165,13 +166,13 @@ def create_mol_table(
         mol_table["mol_cond"] = input_table["pdb_id"].apply(
             lambda x: list(
                 (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
-                    "prot_rank1_*_aligned.pdb"
+                    f"prot_rank1_*_aligned{'_relaxed' if relaxed_protein else ''}.pdb"
                 )
             )[0]
             if len(
                 list(
                     (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
-                        "prot_rank1_*_aligned.pdb"
+                        f"prot_rank1_*_aligned{'_relaxed' if relaxed_protein else ''}.pdb"
                     )
                 )
             )
@@ -181,13 +182,13 @@ def create_mol_table(
         mol_table["mol_cond"] = input_table["pdb_id"].apply(
             lambda x: list(
                 (Path(str(inference_dir).replace("_relaxed", ""))).rglob(
-                    f"{x}_protein_aligned.pdb"
+                    f"{x}_protein_aligned{'_relaxed' if relaxed_protein else ''}.pdb"
                 )
             )[0]
             if len(
                 list(
                     (Path(str(inference_dir).replace("_relaxed", ""))).rglob(
-                        f"{x}_protein_aligned.pdb"
+                        f"{x}_protein_aligned{'_relaxed' if relaxed_protein else ''}.pdb"
                     )
                 )
             )
@@ -196,10 +197,16 @@ def create_mol_table(
     elif cfg.method == "ensemble":
         mol_table["mol_cond"] = input_table["pdb_id"].apply(
             lambda x: list(
-                (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob("*_rank1_*.pdb")
+                (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                    f"*_rank1_*{'_relaxed' if relaxed_protein else ''}.pdb"
+                )
             )[0]
             if len(
-                list((Path(str(inference_dir).replace("_relaxed", "")) / x).rglob("*_rank1_*.pdb"))
+                list(
+                    (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                        f"*_rank1_*{'_relaxed' if relaxed_protein else ''}.pdb"
+                    )
+                )
             )
             else None
         )
@@ -228,17 +235,36 @@ def create_mol_table(
             and cfg.dataset != "casp15"
             else ""
         )
-        mol_table["mol_cond"] = input_table["pdb_id"].apply(
-            lambda x: os.path.join(
-                protein_structure_input_dir, f"{x}{protein_structure_file_postfix}.pdb"
+        if relaxed_protein:
+            protein_structure_input_dir = str(inference_dir).replace("_relaxed", "")
+            protein_structure_file_postfix = "_relaxed"
+            mol_table["mol_cond"] = input_table["pdb_id"].apply(
+                lambda x: os.path.join(
+                    protein_structure_input_dir,
+                    "_".join(x.split("_")[:3]),
+                    f"{'_'.join(x.split('_')[:2])}{protein_structure_file_postfix}.pdb",
+                )
+                if os.path.exists(
+                    os.path.join(
+                        protein_structure_input_dir,
+                        "_".join(x.split("_")[:3]),
+                        f"{'_'.join(x.split('_')[:2])}{protein_structure_file_postfix}.pdb",
+                    )
+                )
+                else None
             )
-            if os.path.exists(
-                os.path.join(
+        else:
+            mol_table["mol_cond"] = input_table["pdb_id"].apply(
+                lambda x: os.path.join(
                     protein_structure_input_dir, f"{x}{protein_structure_file_postfix}.pdb"
                 )
+                if os.path.exists(
+                    os.path.join(
+                        protein_structure_input_dir, f"{x}{protein_structure_file_postfix}.pdb"
+                    )
+                )
+                else None
             )
-            else None
-        )
     # parse true molecule files
     mol_true_file_ext = ".pdb" if cfg.dataset == "dockgen" else ".sdf"
     mol_table["mol_true"] = input_table["pdb_id"].apply(
@@ -338,18 +364,18 @@ def create_mol_table(
             else None
         )
     else:
+        pdb_ids = (
+            input_table["pdb_id"].transform(lambda x: "_".join(x.split("_")[:3]))
+            if cfg.method == "diffdock"
+            else input_table["pdb_id"]
+        )
         if cfg.method in RANKED_METHODS:
-            pdb_ids = (
-                input_table["pdb_id"].transform(lambda x: "_".join(x.split("_")[:3]))
-                if cfg.method == "diffdock"
-                else input_table["pdb_id"]
-            )
             mol_table["mol_pred"] = pdb_ids.apply(
                 lambda x: glob.glob(
                     os.path.join(
                         (
                             Path(str(inference_dir).replace("_relaxed", ""))
-                            if cfg.method in ["neuralplexer", "rfaa"]
+                            if cfg.method in ["neuralplexer", "rfaa"] or relaxed_protein
                             else inference_dir
                         ),
                         x,
@@ -379,7 +405,7 @@ def create_mol_table(
                         os.path.join(
                             (
                                 Path(str(inference_dir).replace("_relaxed", ""))
-                                if cfg.method in ["neuralplexer", "rfaa"]
+                                if cfg.method in ["neuralplexer", "rfaa"] or relaxed_protein
                                 else inference_dir
                             ),
                             x,
@@ -408,11 +434,6 @@ def create_mol_table(
                 else None
             )
         else:
-            pdb_ids = (
-                input_table["pdb_id"].transform(lambda x: "_".join(x.split("_")[:3]))
-                if cfg.method == "diffdock"
-                else input_table["pdb_id"]
-            )
             mol_table["mol_pred"] = pdb_ids.apply(
                 lambda x: glob.glob(
                     os.path.join(
