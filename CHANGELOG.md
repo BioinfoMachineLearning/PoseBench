@@ -1,3 +1,10 @@
+### 0.3.0 - 07/07/2024
+
+- Added a notebook for plotting expanded DockGen benchmark results
+- Added support for scoring relaxed-protein predictions
+- Fixed runtime error for relaxed-protein energy minimization
+- Fixed runtime error for compute benchmarking RoseTTAFold-All-Atom predictions
+
 ### 0.2.0 - 07/04/2024
 
 - Added P2Rank as a new binding site prediction method available to use with AutoDock-Vina
