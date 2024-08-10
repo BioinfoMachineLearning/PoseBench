@@ -10,7 +10,7 @@ import subprocess  # nosec
 import hydra
 import pandas as pd
 import rootutils
-from omegaconf import DictConfig
+from omegaconf import DictConfig, open_dict
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
@@ -30,6 +30,21 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
+    if cfg.no_pretraining:
+        with open_dict(cfg):
+            cfg.frozen_prot = True
+            cfg.model_checkpoint = os.path.join(
+                os.path.dirname(cfg.model_checkpoint),
+                "pdbbind_finetuned",
+                "rigid_docking_base.ckpt",
+            )
+            cfg.out_path = os.path.join(
+                os.path.dirname(cfg.out_path),
+                os.path.basename(cfg.out_path).replace("neuralplexer", "neuralplexer_npt"),
+            )
+            assert os.path.exists(
+                cfg.model_checkpoint
+            ), f"Non-pretrained (NPT) model checkpoint `{cfg.model_checkpoint}` not found."
     os.makedirs(cfg.out_path, exist_ok=True)
     input_csv_path = (
         cfg.input_csv_path.replace(".csv", f"_first_{cfg.max_num_inputs}.csv")
@@ -118,6 +133,8 @@ def main(cfg: DictConfig):
                 subprocess_args.extend(["--separate-pdb"])
             if cfg.rank_outputs_by_confidence:
                 subprocess_args.extend(["--rank-outputs-by-confidence"])
+            if cfg.frozen_prot:
+                subprocess_args.extend(["--frozen-prot"])
             if cfg.csv_path:
                 subprocess_args.extend(["--csv-path", cfg.csv_path])
             subprocess.run(subprocess_args, check=True)  # nosec

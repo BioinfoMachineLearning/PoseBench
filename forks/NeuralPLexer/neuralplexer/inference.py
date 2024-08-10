@@ -658,6 +658,7 @@ def main():
     parser.add_argument("--use-template", action="store_true")
     parser.add_argument("--separate-pdb", action="store_true")
     parser.add_argument("--rank-outputs-by-confidence", action="store_true")
+    parser.add_argument("--frozen-prot", action="store_true")
     parser.add_argument("--plddt-ranking-type", default="ligand", choices=["protein", "ligand", "protein_ligand"], type=str)
     parser.add_argument("--csv-path", type=str)
     args = parser.parse_args()
@@ -671,6 +672,8 @@ def main():
         config = model.config
         if args.latent_model is not None:
             config.latent_model = args.latent_model
+        if args.frozen_prot:
+            config.task.frozen_backbone = True
         if args.task == "pdbbind_benchmarking":
             config.task.use_template = True
         elif args.task == "binding_site_recovery_benchmarking":

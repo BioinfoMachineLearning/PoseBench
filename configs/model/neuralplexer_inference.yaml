@@ -23,7 +23,9 @@ detect_covalent: false # whether to detect covalent bonds
 use_template: true # whether to use the input template protein structure
 separate_pdb: true # whether to separate the predicted protein structures into dedicated PDB files
 rank_outputs_by_confidence: true # whether to rank the output conformations, by default, by ligand confidence (if available) and by protein confidence otherwise
+frozen_prot: false # whether to freeze the protein structure's geometry updates
 plddt_ranking_type: ligand # the type of plDDT ranking to apply to generated samples - NOTE: must be one of (`protein`, `ligand`, `protein_ligand`)
+no_pretraining: false # whether to avoid loading pretrained weights
 csv_path: null # the CSV filepath from which to parse benchmarking input data
 repeat_index: 1 # the repeat index to use for inference
 max_num_inputs: null # if provided, the number of (dataset subset) inputs over which to run inference
