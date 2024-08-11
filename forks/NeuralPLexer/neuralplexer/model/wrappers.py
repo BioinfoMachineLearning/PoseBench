@@ -2891,31 +2891,34 @@ class NeuralPlexer(pl.LightningModule):
         )
 
     def _forward_diffuse_plcomplex_latinp(
-        self, batch, t, T, latent_converter, use_cached_noise=False, erase_data=False
+        self, batch, t, T, latent_converter, use_cached_noise=False, erase_data=False, frozen_backbone=False
     ):
         # Dimension-less internal coordinates and decay rates
         # [B, N, 3]
         x_int, lambda_int = latent_converter.to_latent(batch)
-        alpha_t, alpha_tm, beta_t_lig = self._get_noise_schedule_vp(
-            t,
-            T,
-            name="exp1",
-            decay_rate=lambda_int,
-        )
-        z_int = torch.randn_like(x_int)
-        if erase_data:
-            x_int = torch.zeros_like(x_int)
-        # For autoregressive prior sampling
-        if use_cached_noise and (latent_converter.cached_noise is not None):
-            z_int[
-                :, : latent_converter.cached_noise.shape[1]
-            ] = latent_converter.cached_noise
-        latent_converter.cached_noise = z_int
-        x_int_t = self._forward_diffuse_vp_marginal(
-            x_int,
-            z_int,
-            alpha_t,
-        )
+        if frozen_backbone:
+            x_int_t = x_int
+        else:
+            alpha_t, alpha_tm, beta_t_lig = self._get_noise_schedule_vp(
+                t,
+                T,
+                name="exp1",
+                decay_rate=lambda_int,
+            )
+            z_int = torch.randn_like(x_int)
+            if erase_data:
+                x_int = torch.zeros_like(x_int)
+            # For autoregressive prior sampling
+            if use_cached_noise and (latent_converter.cached_noise is not None):
+                z_int[
+                    :, : latent_converter.cached_noise.shape[1]
+                ] = latent_converter.cached_noise
+            latent_converter.cached_noise = z_int
+            x_int_t = self._forward_diffuse_vp_marginal(
+                x_int,
+                z_int,
+                alpha_t,
+            )
         return latent_converter.assign_to_batch(batch, x_int_t)
 
     def _reverse_diffuse_plcomplex_latinp(
@@ -3101,6 +3104,7 @@ class NeuralPlexer(pl.LightningModule):
                         T,
                         forward_lat_converter,
                         erase_data=(start_time >= 1.0),
+                        frozen_backbone=self.global_config.frozen_backbone,
                     )
                     batch["misc"]["protein_only"] = False
                     self._assign_timestep_encodings(batch, (T - start_step) / T)
@@ -3155,7 +3159,11 @@ class NeuralPlexer(pl.LightningModule):
                 forward_lat_converter,
                 # use_cached_noise=True,
                 erase_data=(start_time >= 1.0),
+                frozen_backbone=self.global_config.frozen_backbone,
             )
+
+            if self.global_config.frozen_backbone:
+                frozen_input_protein_coords = batch["features"]["input_protein_coords"].clone()
 
             if return_all_states:
                 all_frames = []
@@ -3164,6 +3172,8 @@ class NeuralPlexer(pl.LightningModule):
                 range(start_step, T), desc=f"Structure generation using {sampler}"
             ):
                 t = T - time_step
+                if self.global_config.frozen_backbone:
+                    batch["features"]["input_protein_coords"] = frozen_input_protein_coords.clone()
                 batch = self._reverse_diffuse_plcomplex_latinp(
                     batch,
                     t,
@@ -3174,6 +3184,9 @@ class NeuralPlexer(pl.LightningModule):
                     umeyama_correction=umeyama_correction,
                     use_template=use_template,
                 )
+                if self.global_config.frozen_backbone:
+                    batch["outputs"]["denoised_prediction"]["final_coords_prot_atom_padded"] = frozen_input_protein_coords
+                    batch["outputs"]["denoised_prediction"]["final_coords_prot_atom"] = frozen_input_protein_coords[batch["features"]["res_atom_mask"]]
                 if return_all_states:
                     # all_frames.append(
                     #     {
