@@ -759,7 +759,9 @@ class NeuralPlexer(pl.LightningModule):
 
     def _run_confidence_head(self, batch, **kwargs):
         batch = self._init_esdm_inputs(batch, "confidence")
-        return self.confidence_head(batch, frozen_prot=False, **kwargs)
+        return self.confidence_head(
+            batch, frozen_prot=self.global_config.frozen_backbone, **kwargs
+        )
 
     def run_confidence_estimation(self, batch, struct, return_avg_stats=False):
         batch_size = batch["metadata"]["num_structid"]
@@ -3164,6 +3166,8 @@ class NeuralPlexer(pl.LightningModule):
 
             if self.global_config.frozen_backbone:
                 frozen_input_protein_coords = batch["features"]["input_protein_coords"].clone()
+                frozen_input_protein_ca_centroid_coords = frozen_input_protein_coords[:, 1].mean(0)[None, ...]
+                frozen_input_protein_coords[batch["features"]["res_atom_mask"]] -= frozen_input_protein_ca_centroid_coords
 
             if return_all_states:
                 all_frames = []
