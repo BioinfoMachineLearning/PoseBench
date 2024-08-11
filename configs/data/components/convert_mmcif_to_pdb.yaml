@@ -1,0 +1,5 @@
+input_mmcif_dir: ???
+output_pdb_dir: ???
+model_index_to_select: 0
+dataset: "N/A"
+lowercase_id: false
