@@ -202,6 +202,14 @@ def plot_dataset_rmsd(
 )
 def main(cfg: DictConfig):
     """Main function to plot RMSD values for predicted protein structures of different datasets."""
+
+    # NOTE: If USalign is not already available locally, follow the following steps to install it:
+    # Install US-align to align macromolecular structures
+    # cd $MY_PROGRAMS_DIR  # download US-align to your choice of directory (e.g., `~/Programs/`)
+    # git clone https://github.com/pylelab/USalign.git && cd USalign/ && git checkout 97325d3aad852f8a4407649f25e697bbaa17e186
+    # g++ -static -O3 -ffast-math -lm -o USalign USalign.cpp
+    # NOTE: Make sure to update the `usalign_exec_path` value in `configs/data/components/plot_dataset_rmsd.yaml` to reflect where you have placed the US-align executable on your machine.
+
     plot_dataset_rmsd(
         "Astex Diverse Set",
         os.path.join(
