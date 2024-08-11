@@ -1,0 +1,2 @@
+data_dir: ${oc.env:PROJECT_ROOT}/data
+usalign_exec_path: ??? # the path to a local USAlign executable (e.g., ~/Programs/USalign/USalign)
