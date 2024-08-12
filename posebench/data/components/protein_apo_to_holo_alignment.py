@@ -67,6 +67,14 @@ def read_molecule(
         for line in pdbqt_data:
             pdb_block += f"{line[:66]}\n"
         mol = Chem.MolFromPDBBlock(pdb_block, sanitize=False, removeHs=False)
+    elif molecule_file.endswith("_lig.pdb"):
+        with open(molecule_file) as file:
+            pdb_data = file.readlines()
+        pdb_block = ""
+        for line in pdb_data:
+            if line.startswith("HETATM"):
+                pdb_block += line
+        mol = Chem.MolFromPDBBlock(pdb_block, sanitize=False, removeHs=False)
     elif molecule_file.endswith(".pdb"):
         mol = Chem.MolFromPDBFile(molecule_file, sanitize=False, removeHs=False)
     else:
@@ -99,16 +107,24 @@ def read_mols(
     dataset_dir: str,
     name: str,
     remove_hs: bool = False,
+    dataset: Optional[str] = None,
 ) -> List[Chem.Mol]:
     """Load RDKit `Mol` objects corresponding to a dataset's ligand name."""
     ligs = []
-    for file in os.listdir(os.path.join(dataset_dir, name)):
-        if file.endswith("_ligand.sdf") and "rdkit" not in file:
-            lig = read_molecule(
-                os.path.join(dataset_dir, name, file), remove_hs=remove_hs, sanitize=True
-            )
-            if lig is not None:
-                ligs.append(lig)
+    if dataset is not None and dataset == "casp15":
+        lig = read_molecule(
+            os.path.join(dataset_dir, f"{name}_lig.pdb"), remove_hs=remove_hs, sanitize=True
+        )
+        if lig is not None:
+            ligs.append(lig)
+    else:
+        for file in os.listdir(os.path.join(dataset_dir, name)):
+            if file.endswith("_ligand.sdf") and "rdkit" not in file:
+                lig = read_molecule(
+                    os.path.join(dataset_dir, name, file), remove_hs=remove_hs, sanitize=True
+                )
+                if lig is not None:
+                    ligs.append(lig)
     return ligs
 
 
@@ -293,6 +309,7 @@ def get_alignment_rotation(
     pdb_id: str,
     dataset_protein_path: str,
     predicted_protein_path: str,
+    dataset: str,
     dataset_path: str,
 ) -> Tuple[Optional[Rotation], Optional[np.ndarray], Optional[np.ndarray]]:
     """Calculate the alignment rotation between apo and holo protein structures and their ligand
@@ -304,10 +321,6 @@ def get_alignment_rotation(
         structure predictor.
     :param dataset: Name of the dataset.
     :param dataset_path: Filepath to the PDB file containing ligand coordinates.
-    :param lig_connection_radius: Radius for connecting ligand atoms.
-    :param exclude_af2aa_excluded_ligs: Whether to exclude ligands excluded from the AF2-AA
-        dataset.
-    :param skip_parsed_ligands: Whether to skip parsing ligands if they have already been parsed.
     :return: A tuple containing rotation matrix (Optional[Rotation]), centroid of Ca atoms for a
         dataset protein (Optional[np.ndarray]), and centroid of Ca atoms for a prediction
         (Optional[np.ndarray]).
@@ -326,7 +339,7 @@ def get_alignment_rotation(
             f"Unable to parse predicted protein structure for PDB ID {pdb_id} due to the error: {e}. Skipping..."
         )
         return None, None, None
-    dataset_ligand = read_mols(dataset_path, pdb_id, remove_hs=True)[0]
+    dataset_ligand = read_mols(dataset_path, pdb_id, remove_hs=True, dataset=dataset)[0]
 
     try:
         dataset_calpha_coords = extract_receptor_structure(
@@ -391,10 +404,24 @@ def align_apo_structure_to_holo_structure(
     :param filename: Filename of the predicted apo structure.
     :param atom_df_name: Name of the atom DataFrame derived from the corresponding PDB file input.
     """
-    pdb_id = "_".join(Path(filename).stem.split("_")[:2])
+    pdb_id = Path(filename).stem
+    data_dir = cfg.data_dir
+
+    processed_protein_suffix = "_protein"
+    if cfg.dataset == "dockgen":
+        processed_protein_suffix = "_protein_processed"
+    elif cfg.dataset == "casp15":
+        processed_protein_suffix = "_lig"
+        data_dir = os.path.join(data_dir, "targets")
+
+    processed_protein_name = f"{pdb_id}{processed_protein_suffix}.pdb"
+    processed_protein_filename = (
+        os.path.join(data_dir, processed_protein_name)
+        if cfg.dataset == "casp15"
+        else os.path.join(data_dir, pdb_id, processed_protein_name)
+    )
+
     predicted_protein_filename = os.path.join(cfg.predicted_structures_dir, f"{pdb_id}.pdb")
-    processed_protein_name = f"{pdb_id}_protein.pdb"
-    processed_protein_filename = os.path.join(cfg.data_dir, pdb_id, processed_protein_name)
     predicted_protein_output_filename = os.path.join(
         cfg.output_dir, f"{pdb_id}_holo_aligned_predicted_protein.pdb"
     )
@@ -403,7 +430,8 @@ def align_apo_structure_to_holo_structure(
         pdb_id=pdb_id,
         dataset_protein_path=processed_protein_filename,
         predicted_protein_path=predicted_protein_filename,
-        dataset_path=cfg.data_dir,
+        dataset=cfg.dataset,
+        dataset_path=data_dir,
     )
 
     if any(
@@ -437,7 +465,7 @@ def main(cfg: DictConfig):
 
     :param cfg: Hydra config for the alignments.
     """
-    if cfg.dataset not in ["posebusters_benchmark", "astex_diverse"]:
+    if cfg.dataset not in ["posebusters_benchmark", "astex_diverse", "dockgen", "casp15"]:
         raise ValueError(f"Dataset {cfg.dataset} is not supported.")
     output_dir = cfg.output_dir
     os.makedirs(output_dir, exist_ok=True)
