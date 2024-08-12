@@ -235,18 +235,18 @@ tar xfz pdb100_2021Mar03.tar.gz
 cd ../../
 ```
 
-### Predicting apo protein structures using ESMFold
+### Predicting apo protein structures using ESMFold (optional, preprocessed data available)
 
 First create all the corresponding FASTA files for each protein sequence
 
 ```bash
-python3 posebench/data/components/esmfold_fasta_preparation.py dataset=posebusters_benchmark
-python3 posebench/data/components/esmfold_fasta_preparation.py dataset=astex_diverse
+python3 posebench/data/components/protein_fasta_preparation.py dataset=posebusters_benchmark
+python3 posebench/data/components/protein_fasta_preparation.py dataset=astex_diverse
 ```
 
 To generate the apo version of each protein structure,
 create ESMFold-ready versions of the combined FASTA files
-prepared above by the script `esmfold_fasta_preparation.py`
+prepared above by the script `protein_fasta_preparation.py`
 for the PoseBusters Benchmark and Astex Diverse sets, respectively
 
 ```bash
@@ -272,8 +272,8 @@ or Astex Diverse set, taking ligand conformations into account
 during each alignment
 
 ```bash
-python3 posebench/data/components/esmfold_apo_to_holo_alignment.py dataset=posebusters_benchmark num_workers=1
-python3 posebench/data/components/esmfold_apo_to_holo_alignment.py dataset=astex_diverse num_workers=1
+python3 posebench/data/components/protein_apo_to_holo_alignment.py dataset=posebusters_benchmark num_workers=1
+python3 posebench/data/components/protein_apo_to_holo_alignment.py dataset=astex_diverse num_workers=1
 ```
 
 **NOTE:** The preprocessed Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 data available via [Zenodo](https://doi.org/10.5281/zenodo.11477766) provide pre-holo-aligned predicted protein structures for these respective datasets.

@@ -20,7 +20,7 @@ from tqdm import tqdm
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
 from posebench import register_custom_omegaconf_resolvers
-from posebench.data.components.esmfold_apo_to_holo_alignment import (
+from posebench.data.components.protein_apo_to_holo_alignment import (
     align_prediction,
     extract_receptor_structure,
     parse_pdb_from_path,

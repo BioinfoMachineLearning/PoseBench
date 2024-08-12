@@ -238,7 +238,7 @@ def extract_receptor_structure(
 def align_prediction(
     smoothing_factor: Optional[float],
     dataset_calpha_coords: np.ndarray,
-    esmfold_calpha_coords: np.ndarray,
+    predicted_calpha_coords: np.ndarray,
     dataset_ligand_coords: Optional[np.ndarray],
     return_rotation: bool = False,
 ) -> Union[Tuple[Rotation, np.ndarray, np.ndarray], float]:
@@ -247,11 +247,11 @@ def align_prediction(
 
     :param smoothing_factor: Smoothing factor controlling the alignment.
     :param dataset_calpha_coords: Array of Ca atom coordinates for a dataset's protein structure.
-    :param esmfold_calpha_coords: Array of Ca atom coordinates for a dataset's protein structure.
+    :param predicted_calpha_coords: Array of Ca atom coordinates for a dataset's protein structure.
     :param dataset_ligand_coords: Array of ligand coordinates from a dataset.
     :param return_rotation: Whether to return the rotation matrix and centroids (default: `False`).
     :return: If return_rotation is `True`, returns a tuple containing rotation matrix (`Rotation`), centroid of CA atoms for a dataset protein (`np.ndarray`),
-             and centroid of CA atoms for ESMFold (`np.ndarray`). If return_rotation is `False`, returns the inverse root mean square error of reciprocal distances (`float`).
+             and centroid of CA atoms for a prediction (`np.ndarray`). If return_rotation is `False`, returns the inverse root mean square error of reciprocal distances (`float`).
     """
     if dataset_ligand_coords is not None:
         dataset_dists = spa.distance.cdist(dataset_calpha_coords, dataset_ligand_coords)
@@ -259,30 +259,30 @@ def align_prediction(
         dataset_calpha_centroid = np.sum(
             np.expand_dims(weights, axis=1) * dataset_calpha_coords, axis=0
         ) / np.sum(weights)
-        esmfold_calpha_centroid = np.sum(
-            np.expand_dims(weights, axis=1) * esmfold_calpha_coords, axis=0
+        predicted_calpha_centroid = np.sum(
+            np.expand_dims(weights, axis=1) * predicted_calpha_coords, axis=0
         ) / np.sum(weights)
     else:
         weights = None
         dataset_calpha_centroid = np.mean(dataset_calpha_coords, axis=0)
-        esmfold_calpha_centroid = np.mean(esmfold_calpha_coords, axis=0)
+        predicted_calpha_centroid = np.mean(predicted_calpha_coords, axis=0)
     centered_dataset_calpha_coords = dataset_calpha_coords - dataset_calpha_centroid
-    centered_esmfold_calpha_coords = esmfold_calpha_coords - esmfold_calpha_centroid
+    centered_predicted_calpha_coords = predicted_calpha_coords - predicted_calpha_centroid
 
     rotation, _ = spa.transform.Rotation.align_vectors(
-        centered_dataset_calpha_coords, centered_esmfold_calpha_coords, weights
+        centered_dataset_calpha_coords, centered_predicted_calpha_coords, weights
     )
     if return_rotation:
-        return rotation, dataset_calpha_centroid, esmfold_calpha_centroid
+        return rotation, dataset_calpha_centroid, predicted_calpha_centroid
 
     if dataset_ligand_coords is not None:
         centered_dataset_ligand_coords = dataset_ligand_coords - dataset_calpha_centroid
-        aligned_esmfold_calpha_coords = rotation.apply(centered_esmfold_calpha_coords)
-        aligned_esmfold_dataset_dists = spa.distance.cdist(
-            aligned_esmfold_calpha_coords, centered_dataset_ligand_coords
+        aligned_predicted_calpha_coords = rotation.apply(centered_predicted_calpha_coords)
+        aligned_predicted_dataset_dists = spa.distance.cdist(
+            aligned_predicted_calpha_coords, centered_dataset_ligand_coords
         )
         inv_r_rmse = np.sqrt(
-            np.mean(((1 / dataset_dists) - (1 / aligned_esmfold_dataset_dists)) ** 2)
+            np.mean(((1 / dataset_dists) - (1 / aligned_predicted_dataset_dists)) ** 2)
         )
     else:
         inv_r_rmse = np.nan
@@ -292,7 +292,7 @@ def align_prediction(
 def get_alignment_rotation(
     pdb_id: str,
     dataset_protein_path: str,
-    esmfold_protein_path: str,
+    predicted_protein_path: str,
     dataset_path: str,
 ) -> Tuple[Optional[Rotation], Optional[np.ndarray], Optional[np.ndarray]]:
     """Calculate the alignment rotation between apo and holo protein structures and their ligand
@@ -300,7 +300,8 @@ def get_alignment_rotation(
 
     :param pdb_id: PDB ID of the protein-ligand complex.
     :param dataset_protein_path: Filepath to the PDB file of the protein structure from a dataset.
-    :param esmfold_protein_path: Filepath to the PDB file of the protein structure from ESMFold.
+    :param predicted_protein_path: Filepath to the PDB file of the protein structure from a
+        structure predictor.
     :param dataset: Name of the dataset.
     :param dataset_path: Filepath to the PDB file containing ligand coordinates.
     :param lig_connection_radius: Radius for connecting ligand atoms.
@@ -308,7 +309,7 @@ def get_alignment_rotation(
         dataset.
     :param skip_parsed_ligands: Whether to skip parsing ligands if they have already been parsed.
     :return: A tuple containing rotation matrix (Optional[Rotation]), centroid of Ca atoms for a
-        dataset protein (Optional[np.ndarray]), and centroid of Ca atoms for ESMFold
+        dataset protein (Optional[np.ndarray]), and centroid of Ca atoms for a prediction
         (Optional[np.ndarray]).
     """
     try:
@@ -319,10 +320,10 @@ def get_alignment_rotation(
         )
         return None, None, None
     try:
-        esmfold_rec = parse_pdb_from_path(esmfold_protein_path)
+        predicted_rec = parse_pdb_from_path(predicted_protein_path)
     except Exception as e:
         logger.warning(
-            f"Unable to parse ESMFold protein structure for PDB ID {pdb_id} due to the error: {e}. Skipping..."
+            f"Unable to parse predicted protein structure for PDB ID {pdb_id} due to the error: {e}. Skipping..."
         )
         return None, None, None
     dataset_ligand = read_mols(dataset_path, pdb_id, remove_hs=True)[0]
@@ -337,12 +338,12 @@ def get_alignment_rotation(
         )
         return None, None, None
     try:
-        esmfold_calpha_coords = extract_receptor_structure(
-            esmfold_rec, dataset_ligand, filter_out_hetero_residues=True
+        predicted_calpha_coords = extract_receptor_structure(
+            predicted_rec, dataset_ligand, filter_out_hetero_residues=True
         )[2]
     except Exception as e:
         logger.warning(
-            f"Unable to extract ESMFold protein structure for PDB ID {pdb_id} due to the error: {e}. Skipping..."
+            f"Unable to extract predicted protein structure for PDB ID {pdb_id} due to the error: {e}. Skipping..."
         )
         return None, None, None
     try:
@@ -353,11 +354,11 @@ def get_alignment_rotation(
         )
         return None, None, None
 
-    if dataset_calpha_coords.shape != esmfold_calpha_coords.shape:
+    if dataset_calpha_coords.shape != predicted_calpha_coords.shape:
         logger.warning(
             f"Receptor structures differ for PDB ID {pdb_id}. Skipping due to shape mismatch:",
             dataset_calpha_coords.shape,
-            esmfold_calpha_coords.shape,
+            predicted_calpha_coords.shape,
         )
         return None, None, None
 
@@ -365,73 +366,74 @@ def get_alignment_rotation(
         align_prediction,
         [0.1],
         bounds=Bounds([0.0], [1.0]),
-        args=(dataset_calpha_coords, esmfold_calpha_coords, dataset_ligand_coords),
+        args=(dataset_calpha_coords, predicted_calpha_coords, dataset_ligand_coords),
         tol=1e-8,
     )
 
     smoothing_factor = res.x
-    rotation, dataset_calpha_centroid, esmfold_calpha_centroid = align_prediction(
+    rotation, dataset_calpha_centroid, predicted_calpha_centroid = align_prediction(
         smoothing_factor,
         dataset_calpha_coords,
-        esmfold_calpha_coords,
+        predicted_calpha_coords,
         dataset_ligand_coords,
         return_rotation=True,
     )
 
-    return rotation, dataset_calpha_centroid, esmfold_calpha_centroid
+    return rotation, dataset_calpha_centroid, predicted_calpha_centroid
 
 
 def align_apo_structure_to_holo_structure(
     cfg: DictConfig, filename: str, atom_df_name: str = "ATOM"
 ):
-    """Align a given ESMFold apo structure to its corresponding holo structure.
+    """Align a given predicted apo structure to its corresponding holo structure.
 
     :param cfg: Hydra config for the alignment.
-    :param filename: Filename of the ESMFold apo structure.
+    :param filename: Filename of the predicted apo structure.
     :param atom_df_name: Name of the atom DataFrame derived from the corresponding PDB file input.
     """
     pdb_id = "_".join(Path(filename).stem.split("_")[:2])
-    esm_protein_filename = os.path.join(cfg.esmfold_structures_dir, f"{pdb_id}.pdb")
+    predicted_protein_filename = os.path.join(cfg.predicted_structures_dir, f"{pdb_id}.pdb")
     processed_protein_name = f"{pdb_id}_protein.pdb"
     processed_protein_filename = os.path.join(cfg.data_dir, pdb_id, processed_protein_name)
-    esm_protein_output_filename = os.path.join(
-        cfg.output_dir, f"{pdb_id}_holo_aligned_esmfold_protein.pdb"
+    predicted_protein_output_filename = os.path.join(
+        cfg.output_dir, f"{pdb_id}_holo_aligned_predicted_protein.pdb"
     )
 
-    rotation, dataset_calpha_centroid, esmfold_calpha_centroid = get_alignment_rotation(
+    rotation, dataset_calpha_centroid, predicted_calpha_centroid = get_alignment_rotation(
         pdb_id=pdb_id,
         dataset_protein_path=processed_protein_filename,
-        esmfold_protein_path=esm_protein_filename,
+        predicted_protein_path=predicted_protein_filename,
         dataset_path=cfg.data_dir,
     )
 
     if any(
-        [item is None for item in [rotation, dataset_calpha_centroid, esmfold_calpha_centroid]]
+        [item is None for item in [rotation, dataset_calpha_centroid, predicted_calpha_centroid]]
     ):
         return
 
-    ppdb_esmfold = PandasPdb().read_pdb(esm_protein_filename)
-    ppdb_esmfold_pre_rot = (
-        ppdb_esmfold.df[atom_df_name][["x_coord", "y_coord", "z_coord"]]
+    ppdb_predicted = PandasPdb().read_pdb(predicted_protein_filename)
+    ppdb_predicted_pre_rot = (
+        ppdb_predicted.df[atom_df_name][["x_coord", "y_coord", "z_coord"]]
         .to_numpy()
         .squeeze()
         .astype(np.float32)
     )
-    ppdb_esmfold_aligned = (
-        rotation.apply(ppdb_esmfold_pre_rot - esmfold_calpha_centroid) + dataset_calpha_centroid
+    ppdb_predicted_aligned = (
+        rotation.apply(ppdb_predicted_pre_rot - predicted_calpha_centroid)
+        + dataset_calpha_centroid
     )
 
-    ppdb_esmfold.df[atom_df_name][["x_coord", "y_coord", "z_coord"]] = ppdb_esmfold_aligned
-    ppdb_esmfold.to_pdb(path=esm_protein_output_filename, records=[atom_df_name], gz=False)
+    ppdb_predicted.df[atom_df_name][["x_coord", "y_coord", "z_coord"]] = ppdb_predicted_aligned
+    ppdb_predicted.to_pdb(path=predicted_protein_output_filename, records=[atom_df_name], gz=False)
 
 
 @hydra.main(
     version_base="1.3",
     config_path="../../../configs/data/components",
-    config_name="esmfold_apo_to_holo_alignment.yaml",
+    config_name="protein_apo_to_holo_alignment.yaml",
 )
 def main(cfg: DictConfig):
-    """Align all ESMFold apo structures to their corresponding holo structures.
+    """Align all predicted apo structures to their corresponding holo structures.
 
     :param cfg: Hydra config for the alignments.
     """
@@ -441,9 +443,9 @@ def main(cfg: DictConfig):
     os.makedirs(output_dir, exist_ok=True)
     structure_file_inputs = [
         file
-        for file in os.listdir(cfg.esmfold_structures_dir)
+        for file in os.listdir(cfg.predicted_structures_dir)
         if not os.path.exists(
-            os.path.join(cfg.output_dir, f"{Path(file).stem}_holo_aligned_esmfold_protein.pdb")
+            os.path.join(cfg.output_dir, f"{Path(file).stem}_holo_aligned_predicted_protein.pdb")
         )
     ]
     pbar = tqdm(
@@ -461,7 +463,7 @@ def main(cfg: DictConfig):
         # wait for all tasks to complete
         for future in tqdm(
             futures,
-            desc="Aligning each ESMFold apo structure to its corresponding holo structure",
+            desc="Aligning each predicted apo structure to its corresponding holo structure",
             total=len(futures),
         ):
             future.result()

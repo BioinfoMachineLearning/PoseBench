@@ -9,17 +9,17 @@ Input data components
 
 These data component configurations are used to modify how the input (apo) protein structures are predicted or aligned.
 
-ESMFold apo-to-holo alignment
+Protein apo-to-holo alignment
 ^^^^^^^^^^^^^^^^^^^^^^^^
-.. literalinclude:: ../../../configs/data/components/esmfold_apo_to_holo_alignment.yaml
+.. literalinclude:: ../../../configs/data/components/protein_apo_to_holo_alignment.yaml
     :language: yaml
-    :caption: :file:`data/components/esmfold_apo_to_holo_alignment.yaml`
+    :caption: :file:`data/components/protein_apo_to_holo_alignment.yaml`
 
-ESMFold FASTA preparation
+Protein FASTA preparation
 ^^^^^^^^^^^^^^^^^^^^^^^^
-.. literalinclude:: ../../../configs/data/components/esmfold_fasta_preparation.yaml
+.. literalinclude:: ../../../configs/data/components/protein_fasta_preparation.yaml
     :language: yaml
-    :caption: :file:`data/components/esmfold_fasta_preparation.yaml`
+    :caption: :file:`data/components/protein_fasta_preparation.yaml`
 
 ESMFold sequence preparation
 ^^^^^^^^^^^^^^^^^^^^^^^^

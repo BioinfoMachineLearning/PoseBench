@@ -26,7 +26,7 @@ from rdkit.Chem import AllChem
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
-from posebench.data.components.esmfold_apo_to_holo_alignment import read_molecule
+from posebench.data.components.protein_apo_to_holo_alignment import read_molecule
 
 logging.basicConfig(format="[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)

@@ -39,11 +39,12 @@ logger = logging.getLogger(__name__)
 @hydra.main(
     version_base="1.3",
     config_path="../../../configs/data/components",
-    config_name="esmfold_fasta_preparation.yaml",
+    config_name="protein_fasta_preparation.yaml",
 )
 def main(cfg: DictConfig):
     """Derive the FASTA files for all protein sequences in either the PoseBusters Benchmark or
-    Astex Diverse sets, in preparation for computing ESM2 sequence embeddings in batch.
+    Astex Diverse sets, in preparation for predicting their protein structures using a structure
+    predictor.
 
     Args: An OmegaConf `DictConfig`.
     """
@@ -89,7 +90,7 @@ def main(cfg: DictConfig):
     ids = []
     pbar = tqdm(names)
     for name in pbar:
-        pbar.set_description(f"Processing PDB {name} for ESM sequence embedding generation.")
+        pbar.set_description(f"Processing PDB {name} for FASTA sequence file generation.")
         processed_name = f"{name}_protein.pdb"
         if name == ".DS_Store":
             continue

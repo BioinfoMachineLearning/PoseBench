@@ -35,7 +35,7 @@ rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
 from posebench import register_custom_omegaconf_resolvers
 from posebench.analysis.complex_alignment import align_complex_to_protein_only
-from posebench.data.components.esmfold_apo_to_holo_alignment import read_molecule
+from posebench.data.components.protein_apo_to_holo_alignment import read_molecule
 from posebench.models.inference_relaxation import relax_single_filepair
 from posebench.models.minimize_energy import minimize_energy
 from posebench.utils.data_utils import (
