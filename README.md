@@ -276,7 +276,7 @@ python3 posebench/data/components/esmfold_apo_to_holo_alignment.py dataset=poseb
 python3 posebench/data/components/esmfold_apo_to_holo_alignment.py dataset=astex_diverse num_workers=1
 ```
 
-**NOTE:** The preprocessed DockGen and CASP15 data available via [Zenodo](https://doi.org/10.5281/zenodo.11477766) provide pre-holo-aligned predicted protein structures for these respective datasets.
+**NOTE:** The preprocessed Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 data available via [Zenodo](https://doi.org/10.5281/zenodo.11477766) provide pre-holo-aligned predicted protein structures for these respective datasets.
 
 </details>
 
