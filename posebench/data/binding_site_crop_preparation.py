@@ -188,7 +188,7 @@ def save_cropped_protein_binding_site(
     for _, pdb_id in tqdm(smiles_and_pdb_id_list, desc="Cropping protein binding sites"):
         pred_protein_filepath = os.path.join(
             input_protein_structure_dir,
-            f"{pdb_id}_holo_aligned_esmfold_protein.pdb",
+            f"{pdb_id}_holo_aligned_predicted_protein.pdb",
         )
         ref_protein_filepath = os.path.join(input_data_dir, pdb_id, f"{pdb_id}_protein.pdb")
         ref_ligand_filepath = os.path.join(input_data_dir, pdb_id, f"{pdb_id}_ligand.sdf")
@@ -214,7 +214,7 @@ def save_cropped_protein_binding_site(
             binding_site_residue_indices,
             output_protein_structure_dir,
             pdb_id,
-            filename_midfix="_holo_aligned_esmfold",
+            filename_midfix="_holo_aligned_predicted",
         )
         crop_protein_binding_site(
             ref_protein_filepath,
