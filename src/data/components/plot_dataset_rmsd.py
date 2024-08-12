@@ -105,6 +105,8 @@ def plot_dataset_rmsd(
     filtered_ids_to_keep_file: Optional[str] = None,
     filtered_ids_to_skip: Optional[Set[str]] = None,
     is_casp_dataset: bool = False,
+    accurate_rmsd_threshold: float = 4.0,
+    accurate_tm_score_threshold: float = 0.7,
 ):
     """Plot the RMSD between predicted and reference protein structures in a given dataset.
 
@@ -117,6 +119,8 @@ def plot_dataset_rmsd(
     :param filtered_ids_to_keep_file: File containing IDs of sequences to keep.
     :param filtered_ids_to_skip: Set of IDs of sequences to skip.
     :param is_casp_dataset: Whether the dataset is a CASP dataset.
+    :param accurate_rmsd_threshold: RMSD threshold for accurate predictions.
+    :param accurate_tm_score_threshold: TM-score threshold for accurate predictions.
     """
 
     # Filter out sequences that are not in the filtered_ids_file
@@ -180,6 +184,17 @@ def plot_dataset_rmsd(
     dataset_df = pd.DataFrame(dataset_rows)
 
     # Plot the RMSD values
+
+    accurate_predictions_percent = (
+        dataset_df[
+            (dataset_df["RMSD"] < accurate_rmsd_threshold)
+            & (dataset_df["TM-score"] > accurate_tm_score_threshold)
+        ].shape[0]
+        / dataset_df.shape[0]
+    )
+    logging.info(
+        f"For the {dataset_name} dataset, {accurate_predictions_percent * 100:.2f}% of the predictions have RMSD < {accurate_rmsd_threshold} and TM-score > {accurate_tm_score_threshold}."
+    )
 
     plot_dir = Path(output_dir) / ("public_plots" if is_casp_dataset else "plots")
     plot_dir.mkdir(exist_ok=True)
