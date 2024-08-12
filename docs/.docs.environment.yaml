@@ -9,17 +9,18 @@ channels:
   - conda-forge
 dependencies:
   - openff-amber-ff-ports=0.0.4=pyhca7485f_0
-  - openff-forcefields=2023.11.0=pyhca7485f_0
-  - openff-interchange=0.3.18=pyhd8ed1ab_0
-  - openff-interchange-base=0.3.18=pyhd8ed1ab_0
-  - openff-models=0.1.1=pyhca7485f_0
-  - openff-toolkit=0.14.5=pyhd8ed1ab_1
-  - openff-toolkit-base=0.14.5=pyhd8ed1ab_1
-  - openff-units=0.2.1=pyh1a96a4e_0
+  - openff-forcefields=2024.04.0=pyhca7485f_0
+  - openff-interchange=0.3.27=pyhd8ed1ab_0
+  - openff-interchange-base=0.3.27=pyhd8ed1ab_0
+  - openff-models=0.1.2=pyhca7485f_0
+  - openff-toolkit=0.16.0=pyhd8ed1ab_1
+  - openff-toolkit-base=0.16.0=pyhd8ed1ab_1
+  - openff-units=0.2.2=pyhca7485f_0
   - openff-utilities=0.1.12=pyhd8ed1ab_0
-  - openmm=8.1.0=py39he81762f_1
-  - openmmforcefields=0.11.2=pyhd8ed1ab_1
+  - openmm=8.1.1=py310h43b6314_1
+  - openmmforcefields=0.12.0=pyhd8ed1ab_0
   - pdbfixer=1.9=pyh1a96a4e_0
+  - python=3.10.14=hd12c33a_0_cpython
   - pip:
     - beartype
     - biopandas

@@ -33,7 +33,7 @@ classifiers=[
 dependencies = [
     # --------- pytorch --------- #
     "lightning>=2.1.3",
-    "torch==2.3.0",
+    "torch>=2.3.0",
     "torchmetrics>=1.2.0",
     "torchvision>=0.18.0",
 
