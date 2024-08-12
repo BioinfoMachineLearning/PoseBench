@@ -42,7 +42,7 @@ dependencies = [
     "hydra-colorlog==1.2.0",
     "hydra-optuna-sweeper==1.2.0",
     "omegaconf",
-    "pydantic>=2.18.3",
+    "pydantic>=1.10.15",
     "pyyaml",
 
     # --------- others --------- #
