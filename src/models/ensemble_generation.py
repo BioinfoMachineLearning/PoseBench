@@ -815,7 +815,7 @@ def get_method_predictions(
     elif method == "neuralplexer":
         ensemble_benchmarking_output_dir = (
             Path(cfg.input_dir if cfg.input_dir else cfg.neuralplexer_out_path).parent
-            / f"neuralplexer_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
+            / f"neuralplexer{'_npt' if cfg.neuralplexer_no_pretraining else ''}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
             if cfg.ensemble_benchmarking
             else (cfg.input_dir if cfg.input_dir else cfg.neuralplexer_out_path)
         )

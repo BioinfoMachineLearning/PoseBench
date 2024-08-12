@@ -183,6 +183,11 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
+    if cfg.no_pretraining:
+        with open_dict(cfg):
+            cfg.predictions_dir = cfg.predictions_dir.replace(
+                "_ensemble_predictions", "_npt_ensemble_predictions"
+            )
     if cfg.method == "vina":
         with open_dict(cfg):
             cfg.predictions_dir = cfg.predictions_dir.replace(

@@ -96,6 +96,7 @@ neuralplexer_use_template: true # whether to use the input template protein stru
 neuralplexer_separate_pdb: true # whether to separate the predicted protein structures into dedicated PDB files
 neuralplexer_rank_outputs_by_confidence: true # whether to rank the output conformations, by default, by ligand confidence (if available) and by protein confidence otherwise
 neuralplexer_plddt_ranking_type: ligand # the type of plDDT ranking to apply to generated samples - NOTE: must be one of (`protein`, `ligand`, `protein_ligand`)
+neuralplexer_no_pretraining: false # whether to avoid loading pretrained weights
 # RoseTTAFold-All-Atom inference arguments:
 rfaa_python_exec_path: ${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/RFAA/bin/python3 # the Python executable to use
 rfaa_exec_dir: ${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom # the RoseTTAFold-All-Atom directory in which to execute the inference scripts
