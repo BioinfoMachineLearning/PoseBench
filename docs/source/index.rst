@@ -53,15 +53,15 @@ Welcome to PoseBench's documentation!
    :hidden:
    :caption: API Reference
 
-   modules/src.binding_site_crop_preparation
-   modules/src.complex_alignment
-   modules/src.inference_relaxation
-   modules/src.minimize_energy
-   modules/src.ensemble_generation
-   modules/src.data_utils
-   modules/src.model_utils
-   modules/src.utils
-   modules/src.resolvers
+   modules/posebench.binding_site_crop_preparation
+   modules/posebench.complex_alignment
+   modules/posebench.inference_relaxation
+   modules/posebench.minimize_energy
+   modules/posebench.ensemble_generation
+   modules/posebench.data_utils
+   modules/posebench.model_utils
+   modules/posebench.utils
+   modules/posebench.resolvers
 
 Indices and tables
 ==================

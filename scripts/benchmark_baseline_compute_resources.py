@@ -14,7 +14,7 @@ from omegaconf import DictConfig
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
-from src import register_custom_omegaconf_resolvers
+from posebench import register_custom_omegaconf_resolvers
 
 logging.basicConfig(format="[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ def assemble_baseline_command(cfg: DictConfig) -> List[str]:
             "" if cfg.method == "vina" else f" cuda_device_index={cfg.cuda_device_index}"
         )
         rfaa_postfix = " run_inference_directly=true" if cfg.method == "rfaa" else ""
-        return f"python3 src/models/{cfg.method}_inference.py dataset={cfg.dataset} repeat_index={cfg.repeat_index} max_num_inputs={cfg.max_num_inputs}{vina_postfix}{cuda_device_postfix}{rfaa_postfix}".split()
+        return f"python3 posebench/models/{cfg.method}_inference.py dataset={cfg.dataset} repeat_index={cfg.repeat_index} max_num_inputs={cfg.max_num_inputs}{vina_postfix}{cuda_device_postfix}{rfaa_postfix}".split()
     else:
         raise ValueError(f"Invalid method: {cfg.method}")
 

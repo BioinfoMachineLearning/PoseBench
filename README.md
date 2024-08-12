@@ -227,8 +227,8 @@ cd ../../
 First create all the corresponding FASTA files for each protein sequence
 
 ```bash
-python3 src/data/components/esmfold_fasta_preparation.py dataset=posebusters_benchmark
-python3 src/data/components/esmfold_fasta_preparation.py dataset=astex_diverse
+python3 posebench/data/components/esmfold_fasta_preparation.py dataset=posebusters_benchmark
+python3 posebench/data/components/esmfold_fasta_preparation.py dataset=astex_diverse
 ```
 
 To generate the apo version of each protein structure,
@@ -237,16 +237,16 @@ prepared above by the script `esmfold_fasta_preparation.py`
 for the PoseBusters Benchmark and Astex Diverse sets, respectively
 
 ```bash
-python3 src/data/components/esmfold_sequence_preparation.py dataset=posebusters_benchmark
-python3 src/data/components/esmfold_sequence_preparation.py dataset=astex_diverse
+python3 posebench/data/components/esmfold_sequence_preparation.py dataset=posebusters_benchmark
+python3 posebench/data/components/esmfold_sequence_preparation.py dataset=astex_diverse
 ```
 
 Then, predict each apo protein structure using ESMFold's batch
 inference script
 
 ```bash
-python3 src/data/components/esmfold_batch_structure_prediction.py -i data/posebusters_benchmark_set/posebusters_benchmark_esmfold_sequences.fasta -o data/posebusters_benchmark_set/posebusters_benchmark_esmfold_structures --skip-existing
-python3 src/data/components/esmfold_batch_structure_prediction.py -i data/astex_diverse_set/astex_diverse_esmfold_sequences.fasta -o data/astex_diverse_set/astex_diverse_esmfold_structures --skip-existing
+python3 posebench/data/components/esmfold_batch_structure_prediction.py -i data/posebusters_benchmark_set/posebusters_benchmark_esmfold_sequences.fasta -o data/posebusters_benchmark_set/posebusters_benchmark_esmfold_structures --skip-existing
+python3 posebench/data/components/esmfold_batch_structure_prediction.py -i data/astex_diverse_set/astex_diverse_esmfold_sequences.fasta -o data/astex_diverse_set/astex_diverse_esmfold_structures --skip-existing
 ```
 
 **NOTE:** Having a CUDA-enabled device available when running ESMFold is highly recommended
@@ -259,8 +259,8 @@ or Astex Diverse set, taking ligand conformations into account
 during each alignment
 
 ```bash
-python3 src/data/components/esmfold_apo_to_holo_alignment.py dataset=posebusters_benchmark num_workers=1
-python3 src/data/components/esmfold_apo_to_holo_alignment.py dataset=astex_diverse num_workers=1
+python3 posebench/data/components/esmfold_apo_to_holo_alignment.py dataset=posebusters_benchmark num_workers=1
+python3 posebench/data/components/esmfold_apo_to_holo_alignment.py dataset=astex_diverse num_workers=1
 ```
 
 **NOTE:** The preprocessed DockGen and CASP15 data available via [Zenodo](https://doi.org/10.5281/zenodo.11477766) provide pre-holo-aligned predicted protein structures for these respective datasets.
@@ -321,33 +321,33 @@ python3 src/data/components/esmfold_apo_to_holo_alignment.py dataset=astex_diver
 Prepare CSV input files
 
 ```bash
-python3 src/data/diffdock_input_preparation.py dataset=posebusters_benchmark
-python3 src/data/diffdock_input_preparation.py dataset=astex_diverse
-python3 src/data/diffdock_input_preparation.py dataset=dockgen
-python3 src/data/diffdock_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets input_protein_structure_dir="$PWD"/data/casp15_set/predicted_structures
+python3 posebench/data/diffdock_input_preparation.py dataset=posebusters_benchmark
+python3 posebench/data/diffdock_input_preparation.py dataset=astex_diverse
+python3 posebench/data/diffdock_input_preparation.py dataset=dockgen
+python3 posebench/data/diffdock_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets input_protein_structure_dir="$PWD"/data/casp15_set/predicted_structures
 ```
 
 Run inference on each dataset
 
 ```bash
-python3 src/models/diffdock_inference.py dataset=posebusters_benchmark repeat_index=1
+python3 posebench/models/diffdock_inference.py dataset=posebusters_benchmark repeat_index=1
 ...
-python3 src/models/diffdock_inference.py dataset=astex_diverse repeat_index=1
+python3 posebench/models/diffdock_inference.py dataset=astex_diverse repeat_index=1
 ...
-python3 src/models/diffdock_inference.py dataset=dockgen repeat_index=1
+python3 posebench/models/diffdock_inference.py dataset=dockgen repeat_index=1
 ...
-python3 src/models/diffdock_inference.py dataset=casp15 batch_size=1 repeat_index=1
+python3 posebench/models/diffdock_inference.py dataset=casp15 batch_size=1 repeat_index=1
 ...
 ```
 
 Relax the generated ligand structures inside of their respective protein pockets
 
 ```bash
-python3 src/models/inference_relaxation.py method=diffdock dataset=posebusters_benchmark remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
+python3 posebench/models/inference_relaxation.py method=diffdock dataset=posebusters_benchmark remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
-python3 src/models/inference_relaxation.py method=diffdock dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
+python3 posebench/models/inference_relaxation.py method=diffdock dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
-python3 src/models/inference_relaxation.py method=diffdock dataset=dockgen remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
+python3 posebench/models/inference_relaxation.py method=diffdock dataset=dockgen remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
 ```
 
@@ -356,11 +356,11 @@ python3 src/models/inference_relaxation.py method=diffdock dataset=dockgen remov
 Analyze inference results for each dataset
 
 ```bash
-python3 src/analysis/inference_analysis.py method=diffdock dataset=posebusters_benchmark repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=diffdock dataset=posebusters_benchmark repeat_index=1
 ...
-python3 src/analysis/inference_analysis.py method=diffdock dataset=astex_diverse repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=diffdock dataset=astex_diverse repeat_index=1
 ...
-python3 src/analysis/inference_analysis.py method=diffdock dataset=dockgen repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=diffdock dataset=dockgen repeat_index=1
 ...
 ```
 
@@ -368,12 +368,12 @@ Analyze inference results for the CASP15 dataset
 
 ```bash
 # first assemble (unrelaxed and post ranking-relaxed) CASP15-compliant prediction submission files for scoring
-python3 src/models/ensemble_generation.py ensemble_methods=\[diffdock\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_diffdock_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
-python3 src/models/ensemble_generation.py ensemble_methods=\[diffdock\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_diffdock_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[diffdock\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_diffdock_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[diffdock\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_diffdock_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
 # NOTE: the suffixes for both `output_dir` and `ensemble_benchmarking_repeat_index` should be modified to e.g., 2, 3, ...
 ...
 # now score the CASP15-compliant submissions using the official CASP scoring pipeline
-python3 src/analysis/inference_analysis_casp.py method=diffdock dataset=casp15 repeat_index=1
+python3 posebench/analysis/inference_analysis_casp.py method=diffdock dataset=casp15 repeat_index=1
 ...
 ```
 
@@ -382,30 +382,30 @@ python3 src/analysis/inference_analysis_casp.py method=diffdock dataset=casp15 r
 Prepare CSV input files
 
 ```bash
-python3 src/data/fabind_input_preparation.py dataset=posebusters_benchmark
-python3 src/data/fabind_input_preparation.py dataset=astex_diverse
-python3 src/data/fabind_input_preparation.py dataset=dockgen
+python3 posebench/data/fabind_input_preparation.py dataset=posebusters_benchmark
+python3 posebench/data/fabind_input_preparation.py dataset=astex_diverse
+python3 posebench/data/fabind_input_preparation.py dataset=dockgen
 ```
 
 Run inference on each dataset
 
 ```bash
-python3 src/models/fabind_inference.py dataset=posebusters_benchmark repeat_index=1
+python3 posebench/models/fabind_inference.py dataset=posebusters_benchmark repeat_index=1
 ...
-python3 src/models/fabind_inference.py dataset=astex_diverse repeat_index=1
+python3 posebench/models/fabind_inference.py dataset=astex_diverse repeat_index=1
 ...
-python3 src/models/fabind_inference.py dataset=dockgen repeat_index=1
+python3 posebench/models/fabind_inference.py dataset=dockgen repeat_index=1
 ...
 ```
 
 Relax the generated ligand structures inside of their respective protein pockets
 
 ```bash
-python3 src/models/inference_relaxation.py method=fabind dataset=posebusters_benchmark remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
+python3 posebench/models/inference_relaxation.py method=fabind dataset=posebusters_benchmark remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
-python3 src/models/inference_relaxation.py method=fabind dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
+python3 posebench/models/inference_relaxation.py method=fabind dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
-python3 src/models/inference_relaxation.py method=fabind dataset=dockgen remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
+python3 posebench/models/inference_relaxation.py method=fabind dataset=dockgen remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
 ```
 
@@ -414,11 +414,11 @@ python3 src/models/inference_relaxation.py method=fabind dataset=dockgen remove_
 Analyze inference results for each dataset
 
 ```bash
-python3 src/analysis/inference_analysis.py method=fabind dataset=posebusters_benchmark repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=fabind dataset=posebusters_benchmark repeat_index=1
 ...
-python3 src/analysis/inference_analysis.py method=fabind dataset=astex_diverse repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=fabind dataset=astex_diverse repeat_index=1
 ...
-python3 src/analysis/inference_analysis.py method=fabind dataset=dockgen repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=fabind dataset=dockgen repeat_index=1
 ...
 ```
 
@@ -427,33 +427,33 @@ python3 src/analysis/inference_analysis.py method=fabind dataset=dockgen repeat_
 Prepare CSV input files
 
 ```bash
-python3 src/data/dynamicbind_input_preparation.py dataset=posebusters_benchmark
-python3 src/data/dynamicbind_input_preparation.py dataset=astex_diverse
-python3 src/data/dynamicbind_input_preparation.py dataset=dockgen
-python3 src/data/dynamicbind_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets
+python3 posebench/data/dynamicbind_input_preparation.py dataset=posebusters_benchmark
+python3 posebench/data/dynamicbind_input_preparation.py dataset=astex_diverse
+python3 posebench/data/dynamicbind_input_preparation.py dataset=dockgen
+python3 posebench/data/dynamicbind_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets
 ```
 
 Run inference on each dataset
 
 ```bash
-python3 src/models/dynamicbind_inference.py dataset=posebusters_benchmark repeat_index=1
+python3 posebench/models/dynamicbind_inference.py dataset=posebusters_benchmark repeat_index=1
 ...
-python3 src/models/dynamicbind_inference.py dataset=astex_diverse repeat_index=1
+python3 posebench/models/dynamicbind_inference.py dataset=astex_diverse repeat_index=1
 ...
-python3 src/models/dynamicbind_inference.py dataset=dockgen repeat_index=1
+python3 posebench/models/dynamicbind_inference.py dataset=dockgen repeat_index=1
 ...
-python3 src/models/dynamicbind_inference.py dataset=casp15 batch_size=1 input_data_dir="$PWD"/data/casp15_set/predicted_structures repeat_index=1
+python3 posebench/models/dynamicbind_inference.py dataset=casp15 batch_size=1 input_data_dir="$PWD"/data/casp15_set/predicted_structures repeat_index=1
 ...
 ```
 
 Relax the generated ligand structures inside of their respective protein pockets
 
 ```bash
-python3 src/models/inference_relaxation.py method=dynamicbind dataset=posebusters_benchmark remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
+python3 posebench/models/inference_relaxation.py method=dynamicbind dataset=posebusters_benchmark remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
-python3 src/models/inference_relaxation.py method=dynamicbind dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
+python3 posebench/models/inference_relaxation.py method=dynamicbind dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
-python3 src/models/inference_relaxation.py method=dynamicbind dataset=dockgen remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
+python3 posebench/models/inference_relaxation.py method=dynamicbind dataset=dockgen remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
 ```
 
@@ -462,11 +462,11 @@ python3 src/models/inference_relaxation.py method=dynamicbind dataset=dockgen re
 Analyze inference results for each dataset
 
 ```bash
-python3 src/analysis/inference_analysis.py method=dynamicbind dataset=posebusters_benchmark repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=dynamicbind dataset=posebusters_benchmark repeat_index=1
 ...
-python3 src/analysis/inference_analysis.py method=dynamicbind dataset=astex_diverse repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=dynamicbind dataset=astex_diverse repeat_index=1
 ...
-python3 src/analysis/inference_analysis.py method=dynamicbind dataset=dockgen repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=dynamicbind dataset=dockgen repeat_index=1
 ...
 ```
 
@@ -474,12 +474,12 @@ Analyze inference results for the CASP15 dataset
 
 ```bash
 # first assemble (unrelaxed and post ranking-relaxed) CASP15-compliant prediction submission files for scoring
-python3 src/models/ensemble_generation.py ensemble_methods=\[dynamicbind\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_dynamicbind_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
-python3 src/models/ensemble_generation.py ensemble_methods=\[dynamicbind\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_dynamicbind_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[dynamicbind\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_dynamicbind_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[dynamicbind\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_dynamicbind_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
 # NOTE: the suffixes for both `output_dir` and `ensemble_benchmarking_repeat_index` should be modified to e.g., 2, 3, ...
 ...
 # now score the CASP15-compliant submissions using the official CASP scoring pipeline
-python3 src/analysis/inference_analysis_casp.py method=dynamicbind dataset=casp15 repeat_index=1
+python3 posebench/analysis/inference_analysis_casp.py method=dynamicbind dataset=casp15 repeat_index=1
 ...
 ```
 
@@ -488,33 +488,33 @@ python3 src/analysis/inference_analysis_casp.py method=dynamicbind dataset=casp1
 Prepare CSV input files
 
 ```bash
-python3 src/data/neuralplexer_input_preparation.py dataset=posebusters_benchmark
-python3 src/data/neuralplexer_input_preparation.py dataset=astex_diverse
-python3 src/data/neuralplexer_input_preparation.py dataset=dockgen
-python3 src/data/neuralplexer_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets input_receptor_structure_dir="$PWD"/data/casp15_set/predicted_structures
+python3 posebench/data/neuralplexer_input_preparation.py dataset=posebusters_benchmark
+python3 posebench/data/neuralplexer_input_preparation.py dataset=astex_diverse
+python3 posebench/data/neuralplexer_input_preparation.py dataset=dockgen
+python3 posebench/data/neuralplexer_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets input_receptor_structure_dir="$PWD"/data/casp15_set/predicted_structures
 ```
 
 Run inference on each dataset
 
 ```bash
-python3 src/models/neuralplexer_inference.py dataset=posebusters_benchmark repeat_index=1
+python3 posebench/models/neuralplexer_inference.py dataset=posebusters_benchmark repeat_index=1
 ...
-python3 src/models/neuralplexer_inference.py dataset=astex_diverse repeat_index=1
+python3 posebench/models/neuralplexer_inference.py dataset=astex_diverse repeat_index=1
 ...
-python3 src/models/neuralplexer_inference.py dataset=dockgen repeat_index=1
+python3 posebench/models/neuralplexer_inference.py dataset=dockgen repeat_index=1
 ...
-python3 src/models/neuralplexer_inference.py dataset=casp15 repeat_index=1
+python3 posebench/models/neuralplexer_inference.py dataset=casp15 repeat_index=1
 ...
 ```
 
 Relax the generated ligand structures inside of their respective protein pockets
 
 ```bash
-python3 src/models/inference_relaxation.py method=neuralplexer dataset=posebusters_benchmark num_processes=1 remove_initial_protein_hydrogens=true assign_partial_charges_manually=true cache_files=false repeat_index=1
+python3 posebench/models/inference_relaxation.py method=neuralplexer dataset=posebusters_benchmark num_processes=1 remove_initial_protein_hydrogens=true assign_partial_charges_manually=true cache_files=false repeat_index=1
 ...
-python3 src/models/inference_relaxation.py method=neuralplexer dataset=astex_diverse num_processes=1 remove_initial_protein_hydrogens=true assign_partial_charges_manually=true cache_files=false repeat_index=1
+python3 posebench/models/inference_relaxation.py method=neuralplexer dataset=astex_diverse num_processes=1 remove_initial_protein_hydrogens=true assign_partial_charges_manually=true cache_files=false repeat_index=1
 ...
-python3 src/models/inference_relaxation.py method=neuralplexer dataset=dockgen num_processes=1 remove_initial_protein_hydrogens=true assign_partial_charges_manually=true cache_files=false repeat_index=1
+python3 posebench/models/inference_relaxation.py method=neuralplexer dataset=dockgen num_processes=1 remove_initial_protein_hydrogens=true assign_partial_charges_manually=true cache_files=false repeat_index=1
 ...
 ```
 
@@ -523,22 +523,22 @@ python3 src/models/inference_relaxation.py method=neuralplexer dataset=dockgen n
 Align predicted protein-ligand structures to ground-truth complex structures
 
 ```bash
-python3 src/analysis/complex_alignment.py method=neuralplexer dataset=posebusters_benchmark repeat_index=1
+python3 posebench/analysis/complex_alignment.py method=neuralplexer dataset=posebusters_benchmark repeat_index=1
 ...
-python3 src/analysis/complex_alignment.py method=neuralplexer dataset=astex_diverse repeat_index=1
+python3 posebench/analysis/complex_alignment.py method=neuralplexer dataset=astex_diverse repeat_index=1
 ...
-python3 src/analysis/complex_alignment.py method=neuralplexer dataset=dockgen repeat_index=1
+python3 posebench/analysis/complex_alignment.py method=neuralplexer dataset=dockgen repeat_index=1
 ...
 ```
 
 Analyze inference results for each dataset
 
 ```bash
-python3 src/analysis/inference_analysis.py method=neuralplexer dataset=posebusters_benchmark repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=neuralplexer dataset=posebusters_benchmark repeat_index=1
 ...
-python3 src/analysis/inference_analysis.py method=neuralplexer dataset=astex_diverse repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=neuralplexer dataset=astex_diverse repeat_index=1
 ...
-python3 src/analysis/inference_analysis.py method=neuralplexer dataset=dockgen repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=neuralplexer dataset=dockgen repeat_index=1
 ...
 ```
 
@@ -546,12 +546,12 @@ Analyze inference results for the CASP15 dataset
 
 ```bash
 # first assemble (unrelaxed and post ranking-relaxed) CASP15-compliant prediction submission files for scoring
-python3 src/models/ensemble_generation.py ensemble_methods=\[neuralplexer\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_neuralplexer_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
-python3 src/models/ensemble_generation.py ensemble_methods=\[neuralplexer\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_neuralplexer_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[neuralplexer\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_neuralplexer_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[neuralplexer\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_neuralplexer_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
 # NOTE: the suffixes for both `output_dir` and `ensemble_benchmarking_repeat_index` should be modified to e.g., 2, 3, ...
 ...
 # now score the CASP15-compliant submissions using the official CASP scoring pipeline
-python3 src/analysis/inference_analysis_casp.py method=neuralplexer dataset=casp15 repeat_index=1
+python3 posebench/analysis/inference_analysis_casp.py method=neuralplexer dataset=casp15 repeat_index=1
 ...
 ```
 
@@ -560,38 +560,38 @@ python3 src/analysis/inference_analysis_casp.py method=neuralplexer dataset=casp
 Prepare CSV input files
 
 ```bash
-python3 src/data/rfaa_input_preparation.py dataset=posebusters_benchmark
-python3 src/data/rfaa_input_preparation.py dataset=astex_diverse
-python3 src/data/rfaa_input_preparation.py dataset=dockgen
-python3 src/data/rfaa_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets
+python3 posebench/data/rfaa_input_preparation.py dataset=posebusters_benchmark
+python3 posebench/data/rfaa_input_preparation.py dataset=astex_diverse
+python3 posebench/data/rfaa_input_preparation.py dataset=dockgen
+python3 posebench/data/rfaa_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets
 ```
 
 Run inference on each dataset
 
 ```bash
 conda activate forks/RoseTTAFold-All-Atom/RFAA/
-python3 src/models/rfaa_inference.py dataset=posebusters_benchmark run_inference_directly=true
-python3 src/models/rfaa_inference.py dataset=astex_diverse run_inference_directly=true
-python3 src/models/rfaa_inference.py dataset=dockgen run_inference_directly=true
-python3 src/models/rfaa_inference.py dataset=casp15 run_inference_directly=true
+python3 posebench/models/rfaa_inference.py dataset=posebusters_benchmark run_inference_directly=true
+python3 posebench/models/rfaa_inference.py dataset=astex_diverse run_inference_directly=true
+python3 posebench/models/rfaa_inference.py dataset=dockgen run_inference_directly=true
+python3 posebench/models/rfaa_inference.py dataset=casp15 run_inference_directly=true
 conda deactivate
 ```
 
 Extract predictions into separate files for proteins and ligands
 
 ```bash
-python3 src/data/rfaa_output_extraction.py dataset=posebusters_benchmark
-python3 src/data/rfaa_output_extraction.py dataset=astex_diverse
-python3 src/data/rfaa_output_extraction.py dataset=dockgen
-python3 src/data/rfaa_output_extraction.py dataset=casp15
+python3 posebench/data/rfaa_output_extraction.py dataset=posebusters_benchmark
+python3 posebench/data/rfaa_output_extraction.py dataset=astex_diverse
+python3 posebench/data/rfaa_output_extraction.py dataset=dockgen
+python3 posebench/data/rfaa_output_extraction.py dataset=casp15
 ```
 
 Relax the generated ligand structures inside of their respective protein pockets
 
 ```bash
-python3 src/models/inference_relaxation.py method=rfaa dataset=posebusters_benchmark num_processes=1 remove_initial_protein_hydrogens=true
-python3 src/models/inference_relaxation.py method=rfaa dataset=astex_diverse num_processes=1 remove_initial_protein_hydrogens=true
-python3 src/models/inference_relaxation.py method=rfaa dataset=dockgen num_processes=1 remove_initial_protein_hydrogens=true
+python3 posebench/models/inference_relaxation.py method=rfaa dataset=posebusters_benchmark num_processes=1 remove_initial_protein_hydrogens=true
+python3 posebench/models/inference_relaxation.py method=rfaa dataset=astex_diverse num_processes=1 remove_initial_protein_hydrogens=true
+python3 posebench/models/inference_relaxation.py method=rfaa dataset=dockgen num_processes=1 remove_initial_protein_hydrogens=true
 ```
 
 **NOTE**: Increase `num_processes` according to your available CPU/GPU resources to improve throughput
@@ -599,29 +599,29 @@ python3 src/models/inference_relaxation.py method=rfaa dataset=dockgen num_proce
 Align predicted protein-ligand structures to ground-truth complex structures
 
 ```bash
-python3 src/analysis/complex_alignment.py method=rfaa dataset=posebusters_benchmark
-python3 src/analysis/complex_alignment.py method=rfaa dataset=astex_diverse
-python3 src/analysis/complex_alignment.py method=rfaa dataset=dockgen
+python3 posebench/analysis/complex_alignment.py method=rfaa dataset=posebusters_benchmark
+python3 posebench/analysis/complex_alignment.py method=rfaa dataset=astex_diverse
+python3 posebench/analysis/complex_alignment.py method=rfaa dataset=dockgen
 ```
 
 Analyze inference results for each dataset
 
 ```bash
-python3 src/analysis/inference_analysis.py method=rfaa dataset=posebusters_benchmark
-python3 src/analysis/inference_analysis.py method=rfaa dataset=astex_diverse
-python3 src/analysis/inference_analysis.py method=rfaa dataset=dockgen
+python3 posebench/analysis/inference_analysis.py method=rfaa dataset=posebusters_benchmark
+python3 posebench/analysis/inference_analysis.py method=rfaa dataset=astex_diverse
+python3 posebench/analysis/inference_analysis.py method=rfaa dataset=dockgen
 ```
 
 Analyze inference results for the CASP15 dataset
 
 ```bash
 # first assemble (unrelaxed and post ranking-relaxed) CASP15-compliant prediction submission files for scoring
-python3 src/models/ensemble_generation.py ensemble_methods=\[rfaa\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_rfaa_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
-python3 src/models/ensemble_generation.py ensemble_methods=\[rfaa\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_rfaa_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[rfaa\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_rfaa_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[rfaa\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_rfaa_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
 # NOTE: the suffixes for both `output_dir` and `ensemble_benchmarking_repeat_index` should be modified to e.g., 2, 3, ...
 ...
 # now score the CASP15-compliant submissions using the official CASP scoring pipeline
-python3 src/analysis/inference_analysis_casp.py method=rfaa dataset=casp15 targets="[T1124, T1127v2, T1146, T1152, T1158v1, T1158v2, T1158v3, T1158v4, T1186, T1187, T1188]" repeat_index=1
+python3 posebench/analysis/inference_analysis_casp.py method=rfaa dataset=casp15 targets="[T1124, T1127v2, T1146, T1152, T1158v1, T1158v2, T1158v3, T1158v4, T1186, T1187, T1188]" repeat_index=1
 ...
 ```
 
@@ -639,13 +639,13 @@ cp forks/DiffDock/inference/diffdock_casp15_inputs.csv forks/Vina/inference/vina
 Run inference on each dataset
 
 ```bash
-python3 src/models/vina_inference.py dataset=posebusters_benchmark method=diffdock repeat_index=1 # NOTE: DiffDock-L's binding pockets are recommended as the default Vina input
+python3 posebench/models/vina_inference.py dataset=posebusters_benchmark method=diffdock repeat_index=1 # NOTE: DiffDock-L's binding pockets are recommended as the default Vina input
 ...
-python3 src/models/vina_inference.py dataset=astex_diverse method=diffdock repeat_index=1
+python3 posebench/models/vina_inference.py dataset=astex_diverse method=diffdock repeat_index=1
 ...
-python3 src/models/vina_inference.py dataset=dockgen method=diffdock repeat_index=1
+python3 posebench/models/vina_inference.py dataset=dockgen method=diffdock repeat_index=1
 ...
-python3 src/models/vina_inference.py dataset=casp15 method=diffdock repeat_index=1
+python3 posebench/models/vina_inference.py dataset=casp15 method=diffdock repeat_index=1
 ...
 ```
 
@@ -665,11 +665,11 @@ mkdir -p forks/Vina/inference/vina_diffdock_casp15_outputs_1 && cp -r data/test_
 Relax the generated ligand structures inside of their respective protein pockets
 
 ```bash
-python3 src/models/inference_relaxation.py method=vina vina_binding_site_method=diffdock dataset=posebusters_benchmark remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
+python3 posebench/models/inference_relaxation.py method=vina vina_binding_site_method=diffdock dataset=posebusters_benchmark remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
-python3 src/models/inference_relaxation.py method=vina vina_binding_site_method=diffdock dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
+python3 posebench/models/inference_relaxation.py method=vina vina_binding_site_method=diffdock dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
-python3 src/models/inference_relaxation.py method=vina vina_binding_site_method=diffdock dataset=dockgen remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
+python3 posebench/models/inference_relaxation.py method=vina vina_binding_site_method=diffdock dataset=dockgen remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index=1
 ...
 ```
 
@@ -678,11 +678,11 @@ python3 src/models/inference_relaxation.py method=vina vina_binding_site_method=
 Analyze inference results for each dataset
 
 ```bash
-python3 src/analysis/inference_analysis.py method=vina vina_binding_site_method=diffdock dataset=posebusters_benchmark repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=vina vina_binding_site_method=diffdock dataset=posebusters_benchmark repeat_index=1
 ...
-python3 src/analysis/inference_analysis.py method=vina vina_binding_site_method=diffdock dataset=astex_diverse repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=vina vina_binding_site_method=diffdock dataset=astex_diverse repeat_index=1
 ...
-python3 src/analysis/inference_analysis.py method=vina vina_binding_site_method=diffdock dataset=dockgen repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=vina vina_binding_site_method=diffdock dataset=dockgen repeat_index=1
 ...
 ```
 
@@ -690,12 +690,12 @@ Analyze inference results for the CASP15 dataset
 
 ```bash
 # assemble (unrelaxed and post ranking-relaxed) CASP15-compliant prediction submission files for scoring
-python3 src/models/ensemble_generation.py ensemble_methods=\[vina\] vina_binding_site_methods=\[diffdock\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_vina_diffdock_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
-python3 src/models/ensemble_generation.py ensemble_methods=\[vina\] vina_binding_site_methods=\[diffdock\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_vina_diffdock_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[vina\] vina_binding_site_methods=\[diffdock\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_vina_diffdock_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[vina\] vina_binding_site_methods=\[diffdock\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_vina_diffdock_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
 # NOTE: the suffixes for both `output_dir` and `ensemble_benchmarking_repeat_index` should be modified to e.g., 2, 3, ...
 ...
 # now score the CASP15-compliant submissions using the official CASP scoring pipeline
-python3 src/analysis/inference_analysis_casp.py method=vina vina_binding_site_method=diffdock dataset=casp15 repeat_index=1
+python3 posebench/analysis/inference_analysis_casp.py method=vina vina_binding_site_method=diffdock dataset=casp15 repeat_index=1
 ...
 ```
 
@@ -704,17 +704,17 @@ python3 src/analysis/inference_analysis_casp.py method=vina vina_binding_site_me
 Gather all template ligands generated by `TULIP` via its dedicated [GitHub repository](https://github.com/BioinfoMachineLearning/tulip) and collate the resulting ligand fragment SDF files
 
 ```bash
-python3 src/data/tulip_output_extraction.py dataset=posebusters_benchmark
-python3 src/data/tulip_output_extraction.py dataset=astex_diverse
-python3 src/data/tulip_output_extraction.py dataset=casp15
+python3 posebench/data/tulip_output_extraction.py dataset=posebusters_benchmark
+python3 posebench/data/tulip_output_extraction.py dataset=astex_diverse
+python3 posebench/data/tulip_output_extraction.py dataset=casp15
 ```
 
 Relax the generated ligand structures inside of their respective protein pockets
 
 ```bash
-python3 src/models/inference_relaxation.py method=tulip dataset=posebusters_benchmark remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1
+python3 posebench/models/inference_relaxation.py method=tulip dataset=posebusters_benchmark remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1
 ...
-python3 src/models/inference_relaxation.py method=tulip dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1
+python3 posebench/models/inference_relaxation.py method=tulip dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1
 ...
 ```
 
@@ -723,9 +723,9 @@ python3 src/models/inference_relaxation.py method=tulip dataset=astex_diverse re
 Analyze inference results for each dataset
 
 ```bash
-python3 src/analysis/inference_analysis.py method=tulip dataset=posebusters_benchmark
+python3 posebench/analysis/inference_analysis.py method=tulip dataset=posebusters_benchmark
 ...
-python3 src/analysis/inference_analysis.py method=tulip dataset=astex_diverse
+python3 posebench/analysis/inference_analysis.py method=tulip dataset=astex_diverse
 ...
 ```
 
@@ -733,12 +733,12 @@ Analyze inference results for the CASP15 dataset
 
 ```bash
 # then assemble (unrelaxed and post ranking-relaxed) CASP15-compliant prediction submission files for scoring
-python3 src/models/ensemble_generation.py ensemble_methods=\[tulip\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_tulip_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
-python3 src/models/ensemble_generation.py ensemble_methods=\[tulip\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_tulip_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[tulip\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_tulip_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[tulip\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_tulip_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
 # NOTE: the suffixes for both `output_dir` and `ensemble_benchmarking_repeat_index` should be modified to e.g., 2, 3, ...
 ...
 # now score the CASP15-compliant submissions using the official CASP scoring pipeline
-python3 src/analysis/inference_analysis_casp.py method=tulip dataset=casp15 targets='[H1135, H1171v1, H1171v2, H1172v1, H1172v2, H1172v3, H1172v4, T1124, T1127v2, T1152, T1158v1, T1158v2, T1158v3, T1158v4, T1186, T1187]'
+python3 posebench/analysis/inference_analysis_casp.py method=tulip dataset=casp15 targets='[H1135, H1171v1, H1171v2, H1172v1, H1172v2, H1172v3, H1172v4, T1124, T1127v2, T1152, T1158v1, T1158v2, T1158v3, T1158v4, T1186, T1187]'
 ...
 ```
 
@@ -753,47 +753,47 @@ Using an `ensemble` of methods, generate predictions for a new protein target us
 ```bash
 # generate each method's prediction script for a target
 # NOTE: to predict input ESMFold protein structures when they are not already locally available in `data/ensemble_proteins/`, e.g., on a SLURM cluster first run e.g., `srun --partition=gpu --gres=gpu:A100:1 --mem=59G --time=01:00:00 --pty bash` to ensure a GPU is available for inference
-python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/5S8I_2LY/ensemble_inputs.csv output_dir=data/test_cases/5S8I_2LY/top_consensus_ensemble_predictions_1 max_method_predictions=40 ensemble_ranking_method=consensus resume=false ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa]'
+python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/5S8I_2LY/ensemble_inputs.csv output_dir=data/test_cases/5S8I_2LY/top_consensus_ensemble_predictions_1 max_method_predictions=40 ensemble_ranking_method=consensus resume=false ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa]'
 # ...
 # now, manually run each desired method's generated prediction script, with the exception of AutoDock Vina which uses other methods' predictions
 # ...
-python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/5S8I_2LY/ensemble_inputs.csv output_dir=data/test_cases/5S8I_2LY/top_consensus_ensemble_predictions_1 max_method_predictions=40 ensemble_ranking_method=consensus resume=true generate_vina_scripts=true vina_binding_site_methods=[diffdock]
+python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/5S8I_2LY/ensemble_inputs.csv output_dir=data/test_cases/5S8I_2LY/top_consensus_ensemble_predictions_1 max_method_predictions=40 ensemble_ranking_method=consensus resume=true generate_vina_scripts=true vina_binding_site_methods=[diffdock]
 # now, manually run AutoDock Vina's generated prediction script for each binding site prediction method
 #...
 # lastly, organize each method's predictions together
-python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/5S8I_2LY/ensemble_inputs.csv output_dir=data/test_cases/5S8I_2LY/top_consensus_ensemble_predictions_1 max_method_predictions=40 ensemble_ranking_method=consensus resume=true generate_vina_scripts=false vina_binding_site_methods=[diffdock]
+python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/5S8I_2LY/ensemble_inputs.csv output_dir=data/test_cases/5S8I_2LY/top_consensus_ensemble_predictions_1 max_method_predictions=40 ensemble_ranking_method=consensus resume=true generate_vina_scripts=false vina_binding_site_methods=[diffdock]
 ```
 
 Benchmark (ensemble-)ranked predictions across each test dataset
 
 ```bash
 # benchmark using the PoseBusters Benchmark dataset e.g., after generating 40 complexes per target with each method
-python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/posebusters_benchmark/ensemble_inputs.csv output_dir=data/test_cases/posebusters_benchmark/top_consensus_ensemble_predictions_1 max_method_predictions=40 export_top_n=1 export_file_format=null skip_existing=true relax_method_ligands_post_ranking=false resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=posebusters_benchmark ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
-python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/posebusters_benchmark/ensemble_inputs.csv output_dir=data/test_cases/posebusters_benchmark/top_consensus_ensemble_predictions_1 max_method_predictions=40 export_top_n=1 export_file_format=null skip_existing=true relax_method_ligands_post_ranking=true resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=posebusters_benchmark ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/posebusters_benchmark/ensemble_inputs.csv output_dir=data/test_cases/posebusters_benchmark/top_consensus_ensemble_predictions_1 max_method_predictions=40 export_top_n=1 export_file_format=null skip_existing=true relax_method_ligands_post_ranking=false resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=posebusters_benchmark ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/posebusters_benchmark/ensemble_inputs.csv output_dir=data/test_cases/posebusters_benchmark/top_consensus_ensemble_predictions_1 max_method_predictions=40 export_top_n=1 export_file_format=null skip_existing=true relax_method_ligands_post_ranking=true resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=posebusters_benchmark ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
 ...
 # benchmark using the Astex Diverse dataset e.g., after generating 40 complexes per target with each method
-python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/astex_diverse/ensemble_inputs.csv output_dir=data/test_cases/astex_diverse/top_consensus_ensemble_predictions_1 max_method_predictions=40 export_top_n=1 export_file_format=null skip_existing=true relax_method_ligands_post_ranking=false resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=astex_diverse ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
-python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/astex_diverse/ensemble_inputs.csv output_dir=data/test_cases/astex_diverse/top_consensus_ensemble_predictions_1 max_method_predictions=40 export_top_n=1 export_file_format=null skip_existing=true relax_method_ligands_post_ranking=true resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=astex_diverse ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/astex_diverse/ensemble_inputs.csv output_dir=data/test_cases/astex_diverse/top_consensus_ensemble_predictions_1 max_method_predictions=40 export_top_n=1 export_file_format=null skip_existing=true relax_method_ligands_post_ranking=false resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=astex_diverse ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/astex_diverse/ensemble_inputs.csv output_dir=data/test_cases/astex_diverse/top_consensus_ensemble_predictions_1 max_method_predictions=40 export_top_n=1 export_file_format=null skip_existing=true relax_method_ligands_post_ranking=true resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=astex_diverse ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
 ...
 # benchmark using the DockGen dataset e.g., after generating 40 complexes per target with each method
-python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/dockgen/ensemble_inputs.csv output_dir=data/test_cases/dockgen/top_consensus_ensemble_predictions_1 max_method_predictions=40 export_top_n=1 export_file_format=null skip_existing=true relax_method_ligands_post_ranking=false resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=dockgen ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
-python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/dockgen/ensemble_inputs.csv output_dir=data/test_cases/dockgen/top_consensus_ensemble_predictions_1 max_method_predictions=40 export_top_n=1 export_file_format=null skip_existing=true relax_method_ligands_post_ranking=true resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=dockgen ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/dockgen/ensemble_inputs.csv output_dir=data/test_cases/dockgen/top_consensus_ensemble_predictions_1 max_method_predictions=40 export_top_n=1 export_file_format=null skip_existing=true relax_method_ligands_post_ranking=false resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=dockgen ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/dockgen/ensemble_inputs.csv output_dir=data/test_cases/dockgen/top_consensus_ensemble_predictions_1 max_method_predictions=40 export_top_n=1 export_file_format=null skip_existing=true relax_method_ligands_post_ranking=true resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=dockgen ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
 ...
 # benchmark using the CASP15 dataset e.g., after generating 40 complexes per target with each method
-python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_consensus_ensemble_predictions_1 combine_casp_output_files=true max_method_predictions=40 export_top_n=5 export_file_format=casp15 skip_existing=true relax_method_ligands_post_ranking=false resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
-python3 src/models/ensemble_generation.py input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_consensus_ensemble_predictions_1 combine_casp_output_files=true max_method_predictions=40 export_top_n=5 export_file_format=casp15 skip_existing=true relax_method_ligands_post_ranking=true resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_consensus_ensemble_predictions_1 combine_casp_output_files=true max_method_predictions=40 export_top_n=5 export_file_format=casp15 skip_existing=true relax_method_ligands_post_ranking=false resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_consensus_ensemble_predictions_1 combine_casp_output_files=true max_method_predictions=40 export_top_n=5 export_file_format=casp15 skip_existing=true relax_method_ligands_post_ranking=true resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index=1
 ...
 # analyze benchmarking results for the PoseBusters Benchmark dataset
-python3 src/analysis/inference_analysis.py method=ensemble dataset=posebusters_benchmark repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=ensemble dataset=posebusters_benchmark repeat_index=1
 ...
 # analyze benchmarking results for the Astex Diverse dataset
-python3 src/analysis/inference_analysis.py method=ensemble dataset=astex_diverse repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=ensemble dataset=astex_diverse repeat_index=1
 ...
 # analyze benchmarking results for the DockGen dataset
-python3 src/analysis/inference_analysis.py method=ensemble dataset=dockgen repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=ensemble dataset=dockgen repeat_index=1
 ...
 # analyze benchmarking results for the CASP15 dataset
-python3 src/analysis/inference_analysis_casp.py method=ensemble dataset=casp15 ensemble_ranking_method=consensus repeat_index=1
+python3 posebench/analysis/inference_analysis_casp.py method=ensemble dataset=casp15 ensemble_ranking_method=consensus repeat_index=1
 ...
 ```
 

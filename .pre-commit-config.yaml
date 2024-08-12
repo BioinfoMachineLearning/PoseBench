@@ -70,7 +70,7 @@ repos:
             --ignore-nested-functions,
             -vv,
           ]
-        exclude: ^src/analysis/casp15_ligand_scoring/
+        exclude: ^posebench/analysis/casp15_ligand_scoring/
 
   # python check (PEP8), programming errors and code complexity
   - repo: https://github.com/PyCQA/flake8
@@ -82,7 +82,7 @@ repos:
             "--extend-ignore",
             "E203,E402,E501,F401,F841,RST2,RST301",
             "--exclude",
-            "logs/*,data/*,src/analysis/casp15_ligand_scoring/*",
+            "logs/*,data/*,posebench/analysis/casp15_ligand_scoring/*",
           ]
         additional_dependencies: [flake8-rst-docstrings==0.3.0]
 
@@ -126,7 +126,7 @@ repos:
     hooks:
       - id: codespell
         args:
-          - --skip=logs/**,data/**,*.ipynb,src/utils/data_utils.py,src/utils/residue_utils.py,src/data/components/esmfold_fasta_preparation.py,src/models/minimize_energy.py,src/data/components/create_casp15_ensemble_input_csv.py,src/analysis/casp15_ligand_scoring/casp_parser.py
+          - --skip=logs/**,data/**,*.ipynb,posebench/utils/data_utils.py,posebench/utils/residue_utils.py,posebench/data/components/esmfold_fasta_preparation.py,posebench/models/minimize_energy.py,posebench/data/components/create_casp15_ensemble_input_csv.py,posebench/analysis/casp15_ligand_scoring/casp_parser.py
           # - --ignore-words-list=abc,def
 
   # jupyter notebook cell output clearing
