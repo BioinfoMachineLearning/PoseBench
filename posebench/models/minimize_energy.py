@@ -55,7 +55,7 @@ logger = logging.getLogger(__name__)
 
 FORCE_FIELDS_IMPLICIT = ["amber14-all.xml", "implicit/gbn2.xml"]
 FORCE_FIELDS_EXPLICIT = ["amber14-all.xml", "amber14/tip3pfb.xml"]
-OPTIMIZATION_TIMEOUT_IN_SECONDS = 1800
+OPTIMIZATION_TIMEOUT_IN_SECONDS = 600
 
 bond_lengths = {
     ("C", "CA"): (1.5335,),
