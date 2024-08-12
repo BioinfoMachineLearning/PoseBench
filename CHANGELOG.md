@@ -1,3 +1,12 @@
+### 0.4.0 - 08/12/2024
+
+- Renamed `src` root directory to `posebench` to support `pip` packaging
+- Added and documented `pip` installation option
+- Added mmCIF to PDB file conversion script
+- Added apo-to-holo predicted protein structure accuracy assessment and plotting script
+- Added support to `notebooks/dockgen_inference_results_plotting.ipynb` for analyzing the protein-ligand interactions within the PDBBind 2020 dataset's experimental structures
+- Updated dataset documentation in `README.md`
+
 ### 0.3.0 - 07/07/2024
 
 - Added a notebook for plotting expanded DockGen benchmark results
