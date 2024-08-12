@@ -14,7 +14,9 @@ from omegaconf import DictConfig
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
 from posebench import register_custom_omegaconf_resolvers
-from posebench.models.ensemble_generation import LIGAND_ONLY_RECEPTOR_PLACEHOLDER_SEQUENCE
+from posebench.models.ensemble_generation import (
+    LIGAND_ONLY_RECEPTOR_PLACEHOLDER_SEQUENCE,
+)
 from posebench.utils.data_utils import parse_inference_inputs_from_dir
 
 logging.basicConfig(format="[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s")

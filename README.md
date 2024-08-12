@@ -4,6 +4,7 @@
 
 [![Paper](http://img.shields.io/badge/arXiv-2405.14108-B31B1B.svg)](https://arxiv.org/abs/2405.14108)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11477766.svg)](https://doi.org/10.5281/zenodo.11477766)
+[![PyPI version](https://badge.fury.io/py/posebench.svg)](https://badge.fury.io/py/posebench)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Docs](https://assets.readthedocs.org/static/projects/badges/passing-flat.svg)](https://bioinfomachinelearning.github.io/PoseBench/)
 <a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/config-hydra-89b8cd"></a>
@@ -38,7 +39,19 @@ Comprehensive benchmarking of protein-ligand structure generation methods
 
 <details>
 
-Install `mamba` for dependency management (as a fast alternative to Anaconda)
+### Portable installation
+
+To reuse modules and utilities within `PoseBench` in other projects, one can simply use `pip`
+
+```bash
+pip install posebench
+```
+
+### Full installation
+
+To reproduce, customize, or extend the `PoseBench` benchmark, we recommend fully installing `PoseBench` using `mamba` as follows:
+
+First, install `mamba` for dependency management (as a fast alternative to Anaconda)
 
 ```bash
 wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh"
