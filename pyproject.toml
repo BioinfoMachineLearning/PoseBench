@@ -6,7 +6,7 @@ authors = [
     { name = "Alex Morehead", email = "acmwhb@umsystem.edu" }
 ]
 readme = "README.md"
-requires-python = ">= 3.10"
+requires-python = ">= 3.7"
 license = { file = "LICENSE" }
 keywords = [
     'artificial intelligence',
@@ -32,10 +32,10 @@ classifiers=[
 
 dependencies = [
     # --------- pytorch --------- #
-    "lightning>=2.1.3",
-    "torch>=2.3.0",
-    "torchmetrics>=1.2.0",
-    "torchvision>=0.18.0",
+    "lightning",
+    "torch",
+    "torchmetrics",
+    "torchvision",
 
     # --------- hydra --------- #
     "hydra-core==1.3.2",
@@ -50,21 +50,21 @@ dependencies = [
     "biopandas",       # for biological dataframe parsing
     "biopython==1.79", # for biological data parsing
     "ipykernel",       # for running Jupyter notebooks
-    "jaxtyping>=0.2.21",  # tensor type checking
+    "jaxtyping>=0.2.12",  # tensor type checking
     "joblib",          # for parallel processing
     "lovely-numpy",    # for fancy numpy debugging
     "lovely-tensors",  # for fancy pytorch debugging
     "meeko",           # for molecular docking preparation
     "numpy",           # for numerical operations
-    "pandas>=1.5.0",   # for data parsing and analysis
+    "pandas>=1.3.5",   # for data parsing and analysis
     "plotly",          # for plotting
     "pre-commit",      # hooks for applying linters on commit
     "prody",           # for protein data parsing
     "prolif",          # for protein-ligand data parsing
-    "rdkit>=2023.3.3", # for parsing small molecule data files
+    "rdkit>=2023.3.2", # for parsing small molecule data files
     "rich",            # beautiful text formatting in terminal
     "rootutils",       # standardizing the project root setup
-    "scikit-learn>=1.1.2", # for basic machine learning utilities
+    "scikit-learn>=1.0.2", # for basic machine learning utilities
     "seaborn",         # for plotting
     "setuptools",      # for packaging
     "spyrmsd",         # for RMSD calculations
