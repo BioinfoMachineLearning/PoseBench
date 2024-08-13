@@ -252,9 +252,13 @@ def build_inference_script(
         return
 
     os.makedirs(output_script_dir, exist_ok=True)
+    vina_binding_site_method_suffix = (
+        f"_{vina_binding_site_method}" if method in ["vina", "ensemble"] else ""
+    )
+    hpc_suffix = "_hpc" if export_hpc_headers else ""
     output_script = os.path.join(
         output_script_dir,
-        f"{method}_{dataset}{'_hpc' if export_hpc_headers else ''}_inference_{repeat_index}.sh",
+        f"{method}{vina_binding_site_method_suffix}_{dataset}{hpc_suffix}_inference_{repeat_index}.sh",
     )
 
     # Build script in sections

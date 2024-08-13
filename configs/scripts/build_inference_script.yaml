@@ -5,7 +5,7 @@ dataset: astex_diverse # the dataset to use - NOTE: must be one of (`posebusters
 repeat_index: 1 # the repeat index which was used for inference
 cuda_device_index: 0 # the CUDA device index to use for inference (for all methods except AutoDock-Vina)
 output_script_dir: ${oc.env:PROJECT_ROOT}/scripts/inference # the directory in which to save the output script
-export_hpc_headers: false # whether to insert HPC headers into the output script
+export_hpc_headers: false # whether to insert high-performance computing (by default, SLURM) headers into the output script
 # sweep arguments:
 sweep: false # whether to build all combinations of method-dataset run scripts
 methods_to_sweep: [
