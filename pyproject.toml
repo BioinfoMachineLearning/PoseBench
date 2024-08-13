@@ -50,7 +50,7 @@ dependencies = [
     "biopandas",       # for biological dataframe parsing
     "biopython==1.79", # for biological data parsing
     "ipykernel",       # for running Jupyter notebooks
-    "jaxtyping>=0.2.21",  # tensor type checking
+    "jaxtyping>=0.2.12",  # tensor type checking
     "joblib",          # for parallel processing
     "lovely-numpy",    # for fancy numpy debugging
     "lovely-tensors",  # for fancy pytorch debugging
