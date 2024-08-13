@@ -274,6 +274,9 @@ def build_inference_script(
                     time_limit=time_limit,
                 )
             )
+            # NOTE: The following HPC environment activation command assumes the
+            # `PoseBench` Conda environment was created using `--prefix PoseBench/`
+            # to reduce storage usage in one's HPC home directory
             f.write("\nconda activate PoseBench/\n\n")
         else:
             f.write(
