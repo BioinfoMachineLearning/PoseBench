@@ -287,22 +287,22 @@ def build_inference_script(
         # Prepare input files
         if "prepare_input" in commands:
             diffdock_casp15_input_suffix = (
-                " input_data_dir='$PWD'/data/casp15_set/targets input_protein_structure_dir='$PWD'/data/casp15_set/casp15_holo_aligned_predicted_structures"
+                " input_data_dir=data/casp15_set/targets input_protein_structure_dir=data/casp15_set/casp15_holo_aligned_predicted_structures"
                 if method == "diffdock" and dataset == "casp15"
                 else ""
             )
             dynamicbind_casp15_input_suffix = (
-                " input_data_dir='$PWD'/data/casp15_set/targets"
+                " input_data_dir=data/casp15_set/targets"
                 if method == "dynamicbind" and dataset == "casp15"
                 else ""
             )
             neuralplexer_casp15_input_suffix = (
-                " input_data_dir='$PWD'/data/casp15_set/targets input_receptor_structure_dir='$PWD'/data/casp15_set/casp15_holo_aligned_predicted_structures"
+                " input_data_dir=data/casp15_set/targets input_receptor_structure_dir=data/casp15_set/casp15_holo_aligned_predicted_structures"
                 if method == "neuralplexer" and dataset == "casp15"
                 else ""
             )
             rfaa_casp15_input_suffix = (
-                " input_data_dir='$PWD'/data/casp15_set/targets"
+                " input_data_dir=data/casp15_set/targets"
                 if method == "rfaa" and dataset == "casp15"
                 else ""
             )
@@ -325,7 +325,7 @@ def build_inference_script(
                 " batch_size=1" if method == "diffdock" and dataset == "casp15" else ""
             )
             dynamicbind_casp15_inference_suffix = (
-                " batch_size=1 input_data_dir='$PWD'/data/casp15_set/casp15_holo_aligned_predicted_structures"
+                " batch_size=1 input_data_dir=data/casp15_set/casp15_holo_aligned_predicted_structures"
                 if method == "dynamicbind" and dataset == "casp15"
                 else ""
             )
