@@ -427,6 +427,7 @@ def build_inference_script(
                         dataset=dataset,
                         repeat_index=repeat_index,
                         cuda_device_index=cuda_device_index,
+                        vina_binding_site_method=vina_binding_site_method,
                     )
                     + "\n"
                 )
