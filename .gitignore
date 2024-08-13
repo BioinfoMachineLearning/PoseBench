@@ -189,3 +189,4 @@ configs/local/default.yaml
 /forks/RoseTTAFold-All-Atom/psipred/
 /forks/TULIP/outputs/
 /forks/Vina/ADFR/
+scripts/inference/
