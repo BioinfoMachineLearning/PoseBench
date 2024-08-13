@@ -274,7 +274,7 @@ def build_inference_script(
                     time_limit=time_limit,
                 )
             )
-            f.write("\nconda activate PoseBench\n\n")
+            f.write("\nconda activate PoseBench/\n\n")
         else:
             f.write(
                 "#!/bin/bash"
