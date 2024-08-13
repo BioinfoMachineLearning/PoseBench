@@ -29,7 +29,7 @@ COMMANDS = {
             "python3 posebench/models/diffdock_inference.py dataset={dataset} repeat_index={repeat_index}",
         ],
         "relax": [
-            "python3 posebench/models/inference_relaxation.py method=diffdock dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index={repeat_index}",
+            "python3 posebench/models/inference_relaxation.py method=diffdock dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=diffdock dataset={dataset} repeat_index={repeat_index}",
@@ -50,7 +50,7 @@ COMMANDS = {
             "python3 posebench/models/fabind_inference.py dataset={dataset} repeat_index={repeat_index}",
         ],
         "relax": [
-            "python3 posebench/models/inference_relaxation.py method=fabind dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index={repeat_index}",
+            "python3 posebench/models/inference_relaxation.py method=fabind dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=fabind dataset={dataset} repeat_index={repeat_index}",
@@ -62,10 +62,9 @@ COMMANDS = {
         ],
         "run_inference": [
             "python3 posebench/models/dynamicbind_inference.py dataset={dataset} repeat_index={repeat_index}",
-            'python3 posebench/models/dynamicbind_inference.py dataset=casp15 batch_size=1 input_data_dir="$PWD"/data/casp15_set/casp15_holo_aligned_predicted_structures repeat_index={repeat_index}',
         ],
         "relax": [
-            "python3 posebench/models/inference_relaxation.py method=dynamicbind dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index={repeat_index}",
+            "python3 posebench/models/inference_relaxation.py method=dynamicbind dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=dynamicbind dataset={dataset} repeat_index={repeat_index}",
@@ -84,10 +83,9 @@ COMMANDS = {
         ],
         "run_inference": [
             "python3 posebench/models/neuralplexer_inference.py dataset={dataset} repeat_index={repeat_index}",
-            "python3 posebench/models/neuralplexer_inference.py dataset=casp15 repeat_index={repeat_index}",
         ],
         "relax": [
-            "python3 posebench/models/inference_relaxation.py method=neuralplexer dataset={dataset} num_processes=1 remove_initial_protein_hydrogens=true assign_partial_charges_manually=true cache_files=false repeat_index={repeat_index}",
+            "python3 posebench/models/inference_relaxation.py method=neuralplexer dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
         ],
         "align_complexes": [
             "python3 posebench/analysis/complex_alignment.py method=neuralplexer dataset={dataset} repeat_index={repeat_index}",
@@ -116,7 +114,7 @@ COMMANDS = {
             "python3 posebench/data/rfaa_output_extraction.py dataset={dataset}",
         ],
         "relax": [
-            "python3 posebench/models/inference_relaxation.py method=rfaa dataset={dataset} num_processes=1 remove_initial_protein_hydrogens=true",
+            "python3 posebench/models/inference_relaxation.py method=rfaa dataset={dataset} remove_initial_protein_hydrogens=true",
         ],
         "align_complexes": [
             "python3 posebench/analysis/complex_alignment.py method=rfaa dataset={dataset}",
@@ -129,7 +127,7 @@ COMMANDS = {
             "python3 posebench/models/ensemble_generation.py ensemble_methods=[rfaa] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_rfaa_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
         ],
         "analyze_casp15": [
-            "python3 posebench/analysis/inference_analysis_casp.py method=rfaa dataset=casp15 repeat_index={repeat_index}",
+            "python3 posebench/analysis/inference_analysis_casp.py method=rfaa dataset=casp15 repeat_index={repeat_index} targets='[T1124, T1127v2, T1146, T1152, T1158v1, T1158v2, T1158v3, T1158v4, T1186, T1187, T1188]'",
         ],
     },
     "vina": {
@@ -143,15 +141,17 @@ COMMANDS = {
             "mkdir -p forks/Vina/inference/vina_{vina_binding_site_method}_{dataset}_outputs_{repeat_index} && cp -r data/test_cases/{dataset}/vina_{vina_binding_site_method}_{dataset}_outputs_{repeat_index}/* forks/Vina/inference/vina_{vina_binding_site_method}_{dataset}_outputs_{repeat_index}",
         ],
         "relax": [
-            "python3 posebench/models/inference_relaxation.py method=vina vina_binding_site_method={vina_binding_site_method} dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index={repeat_index}",
+            "python3 posebench/models/inference_relaxation.py method=vina vina_binding_site_method={vina_binding_site_method} dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=vina vina_binding_site_method={vina_binding_site_method} dataset={dataset} repeat_index={repeat_index}",
         ],
-        "analyze_casp15": [
+        "assemble_casp15": [
             "python3 posebench/models/ensemble_generation.py ensemble_methods=[vina] vina_binding_site_methods=[{vina_binding_site_method}] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_vina_{vina_binding_site_method}_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
             "python3 posebench/models/ensemble_generation.py ensemble_methods=[vina] vina_binding_site_methods=[{vina_binding_site_method}] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_vina_{vina_binding_site_method}_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
-            "python3 posebench/analysis/inference_analysis_casp.py method=vina vina_binding_site_method={vina_binding_site_method} dataset={dataset} repeat_index={repeat_index}",
+        ],
+        "analyze_casp15": [
+            "python3 posebench/analysis/inference_analysis_casp.py method=vina vina_binding_site_method={vina_binding_site_method} dataset=casp15 repeat_index={repeat_index}",
         ],
     },
     "tulip": {
@@ -159,27 +159,29 @@ COMMANDS = {
             "python3 posebench/data/tulip_output_extraction.py dataset={dataset}",
         ],
         "relax": [
-            "python3 posebench/models/inference_relaxation.py method=tulip dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index={repeat_index}",
+            "python3 posebench/models/inference_relaxation.py method=tulip dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=tulip dataset={dataset} repeat_index={repeat_index}",
         ],
-        "analyze_casp15": [
+        "assemble_casp15": [
             "python3 posebench/models/ensemble_generation.py ensemble_methods=[tulip] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_tulip_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
             "python3 posebench/models/ensemble_generation.py ensemble_methods=[tulip] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_tulip_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=40 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
-            "python3 posebench/analysis/inference_analysis_casp.py method=tulip dataset={dataset} repeat_index={repeat_index} targets='[H1135, H1171v1, H1171v2, H1172v1, H1172v2, H1172v3, H1172v4, T1124, T1127v2, T1152, T1158v1, T1158v2, T1158v3, T1158v4, T1186, T1187]'",
+        ],
+        "analyze_casp15": [
+            "python3 posebench/analysis/inference_analysis_casp.py method=tulip dataset=casp15 repeat_index={repeat_index} targets='[H1135, H1171v1, H1171v2, H1172v1, H1172v2, H1172v3, H1172v4, T1124, T1127v2, T1152, T1158v1, T1158v2, T1158v3, T1158v4, T1186, T1187]'",
         ],
     },
     "ensemble": {
         "run_inference": [
-            "python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/{dataset}/ensemble_inputs.csv output_dir=data/test_cases/{dataset}/top_consensus_ensemble_predictions_{repeat_index} max_method_predictions=40 export_top_n=1 export_file_format={dataset} skip_existing=true relax_method_ligands_post_ranking=false resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index={repeat_index}",
-            "python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/{dataset}/ensemble_inputs.csv output_dir=data/test_cases/{dataset}/top_consensus_ensemble_predictions_{repeat_index} max_method_predictions=40 export_top_n=1 export_file_format={dataset} skip_existing=true relax_method_ligands_post_ranking=true resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/{dataset}/ensemble_inputs.csv output_dir=data/test_cases/{dataset}/top_consensus_ensemble_predictions_{repeat_index} max_method_predictions=40 export_top_n={export_top_n} export_file_format={dataset} skip_existing=true relax_method_ligands_post_ranking=false resume=true cuda_device_index={cuda_device_index} ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' vina_binding_site_methods=[{vina_binding_site_method}] ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/{dataset}/ensemble_inputs.csv output_dir=data/test_cases/{dataset}/top_consensus_ensemble_predictions_{repeat_index} max_method_predictions=40 export_top_n={export_top_n} export_file_format={dataset} skip_existing=true relax_method_ligands_post_ranking=true resume=true cuda_device_index={cuda_device_index} ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' vina_binding_site_methods=[{vina_binding_site_method}] ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index={repeat_index}",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=ensemble dataset={dataset} repeat_index={repeat_index}",
         ],
         "analyze_casp15": [
-            "python3 posebench/analysis/inference_analysis_casp.py method=ensemble dataset={dataset} ensemble_ranking_method=consensus repeat_index={repeat_index}",
+            "python3 posebench/analysis/inference_analysis_casp.py method=ensemble dataset=casp15 repeat_index={repeat_index}",
         ],
     },
 }
@@ -271,83 +273,136 @@ def build_inference_script(
             f.write("\nconda activate PoseBench\n\n")
 
         # Prepare input files
-        diffdock_casp15_input_suffix = (
-            " input_data_dir='$PWD'/data/casp15_set/targets input_protein_structure_dir='$PWD'/data/casp15_set/casp15_holo_aligned_predicted_structures"
-            if method == "diffdock" and dataset == "casp15"
-            else ""
-        )
-        dynamicbind_casp15_input_suffix = (
-            " input_data_dir='$PWD'/data/casp15_set/targets"
-            if method == "dynamicbind" and dataset == "casp15"
-            else ""
-        )
-        neuralplexer_casp15_input_suffix = (
-            " input_data_dir='$PWD'/data/casp15_set/targets input_receptor_structure_dir='$PWD'/data/casp15_set/casp15_holo_aligned_predicted_structures"
-            if method == "neuralplexer" and dataset == "casp15"
-            else ""
-        )
-        rfaa_casp15_input_suffix = (
-            " input_data_dir='$PWD'/data/casp15_set/targets"
-            if method == "rfaa" and dataset == "casp15"
-            else ""
-        )
-        f.write("# Prepare input files\n")
-        for cmd in commands.get("prepare_input", []):
-            f.write(
-                cmd.format(dataset=dataset)
-                + diffdock_casp15_input_suffix
-                + dynamicbind_casp15_input_suffix
-                + neuralplexer_casp15_input_suffix
-                + rfaa_casp15_input_suffix
-                + "\n"
+        if "prepare_input" in commands:
+            diffdock_casp15_input_suffix = (
+                " input_data_dir='$PWD'/data/casp15_set/targets input_protein_structure_dir='$PWD'/data/casp15_set/casp15_holo_aligned_predicted_structures"
+                if method == "diffdock" and dataset == "casp15"
+                else ""
             )
-        f.write("\n")
+            dynamicbind_casp15_input_suffix = (
+                " input_data_dir='$PWD'/data/casp15_set/targets"
+                if method == "dynamicbind" and dataset == "casp15"
+                else ""
+            )
+            neuralplexer_casp15_input_suffix = (
+                " input_data_dir='$PWD'/data/casp15_set/targets input_receptor_structure_dir='$PWD'/data/casp15_set/casp15_holo_aligned_predicted_structures"
+                if method == "neuralplexer" and dataset == "casp15"
+                else ""
+            )
+            rfaa_casp15_input_suffix = (
+                " input_data_dir='$PWD'/data/casp15_set/targets"
+                if method == "rfaa" and dataset == "casp15"
+                else ""
+            )
+            f.write("# Prepare input files\n")
+            for cmd in commands.get("prepare_input", []):
+                f.write(
+                    cmd.format(dataset=dataset)
+                    + diffdock_casp15_input_suffix
+                    + dynamicbind_casp15_input_suffix
+                    + neuralplexer_casp15_input_suffix
+                    + rfaa_casp15_input_suffix
+                    + "\n"
+                )
+            f.write("\n")
 
         # Run inference
-        diffdock_casp15_inference_suffix = (
-            " batch_size=1" if method == "diffdock" and dataset == "casp15" else ""
-        )
-        f.write("# Run inference\n")
-        for cmd in commands.get("run_inference", []):
-            f.write(
-                cmd.format(
-                    dataset=dataset,
-                    repeat_index=repeat_index,
-                    cuda_device_index=cuda_device_index,
-                    vina_binding_site_method=vina_binding_site_method,
-                )
-                + diffdock_casp15_inference_suffix
-                + "\n"
+        if "run_inference" in commands:
+            export_top_n = 5 if dataset == "casp15" else 1
+            diffdock_casp15_inference_suffix = (
+                " batch_size=1" if method == "diffdock" and dataset == "casp15" else ""
             )
-        f.write("\n")
-
-        # Relax generated ligand structures
-        f.write("# Relax generated ligand structures\n")
-        for cmd in commands.get("relax", []):
-            f.write(
-                cmd.format(
-                    dataset=dataset,
-                    repeat_index=repeat_index,
-                    vina_binding_site_method=vina_binding_site_method,
-                )
-                + "\n"
+            dynamicbind_casp15_inference_suffix = (
+                " batch_size=1 input_data_dir='$PWD'/data/casp15_set/casp15_holo_aligned_predicted_structures"
+                if method == "dynamicbind" and dataset == "casp15"
+                else ""
             )
-        f.write("\n")
-
-        # Analyze inference results
-        f.write("# Analyze inference results\n")
-        for cmd in commands.get("analyze_results", []):
-            f.write(
-                cmd.format(
-                    dataset=dataset,
-                    repeat_index=repeat_index,
-                    vina_binding_site_method=vina_binding_site_method,
-                )
-                + "\n"
+            neuralplexer_casp15_inference_suffix = (
+                " chunk_size=4" if method == "neuralplexer" and dataset == "casp15" else ""
             )
-        f.write("\n")
+            f.write("# Run inference\n")
+            for cmd in commands.get("run_inference", []):
+                f.write(
+                    cmd.format(
+                        dataset=dataset,
+                        repeat_index=repeat_index,
+                        cuda_device_index=cuda_device_index,
+                        vina_binding_site_method=vina_binding_site_method,
+                        export_top_n=export_top_n,
+                    )
+                    + diffdock_casp15_inference_suffix
+                    + dynamicbind_casp15_inference_suffix
+                    + neuralplexer_casp15_inference_suffix
+                    + "\n"
+                )
+            f.write("\n")
 
-        # Assemble CASP15 (if applicable)
+        # Extract outputs (if applicable)
+        if "extract_outputs" in commands:
+            f.write("# Extract outputs\n")
+            for cmd in commands.get("extract_outputs", []):
+                f.write(cmd.format(dataset=dataset) + "\n")
+            f.write("\n")
+
+        # Copy predictions (if applicable)
+        if "copy_predictions" in commands:
+            f.write("# Copy predictions\n")
+            for cmd in commands.get("copy_predictions", []):
+                f.write(
+                    cmd.format(
+                        dataset=dataset,
+                        repeat_index=repeat_index,
+                        vina_binding_site_method=vina_binding_site_method,
+                    )
+                    + "\n"
+                )
+            f.write
+
+        # Relax generated ligand structures (if applicable)
+        if dataset != "casp15" and "relax" in commands:
+            # NOTE: CASP15 predictions are instead relaxed using the `ensemble_generation.py` script
+            f.write("# Relax generated ligand structures\n")
+            for cmd in commands.get("relax", []):
+                f.write(
+                    cmd.format(
+                        dataset=dataset,
+                        repeat_index=repeat_index,
+                        vina_binding_site_method=vina_binding_site_method,
+                    )
+                    + "\n"
+                )
+            f.write("\n")
+
+        # Align complexes (if applicable)
+        if dataset != "casp15" and "align_complexes" in commands:
+            # NOTE: CASP15 predictions are instead aligned using the `ensemble_generation.py` script
+            f.write("# Align complexes\n")
+            for cmd in commands.get("align_complexes", []):
+                f.write(
+                    cmd.format(
+                        dataset=dataset,
+                        repeat_index=repeat_index,
+                    )
+                    + "\n"
+                )
+            f.write("\n")
+
+        # Analyze inference results (if applicable)
+        if dataset != "casp15" and "analyze_results" in commands:
+            # NOTE: CASP15 predictions are instead analyzed using the `inference_analysis_casp.py` script
+            f.write("# Analyze inference results\n")
+            for cmd in commands.get("analyze_results", []):
+                f.write(
+                    cmd.format(
+                        dataset=dataset,
+                        repeat_index=repeat_index,
+                        vina_binding_site_method=vina_binding_site_method,
+                    )
+                    + "\n"
+                )
+            f.write("\n")
+
+        # Assemble CASP15 predictions (if applicable)
         if dataset == "casp15" and "assemble_casp15" in commands:
             f.write("# Assemble CASP15 results\n")
             for cmd in commands.get("assemble_casp15", []):
