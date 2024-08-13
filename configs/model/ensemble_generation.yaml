@@ -31,7 +31,7 @@ relax_skip_existing: false # whether to skip existing relaxation results
 resume: false # whether to resume from a previous run after generating and manually running each method's prediction script
 input_dir: null # optional path to the directory from which to load the ensemble predictions to rank - NOTE: currently, only `neuralplexer` makes use of this for inference output parsing
 output_dir: ${oc.env:PROJECT_ROOT}/data/test_cases/5S8I_2LY/top_${ensemble_ranking_method}_ensemble_predictions # path to the directory to save the top-ranked ensemble predictions
-export_file_format: casp15 # if not `null`, the CASP format (i.e., `casp15`) in which to export top-ranked predictions
+export_file_format: casp15 # the (optional) format (i.e., `casp15`) in which to export top-ranked predictions
 export_top_n: 5 # number of top-ranked predictions to export in CASP format
 casp_author: "001" # group number to report in CASP format
 casp_method: "Ligand_Predictor" # the method name to report in CASP format

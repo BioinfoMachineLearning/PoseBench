@@ -1892,7 +1892,7 @@ def save_ranked_predictions(
         output_ligand_filepaths.append(pb_validated_ligand_output_filepaths[0])
         output_protein_filepaths.append(protein_output_filepath)
 
-    if cfg.export_file_format is not None:
+    if cfg.export_file_format is not None and "casp" in cfg.export_file_format:
         # NOTE: relaxed ligand (and potentially protein) files are used for CASP submission when `relax_complex=True`
         pdb_header = (
             f"PFRMAT TS\nTARGET {name}\nAUTHOR {cfg.casp_author}\nMETHOD {cfg.casp_method}\n"

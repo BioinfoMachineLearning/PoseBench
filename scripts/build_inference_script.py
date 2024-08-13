@@ -4,10 +4,11 @@
 
 import logging
 import os
-from typing import Literal
+from typing import List, Literal
 
 import hydra
 import rootutils
+from beartype import beartype
 from omegaconf import DictConfig
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
@@ -18,7 +19,7 @@ logging.basicConfig(format="[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)
 logger = logging.getLogger(__name__)
 
 
-# Commands dictionary
+# Constants
 COMMANDS = {
     "diffdock": {
         "prepare_input": [
@@ -58,7 +59,6 @@ COMMANDS = {
     "dynamicbind": {
         "prepare_input": [
             "python3 posebench/data/dynamicbind_input_preparation.py dataset={dataset}",
-            'python3 posebench/data/dynamicbind_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets',
         ],
         "run_inference": [
             "python3 posebench/models/dynamicbind_inference.py dataset={dataset} repeat_index={repeat_index}",
@@ -81,7 +81,6 @@ COMMANDS = {
     "neuralplexer": {
         "prepare_input": [
             "python3 posebench/data/neuralplexer_input_preparation.py dataset={dataset}",
-            'python3 posebench/data/neuralplexer_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets input_receptor_structure_dir="$PWD"/data/casp15_set/casp15_holo_aligned_predicted_structures',
         ],
         "run_inference": [
             "python3 posebench/models/neuralplexer_inference.py dataset={dataset} repeat_index={repeat_index}",
@@ -107,12 +106,10 @@ COMMANDS = {
     "rfaa": {
         "prepare_input": [
             "python3 posebench/data/rfaa_input_preparation.py dataset={dataset}",
-            'python3 posebench/data/rfaa_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets',
         ],
         "run_inference": [
             "conda activate forks/RoseTTAFold-All-Atom/RFAA/",
             "python3 posebench/models/rfaa_inference.py dataset={dataset} run_inference_directly=true",
-            "python3 posebench/models/rfaa_inference.py dataset=casp15 run_inference_directly=true",
             "conda deactivate",
         ],
         "extract_outputs": [
@@ -173,19 +170,44 @@ COMMANDS = {
             "python3 posebench/analysis/inference_analysis_casp.py method=tulip dataset={dataset} repeat_index={repeat_index} targets='[H1135, H1171v1, H1171v2, H1172v1, H1172v2, H1172v3, H1172v4, T1124, T1127v2, T1152, T1158v1, T1158v2, T1158v3, T1158v4, T1186, T1187]'",
         ],
     },
+    "ensemble": {
+        "run_inference": [
+            "python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/{dataset}/ensemble_inputs.csv output_dir=data/test_cases/{dataset}/top_consensus_ensemble_predictions_{repeat_index} max_method_predictions=40 export_top_n=1 export_file_format={dataset} skip_existing=true relax_method_ligands_post_ranking=false resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/{dataset}/ensemble_inputs.csv output_dir=data/test_cases/{dataset}/top_consensus_ensemble_predictions_{repeat_index} max_method_predictions=40 export_top_n=1 export_file_format={dataset} skip_existing=true relax_method_ligands_post_ranking=true resume=true cuda_device_index=0 ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa, tulip, vina]' ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index={repeat_index}",
+        ],
+        "analyze_results": [
+            "python3 posebench/analysis/inference_analysis.py method=ensemble dataset={dataset} repeat_index={repeat_index}",
+        ],
+        "analyze_casp15": [
+            "python3 posebench/analysis/inference_analysis_casp.py method=ensemble dataset={dataset} ensemble_ranking_method=consensus repeat_index={repeat_index}",
+        ],
+    },
 }
-VINA_BINDING_SITE_METHODS = ["diffdock", "p2rank"]
-SINGLE_RUN_METHODS = ["fabind", "rfaa", "tulip"]
-GPU_ENABLED_METHODS = ["diffdock", "fabind", "dynamicbind", "neuralplexer"]
-DATASETS = ["posebusters_benchmark", "astex_diverse", "dockgen", "casp15"]
+
+INFERENCE_METHODS = Literal[
+    "diffdock",
+    "fabind",
+    "dynamicbind",
+    "neuralplexer",
+    "rfaa",
+    "vina",
+    "tulip",
+    "ensemble",
+]
+VINA_BINDING_SITE_INFERENCE_METHODS = Literal["diffdock", "p2rank"]
+INFERENCE_DATASETS = Literal["posebusters_benchmark", "astex_diverse", "dockgen", "casp15"]
+
+NON_GENERATIVE_INFERENCE_METHODS = {"fabind", "rfaa", "tulip"}
+INVALID_METHOD_DATASET_COMBINATIONS = {
+    ("fabind", "casp15"),
+}
 
 
+@beartype
 def build_inference_script(
-    method: Literal["diffdock", "fabind", "dynamicbind", "neuralplexer", "rfaa", "vina", "tulip"],
-    vina_binding_site_method: Literal[
-        "diffdock", "fabind", "dynamicbind", "neuralplexer", "rfaa", "p2rank"
-    ],
-    dataset: Literal["posebusters_benchmark", "astex_diverse", "dockgen", "casp15"],
+    method: INFERENCE_METHODS,
+    vina_binding_site_method: VINA_BINDING_SITE_INFERENCE_METHODS,
+    dataset: INFERENCE_DATASETS,
     repeat_index: int,
     cuda_device_index: int,
     output_script_dir: str,
@@ -212,10 +234,16 @@ def build_inference_script(
     :param time_limit: Time limit.
     """
     commands = COMMANDS.get(method)
+
+    # Inform user of invalid function calls
     if not commands:
         raise ValueError(f"Unsupported method: {method}")
 
-    if method in SINGLE_RUN_METHODS and repeat_index > 1:
+    if (method, dataset) in INVALID_METHOD_DATASET_COMBINATIONS:
+        logging.info(f"Method {method} does not support dataset {dataset}. Skipping.")
+        return
+
+    if method in NON_GENERATIVE_INFERENCE_METHODS and repeat_index > 1:
         logging.info(
             f"Method {method} does not support multiple repeats. Skipping repeat_index {repeat_index}."
         )
@@ -227,6 +255,7 @@ def build_inference_script(
         f"{method}_{dataset}{'_hpc' if export_hpc_headers else ''}_inference_{repeat_index}.sh",
     )
 
+    # Build script in sections
     with open(output_script, "w") as f:
         if export_hpc_headers:
             f.write(
@@ -242,15 +271,44 @@ def build_inference_script(
             f.write("\nconda activate PoseBench\n\n")
 
         # Prepare input files
+        diffdock_casp15_input_suffix = (
+            " input_data_dir='$PWD'/data/casp15_set/targets input_protein_structure_dir='$PWD'/data/casp15_set/casp15_holo_aligned_predicted_structures"
+            if method == "diffdock" and dataset == "casp15"
+            else ""
+        )
+        dynamicbind_casp15_input_suffix = (
+            " input_data_dir='$PWD'/data/casp15_set/targets"
+            if method == "dynamicbind" and dataset == "casp15"
+            else ""
+        )
+        neuralplexer_casp15_input_suffix = (
+            " input_data_dir='$PWD'/data/casp15_set/targets input_receptor_structure_dir='$PWD'/data/casp15_set/casp15_holo_aligned_predicted_structures"
+            if method == "neuralplexer" and dataset == "casp15"
+            else ""
+        )
+        rfaa_casp15_input_suffix = (
+            " input_data_dir='$PWD'/data/casp15_set/targets"
+            if method == "rfaa" and dataset == "casp15"
+            else ""
+        )
         f.write("# Prepare input files\n")
         for cmd in commands.get("prepare_input", []):
-            f.write(cmd.format(dataset=dataset) + "\n")
+            f.write(
+                cmd.format(dataset=dataset)
+                + diffdock_casp15_input_suffix
+                + dynamicbind_casp15_input_suffix
+                + neuralplexer_casp15_input_suffix
+                + rfaa_casp15_input_suffix
+                + "\n"
+            )
         f.write("\n")
 
         # Run inference
+        diffdock_casp15_inference_suffix = (
+            " batch_size=1" if method == "diffdock" and dataset == "casp15" else ""
+        )
         f.write("# Run inference\n")
-        run_inference_cmds = commands.get("run_inference", [])
-        for cmd in run_inference_cmds:
+        for cmd in commands.get("run_inference", []):
             f.write(
                 cmd.format(
                     dataset=dataset,
@@ -258,6 +316,7 @@ def build_inference_script(
                     cuda_device_index=cuda_device_index,
                     vina_binding_site_method=vina_binding_site_method,
                 )
+                + diffdock_casp15_inference_suffix
                 + "\n"
             )
         f.write("\n")
@@ -320,23 +379,30 @@ def build_inference_script(
     logging.info(f"Script {output_script} created successfully.")
 
 
+@beartype
 def build_inference_scripts(
-    num_repeats: int,
+    methods_to_sweep: List[INFERENCE_METHODS],
+    vina_binding_site_methods_to_sweep: List[VINA_BINDING_SITE_INFERENCE_METHODS],
+    datasets_to_sweep: List[INFERENCE_DATASETS],
+    num_sweep_repeats: int,
     cuda_device_index: int,
     output_script_dir: str,
     export_hpc_headers: bool = False,
 ):
-    """Build inference scripts according to user arguments.
+    """Build inference scripts according to user sweep arguments.
 
-    :param num_repeats: Number of repeats total.
+    :param methods_to_sweep: Inference methods to sweep.
+    :param vina_binding_site_methods_to_sweep: Vina binding site methods to sweep.
+    :param datasets_to_sweep: Datasets to sweep.
+    :param num_sweep_repeats: Number of repeats in the sweep.
     :param cuda_device_index: Index of the CUDA device to use.
     :param output_script: Output script file.
     :param export_hpc_headers: Whether to export HPC headers.
     """
-    for method in COMMANDS:
-        for vina_binding_site_method in VINA_BINDING_SITE_METHODS:
-            for dataset in DATASETS:
-                for repeat_index in range(1, num_repeats + 1):
+    for method in methods_to_sweep:
+        for vina_binding_site_method in vina_binding_site_methods_to_sweep:
+            for dataset in datasets_to_sweep:
+                for repeat_index in range(1, num_sweep_repeats + 1):
                     build_inference_script(
                         method=method,
                         vina_binding_site_method=vina_binding_site_method,
@@ -354,10 +420,13 @@ def build_inference_scripts(
     config_name="build_inference_script.yaml",
 )
 def main(cfg: DictConfig):
-    """Build an inference script according to user arguments."""
-    if cfg.build_all_scripts:
+    """Build an inference script or sweep according to user arguments."""
+    if cfg.sweep:
         build_inference_scripts(
-            num_repeats=cfg.num_repeats,
+            models_to_sweep=cfg.models_to_sweep,
+            vina_binding_site_methods_to_sweep=cfg.vina_binding_site_methods_to_sweep,
+            datasets_to_sweep=cfg.datasets_to_sweep,
+            num_sweep_repeats=cfg.num_sweep_repeats,
             cuda_device_index=cfg.cuda_device_index,
             output_script_dir=cfg.output_script_dir,
             export_hpc_headers=cfg.export_hpc_headers,
@@ -365,6 +434,7 @@ def main(cfg: DictConfig):
     else:
         build_inference_script(
             method=cfg.method,
+            vina_binding_site_method=cfg.vina_binding_site_method,
             dataset=cfg.dataset,
             repeat_index=cfg.repeat_index,
             cuda_device_index=cfg.cuda_device_index,
