@@ -435,6 +435,9 @@ def build_inference_script(
                 )
             f.write("\n")
 
+        # Inform user of script completion
+        f.write("echo 'Run completed.'\n")
+
     logging.info(f"Script {output_script} created successfully.")
 
 
