@@ -26,10 +26,10 @@ COMMANDS = {
             "python3 posebench/data/diffdock_input_preparation.py dataset={dataset}",
         ],
         "run_inference": [
-            "python3 posebench/models/diffdock_inference.py dataset={dataset} repeat_index={repeat_index}",
+            "python3 posebench/models/diffdock_inference.py dataset={dataset} cuda_device_index={cuda_device_index} repeat_index={repeat_index}",
         ],
         "relax": [
-            "python3 posebench/models/inference_relaxation.py method=diffdock dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
+            "python3 posebench/models/inference_relaxation.py method=diffdock dataset={dataset} cuda_device_index={cuda_device_index} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=diffdock dataset={dataset} repeat_index={repeat_index}",
@@ -47,10 +47,10 @@ COMMANDS = {
             "python3 posebench/data/fabind_input_preparation.py dataset={dataset}",
         ],
         "run_inference": [
-            "python3 posebench/models/fabind_inference.py dataset={dataset} repeat_index={repeat_index}",
+            "python3 posebench/models/fabind_inference.py dataset={dataset} cuda_device_index={cuda_device_index} repeat_index={repeat_index}",
         ],
         "relax": [
-            "python3 posebench/models/inference_relaxation.py method=fabind dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
+            "python3 posebench/models/inference_relaxation.py method=fabind dataset={dataset} cuda_device_index={cuda_device_index} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=fabind dataset={dataset} repeat_index={repeat_index}",
@@ -61,10 +61,10 @@ COMMANDS = {
             "python3 posebench/data/dynamicbind_input_preparation.py dataset={dataset}",
         ],
         "run_inference": [
-            "python3 posebench/models/dynamicbind_inference.py dataset={dataset} repeat_index={repeat_index}",
+            "python3 posebench/models/dynamicbind_inference.py dataset={dataset} cuda_device_index={cuda_device_index} repeat_index={repeat_index}",
         ],
         "relax": [
-            "python3 posebench/models/inference_relaxation.py method=dynamicbind dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
+            "python3 posebench/models/inference_relaxation.py method=dynamicbind dataset={dataset} cuda_device_index={cuda_device_index} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=dynamicbind dataset={dataset} repeat_index={repeat_index}",
@@ -82,10 +82,10 @@ COMMANDS = {
             "python3 posebench/data/neuralplexer_input_preparation.py dataset={dataset}",
         ],
         "run_inference": [
-            "python3 posebench/models/neuralplexer_inference.py dataset={dataset} repeat_index={repeat_index}",
+            "python3 posebench/models/neuralplexer_inference.py dataset={dataset} cuda_device_index={cuda_device_index} repeat_index={repeat_index}",
         ],
         "relax": [
-            "python3 posebench/models/inference_relaxation.py method=neuralplexer dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
+            "python3 posebench/models/inference_relaxation.py method=neuralplexer dataset={dataset} cuda_device_index={cuda_device_index} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
         ],
         "align_complexes": [
             "python3 posebench/analysis/complex_alignment.py method=neuralplexer dataset={dataset} repeat_index={repeat_index}",
@@ -107,14 +107,14 @@ COMMANDS = {
         ],
         "run_inference": [
             "conda activate forks/RoseTTAFold-All-Atom/RFAA/",
-            "python3 posebench/models/rfaa_inference.py dataset={dataset} run_inference_directly=true",
+            "python3 posebench/models/rfaa_inference.py dataset={dataset} cuda_device_index={cuda_device_index} run_inference_directly=true",
             "conda deactivate",
         ],
         "extract_outputs": [
             "python3 posebench/data/rfaa_output_extraction.py dataset={dataset}",
         ],
         "relax": [
-            "python3 posebench/models/inference_relaxation.py method=rfaa dataset={dataset} remove_initial_protein_hydrogens=true",
+            "python3 posebench/models/inference_relaxation.py method=rfaa dataset={dataset} cuda_device_index={cuda_device_index} remove_initial_protein_hydrogens=true",
         ],
         "align_complexes": [
             "python3 posebench/analysis/complex_alignment.py method=rfaa dataset={dataset}",
@@ -141,7 +141,7 @@ COMMANDS = {
             "mkdir -p forks/Vina/inference/vina_{vina_binding_site_method}_{dataset}_outputs_{repeat_index} && cp -r data/test_cases/{dataset}/vina_{vina_binding_site_method}_{dataset}_outputs_{repeat_index}/* forks/Vina/inference/vina_{vina_binding_site_method}_{dataset}_outputs_{repeat_index}",
         ],
         "relax": [
-            "python3 posebench/models/inference_relaxation.py method=vina vina_binding_site_method={vina_binding_site_method} dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
+            "python3 posebench/models/inference_relaxation.py method=vina vina_binding_site_method={vina_binding_site_method} dataset={dataset} cuda_device_index={cuda_device_index} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=vina vina_binding_site_method={vina_binding_site_method} dataset={dataset} repeat_index={repeat_index}",
@@ -159,7 +159,7 @@ COMMANDS = {
             "python3 posebench/data/tulip_output_extraction.py dataset={dataset}",
         ],
         "relax": [
-            "python3 posebench/models/inference_relaxation.py method=tulip dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
+            "python3 posebench/models/inference_relaxation.py method=tulip dataset={dataset} cuda_device_index={cuda_device_index} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=tulip dataset={dataset} repeat_index={repeat_index}",
@@ -371,6 +371,7 @@ def build_inference_script(
                     cmd.format(
                         dataset=dataset,
                         repeat_index=repeat_index,
+                        cuda_device_index=cuda_device_index,
                         vina_binding_site_method=vina_binding_site_method,
                     )
                     + "\n"
@@ -429,7 +430,6 @@ def build_inference_script(
                         dataset=dataset,
                         repeat_index=repeat_index,
                         vina_binding_site_method=vina_binding_site_method,
-                        cuda_device_index=cuda_device_index,
                     )
                     + "\n"
                 )
