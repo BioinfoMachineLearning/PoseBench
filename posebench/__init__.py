@@ -70,19 +70,21 @@ def resolve_method_protein_dir(
             os.path.join(
                 "data",
                 f"{dataset}_set",
-                f"{dataset}_holo_aligned_esmfold_structures{pocket_postfix}",
+                f"{dataset}_holo_aligned_predicted_structures{pocket_postfix}",
             )
             if os.path.exists(
                 os.path.join(
                     "data",
                     f"{dataset}_set",
-                    f"{dataset}_holo_aligned_esmfold_structures{pocket_postfix}",
+                    f"{dataset}_holo_aligned_predicted_structures{pocket_postfix}",
                 )
             )
             else os.path.join(
                 "data",
                 f"{dataset}_set",
-                "predicted_structures" if dataset == "casp15" else f"{dataset}_esmfold_structures",
+                "predicted_structures"
+                if dataset == "casp15"
+                else f"{dataset}_predicted_structures",
             )
         )
     elif method == "dynamicbind":

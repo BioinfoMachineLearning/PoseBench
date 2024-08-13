@@ -61,12 +61,12 @@ def write_input_csv(
                     protein_filepath = (
                         os.path.join(
                             input_protein_structure_dir,
-                            f"{pdb_id}_holo_aligned_esmfold_protein.pdb",
+                            f"{pdb_id}_holo_aligned_predicted_protein.pdb",
                         )
                         if os.path.exists(
                             os.path.join(
                                 input_protein_structure_dir,
-                                f"{pdb_id}_holo_aligned_esmfold_protein.pdb",
+                                f"{pdb_id}_holo_aligned_predicted_protein.pdb",
                             )
                         )
                         else os.path.join(input_protein_structure_dir, f"{pdb_id}.pdb")

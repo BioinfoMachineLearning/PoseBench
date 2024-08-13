@@ -62,7 +62,7 @@ COMMANDS = {
         ],
         "run_inference": [
             "python3 posebench/models/dynamicbind_inference.py dataset={dataset} repeat_index={repeat_index}",
-            'python3 posebench/models/dynamicbind_inference.py dataset=casp15 batch_size=1 input_data_dir="$PWD"/data/casp15_set/predicted_structures repeat_index={repeat_index}',
+            'python3 posebench/models/dynamicbind_inference.py dataset=casp15 batch_size=1 input_data_dir="$PWD"/data/casp15_set/casp15_holo_aligned_predicted_structures repeat_index={repeat_index}',
         ],
         "relax": [
             "python3 posebench/models/inference_relaxation.py method=dynamicbind dataset={dataset} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true num_processes=1 repeat_index={repeat_index}",
@@ -81,7 +81,7 @@ COMMANDS = {
     "neuralplexer": {
         "prepare_input": [
             "python3 posebench/data/neuralplexer_input_preparation.py dataset={dataset}",
-            'python3 posebench/data/neuralplexer_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets input_receptor_structure_dir="$PWD"/data/casp15_set/predicted_structures',
+            'python3 posebench/data/neuralplexer_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets input_receptor_structure_dir="$PWD"/data/casp15_set/casp15_holo_aligned_predicted_structures',
         ],
         "run_inference": [
             "python3 posebench/models/neuralplexer_inference.py dataset={dataset} repeat_index={repeat_index}",

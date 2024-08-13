@@ -94,8 +94,8 @@ def write_scripts(
                 if pocket_only_baseline:
                     protein_filepath = os.path.join(
                         input_data_dir,
-                        f"{dataset}_holo_aligned_esmfold_structures_bs_cropped",
-                        f"{pdb_id}_holo_aligned_esmfold_protein.pdb",
+                        f"{dataset}_holo_aligned_predicted_structures_bs_cropped",
+                        f"{pdb_id}_holo_aligned_predicted_protein.pdb",
                     )
                     if not os.path.exists(protein_filepath):
                         logger.warning(

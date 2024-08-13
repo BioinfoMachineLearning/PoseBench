@@ -258,8 +258,8 @@ Then, predict each apo protein structure using ESMFold's batch
 inference script
 
 ```bash
-python3 posebench/data/components/esmfold_batch_structure_prediction.py -i data/posebusters_benchmark_set/posebusters_benchmark_esmfold_sequences.fasta -o data/posebusters_benchmark_set/posebusters_benchmark_esmfold_structures --skip-existing
-python3 posebench/data/components/esmfold_batch_structure_prediction.py -i data/astex_diverse_set/astex_diverse_esmfold_sequences.fasta -o data/astex_diverse_set/astex_diverse_esmfold_structures --skip-existing
+python3 posebench/data/components/esmfold_batch_structure_prediction.py -i data/posebusters_benchmark_set/posebusters_benchmark_esmfold_sequences.fasta -o data/posebusters_benchmark_set/posebusters_benchmark_predicted_structures --skip-existing
+python3 posebench/data/components/esmfold_batch_structure_prediction.py -i data/astex_diverse_set/astex_diverse_esmfold_sequences.fasta -o data/astex_diverse_set/astex_diverse_predicted_structures --skip-existing
 ```
 
 **NOTE:** Having a CUDA-enabled device available when running ESMFold is highly recommended
@@ -337,7 +337,7 @@ Prepare CSV input files
 python3 posebench/data/diffdock_input_preparation.py dataset=posebusters_benchmark
 python3 posebench/data/diffdock_input_preparation.py dataset=astex_diverse
 python3 posebench/data/diffdock_input_preparation.py dataset=dockgen
-python3 posebench/data/diffdock_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets input_protein_structure_dir="$PWD"/data/casp15_set/predicted_structures
+python3 posebench/data/diffdock_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets input_protein_structure_dir="$PWD"/data/casp15_set/casp15_holo_aligned_predicted_structures
 ```
 
 Run inference on each dataset
@@ -455,7 +455,7 @@ python3 posebench/models/dynamicbind_inference.py dataset=astex_diverse repeat_i
 ...
 python3 posebench/models/dynamicbind_inference.py dataset=dockgen repeat_index=1
 ...
-python3 posebench/models/dynamicbind_inference.py dataset=casp15 batch_size=1 input_data_dir="$PWD"/data/casp15_set/predicted_structures repeat_index=1
+python3 posebench/models/dynamicbind_inference.py dataset=casp15 batch_size=1 input_data_dir="$PWD"/data/casp15_set/casp15_holo_aligned_predicted_structures repeat_index=1
 ...
 ```
 
@@ -504,7 +504,7 @@ Prepare CSV input files
 python3 posebench/data/neuralplexer_input_preparation.py dataset=posebusters_benchmark
 python3 posebench/data/neuralplexer_input_preparation.py dataset=astex_diverse
 python3 posebench/data/neuralplexer_input_preparation.py dataset=dockgen
-python3 posebench/data/neuralplexer_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets input_receptor_structure_dir="$PWD"/data/casp15_set/predicted_structures
+python3 posebench/data/neuralplexer_input_preparation.py dataset=casp15 input_data_dir="$PWD"/data/casp15_set/targets input_receptor_structure_dir="$PWD"/data/casp15_set/casp15_holo_aligned_predicted_structures
 ```
 
 Run inference on each dataset

@@ -423,7 +423,7 @@ def main(cfg: DictConfig):
                 for item in input_data_dir.rglob(
                     f"*{protein_id.split(f'{cfg.dataset}_')[-1]}{'_lig.pdb' if cfg.dataset == 'casp15' else f'*_protein{pocket_postfix}.pdb'}"
                 )
-                if "esmfold_structures" not in str(item)
+                if "predicted_structures" not in str(item)
             ]
             if cfg.dataset == "dockgen":
                 reference_protein_pdbs = [

@@ -237,7 +237,7 @@ def main(cfg: DictConfig):
         os.path.join(
             cfg.data_dir,
             "astex_diverse_set",
-            "astex_diverse_holo_aligned_esmfold_structures",
+            "astex_diverse_holo_aligned_predicted_structures",
         ),
         os.path.join(cfg.data_dir, "astex_diverse_set"),
         os.path.join(
@@ -252,7 +252,7 @@ def main(cfg: DictConfig):
         os.path.join(
             cfg.data_dir,
             "posebusters_benchmark_set",
-            "posebusters_benchmark_holo_aligned_esmfold_structures",
+            "posebusters_benchmark_holo_aligned_predicted_structures",
         ),
         os.path.join(cfg.data_dir, "posebusters_benchmark_set"),
         os.path.join(
@@ -265,7 +265,7 @@ def main(cfg: DictConfig):
 
     plot_dataset_rmsd(
         "DockGen Set",
-        os.path.join(cfg.data_dir, "dockgen_set", "dockgen_holo_aligned_esmfold_structures"),
+        os.path.join(cfg.data_dir, "dockgen_set", "dockgen_holo_aligned_predicted_structures"),
         os.path.join(cfg.data_dir, "dockgen_set"),
         os.path.join(
             cfg.data_dir,
@@ -279,7 +279,7 @@ def main(cfg: DictConfig):
 
     plot_dataset_rmsd(
         "CASP15 Set",
-        os.path.join(cfg.data_dir, "casp15_set", "predicted_structures"),
+        os.path.join(cfg.data_dir, "casp15_set", "casp15_holo_aligned_predicted_structures"),
         os.path.join(cfg.data_dir, "casp15_set", "targets"),
         os.path.join(
             cfg.data_dir,
@@ -299,7 +299,7 @@ def main(cfg: DictConfig):
 
     # plot_dataset_rmsd(
     #     "CASP15 Set",
-    #     os.path.join(cfg.data_dir, "casp15_set", "predicted_structures"),
+    #     os.path.join(cfg.data_dir, "casp15_set", "casp15_holo_aligned_predicted_structures"),
     #     os.path.join(cfg.data_dir, "casp15_set", "targets"),
     #     os.path.join(
     #         cfg.data_dir,

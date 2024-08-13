@@ -42,7 +42,7 @@ ensemble_benchmarking: false # whether to run ensemble benchmarking
 ensemble_benchmarking_dataset: posebusters_benchmark # the dataset to use for ensemble benchmarking - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
 ensemble_benchmarking_repeat_index: 1 # the repeat index to use for ensemble benchmarking
 ensemble_ranking_method: consensus # the method with which to rank-order and select the top ensemble prediction for each target - NOTE: must be one of (`consensus`, `ff`)
-ensemble_benchmarking_apo_protein_dir: ${oc.env:PROJECT_ROOT}/data/${ensemble_benchmarking_dataset}_set/${ensemble_benchmarking_dataset}_holo_aligned_esmfold_structures # the directory containing the apo proteins to use for ensemble benchmarking
+ensemble_benchmarking_apo_protein_dir: ${oc.env:PROJECT_ROOT}/data/${ensemble_benchmarking_dataset}_set/${ensemble_benchmarking_dataset}_holo_aligned_predicted_structures # the directory containing the apo proteins to use for ensemble benchmarking
 # DiffDock inference arguments:
 diffdock_python_exec_path: ${oc.env:PROJECT_ROOT}/forks/DiffDock/DiffDock/bin/python3 # the Python executable to use
 diffdock_exec_dir: ${oc.env:PROJECT_ROOT}/forks/DiffDock # the DiffDock directory in which to execute the inference scripts
@@ -61,7 +61,7 @@ diffdock_skip_existing: true # whether to skip existing predictions
 dynamicbind_python_exec_path: ${oc.env:PROJECT_ROOT}/forks/DynamicBind/DynamicBind/bin/python3 # the Python executable to use
 dynamicbind_exec_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind # the DynamicBind directory in which to execute the inference scripts
 dynamicbind_dataset: ensemble # the dataset to use for inference - NOTE: must be one of (`ensemble`)
-dynamicbind_input_protein_data_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind/inference/ensemble_esmfold_structures # the input protein-ligand complex directory to recursively parse for protein inputs
+dynamicbind_input_protein_data_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind/inference/ensemble_predicted_structures # the input protein-ligand complex directory to recursively parse for protein inputs
 dynamicbind_input_ligand_csv_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind/inference/dynamicbind_ensemble_inputs # the input CSV directory with which to run inference
 dynamicbind_samples_per_complex: 40 # the number of samples to generate per complex
 dynamicbind_savings_per_complex: 1 # the (top-N) number of sample visualizations to save per complex

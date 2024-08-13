@@ -5,7 +5,7 @@ python2_exec_path: ${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/bin/python # the path 
 p2rank_exec_path: ${oc.env:PROJECT_ROOT}/forks/P2Rank/p2rank_2.4.2/prank # the path to the P2Rank executable
 prepare_receptor_script_path: ${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/CCSBpckgs/AutoDockTools/Utilities24/prepare_receptor4.py # the path to the prepare_receptor.py script
 input_dir: ${resolve_method_output_dir:${method},${dataset},${method},${ensemble_ranking_method},${repeat_index}} # the input directory with which to run inference
-input_protein_structure_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_esmfold_structures # the input protein structure directory to parse
+input_protein_structure_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_predicted_structures # the input protein structure directory to parse
 output_dir: ${oc.env:PROJECT_ROOT}/data/test_cases/${dataset}/vina_${method}_${dataset}_outputs_${repeat_index} # the output directory to which to save the inference results
 cpu: 0 # the number of CPU workers to use with AutoDock Vina for parallel processing, 0 for all available
 seed: null # the random seed to use with AutoDock Vina

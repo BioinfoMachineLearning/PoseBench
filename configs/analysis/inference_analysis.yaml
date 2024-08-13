@@ -6,7 +6,7 @@ ensemble_ranking_method: consensus # the method with which to rank-order and sel
 input_csv_path: ${resolve_method_input_csv_path:${method},${dataset}} # the input CSV filepath with which to run inference
 input_data_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set # the input protein-ligand complex directory to recursively parse
 posebusters_ccd_ids_filepath: ${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt # the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts
-dockgen_test_ids_filepath: ${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test_rmsd_filtered.txt # the path to the (ESMFold RMSD-filtered) DockGen test set IDs file
+dockgen_test_ids_filepath: ${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test_rmsd_filtered.txt # the path to the (predicted RMSD-filtered) DockGen test set IDs file
 output_dir: ${resolve_method_output_dir:${method},${dataset},${vina_binding_site_method},${ensemble_ranking_method},${repeat_index}} # the output directory to which to save the relaxed predictions
 repeat_index: 1 # the repeat index which was used for inference
 pocket_only_baseline: false # whether to analyze the pocket-only baseline

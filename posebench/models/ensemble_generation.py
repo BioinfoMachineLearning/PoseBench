@@ -1245,7 +1245,7 @@ def rank_ensemble_predictions(
         ranking and valued as its method name, output protein filepath, output ligand filepath, and
         average pairwise RMSD or Vina energy score.
     """
-    # cache filepath to predicted apo protein structure e.g., from ESMFold
+    # cache filepath to predicted apo protein structure from a structure predictor e.g., ESMFold
     if cfg.ensemble_benchmarking:
         apo_reference_protein_filepaths = list(
             Path(cfg.ensemble_benchmarking_apo_protein_dir).rglob(f"*{name}*.pdb")

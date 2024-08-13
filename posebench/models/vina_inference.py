@@ -525,7 +525,7 @@ def main(cfg: DictConfig):
             apo_protein_filepaths = glob.glob(
                 os.path.join(
                     cfg.input_protein_structure_dir,
-                    f"{item.replace('casp15_', '')}{'' if cfg.dataset == 'casp15' else '*_holo_aligned_esmfold_protein'}.pdb",
+                    f"{item.replace('casp15_', '')}{'' if cfg.dataset == 'casp15' else '*_holo_aligned_predicted_protein'}.pdb",
                 )
             )
             if not apo_protein_filepaths:
@@ -538,7 +538,7 @@ def main(cfg: DictConfig):
                 protein_filepaths = glob.glob(
                     os.path.join(
                         cfg.input_protein_structure_dir,
-                        f"{item}{'' if cfg.dataset == 'casp15' else '*_holo_aligned_esmfold_protein'}.pdb",
+                        f"{item}{'' if cfg.dataset == 'casp15' else '*_holo_aligned_predicted_protein'}.pdb",
                     )
                 )
                 ligand_filepath = os.path.join(item_path, "rank1.sdf")
@@ -600,7 +600,7 @@ def main(cfg: DictConfig):
                 protein_filepaths = glob.glob(
                     os.path.join(
                         cfg.input_protein_structure_dir,
-                        f"{item}{'' if cfg.dataset == 'casp15' else '*_holo_aligned_esmfold_protein'}.pdb",
+                        f"{item}{'' if cfg.dataset == 'casp15' else '*_holo_aligned_predicted_protein'}.pdb",
                     )
                 )
                 ligand_filepath = os.path.join(item_path, "rank1.sdf")

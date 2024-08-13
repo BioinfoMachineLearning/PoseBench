@@ -2,7 +2,7 @@ cuda_device_index: 0 # the CUDA device to use for inference, or `null` to use CP
 python_exec_path: ${oc.env:PROJECT_ROOT}/forks/DynamicBind/DynamicBind/bin/python3 # the Python executable to use
 dynamicbind_exec_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind # the DynamicBind directory in which to execute the inference scripts
 dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
-input_data_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_esmfold_structures # the input protein-ligand complex directory to recursively parse for protein inputs
+input_data_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_predicted_structures # the input protein-ligand complex directory to recursively parse for protein inputs
 input_ligand_csv_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind/inference/dynamicbind_${dataset}_inputs # the input CSV directory with which to run inference
 samples_per_complex: 40 # the number of samples to generate per complex
 savings_per_complex: 1 # the (top-N) number of sample visualizations to save per complex

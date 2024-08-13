@@ -120,8 +120,8 @@ def create_mol_table(
     pdb_ids = None
     relaxed_protein = relaxed and cfg.relax_protein
     if cfg.dataset == "dockgen" and cfg.dockgen_test_ids_filepath is not None:
-        # NOTE: for DockGen, we have each method predict for all 189 complexes
-        # but evaluate them here on an ESMFold RMSD-filtered subset of 91 complexes
+        # NOTE: for DockGen, we may have each method predict for all 189 complexes
+        # but evaluate them here on a predicted RMSD-filtered subset of 91 complexes
         assert os.path.exists(
             cfg.dockgen_test_ids_filepath
         ), f"Invalid test IDs file path for DockGen: {os.path.exists(cfg.dockgen_test_ids_filepath)}."
@@ -214,22 +214,22 @@ def create_mol_table(
         pocket_postfix = "_bs_cropped" if cfg.pocket_only_baseline else ""
         protein_structure_input_dir = (
             os.path.join(
-                input_data_dir, f"{cfg.dataset}_holo_aligned_esmfold_structures{pocket_postfix}"
+                input_data_dir, f"{cfg.dataset}_holo_aligned_predicted_structures{pocket_postfix}"
             )
             if os.path.exists(
                 os.path.join(
                     input_data_dir,
-                    f"{cfg.dataset}_holo_aligned_esmfold_structures{pocket_postfix}",
+                    f"{cfg.dataset}_holo_aligned_predicted_structures{pocket_postfix}",
                 )
             )
-            else os.path.join(input_data_dir, f"{cfg.dataset}_esmfold_structures")
+            else os.path.join(input_data_dir, f"{cfg.dataset}_predicted_structures")
         )
         protein_structure_file_postfix = (
-            "_holo_aligned_esmfold_protein"
+            "_holo_aligned_predicted_protein"
             if os.path.exists(
                 os.path.join(
                     input_data_dir,
-                    f"{cfg.dataset}_holo_aligned_esmfold_structures{pocket_postfix}",
+                    f"{cfg.dataset}_holo_aligned_predicted_structures{pocket_postfix}",
                 )
             )
             and cfg.dataset != "casp15"
