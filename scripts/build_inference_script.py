@@ -274,7 +274,15 @@ def build_inference_script(
                     time_limit=time_limit,
                 )
             )
-        f.write("\nconda activate PoseBench\n\n")
+            f.write("\nconda activate PoseBench\n\n")
+        else:
+            f.write(
+                "#!/bin/bash"
+                + "\n\n# shellcheck source=/dev/null\n"
+                + "source /home/$USER/mambaforge/etc/profile.d/conda.sh\n\n"
+                + "# Activate PoseBench environment\n"
+                + "conda activate PoseBench\n\n"
+            )
 
         # Prepare input files
         if "prepare_input" in commands:
@@ -435,8 +443,8 @@ def build_inference_script(
                 )
             f.write("\n")
 
-        # Inform user of script completion
-        f.write("echo 'Run completed.'\n")
+        # Inform user of run completion
+        f.write("# Inform user of run completion\n" + "echo 'Run completed.'\n")
 
     logging.info(f"Script {output_script} created successfully.")
 
