@@ -482,9 +482,9 @@ def main(cfg: DictConfig):
     """Build an inference script or sweep according to user arguments."""
     if cfg.sweep:
         build_inference_scripts(
-            models_to_sweep=cfg.models_to_sweep,
-            vina_binding_site_methods_to_sweep=cfg.vina_binding_site_methods_to_sweep,
-            datasets_to_sweep=cfg.datasets_to_sweep,
+            methods_to_sweep=list(cfg.methods_to_sweep),
+            vina_binding_site_methods_to_sweep=list(cfg.vina_binding_site_methods_to_sweep),
+            datasets_to_sweep=list(cfg.datasets_to_sweep),
             num_sweep_repeats=cfg.num_sweep_repeats,
             cuda_device_index=cfg.cuda_device_index,
             output_script_dir=cfg.output_script_dir,
