@@ -44,7 +44,13 @@ def main(cfg: DictConfig):
         if cfg.lowercase_id:
             # Support the DockGen dataset's hybrid lowercase-uppercase pdb id-CCD ID format
             new_id_parts = new_id.split("_")
-            new_id = "_".join([part.lower() for part in new_id_parts[:2]] + new_id_parts[2:])
+            new_id = (
+                "_".join([part.lower() for part in new_id_parts[:2]])
+                + "_"
+                + "-".join([part.upper() for part in new_id_parts[2:-1]])
+                + "_"
+                + new_id_parts[-1]
+            )
         else:
             new_id = new_id.upper()
         mmcif_filepath = os.path.join(

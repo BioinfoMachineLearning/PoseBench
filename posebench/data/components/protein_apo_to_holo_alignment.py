@@ -119,7 +119,9 @@ def read_mols(
             ligs.append(lig)
     else:
         for file in os.listdir(os.path.join(dataset_dir, name)):
-            if file.endswith("_ligand.sdf") and "rdkit" not in file:
+            if (
+                file.endswith("_ligand.sdf") or file.endswith("_ligand.pdb")
+            ) and "rdkit" not in file:
                 lig = read_molecule(
                     os.path.join(dataset_dir, name, file), remove_hs=remove_hs, sanitize=True
                 )
