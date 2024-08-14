@@ -263,6 +263,7 @@ def build_inference_script(
 
     # Build script in sections
     with open(output_script, "w") as f:
+        f.write("#!/bin/bash -l\n\n")
         if export_hpc_headers:
             f.write(
                 insert_hpc_headers(
@@ -280,8 +281,7 @@ def build_inference_script(
             f.write("\nconda activate PoseBench/\n\n")
         else:
             f.write(
-                "#!/bin/bash"
-                + "\n\n# shellcheck source=/dev/null\n"
+                "# shellcheck source=/dev/null\n"
                 + "source /home/$USER/mambaforge/etc/profile.d/conda.sh\n\n"
                 + "# Activate PoseBench environment\n"
                 + "conda activate PoseBench\n\n"
