@@ -350,6 +350,20 @@ def build_inference_script(
                     + neuralplexer_casp15_inference_suffix
                     + "\n"
                 )
+            if diffdock_casp15_inference_suffix:
+                f.write(
+                    "# NOTE: Due to DiffDock-L's occasional numerical instabilities "
+                    + "on the CASP15 dataset, you may have to re-run this inference script "
+                    + "several times (with the default 'skip_existing=true') to have it "
+                    + "successfully predict for all CASP targets.\n"
+                )
+            if dynamicbind_casp15_inference_suffix:
+                f.write(
+                    "# NOTE: Due to DynamicBind's occasional numerical instabilities "
+                    + "on the CASP15 dataset, you may have to re-run this inference script "
+                    + "several times (with the default 'skip_existing=true') to have it "
+                    + "successfully predict for all CASP targets.\n"
+                )
             f.write("\n")
 
         # Extract outputs (if applicable)
