@@ -522,7 +522,7 @@ def build_inference_script(
             f.write("\n")
 
         # Inform user of run completion
-        f.write("# Inform user of run completion\n" + "echo 'Run completed.'\n")
+        f.write("# Inform user of run completion\n" + f"echo 'Run {repeat_index} completed.'\n")
 
     logging.info(f"Script {output_script} created successfully.")
 
