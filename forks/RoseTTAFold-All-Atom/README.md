@@ -70,13 +70,13 @@ wget https://bfd.mmseqs.com/bfd_metaclust_clu_complete_id30_c90_final_seq.sorted
 mkdir -p bfd
 tar xfz bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt.tar.gz -C ./bfd
 
-# structure templates (including *_a3m.ffdata, *_a3m.ffindex)
+# structure templates [81G] (including *_a3m.ffdata, *_a3m.ffindex)
 wget https://files.ipd.uw.edu/pub/RoseTTAFold/pdb100_2021Mar03.tar.gz
 tar xfz pdb100_2021Mar03.tar.gz
 ```
 **NOTE:** Make sure to update `DB_UR30` and `DB_BFD` (on Lines 19 and 20 of `make_msa.sh`) as well as `database_params.hhdb` (on Line 6 of `rf2aa/config/inference/base.yaml`) to list the absolute (base) paths to these respective local databases. For example, one may set these values to `DB_UR30="/bmlfast/rfaa_databases/uniref30/UniRef30_2020_06"`, `DB_BFD="/bmlfast/rfaa_databases/bfd/bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt"`, and `hhdb: "/bmlfast/rfaa_databases/pdb100_2021Mar03/pdb100_2021Mar03"`.
 
-8. Download `BLAST`
+8. Download `BLAST` [39M]
 ```
 wget https://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/2.2.26/blast-2.2.26-x64-linux.tar.gz
 mkdir -p blast-2.2.26

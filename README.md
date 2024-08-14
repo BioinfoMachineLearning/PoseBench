@@ -211,7 +211,7 @@ rm dockgen_ensemble_benchmark_method_predictions.tar.gz
 rm casp15_ensemble_benchmark_method_predictions.tar.gz
 ```
 
-**NOTE:** One can reproduce the *pocket-only* experiments with the PoseBusters Benchmark set by adding the argument `pocket_only_baseline=true` to each command below used to run PoseBusters Benchmark dataset inference with all the baseline methods, since the pocket-only versions of the dataset's holo-aligned predicted protein structures have also been included in the downloadable Zenodo archive `posebusters_benchmark_set.tar.gz` referenced above. However, be aware that one then needs to *rename* any existing directories containing PoseBusters Benchmark dataset inference results for each baseline method, to prevent these existing inference directories from being merged with new pocket-only results. Please see the config files within `configs/data/`, `configs/model/`, and `configs/analysis/` for more details.
+**NOTE:** One can reproduce the *pocket-only* experiments with the PoseBusters Benchmark set by adding the argument `pocket_only_baseline=true` to each command below used to run PoseBusters Benchmark dataset inference with all the baseline methods, since the pocket-only versions of the dataset's holo-aligned predicted protein structures have also been included in the downloadable Zenodo archive `posebusters_benchmark_set.tar.gz` referenced above. Similarly, one can reproduce the *NeuralPLexer w/o inter-ligand clash loss (ILCL)* experiments with the CASP15 set by adding the argument `no_ilcl=true` (`neuralplexer_no_ilcl=true`) to the commands `python3 posebench/models/neuralplexer_inference.py dataset=casp15 ...` and `python3 posebench/analysis/inference_analysis_casp.py dataset=casp15 ...` below (`python3 posebench/models/ensemble_generation.py ensemble_benchmarking_dataset=casp15 ...`) used to run CASP15 dataset inference with NeuralPLexer. Please see the config files within `configs/data/`, `configs/model/`, and `configs/analysis/` for more details.
 
 ### Downloading sequence databases (required only for RoseTTAFold-All-Atom inference)
 
@@ -229,7 +229,7 @@ wget https://bfd.mmseqs.com/bfd_metaclust_clu_complete_id30_c90_final_seq.sorted
 mkdir -p bfd
 tar xfz bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt.tar.gz -C ./bfd
 
-# structure templates (including *_a3m.ffdata, *_a3m.ffindex)
+# structure templates [81G] (including *_a3m.ffdata, *_a3m.ffindex)
 wget https://files.ipd.uw.edu/pub/RoseTTAFold/pdb100_2021Mar03.tar.gz
 tar xfz pdb100_2021Mar03.tar.gz
 

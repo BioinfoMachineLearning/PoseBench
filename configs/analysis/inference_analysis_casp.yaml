@@ -12,4 +12,4 @@ fault_tolerant: true # whether to continue processing targets if an error occurs
 skip_existing: true # whether to skip processing targets for which output already exists
 score_relaxed_structures: true # whether to score relaxed structures in addition to the original (unrelaxed) structures
 repeat_index: 1 # the run index to use for scoring predictions
-no_pretraining: false # whether to score a model without pretraining
+no_ilcl: false # whether to score a model trained without an inter-ligand clash loss (ILCL) - NOTE: only applicable to the `neuralplexer` method
