@@ -94,7 +94,8 @@ def parse_inference_inputs_from_dir(
                             sanitize=False,
                         )
                 if mol is None:
-                    raise ValueError(f"No ligand file found for PDB ID {pdb_id}")
+                    logger.info(f"No ligand file found for PDB ID {pdb_id}")
+                    continue
                 mol_smiles = Chem.MolToSmiles(mol)
                 if mol_smiles is not None:
                     smiles_and_pdb_id_list.append((mol_smiles, pdb_id))
