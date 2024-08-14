@@ -8,7 +8,7 @@ output_script_dir: ${oc.env:PROJECT_ROOT}/scripts/inference # the directory in w
 pocket_only_baseline: null # whether to perform a pocket-only baseline for the PoseBusters Benchmark set - NOTE: not applicable only to `tulip`
 no_ilcl: null # whether to use model weights trained with an inter-ligand clash loss (ILCL) for the CASP15 set - NOTE: only applicable to `neuralplexer`
 relax_protein: null # whether to relax the protein structure before scoring - NOTE: currently in an experimental state
-export_hpc_headers: false # whether to insert high-performance computing (by default, SLURM) headers into the output script
+export_hpc_headers: true # whether to insert high-performance computing (by default, SLURM) headers into the output script
 verbose: false # whether to print verbose (e.g., invalid configuration) output
 # sweep arguments:
 sweep: false # whether to build all combinations of method-dataset run scripts
