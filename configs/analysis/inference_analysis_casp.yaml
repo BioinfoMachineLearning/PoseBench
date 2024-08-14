@@ -13,3 +13,4 @@ skip_existing: true # whether to skip processing targets for which output alread
 score_relaxed_structures: true # whether to score relaxed structures in addition to the original (unrelaxed) structures
 repeat_index: 1 # the run index to use for scoring predictions
 no_ilcl: false # whether to score a model trained without an inter-ligand clash loss (ILCL) - NOTE: only applicable to the `neuralplexer` method
+relax_protein: false # whether to relax the protein - NOTE: currently periodically yields unpredictable protein-ligand separation

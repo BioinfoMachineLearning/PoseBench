@@ -136,6 +136,7 @@ def create_casp_mol_table(
     input_data_dir: Path,
     targets_to_select: List[str],
     relaxed: bool = False,
+    relax_protein: bool = False,
     rank_to_select: int = 1,
 ) -> pd.DataFrame:
     """Create a table of CASP molecules and their corresponding ligand files.
@@ -154,6 +155,8 @@ def create_casp_mol_table(
                 continue
             sdf_data_files = glob.glob(str(data_dir / f"*_rank{rank_to_select}_*.sdf"))
             pdb_data_files = glob.glob(str(data_dir / f"*_rank{rank_to_select}_*.pdb"))
+            if relax_protein:
+                pdb_data_files = glob.glob(str(data_dir / f"*_rank{rank_to_select}_*_relaxed.pdb"))
             assert (
                 len(sdf_data_files) == 1
             ), f"Expected 1 SDF file, but found {len(sdf_data_files)}."
@@ -208,6 +211,11 @@ def main(cfg: DictConfig):
         output_dir = cfg.predictions_dir + config
         scoring_results_filepath = Path(output_dir) / "scoring_results.csv"
         bust_results_filepath = Path(output_dir) / "bust_results.csv"
+
+        # differentiate relaxed and unrelaxed protein pose results
+        if "relaxed" in config and cfg.relax_protein:
+            bust_results_filepath = bust_results_filepath.replace(".csv", "_protein_relaxed.csv")
+
         os.makedirs(scoring_results_filepath.parent, exist_ok=True)
 
         # collect analysis results
@@ -263,6 +271,7 @@ def main(cfg: DictConfig):
                 Path(cfg.predictions_dir),
                 targets_to_select,
                 relaxed="relaxed" in config,
+                relax_protein=cfg.relax_protein,
             )
             assert len(mol_table) == len(
                 targets_to_select
