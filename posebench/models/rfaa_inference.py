@@ -86,6 +86,11 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
+    if cfg.pocket_only_baseline:
+        with open_dict(cfg):
+            cfg.input_dir = cfg.input_dir.replace(cfg.dataset, f"{cfg.dataset}_pocket_only")
+            cfg.output_dir = cfg.output_dir.replace(cfg.dataset, f"{cfg.dataset}_pocket_only")
+
     if cfg.run_inference_directly:
         num_dir_items_found = 0
         for item in os.listdir(cfg.input_dir):

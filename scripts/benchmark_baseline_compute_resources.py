@@ -28,12 +28,12 @@ def assemble_baseline_command(cfg: DictConfig) -> List[str]:
     """
     if cfg.method in ["diffdock", "fabind", "dynamicbind", "neuralplexer", "rfaa", "vina"]:
         # NOTE: When running RoseTTAFold-All-Atom, the `RFAA` Conda environment must be activated instead of the `PoseBenchmark` environment
-        vina_postfix = f" method={cfg.vina_binding_site_method}" if cfg.method == "vina" else ""
-        cuda_device_postfix = (
+        vina_suffix = f" method={cfg.vina_binding_site_method}" if cfg.method == "vina" else ""
+        cuda_device_suffix = (
             "" if cfg.method == "vina" else f" cuda_device_index={cfg.cuda_device_index}"
         )
-        rfaa_postfix = " run_inference_directly=true" if cfg.method == "rfaa" else ""
-        return f"python3 posebench/models/{cfg.method}_inference.py dataset={cfg.dataset} repeat_index={cfg.repeat_index} max_num_inputs={cfg.max_num_inputs}{vina_postfix}{cuda_device_postfix}{rfaa_postfix}".split()
+        rfaa_suffix = " run_inference_directly=true" if cfg.method == "rfaa" else ""
+        return f"python3 posebench/models/{cfg.method}_inference.py dataset={cfg.dataset} repeat_index={cfg.repeat_index} max_num_inputs={cfg.max_num_inputs}{vina_suffix}{cuda_device_suffix}{rfaa_suffix}".split()
     else:
         raise ValueError(f"Invalid method: {cfg.method}")
 

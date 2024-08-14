@@ -8,7 +8,7 @@ import subprocess  # nosec
 
 import hydra
 import rootutils
-from omegaconf import DictConfig
+from omegaconf import DictConfig, open_dict
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
@@ -33,6 +33,16 @@ def main(cfg: DictConfig):
         if cfg.max_num_inputs
         else cfg.input_csv_path
     )
+
+    if cfg.pocket_only_baseline:
+        with open_dict(cfg):
+            input_csv_path = input_csv_path.replace(
+                f"diffdock_{cfg.dataset}", f"diffdock_pocket_only_{cfg.dataset}"
+            )
+            cfg.output_dir = cfg.output_dir.replace(
+                f"diffdock_{cfg.dataset}", f"diffdock_pocket_only_{cfg.dataset}"
+            )
+
     assert os.path.exists(input_csv_path), f"Input CSV file `{input_csv_path}` not found."
     try:
         cmd = [

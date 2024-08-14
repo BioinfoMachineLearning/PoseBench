@@ -64,19 +64,20 @@ def resolve_method_protein_dir(
     :param pocket_only_baseline: Whether to return protein files for a pocket-only baseline.
     :return: The protein directory for the given method.
     """
-    pocket_postfix = "_bs_cropped" if pocket_only_baseline else ""
+    pocket_suffix = "_bs_cropped" if pocket_only_baseline else ""
+    pocket_only_suffix = "_pocket_only" if pocket_only_baseline else ""
     if method in STANDARDIZED_DIR_METHODS or method in ["vina", "tulip"]:
         return (
             os.path.join(
                 "data",
                 f"{dataset}_set",
-                f"{dataset}_holo_aligned_predicted_structures{pocket_postfix}",
+                f"{dataset}_holo_aligned_predicted_structures{pocket_suffix}",
             )
             if os.path.exists(
                 os.path.join(
                     "data",
                     f"{dataset}_set",
-                    f"{dataset}_holo_aligned_predicted_structures{pocket_postfix}",
+                    f"{dataset}_holo_aligned_predicted_structures{pocket_suffix}",
                 )
             )
             else os.path.join(
@@ -94,21 +95,25 @@ def resolve_method_protein_dir(
             "inference",
             "outputs",
             "results",
-            dataset,
+            f"{dataset}{pocket_only_suffix}",
         )
     elif method in ["neuralplexer", "rfaa"]:
         return os.path.join(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method),
             "inference",
-            f"{method}_{dataset}_outputs_{repeat_index}",
+            f"{method}{pocket_only_suffix}_{dataset}_outputs_{repeat_index}",
         )
     else:
         raise ValueError(f"Invalid method: {method}")
 
 
 def resolve_method_ligand_dir(
-    method: str, dataset: str, vina_binding_site_method: str, repeat_index: int
+    method: str,
+    dataset: str,
+    vina_binding_site_method: str,
+    repeat_index: int,
+    pocket_only_baseline: bool,
 ) -> str:
     """Resolve the ligand directory for a given method.
 
@@ -116,14 +121,17 @@ def resolve_method_ligand_dir(
     :param dataset: The dataset name.
     :param vina_binding_site_method: The binding site method used for Vina.
     :param repeat_index: The repeat index for the method.
+    :param pocket_only_baseline: Whether to return ligand files for a pocket-only baseline.
     :return: The ligand directory for the given method.
     """
+    pocket_only_suffix = "_pocket_only" if pocket_only_baseline else ""
     if method in STANDARDIZED_DIR_METHODS or method in ["neuralplexer", "rfaa", "tulip"]:
+        output_suffix = "s" if method in ["neuralplexer", "rfaa", "tulip"] else ""
         return os.path.join(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method),
             "inference",
-            f"{method}_{dataset}_output{'s' if method in ['neuralplexer', 'rfaa', 'tulip'] else ''}_{repeat_index}",
+            f"{method}{pocket_only_suffix}_{dataset}_output{output_suffix}_{repeat_index}",
         )
     elif method == "dynamicbind":
         return os.path.join(
@@ -132,14 +140,14 @@ def resolve_method_ligand_dir(
             "inference",
             "outputs",
             "results",
-            dataset,
+            f"{dataset}{pocket_only_suffix}",
         )
     elif method == "vina":
         return os.path.join(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method),
             "inference",
-            f"vina_{vina_binding_site_method}_{dataset}_outputs_{repeat_index}",
+            f"vina{pocket_only_suffix}_{vina_binding_site_method}_{dataset}_outputs_{repeat_index}",
         )
     else:
         raise ValueError(f"Invalid method: {method}")
@@ -151,6 +159,7 @@ def resolve_method_output_dir(
     vina_binding_site_method: str,
     ensemble_ranking_method: str,
     repeat_index: int,
+    pocket_only_baseline: bool,
 ) -> str:
     """Resolve the output directory for a given method.
 
@@ -159,14 +168,17 @@ def resolve_method_output_dir(
     :param vina_binding_site_method: The binding site method used for Vina.
     :param ensemble_ranking_method: The ranking method used for the ensemble method.
     :param repeat_index: The repeat index for the method.
+    :param pocket_only_baseline: Whether to output files for a pocket-only baseline.
     :return: The output directory for the given method.
     """
+    pocket_only_suffix = "_pocket_only" if pocket_only_baseline else ""
     if method in STANDARDIZED_DIR_METHODS or method in ["neuralplexer", "rfaa", "tulip"]:
+        output_suffix = "s" if method in ["neuralplexer", "rfaa", "tulip"] else ""
         return os.path.join(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method),
             "inference",
-            f"{method}_{dataset}_output{'s' if method in ['neuralplexer', 'rfaa', 'tulip'] else ''}_{repeat_index}",
+            f"{method}{pocket_only_suffix}_{dataset}_output{output_suffix}_{repeat_index}",
         )
     elif method == "dynamicbind":
         return os.path.join(
@@ -175,46 +187,48 @@ def resolve_method_output_dir(
             "inference",
             "outputs",
             "results",
-            f"{dataset}_{repeat_index}",
+            f"{dataset}{pocket_only_suffix}_{repeat_index}",
         )
     elif method in ["vina", "p2rank"]:
         return os.path.join(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method),
             "inference",
-            f"vina_{vina_binding_site_method}_{dataset}_outputs_{repeat_index}",
+            f"vina{pocket_only_suffix}_{vina_binding_site_method}_{dataset}_outputs_{repeat_index}",
         )
     elif method == "ensemble":
         return os.path.join(
             "data",
             "test_cases",
             dataset,
-            f"top_{ensemble_ranking_method}_ensemble_predictions_{repeat_index}",
+            f"top_{ensemble_ranking_method}{pocket_only_suffix}_ensemble_predictions_{repeat_index}",
         )
     else:
         raise ValueError(f"Invalid method: {method}")
 
 
-def resolve_method_input_csv_path(method: str, dataset: str) -> str:
+def resolve_method_input_csv_path(method: str, dataset: str, pocket_only_baseline: bool) -> str:
     """Resolve the input CSV path for a given method.
 
     :param method: The method name.
     :param dataset: The dataset name.
+    :param pocket_only_baseline: Whether to return the input CSV path for a pocket-only baseline.
     :return: The input CSV path for the given method.
     """
+    pocket_only_suffix = "_pocket_only" if pocket_only_baseline else ""
     if method in STANDARDIZED_DIR_METHODS or method in ["neuralplexer", "rfaa", "vina", "tulip"]:
         return os.path.join(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method),
             "inference",
-            f"{method}_{dataset}_inputs.csv",
+            f"{method}{pocket_only_suffix}_{dataset}_inputs.csv",
         )
     elif method == "dynamicbind":
         return os.path.join(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method),
             "inference",
-            f"{method}_{dataset}_inputs",
+            f"{method}{pocket_only_suffix}_{dataset}_inputs",
         )
     elif method == "ensemble":
         return os.path.join(
@@ -244,24 +258,28 @@ def register_custom_omegaconf_resolvers():
     )
     OmegaConf.register_new_resolver(
         "resolve_method_ligand_dir",
-        lambda method, dataset, vina_binding_site_method, repeat_index: resolve_method_ligand_dir(
+        lambda method, dataset, vina_binding_site_method, repeat_index, pocket_only_baseline: resolve_method_ligand_dir(
             method,
             dataset,
             vina_binding_site_method,
             repeat_index,
+            pocket_only_baseline,
         ),
     )
     OmegaConf.register_new_resolver(
         "resolve_method_output_dir",
-        lambda method, dataset, vina_binding_site_method, ensemble_ranking_method, repeat_index: resolve_method_output_dir(
+        lambda method, dataset, vina_binding_site_method, ensemble_ranking_method, repeat_index, pocket_only_baseline: resolve_method_output_dir(
             method,
             dataset,
             vina_binding_site_method,
             ensemble_ranking_method,
             repeat_index,
+            pocket_only_baseline,
         ),
     )
     OmegaConf.register_new_resolver(
         "resolve_method_input_csv_path",
-        lambda method, dataset: resolve_method_input_csv_path(method, dataset),
+        lambda method, dataset, pocket_only_baseline: resolve_method_input_csv_path(
+            method, dataset, pocket_only_baseline
+        ),
     )

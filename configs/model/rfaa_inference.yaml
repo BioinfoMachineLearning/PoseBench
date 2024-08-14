@@ -11,4 +11,5 @@ inference_config_name: null # the name of the inference config to use - NOTE: if
 inference_dir_name: null # the name of the inference output directory to use
 repeat_index: 1 # the repeat index to use for inference
 skip_existing: true # whether to skip running inference if the prediction for a target already exists
+pocket_only_baseline: false # whether to run the pocket-only baseline
 max_num_inputs: null # if provided, the number of (dataset subset) inputs over which to run inference

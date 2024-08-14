@@ -211,25 +211,25 @@ def create_mol_table(
             else None
         )
     else:
-        pocket_postfix = "_bs_cropped" if cfg.pocket_only_baseline else ""
+        pocket_suffix = "_bs_cropped" if cfg.pocket_only_baseline else ""
         protein_structure_input_dir = (
             os.path.join(
-                input_data_dir, f"{cfg.dataset}_holo_aligned_predicted_structures{pocket_postfix}"
+                input_data_dir, f"{cfg.dataset}_holo_aligned_predicted_structures{pocket_suffix}"
             )
             if os.path.exists(
                 os.path.join(
                     input_data_dir,
-                    f"{cfg.dataset}_holo_aligned_predicted_structures{pocket_postfix}",
+                    f"{cfg.dataset}_holo_aligned_predicted_structures{pocket_suffix}",
                 )
             )
             else os.path.join(input_data_dir, f"{cfg.dataset}_predicted_structures")
         )
-        protein_structure_file_postfix = (
+        protein_structure_file_suffix = (
             "_holo_aligned_predicted_protein"
             if os.path.exists(
                 os.path.join(
                     input_data_dir,
-                    f"{cfg.dataset}_holo_aligned_predicted_structures{pocket_postfix}",
+                    f"{cfg.dataset}_holo_aligned_predicted_structures{pocket_suffix}",
                 )
             )
             and cfg.dataset != "casp15"
@@ -237,18 +237,18 @@ def create_mol_table(
         )
         if relaxed_protein:
             protein_structure_input_dir = str(inference_dir).replace("_relaxed", "")
-            protein_structure_file_postfix = "_relaxed"
+            protein_structure_file_suffix = "_relaxed"
             mol_table["mol_cond"] = input_table["pdb_id"].apply(
                 lambda x: os.path.join(
                     protein_structure_input_dir,
                     "_".join(x.split("_")[:3]),
-                    f"{'_'.join(x.split('_')[:2])}{protein_structure_file_postfix}.pdb",
+                    f"{'_'.join(x.split('_')[:2])}{protein_structure_file_suffix}.pdb",
                 )
                 if os.path.exists(
                     os.path.join(
                         protein_structure_input_dir,
                         "_".join(x.split("_")[:3]),
-                        f"{'_'.join(x.split('_')[:2])}{protein_structure_file_postfix}.pdb",
+                        f"{'_'.join(x.split('_')[:2])}{protein_structure_file_suffix}.pdb",
                     )
                 )
                 else None
@@ -256,11 +256,11 @@ def create_mol_table(
         else:
             mol_table["mol_cond"] = input_table["pdb_id"].apply(
                 lambda x: os.path.join(
-                    protein_structure_input_dir, f"{x}{protein_structure_file_postfix}.pdb"
+                    protein_structure_input_dir, f"{x}{protein_structure_file_suffix}.pdb"
                 )
                 if os.path.exists(
                     os.path.join(
-                        protein_structure_input_dir, f"{x}{protein_structure_file_postfix}.pdb"
+                        protein_structure_input_dir, f"{x}{protein_structure_file_suffix}.pdb"
                     )
                 )
                 else None
