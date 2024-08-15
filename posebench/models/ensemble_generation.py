@@ -520,6 +520,9 @@ python3 posebench/models/vina_inference.py \\
     ligand_filepath="{ligand_filepath}" \\
     apo_protein_filepath="{apo_protein_filepath}" \\
     input_id="{input_id}" \\
+    p2rank_exec_utility={cfg.vina_p2rank_exec_utility} \\
+    p2rank_config={cfg.vina_p2rank_config} \\
+    p2rank_enable_pymol_visualizations={cfg.vina_p2rank_enable_pymol_visualizations} \\
 
 echo "Finished calling vina_inference.py!"
     """
