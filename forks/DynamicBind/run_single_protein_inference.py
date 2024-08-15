@@ -10,6 +10,7 @@ import logging
 import rdkit.Chem as Chem
 import glob
 import shutil
+import uuid
 from typing import Literal
 
 import argparse
@@ -277,17 +278,19 @@ else:
     protein_dynamic = ""
 
 results_dir = f'{outputs_dir}/results/{args.header}'
+unique_id = str(uuid.uuid4())
+
 if multi_ligand_inputs:
     if args.hts:
         raise NotImplementedError("High-throughput mode is not yet supported when using multi-ligand inputs.")
         os.system(f"mkdir -p {outputs_dir}")
         cmd = f"{python} {script_folder}/datasets/esm_embedding_preparation.py --protein_ligand_csv {ligandFile_with_protein_path} --out_file {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')}"
         do(cmd)
-        cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')} {os.path.join(outputs_dir, 'esm2_output')} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
+        cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')} {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
         do(cmd)
         cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/screening.py --seed {args.seed} --ckpt {ckpt} {protein_dynamic}"
         cmd += f" --save_visualisation --model_dir {model_workdir}  --protein_ligand_csv {ligandFile_with_protein_path} "
-        cmd += f" --esm_embeddings_path {os.path.join(outputs_dir, 'esm2_output')} --out_dir {args.results}/{header} --inference_steps {args.inference_steps} --samples_per_complex {args.samples_per_complex} --savings_per_complex {args.savings_per_complex} --batch_size {args.batch_size} --actual_steps {args.inference_steps} --no_final_step_noise"
+        cmd += f" --esm_embeddings_path {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --out_dir {args.results}/{header} --inference_steps {args.inference_steps} --samples_per_complex {args.samples_per_complex} --savings_per_complex {args.savings_per_complex} --batch_size {args.batch_size} --actual_steps {args.inference_steps} --no_final_step_noise"
         do(cmd)
         print("hts complete.")
     else:
@@ -297,11 +300,11 @@ if multi_ligand_inputs:
                 ligands.iloc[ligand_idx:ligand_idx + 1].to_csv(ligandFile_with_protein_path, index=False)
                 cmd = f"{python} {script_folder}/datasets/esm_embedding_preparation.py --protein_ligand_csv {ligandFile_with_protein_path} --out_file {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')}"
                 do(cmd)
-                cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')} {os.path.join(outputs_dir, 'esm2_output')} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
+                cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')} {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
                 do(cmd)
                 cmd = f"{python} {script_folder}/inference.py --seed {args.seed} --ckpt {ckpt} {protein_dynamic}"
                 cmd += f" --save_visualisation --model_dir {model_workdir}  --protein_ligand_csv {ligandFile_with_protein_path} "
-                cmd += f" --esm_embeddings_path {os.path.join(outputs_dir, 'esm2_output')} --out_dir {args.results}/{header} --inference_steps {args.inference_steps} --samples_per_complex {args.samples_per_complex} --savings_per_complex {args.savings_per_complex} --batch_size {args.batch_size} --actual_steps {args.inference_steps} --no_final_step_noise"
+                cmd += f" --esm_embeddings_path {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --out_dir {args.results}/{header} --inference_steps {args.inference_steps} --samples_per_complex {args.samples_per_complex} --savings_per_complex {args.savings_per_complex} --batch_size {args.batch_size} --actual_steps {args.inference_steps} --no_final_step_noise"
                 os.environ['CUDA_VISIBLE_DEVICES'] = str(args.device)
                 do(cmd)
                 print(f"inference for ligand {ligand_idx + 1}/{len(ligands)} complete.")
@@ -374,11 +377,11 @@ else:
         os.system(f"mkdir -p {outputs_dir}")
         cmd = f"{python} {script_folder}/datasets/esm_embedding_preparation.py --protein_ligand_csv {ligandFile_with_protein_path} --out_file {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')}"
         do(cmd)
-        cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')} {os.path.join(outputs_dir, 'esm2_output')} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
+        cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')} {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
         do(cmd)
         cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/screening.py --seed {args.seed} --ckpt {ckpt} {protein_dynamic}"
         cmd += f" --save_visualisation --model_dir {model_workdir}  --protein_ligand_csv {ligandFile_with_protein_path} "
-        cmd += f" --esm_embeddings_path {os.path.join(outputs_dir, 'esm2_output')} --out_dir {args.results}/{header} --inference_steps {args.inference_steps} --samples_per_complex {args.samples_per_complex} --savings_per_complex {args.savings_per_complex} --batch_size {args.batch_size} --actual_steps {args.inference_steps} --no_final_step_noise"
+        cmd += f" --esm_embeddings_path {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --out_dir {args.results}/{header} --inference_steps {args.inference_steps} --samples_per_complex {args.samples_per_complex} --savings_per_complex {args.savings_per_complex} --batch_size {args.batch_size} --actual_steps {args.inference_steps} --no_final_step_noise"
         do(cmd)
         print("hts complete.")
     else:
@@ -386,11 +389,11 @@ else:
             os.system(f"mkdir -p {outputs_dir}")
             cmd = f"{python} {script_folder}/datasets/esm_embedding_preparation.py --protein_ligand_csv {ligandFile_with_protein_path} --out_file {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')}"
             do(cmd)
-            cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')} {os.path.join(outputs_dir, 'esm2_output')} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
+            cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')} {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
             do(cmd)
             cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/inference.py --seed {args.seed} --ckpt {ckpt} {protein_dynamic}"
             cmd += f" --save_visualisation --model_dir {model_workdir}  --protein_ligand_csv {ligandFile_with_protein_path} "
-            cmd += f" --esm_embeddings_path {os.path.join(outputs_dir, 'esm2_output')} --out_dir {args.results}/{header} --inference_steps {args.inference_steps} --samples_per_complex {args.samples_per_complex} --savings_per_complex {args.savings_per_complex} --batch_size {args.batch_size} --actual_steps {args.inference_steps} --no_final_step_noise"
+            cmd += f" --esm_embeddings_path {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --out_dir {args.results}/{header} --inference_steps {args.inference_steps} --samples_per_complex {args.samples_per_complex} --savings_per_complex {args.savings_per_complex} --batch_size {args.batch_size} --actual_steps {args.inference_steps} --no_final_step_noise"
             do(cmd)
             print("inference complete.")
 
