@@ -11,7 +11,7 @@ structure_prediction_chunk_size: null # optional chunk size to use during ESMFol
 structure_prediction_cpu_only: false # whether to only use CPU for structure prediction
 structure_prediction_cpu_offload: false # whether to offload structure prediction to CPU
 max_method_predictions: 40 # maximum number of predictions to make with each method
-method_top_n_to_select: ${max_method_predictions} # number of top-ranked predictions to select from each method for subsequent ranking
+method_top_n_to_select: 5 # number of top-ranked predictions to select from each method for subsequent ranking
 skip_existing: false # whether to skip existing ensemble predictions
 relax_method_ligands_pre_ranking: false # whether to relax the predicted ligands (method-specifically) before ranking
 relax_method_ligands_post_ranking: true # whether to relax the predicted ligands (method-agnostically) after ranking
