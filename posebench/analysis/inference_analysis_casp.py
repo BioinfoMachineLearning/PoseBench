@@ -9,6 +9,7 @@ import shutil
 import subprocess  # nosec
 import tempfile
 from pathlib import Path
+from typing import Optional, Tuple
 
 import hydra
 import pandas as pd
@@ -96,14 +97,16 @@ NUM_SCOREABLE_CASP15_TARGETS = len(All_CASP15_SINGLE_LIGAND_TARGETS) + len(
 )
 
 
-def create_casp_input_dirs(cfg: DictConfig, config: str) -> str:
+def create_casp_input_dirs(cfg: DictConfig, config: str) -> Tuple[str, List[str]]:
     """Create the input directories for the CASP ligand scoring pipeline and return the resulting
     (temporary) parent directory as a `Path`.
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     :param config: The configuration suffix to append to the output directory.
-    :return: The path to the temporary parent directory as a `Path`.
+    :return: The path to the temporary parent directory as a `Path` as well as
+        a list of available prediction targets for DiffDock-L and DynamicBind.
     """
+    target_ids = []
     temp_dir_path = Path(
         tempfile.mkdtemp(
             suffix=f"_{cfg.method}_{cfg.vina_binding_site_method}_{cfg.dataset}{config}"
@@ -127,9 +130,10 @@ def create_casp_input_dirs(cfg: DictConfig, config: str) -> str:
                 renumber_pdb_df_residues(
                     target_file, str(temp_dir_path / "targets" / Path(target_file).name)
                 )
+                target_ids.append(Path(target_file).stem.split("_")[0])
             else:
                 shutil.copy(target_file, temp_dir_path / "targets")
-    return temp_dir_path
+    return temp_dir_path, target_ids
 
 
 def create_casp_mol_table(
@@ -224,7 +228,7 @@ def main(cfg: DictConfig):
                 f"{resolve_method_title(cfg.method)}{config} analysis results for inference directory `{output_dir}` already exist at `{scoring_results_filepath}`. Directly analyzing..."
             )
         else:
-            temp_dir_path = create_casp_input_dirs(cfg, config)
+            temp_dir_path, available_targets = create_casp_input_dirs(cfg, config)
 
             # run CASP ligand scoring pipeline
             scoring_args = [
@@ -239,8 +243,17 @@ def main(cfg: DictConfig):
                 "-v",
                 "DEBUG",
             ]
-            if cfg.targets is not None:
-                scoring_args.extend(["--targets", *[str(t) for t in cfg.targets]])
+            targets_to_score = cfg.targets
+            if cfg.method in ["diffdock", "dynamicbind"]:
+                # NOTE: Since DiffDock-L and DynamicBind are notably unstable for the CASP15
+                # multi-ligand targets, we only score the targets for which they were able
+                # to generate predictions after five retries of their respective inference scripts.
+                targets_to_score = available_targets
+                assert (
+                    len(targets_to_score) > 0
+                ), f"No available targets to score for {cfg.method}."
+            if targets_to_score is not None:
+                scoring_args.extend(["--targets", *[str(t) for t in targets_to_score]])
             if cfg.fault_tolerant:
                 scoring_args.append("--fault-tolerant")
             result = subprocess.run(scoring_args)  # nosec
