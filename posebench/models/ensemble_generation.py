@@ -1973,6 +1973,13 @@ def main(cfg: DictConfig):
     """Generate predictions for a protein-ligand target pair using an ensemble of methods."""
     os.makedirs(cfg.temp_protein_dir, exist_ok=True)
 
+    if list(cfg.ensemble_methods) == ["neuralplexer"] and cfg.neuralplexer_no_ilcl:
+        with open_dict(cfg):
+            cfg.output_dir = cfg.output_dir.replace(
+                "top_neuralplexer",
+                "top_neuralplexer_no_ilcl",
+            )
+
     if cfg.pocket_only_baseline:
         with open_dict(cfg):
             cfg.input_csv_filepath = cfg.input_csv_filepath.replace(
