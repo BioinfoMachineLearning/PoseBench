@@ -151,15 +151,18 @@ def create_casp_mol_table(
     for item in os.listdir(input_data_dir):
         data_dir = input_data_dir / item
         if data_dir.is_dir() and item.replace("_relaxed", "") in targets_to_select:
-            if (
-                relaxed
-                and "_relaxed" not in item
-                or not relaxed
-                and ("_relaxed" in item or "_aligned" in item)
-            ):
+            if relaxed and "_relaxed" not in item or not relaxed and "_relaxed" in item:
                 continue
             sdf_data_files = glob.glob(str(data_dir / f"*_rank{rank_to_select}_*.sdf"))
             pdb_data_files = glob.glob(str(data_dir / f"*_rank{rank_to_select}_*.pdb"))
+            if not relaxed and any(
+                "_aligned" in sdf_data_file for sdf_data_file in sdf_data_files
+            ):
+                sdf_data_files = [
+                    sdf_data_file
+                    for sdf_data_file in sdf_data_files
+                    if "_aligned" not in sdf_data_file
+                ]
             if relax_protein:
                 pdb_data_files = glob.glob(str(data_dir / f"*_rank{rank_to_select}_*_relaxed.pdb"))
             assert (
