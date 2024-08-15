@@ -170,10 +170,10 @@ def create_casp_mol_table(
                 pdb_data_files = glob.glob(str(data_dir / f"*_rank{rank_to_select}_*_relaxed.pdb"))
             assert (
                 len(sdf_data_files) == 1
-            ), f"Expected 1 SDF file, but found {len(sdf_data_files)}."
+            ), f"Expected 1 SDF file, but found {len(sdf_data_files)}: {sdf_data_files}."
             assert (
                 len(pdb_data_files) == 1
-            ), f"Expected 1 PDB file, but found {len(pdb_data_files)}."
+            ), f"Expected 1 PDB file, but found {len(pdb_data_files)}: {pdb_data_files}."
             sdf_data_file = sdf_data_files[0]
             pdb_data_file = pdb_data_files[0]
             mol_table_rows.append(
