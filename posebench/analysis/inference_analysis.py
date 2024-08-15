@@ -596,7 +596,9 @@ def main(cfg: DictConfig):
 
         # differentiate relaxed and unrelaxed protein pose results
         if "relaxed" in config and cfg.relax_protein:
-            bust_results_filepath = bust_results_filepath.replace(".csv", "_protein_relaxed.csv")
+            bust_results_filepath = Path(
+                str(bust_results_filepath).replace(".csv", "_protein_relaxed.csv")
+            )
 
         os.makedirs(bust_results_filepath.parent, exist_ok=True)
 
