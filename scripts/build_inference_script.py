@@ -417,7 +417,7 @@ def build_inference_script(
                 )
                 f.write(
                     "# rm -r forks/DiffDock/inference/diffdock_casp15_output_1/*_*/\n"
-                    + "# find forks/DiffDock/inference/diffdock_casp15_output_1/* -type d ! -exec test -e {}/rank1.sdf \\; -exec sh -c 'rm -rf {}/*' \\;\n"
+                    + "# find forks/DiffDock/inference/diffdock_casp15_output_1/* -type d ! -exec test -e {}/rank1.sdf \\; -exec sh -c 'rm -rf {}/' \\;\n"
                 )
             if dynamicbind_casp15_inference_suffix:
                 f.write(
