@@ -463,7 +463,7 @@ def build_inference_script(
                         f"vina_pocket_only_{vina_binding_site_method}",
                     )
                 f.write(copy_predictions_string)
-            f.write
+            f.write("\n")
 
         # Relax generated ligand structures (if applicable)
         if dataset != "casp15" and "relax" in commands:
