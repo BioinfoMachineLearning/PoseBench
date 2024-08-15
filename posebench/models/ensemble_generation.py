@@ -1548,9 +1548,11 @@ def export_ligands_in_casp15_format(
                     "Number of RFAA ligand numbers, names, and molecule fragments do not match. Note that this means it did not predict for all input ligands and that manual adjustments to the resulting CASP15 submission file may need to be made (e.g., to make sure ligand names are correctly aligned with listed molecular fragments)."
                 )
         else:
-            assert (
-                len(ligand_numbers_list) == len(ligand_names_list) == len(mol_frags)
-            ), "Number of ligand numbers, names, and molecule fragments must match."
+            if not (len(ligand_numbers_list) == len(ligand_names_list) == len(mol_frags)):
+                logger.warning(
+                    f"Number of ligand numbers, names, and molecule fragments must match. Skipping model {i}..."
+                )
+                continue
 
         sdf_content.write(f"MODEL {model_index if model_index is not None else i}\n")
 
