@@ -408,12 +408,28 @@ def build_inference_script(
                     + "several times (with the default 'skip_existing=true') to have it "
                     + "successfully predict for all CASP targets.\n"
                 )
+                f.write(
+                    "# Consider running the following commands to clean up DiffDock-L's "
+                    + "inference run directory (e.g., `_1`) before re-running this script:\n"
+                )
+                f.write(
+                    "# rm -r forks/DiffDock/inference/diffdock_casp15_output_1/_/\n"
+                    + "# find forks/DiffDock/inference/diffdock_casp15_output_1/ *-type d ! -exec test -e {}/rank1.sdf \\; -exec sh -c 'rm -rf {}/*' \\;\n"
+                )
             if dynamicbind_casp15_inference_suffix:
                 f.write(
                     "# NOTE: Due to DynamicBind's occasional numerical instabilities "
                     + "on the CASP15 dataset, you may have to re-run this inference script "
                     + "several times (with the default 'skip_existing=true') to have it "
                     + "successfully predict for all CASP targets.\n"
+                )
+                f.write(
+                    "# Consider running the following commands to clean up DiffDock-L's "
+                    + "inference run directory (e.g., `_1`) before re-running this script:\n"
+                )
+                f.write(
+                    "# find forks/DynamicBind/inference/outputs/results/casp15__1/index0_idx_0 -type d ! -exec test -e {}/cleaned_input_proteinFile.pdb \\; -exec sh -c 'rm -rf $(dirname {})/' \\;\n"
+                    + "# find forks/DynamicBind/inference/outputs/results/casp15_*_1/ -type d -empty -delete\n"
                 )
             f.write("\n")
 
