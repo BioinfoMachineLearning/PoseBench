@@ -1,6 +1,7 @@
 # run arguments:
 method: diffdock # the method for which to score predictions - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `rfaa`, `vina`, `ensemble`)
 vina_binding_site_method: diffdock # the method to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `rfaa`, `p2rank`)
+ensemble_ranking_method: consensus # the method to use for ensemble ranking - NOTE: must be one of (`consensus`, `ff`)
 dataset: astex_diverse # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
 repeat_index: 1 # the repeat index which was used for inference
 cuda_device_index: 0 # the CUDA device index to use for inference (for all methods except AutoDock-Vina)
@@ -22,6 +23,7 @@ methods_to_sweep: [
     "ensemble",
   ] # the methods to sweep
 vina_binding_site_methods_to_sweep: ["diffdock", "p2rank"] # the Vina binding site prediction methods to sweep
+ensemble_ranking_methods_to_sweep: ["consensus"] # the ensemble ranking methods to sweep - NOTE: must be one of (`consensus`, `ff`)
 datasets_to_sweep: [
     "posebusters_benchmark",
     "astex_diverse",
