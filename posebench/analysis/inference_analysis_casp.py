@@ -95,6 +95,7 @@ PUBLIC_CASP15_MULTI_LIGAND_TARGETS = [
 NUM_SCOREABLE_CASP15_TARGETS = len(All_CASP15_SINGLE_LIGAND_TARGETS) + len(
     All_CASP15_MULTI_LIGAND_TARGETS
 )
+TOLERANT_METHODS = ["diffdock", "dynamicbind", "vina", "tulip"]
 
 
 def create_casp_input_dirs(cfg: DictConfig, config: str) -> Tuple[str, List[str]]:
@@ -104,7 +105,7 @@ def create_casp_input_dirs(cfg: DictConfig, config: str) -> Tuple[str, List[str]
     :param cfg: Configuration dictionary from the hydra YAML file.
     :param config: The configuration suffix to append to the output directory.
     :return: The path to the temporary parent directory as a `Path` as well as
-        a list of available prediction targets for DiffDock-L and DynamicBind.
+        a list of available prediction targets for "tolerant methods".
     """
     target_ids = []
     temp_dir_path = Path(
@@ -244,10 +245,10 @@ def main(cfg: DictConfig):
                 "DEBUG",
             ]
             targets_to_score = cfg.targets
-            if cfg.method in ["diffdock", "dynamicbind"]:
-                # NOTE: Since DiffDock-L and DynamicBind are notably unstable for the CASP15
-                # multi-ligand targets, we only score the targets for which they were able
-                # to generate predictions after five retries of their respective inference scripts.
+            if cfg.method in TOLERANT_METHODS:
+                # NOTE: Since e.g., DiffDock-L is notably unstable for the CASP15 multi-ligand
+                # targets, we only score the targets for which such a method was able to generate
+                # predictions after five retries of its respective inference script.
                 targets_to_score = available_targets
                 assert (
                     len(targets_to_score) > 0
