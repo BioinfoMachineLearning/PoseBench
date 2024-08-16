@@ -1,5 +1,5 @@
 # General inference arguments:
-ensemble_methods: [diffdock, dynamicbind, neuralplexer, rfaa, vina] # the methods from which to gather predictions for ensembling - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `rfaa`, `vina`, `tulip`)
+ensemble_methods: [diffdock, dynamicbind, neuralplexer, rfaa] # the methods from which to gather predictions for ensembling - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `rfaa`, `vina`, `tulip`)
 generate_vina_scripts: false # whether to generate Vina scripts using other methods' binding site predictions - NOTE: `resume` must also be `true` when this is `true`, meaning other methods' predictions must have already been generated locally
 rank_single_method_intrinsically: true # whether to rank single-method predictions using either `consensus` or `vina` ranking (false) or instead using their intrinsic (explicit) rank assignment (true)
 output_bash_file_dir: ensemble_generation_scripts # the directory in which to save the generated Bash scripts
