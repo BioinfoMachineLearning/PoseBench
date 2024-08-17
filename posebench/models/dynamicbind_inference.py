@@ -6,6 +6,7 @@ import glob
 import logging
 import os
 import subprocess  # nosec
+import uuid
 from pathlib import Path
 
 import hydra
@@ -116,6 +117,11 @@ def main(cfg: DictConfig):
                 f"Skipping inference for completed protein `{protein_filepath}` and ligand `{ligand_filepath}`."
             )
             continue
+        unique_cache_id = uuid.uuid4()
+        unique_cache_path = (
+            str(cfg.cache_path)
+            + f"_{cfg.dataset}{pocket_only_suffix}_{ligand_filepath.stem}_{cfg.repeat_index}_{unique_cache_id}"
+        )
         try:
             subprocess.run(
                 [
@@ -131,6 +137,8 @@ def main(cfg: DictConfig):
                     str(cfg.inference_steps),
                     "--batch_size",
                     str(cfg.batch_size),
+                    "--cache_path",
+                    unique_cache_path,
                     "--header",
                     str(cfg.header)
                     + f"{pocket_only_suffix}_{ligand_filepath.stem}"

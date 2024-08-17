@@ -22,6 +22,7 @@ parser.add_argument('--samples_per_complex', type=int, default=10, help='num of 
 parser.add_argument('--savings_per_complex', type=int, default=1, help='num of samples data saved for movie generation.')
 parser.add_argument('--inference_steps', type=int, default=20, help='num of coordinate updates. (movie frames)')
 parser.add_argument('--batch_size', type=int, default=5, help='chunk size for inference batches.')
+parser.add_argument('--cache_path', type=str, default='data/cache', help='Folder from where to load/restore cached dataset')
 parser.add_argument('--header', type=str, default='test', help='informative name used to name result folder')
 parser.add_argument('--results', type=str, default='results', help='result folder.')
 parser.add_argument('--device', type=int, default=0, help='CUDA_VISIBLE_DEVICES')
@@ -302,7 +303,7 @@ if multi_ligand_inputs:
                 do(cmd)
                 cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')} {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
                 do(cmd)
-                cmd = f"{python} {script_folder}/inference.py --seed {args.seed} --ckpt {ckpt} {protein_dynamic}"
+                cmd = f"{python} {script_folder}/inference.py --cache_path {args.cache_path} --seed {args.seed} --ckpt {ckpt} {protein_dynamic}"
                 cmd += f" --save_visualisation --model_dir {model_workdir}  --protein_ligand_csv {ligandFile_with_protein_path} "
                 cmd += f" --esm_embeddings_path {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --out_dir {args.results}/{header} --inference_steps {args.inference_steps} --samples_per_complex {args.samples_per_complex} --savings_per_complex {args.savings_per_complex} --batch_size {args.batch_size} --actual_steps {args.inference_steps} --no_final_step_noise"
                 os.environ['CUDA_VISIBLE_DEVICES'] = str(args.device)
@@ -391,7 +392,7 @@ else:
             do(cmd)
             cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')} {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
             do(cmd)
-            cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/inference.py --seed {args.seed} --ckpt {ckpt} {protein_dynamic}"
+            cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/inference.py --cache_path {args.cache_path} --seed {args.seed} --ckpt {ckpt} {protein_dynamic}"
             cmd += f" --save_visualisation --model_dir {model_workdir}  --protein_ligand_csv {ligandFile_with_protein_path} "
             cmd += f" --esm_embeddings_path {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --out_dir {args.results}/{header} --inference_steps {args.inference_steps} --samples_per_complex {args.samples_per_complex} --savings_per_complex {args.savings_per_complex} --batch_size {args.batch_size} --actual_steps {args.inference_steps} --no_final_step_noise"
             do(cmd)

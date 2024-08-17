@@ -8,6 +8,7 @@ samples_per_complex: 40 # the number of samples to generate per complex
 savings_per_complex: 1 # the (top-N) number of sample visualizations to save per complex
 inference_steps: 20 # the number of inference steps to run for each complex
 batch_size: 5 # the batch size to use for inference
+cache_path: ${oc.env:PROJECT_ROOT}/data/dynamicbind_cache/cache # the cache directory to use for storing intermediate data files
 header: ${dataset} # name of the results directory to create
 num_workers: 1 # the number of workers to use for native relaxation during inference
 skip_existing: true # whether to skip existing predictions
