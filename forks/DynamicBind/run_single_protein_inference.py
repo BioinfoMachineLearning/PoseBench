@@ -220,7 +220,7 @@ if args.protein_path_in_ligandFile:
 elif args.ligand_is_sdf:
     # clean protein file
     os.system(f"mkdir -p {outputs_dir}")
-    cleaned_proteinFile = os.path.join(outputs_dir, "cleaned_input_proteinFile.pdb")
+    cleaned_proteinFile = os.path.join(outputs_dir, f"cleaned_input_proteinFile_{timestamp}_{unique_id}.pdb")
     ligandFile_with_protein_path = os.path.join(outputs_dir, f"ligandFile_with_protein_path_{timestamp}.csv")
     # if os.path.exists(ligandFile_with_protein_path):
     #     os.system(f"rm {ligandFile_with_protein_path}")
@@ -248,7 +248,7 @@ elif args.ligand_is_sdf:
     ligands.to_csv(ligandFile_with_protein_path, index=False)
 else:
     # clean protein file
-    cleaned_proteinFile = os.path.join(outputs_dir, "cleaned_input_proteinFile.pdb")
+    cleaned_proteinFile = os.path.join(outputs_dir, f"cleaned_input_proteinFile_{timestamp}_{unique_id}.pdb")
     ligandFile_with_protein_path = os.path.join(outputs_dir, f"ligandFile_with_protein_path_{timestamp}.csv")
     cmd = f"{relax_python} {script_folder}/clean_pdb.py {args.proteinFile} {cleaned_proteinFile}"
     do(cmd)
