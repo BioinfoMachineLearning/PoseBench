@@ -175,7 +175,8 @@ def ref_filename_sort_key(filepath):
     return ligand_number
 
 
-timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M")
+unique_id = str(uuid.uuid4())
+timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M") + f"_{unique_id}"
 
 logging.basicConfig(level=logging.INFO)
 handler = logging.FileHandler(f'run.log')
@@ -279,15 +280,14 @@ else:
     protein_dynamic = ""
 
 results_dir = f'{outputs_dir}/results/{args.header}'
-unique_id = str(uuid.uuid4())
 
 if multi_ligand_inputs:
     if args.hts:
         raise NotImplementedError("High-throughput mode is not yet supported when using multi-ligand inputs.")
         os.system(f"mkdir -p {outputs_dir}")
-        cmd = f"{python} {script_folder}/datasets/esm_embedding_preparation.py --protein_ligand_csv {ligandFile_with_protein_path} --out_file {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')}"
+        cmd = f"{python} {script_folder}/datasets/esm_embedding_preparation.py --protein_ligand_csv {ligandFile_with_protein_path} --out_file {os.path.join(outputs_dir, f'prepared_for_esm_{header}_{unique_id}.fasta')}"
         do(cmd)
-        cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')} {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
+        cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}_{unique_id}.fasta')} {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
         do(cmd)
         cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/screening.py --seed {args.seed} --ckpt {ckpt} {protein_dynamic}"
         cmd += f" --save_visualisation --model_dir {model_workdir}  --protein_ligand_csv {ligandFile_with_protein_path} "
@@ -299,9 +299,9 @@ if multi_ligand_inputs:
             os.system(f"mkdir -p {outputs_dir}")
             for ligand_idx in range(len(ligands)):
                 ligands.iloc[ligand_idx:ligand_idx + 1].to_csv(ligandFile_with_protein_path, index=False)
-                cmd = f"{python} {script_folder}/datasets/esm_embedding_preparation.py --protein_ligand_csv {ligandFile_with_protein_path} --out_file {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')}"
+                cmd = f"{python} {script_folder}/datasets/esm_embedding_preparation.py --protein_ligand_csv {ligandFile_with_protein_path} --out_file {os.path.join(outputs_dir, f'prepared_for_esm_{header}_{unique_id}.fasta')}"
                 do(cmd)
-                cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')} {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
+                cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}_{unique_id}.fasta')} {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
                 do(cmd)
                 cmd = f"{python} {script_folder}/inference.py --cache_path {args.cache_path} --seed {args.seed} --ckpt {ckpt} {protein_dynamic}"
                 cmd += f" --save_visualisation --model_dir {model_workdir}  --protein_ligand_csv {ligandFile_with_protein_path} "
@@ -376,9 +376,9 @@ if multi_ligand_inputs:
 else:
     if args.hts:
         os.system(f"mkdir -p {outputs_dir}")
-        cmd = f"{python} {script_folder}/datasets/esm_embedding_preparation.py --protein_ligand_csv {ligandFile_with_protein_path} --out_file {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')}"
+        cmd = f"{python} {script_folder}/datasets/esm_embedding_preparation.py --protein_ligand_csv {ligandFile_with_protein_path} --out_file {os.path.join(outputs_dir, f'prepared_for_esm_{header}_{unique_id}.fasta')}"
         do(cmd)
-        cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')} {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
+        cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}_{unique_id}.fasta')} {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
         do(cmd)
         cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/screening.py --seed {args.seed} --ckpt {ckpt} {protein_dynamic}"
         cmd += f" --save_visualisation --model_dir {model_workdir}  --protein_ligand_csv {ligandFile_with_protein_path} "
@@ -388,9 +388,9 @@ else:
     else:
         if not args.no_inference:
             os.system(f"mkdir -p {outputs_dir}")
-            cmd = f"{python} {script_folder}/datasets/esm_embedding_preparation.py --protein_ligand_csv {ligandFile_with_protein_path} --out_file {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')}"
+            cmd = f"{python} {script_folder}/datasets/esm_embedding_preparation.py --protein_ligand_csv {ligandFile_with_protein_path} --out_file {os.path.join(outputs_dir, f'prepared_for_esm_{header}_{unique_id}.fasta')}"
             do(cmd)
-            cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}.fasta')} {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
+            cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/esm/scripts/extract.py esm2_t33_650M_UR50D {os.path.join(outputs_dir, f'prepared_for_esm_{header}_{unique_id}.fasta')} {os.path.join(outputs_dir, 'esm2_output' + unique_id)} --repr_layers 33 --include per_tok --truncation_seq_length 10000 --model_dir {script_folder}/esm_models"
             do(cmd)
             cmd = f"CUDA_VISIBLE_DEVICES={args.device} {python} {script_folder}/inference.py --cache_path {args.cache_path} --seed {args.seed} --ckpt {ckpt} {protein_dynamic}"
             cmd += f" --save_visualisation --model_dir {model_workdir}  --protein_ligand_csv {ligandFile_with_protein_path} "
