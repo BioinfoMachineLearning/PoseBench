@@ -385,6 +385,11 @@ def build_inference_script(
             neuralplexer_casp15_inference_suffix = (
                 " chunk_size=4" if method == "neuralplexer" and dataset == "casp15" else ""
             )
+            ensemble_casp15_inference_suffix = (
+                " combine_casp_output_files=true"
+                if method == "ensemble" and dataset == "casp15"
+                else ""
+            )
             f.write("# Run inference\n")
             for cmd in commands.get("run_inference", []):
                 f.write(
@@ -402,6 +407,7 @@ def build_inference_script(
                     + diffdock_casp15_inference_suffix
                     + dynamicbind_casp15_inference_suffix
                     + neuralplexer_casp15_inference_suffix
+                    + ensemble_casp15_inference_suffix
                     + "\n"
                 )
             if diffdock_casp15_inference_suffix:
