@@ -3,9 +3,10 @@ vina_binding_site_method: diffdock # the method to use for Vina binding site pre
 dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
 ensemble_ranking_method: consensus # the method with which to rank-order and select the top ensemble prediction for each target - NOTE: must be one of (`consensus`, `ff`)
 input_data_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set # the input protein-ligand complex directory to recursively parse
-output_dir: ${resolve_method_output_dir:${method},${dataset},${vina_binding_site_method},${ensemble_ranking_method},${repeat_index},${pocket_only_baseline}} # the output directory to which to save the relaxed predictions
+output_dir: ${resolve_method_output_dir:${method},${dataset},${vina_binding_site_method},${ensemble_ranking_method},${repeat_index},${pocket_only_baseline},${v1_baseline}} # the output directory to which to save the relaxed predictions
 rank_to_align: 1 # the pose rank to align
 aligned_filename_suffix: "_aligned" # the suffix to append to each aligned complex filename
 force_process: false # whether to force processing of all complexes, even if they have already been processed
 repeat_index: 1 # the repeat index which was used for inference
 pocket_only_baseline: false # whether to prepare the pocket-only baseline
+v1_baseline: false # whether to prepare the v1 baseline

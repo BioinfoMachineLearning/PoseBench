@@ -7,6 +7,7 @@ repeat_index: 1 # the repeat index which was used for inference
 cuda_device_index: 0 # the CUDA device index to use for inference (for all methods except AutoDock-Vina)
 output_script_dir: ${oc.env:PROJECT_ROOT}/scripts/inference # the directory in which to save the output script
 pocket_only_baseline: null # whether to perform a pocket-only baseline for the PoseBusters Benchmark set - NOTE: not applicable only to `tulip`
+v1_baseline: false # whether to perform the V1 baseline for DiffDock
 no_ilcl: null # whether to use model weights trained with an inter-ligand clash loss (ILCL) for the CASP15 set - NOTE: only applicable to `neuralplexer`
 relax_protein: null # whether to relax the protein structure before scoring - NOTE: currently in an experimental state
 export_hpc_headers: true # whether to insert high-performance computing (by default, SLURM) headers into the output script

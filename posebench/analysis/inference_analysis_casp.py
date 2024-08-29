@@ -191,6 +191,11 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
+    if cfg.v1_baseline:
+        with open_dict(cfg):
+            cfg.predictions_dir = cfg.predictions_dir.replace(
+                f"top_{cfg.method}", f"top_{cfg.method}v1"
+            )
     if cfg.no_ilcl:
         with open_dict(cfg):
             cfg.predictions_dir = cfg.predictions_dir.replace(

@@ -12,7 +12,7 @@ from pathlib import Path
 
 import hydra
 import rootutils
-from omegaconf import DictConfig
+from omegaconf import DictConfig, open_dict
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
@@ -373,6 +373,10 @@ def relax_single_filepair(
 def main(cfg: DictConfig):
     """Run the relaxation inference process using the specified configuration."""
     logger.setLevel(cfg.log_level)
+
+    if cfg.v1_baseline:
+        with open_dict(cfg):
+            cfg.temp_dir = cfg.temp_dir.replace(cfg.method, f"{cfg.method}v1")
 
     protein_file_dir = Path(cfg.protein_dir)
     ligand_file_dir = Path(cfg.ligand_dir)

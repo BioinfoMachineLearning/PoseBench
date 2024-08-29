@@ -11,8 +11,8 @@ platform: "fastest" # platform on which to run relaxation
 cuda_device_index: 0 # CUDA device index
 log_level: "INFO" # logging level
 protein_dir: ${resolve_method_protein_dir:${method},${dataset},${repeat_index},${pocket_only_baseline}} # the directory from which to load (potentially inferred) proteins
-ligand_dir: ${resolve_method_ligand_dir:${method},${dataset},${vina_binding_site_method},${repeat_index},${pocket_only_baseline}} # the directory from which to load inferred ligands
-output_dir: ${resolve_method_output_dir:${method},${dataset},${vina_binding_site_method},${ensemble_ranking_method},${repeat_index},${pocket_only_baseline}} # the output directory to which to save the relaxed predictions
+ligand_dir: ${resolve_method_ligand_dir:${method},${dataset},${vina_binding_site_method},${repeat_index},${pocket_only_baseline},${v1_baseline}} # the directory from which to load inferred ligands
+output_dir: ${resolve_method_output_dir:${method},${dataset},${vina_binding_site_method},${ensemble_ranking_method},${repeat_index},${pocket_only_baseline},${v1_baseline}} # the output directory to which to save the relaxed predictions
 relax_protein: false # whether to relax the protein - NOTE: currently periodically yields unpredictable protein-ligand separation
 remove_initial_protein_hydrogens: false # whether to remove hydrogens from the initial protein
 assign_each_ligand_unique_force: false # when relaxing the protein, whether to assign each ligand a unique force constant
@@ -25,3 +25,4 @@ max_num_attempts: 5 # when relaxing the protein, maximum number of relaxation at
 skip_existing: true # whether to skip existing relaxed predictions
 repeat_index: 1 # the repeat index which was used for inference
 pocket_only_baseline: false # whether to prepare the pocket-only baseline
+v1_baseline: false # whether to prepare the v1 baseline

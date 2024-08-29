@@ -1985,6 +1985,28 @@ def main(cfg: DictConfig):
                 "top_neuralplexer_no_ilcl",
             )
 
+    if cfg.diffdock_v1_baseline:
+        with open_dict(cfg):
+            cfg.output_dir = cfg.output_dir.replace(
+                "top_diffdock",
+                "top_diffdockv1",
+            )
+            cfg.diffdock_exec_dir = cfg.diffdock_exec_dir.replace("DiffDock", "DiffDockv1")
+            cfg.diffdock_input_csv_path = cfg.diffdock_input_csv_path.replace(
+                "DiffDock", "DiffDockv1"
+            )
+            cfg.diffdock_model_dir = cfg.diffdock_model_dir.replace(
+                "forks/DiffDock/workdir/v1.1/score_model",
+                "forks/DiffDockv1/workdir/paper_score_model",
+            )
+            cfg.diffdock_confidence_model_dir = cfg.diffdock_confidence_model_dir.replace(
+                "forks/DiffDock/workdir/v1.1/confidence_model",
+                "forks/DiffDockv1/workdir/paper_confidence_model",
+            )
+            cfg.diffdock_output_dir = cfg.diffdock_output_dir.replace("DiffDock", "DiffDockv1")
+            cfg.diffdock_actual_steps = 18
+            cfg.diffdock_no_final_step_noise = True
+
     if cfg.pocket_only_baseline:
         with open_dict(cfg):
             cfg.input_csv_filepath = cfg.input_csv_filepath.replace(

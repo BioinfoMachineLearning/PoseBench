@@ -34,6 +34,20 @@ def main(cfg: DictConfig):
         else cfg.input_csv_path
     )
 
+    if cfg.v1_baseline:
+        cfg.diffdock_exec_dir = cfg.diffdock_exec_dir.replace("DiffDock", "DiffDockv1")
+        cfg.input_csv_path = cfg.input_csv_path.replace("DiffDock", "DiffDockv1")
+        cfg.model_dir = cfg.model_dir.replace(
+            "forks/DiffDock/workdir/v1.1/score_model", "forks/DiffDockv1/workdir/paper_score_model"
+        )
+        cfg.confidence_model_dir = cfg.confidence_model_dir.replace(
+            "forks/DiffDock/workdir/v1.1/confidence_model",
+            "forks/DiffDockv1/workdir/paper_confidence_model",
+        )
+        cfg.output_dir = cfg.output_dir.replace("DiffDock", "DiffDockv1")
+        cfg.actual_steps = 18
+        cfg.no_final_step_noise = True
+
     if cfg.pocket_only_baseline:
         with open_dict(cfg):
             input_csv_path = input_csv_path.replace(
@@ -48,8 +62,6 @@ def main(cfg: DictConfig):
         cmd = [
             cfg.python_exec_path,
             os.path.join(cfg.diffdock_exec_dir, "inference.py"),
-            "--config",
-            cfg.inference_config_path,
             "--protein_ligand_csv",
             input_csv_path,
             "--out_dir",
@@ -72,6 +84,8 @@ def main(cfg: DictConfig):
         ]
         if cfg.skip_existing:
             cmd.append("--skip_existing")
+        if not cfg.v1_baseline:
+            cmd.extend(["--config", cfg.inference_config_path])
         subprocess.run(cmd, check=True)  # nosec
     except Exception as e:
         raise e

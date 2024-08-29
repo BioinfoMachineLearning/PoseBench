@@ -58,6 +58,7 @@ diffdock_batch_size: 10 # the batch size to use for inference
 diffdock_actual_steps: 19 # the actual number of inference steps to run (i.e., after how many steps to halt the reverse diffusion process)
 diffdock_no_final_step_noise: true # whether to disable the final inference step's noise from being added
 diffdock_skip_existing: true # whether to skip existing predictions
+diffdock_v1_baseline: false # whether to run the v1 baseline
 # DynamicBind inference arguments:
 dynamicbind_python_exec_path: ${oc.env:PROJECT_ROOT}/forks/DynamicBind/DynamicBind/bin/python3 # the Python executable to use
 dynamicbind_exec_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind # the DynamicBind directory in which to execute the inference scripts

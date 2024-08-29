@@ -16,3 +16,4 @@ repeat_index: 1 # the repeat index to use for inference
 skip_existing: true # whether to skip inference for existing output directories
 pocket_only_baseline: false # whether to run the pocket-only baseline
 max_num_inputs: null # if provided, the number of (dataset subset) inputs over which to run inference
+v1_baseline: false # whether to run the v1 baseline

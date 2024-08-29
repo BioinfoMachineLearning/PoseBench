@@ -26,20 +26,20 @@ COMMANDS = {
             "python3 posebench/data/diffdock_input_preparation.py dataset={dataset} pocket_only_baseline={pocket_only_baseline}",
         ],
         "run_inference": [
-            "python3 posebench/models/diffdock_inference.py dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+            "python3 posebench/models/diffdock_inference.py dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} v1_baseline={v1_baseline} repeat_index={repeat_index}",
         ],
         "relax": [
-            "python3 posebench/models/inference_relaxation.py method=diffdock dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
+            "python3 posebench/models/inference_relaxation.py method=diffdock dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} v1_baseline={v1_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
         ],
         "analyze_results": [
-            "python3 posebench/analysis/inference_analysis.py method=diffdock dataset={dataset} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} repeat_index={repeat_index}",
+            "python3 posebench/analysis/inference_analysis.py method=diffdock dataset={dataset} pocket_only_baseline={pocket_only_baseline} v1_baseline={v1_baseline} relax_protein={relax_protein} repeat_index={repeat_index}",
         ],
         "assemble_casp15": [
-            "python3 posebench/models/ensemble_generation.py ensemble_methods=[diffdock] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_diffdock_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
-            "python3 posebench/models/ensemble_generation.py ensemble_methods=[diffdock] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_diffdock_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[diffdock] ensemble_ranking_method={ensemble_ranking_method} v1_baseline={v1_baseline} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_diffdock_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[diffdock] ensemble_ranking_method={ensemble_ranking_method} v1_baseline={v1_baseline} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_diffdock_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
         ],
         "analyze_casp15": [
-            "python3 posebench/analysis/inference_analysis_casp.py method=diffdock dataset=casp15 relax_protein={relax_protein} repeat_index={repeat_index}",
+            "python3 posebench/analysis/inference_analysis_casp.py method=diffdock dataset=casp15 relax_protein={relax_protein} v1_baseline={v1_baseline} repeat_index={repeat_index}",
         ],
     },
     "fabind": {
@@ -225,6 +225,7 @@ def build_inference_script(
     cuda_device_index: int,
     output_script_dir: str,
     pocket_only_baseline: bool = False,
+    v1_baseline: bool = False,
     no_ilcl: bool = False,
     relax_protein: bool = False,
     export_hpc_headers: bool = False,
@@ -246,6 +247,7 @@ def build_inference_script(
     :param output_script_dir: Output script directory.
     :param pocket_only_baseline: Whether to perform a pocket-only baseline for the PoseBusters
         Benchmark set.
+    :param v1_baseline: Whether to perform a V1 baseline for DiffDock.
     :param no_ilcl: Whether to use model weights trained with an inter-ligand clash loss (ILCL) for
         the CASP15 set.
     :param relax_protein: Whether to relax the protein structure before scoring.
@@ -284,6 +286,13 @@ def build_inference_script(
             )
         return
 
+    if v1_baseline and not (method == "diffdock"):
+        if verbose:
+            logging.info(
+                f"Method-dataset combination {method}-{dataset} does not support argument `v1_baseline`. Skipping."
+            )
+        return
+
     if no_ilcl and not (method == "neuralplexer" and dataset == "casp15"):
         if verbose:
             logging.info(
@@ -294,13 +303,14 @@ def build_inference_script(
     os.makedirs(output_script_dir, exist_ok=True)
     vina_binding_site_method_suffix = f"_{vina_binding_site_method}" if method == "vina" else ""
     ensemble_ranking_method_suffix = f"_{ensemble_ranking_method}" if method == "ensemble" else ""
+    v1_baseline_suffix = "v1" if v1_baseline else ""
     pocket_only_suffix = "_pocket_only" if pocket_only_baseline else ""
     no_ilcl_suffix = "_no_ilcl" if no_ilcl else ""
     relax_protein_suffix = "_relax_protein" if relax_protein else ""
     hpc_suffix = "_hpc" if export_hpc_headers else ""
     output_script = os.path.join(
         output_script_dir,
-        f"{method}{vina_binding_site_method_suffix}{ensemble_ranking_method_suffix}{pocket_only_suffix}{no_ilcl_suffix}{relax_protein_suffix}_{dataset}{hpc_suffix}_inference_{repeat_index}.sh",
+        f"{method}{vina_binding_site_method_suffix}{ensemble_ranking_method_suffix}{v1_baseline_suffix}{pocket_only_suffix}{no_ilcl_suffix}{relax_protein_suffix}_{dataset}{hpc_suffix}_inference_{repeat_index}.sh",
     )
 
     # Build script in sections
@@ -401,6 +411,7 @@ def build_inference_script(
                         ensemble_ranking_method=ensemble_ranking_method,
                         export_top_n=export_top_n,
                         pocket_only_baseline=pocket_only_baseline,
+                        v1_baseline=v1_baseline,
                         no_ilcl=no_ilcl,
                         relax_protein=relax_protein,
                     )
@@ -483,6 +494,7 @@ def build_inference_script(
                         cuda_device_index=cuda_device_index,
                         vina_binding_site_method=vina_binding_site_method,
                         pocket_only_baseline=pocket_only_baseline,
+                        v1_baseline=v1_baseline,
                         relax_protein=relax_protein,
                     )
                     + "\n"
@@ -515,6 +527,7 @@ def build_inference_script(
                         repeat_index=repeat_index,
                         vina_binding_site_method=vina_binding_site_method,
                         pocket_only_baseline=pocket_only_baseline,
+                        v1_baseline=v1_baseline,
                         relax_protein=relax_protein,
                     )
                     + "\n"
@@ -532,6 +545,7 @@ def build_inference_script(
                         cuda_device_index=cuda_device_index,
                         vina_binding_site_method=vina_binding_site_method,
                         ensemble_ranking_method=ensemble_ranking_method,
+                        v1_baseline=v1_baseline,
                         no_ilcl=no_ilcl,
                         relax_protein=relax_protein,
                     )
@@ -548,6 +562,7 @@ def build_inference_script(
                         dataset=dataset,
                         repeat_index=repeat_index,
                         vina_binding_site_method=vina_binding_site_method,
+                        v1_baseline=v1_baseline,
                         no_ilcl=no_ilcl,
                         relax_protein=relax_protein,
                     )
@@ -571,6 +586,7 @@ def build_inference_scripts(
     cuda_device_index: int,
     output_script_dir: str,
     pocket_only_baseline: Optional[bool] = None,
+    v1_baseline: Optional[bool] = None,
     no_ilcl: Optional[bool] = None,
     relax_protein: Optional[bool] = None,
     export_hpc_headers: bool = False,
@@ -587,6 +603,7 @@ def build_inference_scripts(
     :param output_script: Output script file.
     :param pocket_only_baseline: Whether to perform a pocket-only baseline for the PoseBusters
         Benchmark set.
+    :param v1_baseline: Whether to perform a V1 baseline for DiffDock.
     :param no_ilcl: Whether to use model weights trained with an inter-ligand clash loss (ILCL) for
         the CASP15 set.
     :param relax_protein: Whether to relax the protein structure before scoring.
@@ -603,27 +620,30 @@ def build_inference_scripts(
                             if pocket_only_baseline is not None
                             else pocket_only
                         )
-                        for n_ilcl in [True, False]:
-                            no_ilcl_mode = no_ilcl if no_ilcl is not None else n_ilcl
-                            for relax_prot in [True, False]:
-                                relax_protein_mode = (
-                                    relax_protein if relax_protein is not None else relax_prot
-                                )
-                                for repeat_index in range(1, num_sweep_repeats + 1):
-                                    build_inference_script(
-                                        method=method,
-                                        vina_binding_site_method=vina_binding_site_method,
-                                        ensemble_ranking_method=ensemble_ranking_method,
-                                        dataset=dataset,
-                                        repeat_index=repeat_index,
-                                        cuda_device_index=cuda_device_index,
-                                        output_script_dir=output_script_dir,
-                                        pocket_only_baseline=pocket_only_mode,
-                                        no_ilcl=no_ilcl_mode,
-                                        relax_protein=relax_protein_mode,
-                                        export_hpc_headers=export_hpc_headers,
-                                        verbose=verbose,
+                        for v1 in [True, False]:
+                            v1_mode = v1_baseline if v1_baseline is not None else v1
+                            for n_ilcl in [True, False]:
+                                no_ilcl_mode = no_ilcl if no_ilcl is not None else n_ilcl
+                                for relax_prot in [True, False]:
+                                    relax_protein_mode = (
+                                        relax_protein if relax_protein is not None else relax_prot
                                     )
+                                    for repeat_index in range(1, num_sweep_repeats + 1):
+                                        build_inference_script(
+                                            method=method,
+                                            vina_binding_site_method=vina_binding_site_method,
+                                            ensemble_ranking_method=ensemble_ranking_method,
+                                            dataset=dataset,
+                                            repeat_index=repeat_index,
+                                            cuda_device_index=cuda_device_index,
+                                            output_script_dir=output_script_dir,
+                                            pocket_only_baseline=pocket_only_mode,
+                                            v1_baseline=v1_mode,
+                                            no_ilcl=no_ilcl_mode,
+                                            relax_protein=relax_protein_mode,
+                                            export_hpc_headers=export_hpc_headers,
+                                            verbose=verbose,
+                                        )
 
 
 @hydra.main(
@@ -643,6 +663,7 @@ def main(cfg: DictConfig):
             cuda_device_index=cfg.cuda_device_index,
             output_script_dir=cfg.output_script_dir,
             pocket_only_baseline=cfg.pocket_only_baseline,
+            v1_baseline=cfg.v1_baseline,
             no_ilcl=cfg.no_ilcl,
             relax_protein=cfg.relax_protein,
             export_hpc_headers=cfg.export_hpc_headers,
@@ -658,6 +679,7 @@ def main(cfg: DictConfig):
             cuda_device_index=cfg.cuda_device_index,
             output_script_dir=cfg.output_script_dir,
             pocket_only_baseline=cfg.pocket_only_baseline,
+            v1_baseline=cfg.v1_baseline,
             no_ilcl=cfg.no_ilcl,
             relax_protein=cfg.relax_protein,
             export_hpc_headers=cfg.export_hpc_headers,

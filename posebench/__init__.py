@@ -114,6 +114,7 @@ def resolve_method_ligand_dir(
     vina_binding_site_method: str,
     repeat_index: int,
     pocket_only_baseline: bool,
+    v1_baseline: bool,
 ) -> str:
     """Resolve the ligand directory for a given method.
 
@@ -122,14 +123,16 @@ def resolve_method_ligand_dir(
     :param vina_binding_site_method: The binding site method used for Vina.
     :param repeat_index: The repeat index for the method.
     :param pocket_only_baseline: Whether to return ligand files for a pocket-only baseline.
+    :param v1_baseline: Whether to return ligand files for a V1 baseline.
     :return: The ligand directory for the given method.
     """
     pocket_only_suffix = "_pocket_only" if pocket_only_baseline else ""
+    v1_baseline_suffix = "v1" if v1_baseline else ""
     if method in STANDARDIZED_DIR_METHODS or method in ["neuralplexer", "rfaa", "tulip"]:
         output_suffix = "s" if method in ["neuralplexer", "rfaa", "tulip"] else ""
         return os.path.join(
             "forks",
-            METHOD_TITLE_MAPPING.get(method, method),
+            METHOD_TITLE_MAPPING.get(method, method) + v1_baseline_suffix,
             "inference",
             f"{method}{pocket_only_suffix}_{dataset}_output{output_suffix}_{repeat_index}",
         )
@@ -160,6 +163,7 @@ def resolve_method_output_dir(
     ensemble_ranking_method: str,
     repeat_index: int,
     pocket_only_baseline: bool,
+    v1_baseline: bool,
 ) -> str:
     """Resolve the output directory for a given method.
 
@@ -169,14 +173,16 @@ def resolve_method_output_dir(
     :param ensemble_ranking_method: The ranking method used for the ensemble method.
     :param repeat_index: The repeat index for the method.
     :param pocket_only_baseline: Whether to output files for a pocket-only baseline.
+    :param v1_baseline: Whether to output files for a V1 baseline.
     :return: The output directory for the given method.
     """
     pocket_only_suffix = "_pocket_only" if pocket_only_baseline else ""
+    v1_baseline_suffix = "v1" if v1_baseline else ""
     if method in STANDARDIZED_DIR_METHODS or method in ["neuralplexer", "rfaa", "tulip"]:
         output_suffix = "s" if method in ["neuralplexer", "rfaa", "tulip"] else ""
         return os.path.join(
             "forks",
-            METHOD_TITLE_MAPPING.get(method, method),
+            METHOD_TITLE_MAPPING.get(method, method) + v1_baseline_suffix,
             "inference",
             f"{method}{pocket_only_suffix}_{dataset}_output{output_suffix}_{repeat_index}",
         )
@@ -258,23 +264,25 @@ def register_custom_omegaconf_resolvers():
     )
     OmegaConf.register_new_resolver(
         "resolve_method_ligand_dir",
-        lambda method, dataset, vina_binding_site_method, repeat_index, pocket_only_baseline: resolve_method_ligand_dir(
+        lambda method, dataset, vina_binding_site_method, repeat_index, pocket_only_baseline, v1_baseline: resolve_method_ligand_dir(
             method,
             dataset,
             vina_binding_site_method,
             repeat_index,
             pocket_only_baseline,
+            v1_baseline,
         ),
     )
     OmegaConf.register_new_resolver(
         "resolve_method_output_dir",
-        lambda method, dataset, vina_binding_site_method, ensemble_ranking_method, repeat_index, pocket_only_baseline: resolve_method_output_dir(
+        lambda method, dataset, vina_binding_site_method, ensemble_ranking_method, repeat_index, pocket_only_baseline, v1_baseline: resolve_method_output_dir(
             method,
             dataset,
             vina_binding_site_method,
             ensemble_ranking_method,
             repeat_index,
             pocket_only_baseline,
+            v1_baseline=v1_baseline,
         ),
     )
     OmegaConf.register_new_resolver(
