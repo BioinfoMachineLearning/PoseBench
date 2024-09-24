@@ -99,6 +99,7 @@ cd forks/RoseTTAFold-All-Atom/rf2aa/SE3Transformer/ && pip3 install --no-cache-d
 # - Chai-1 environment (~6 GB)
 mamba env create -f environments/chai_lab_environment.yaml --prefix forks/chai-lab/chai-lab/
 conda activate forks/chai-lab/chai-lab/  # NOTE: one still needs to use `conda` to (de)activate environments
+pip3 install forks/chai-lab/
 # - AutoDock Vina Tools environment (~1 GB)
 mamba env create -f environments/adfr_environment.yaml --prefix forks/Vina/ADFR/
 conda activate forks/Vina/ADFR/  # NOTE: one still needs to use `conda` to (de)activate environments
@@ -191,6 +192,10 @@ rm neuralplexer_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/11477766/files/rfaa_benchmark_method_predictions.tar.gz
 tar -xzf rfaa_benchmark_method_predictions.tar.gz
 rm rfaa_benchmark_method_predictions.tar.gz
+# Chai-1 predictions and results
+wget https://zenodo.org/records/11477766/files/chai_benchmark_method_predictions.tar.gz
+tar -xzf chai_benchmark_method_predictions.tar.gz
+rm chai_benchmark_method_predictions.tar.gz
 # TULIP predictions and results
 wget https://zenodo.org/records/11477766/files/tulip_benchmark_method_predictions.tar.gz
 tar -xzf tulip_benchmark_method_predictions.tar.gz
@@ -301,11 +306,12 @@ python3 posebench/data/components/protein_apo_to_holo_alignment.py dataset=astex
 
 #### Flexible Protein Methods
 
-| Name                   | Source                                                                | Astex Benchmarked | PoseBusters Benchmarked | DockGen Benchmarked | CASP Benchmarked |
-| ---------------------- | --------------------------------------------------------------------- | ----------------- | ----------------------- | ------------------- | ---------------- |
-| `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)       | ✓                 | ✓                       | ✓                   | ✓                |
-| `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)     | ✓                 | ✓                       | ✓                   | ✓                |
-| `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528) | ✓                 | ✓                       | ✓                   | ✓                |
+| Name                   | Source                                                                        | Astex Benchmarked | PoseBusters Benchmarked | DockGen Benchmarked | CASP Benchmarked |
+| ---------------------- | ----------------------------------------------------------------------------- | ----------------- | ----------------------- | ------------------- | ---------------- |
+| `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)               | ✓                 | ✓                       | ✓                   | ✓                |
+| `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)             | ✓                 | ✓                       | ✓                   | ✓                |
+| `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528)         | ✓                 | ✓                       | ✓                   | ✓                |
+| `Chai-1`               | [Chai Discovery](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf) | ✓                 | ✓                       | ✓                   | ✓                |
 
 ### Methods available for ensembling
 
@@ -319,11 +325,12 @@ python3 posebench/data/components/protein_apo_to_holo_alignment.py dataset=astex
 
 #### Flexible Protein Methods
 
-| Name                   | Source                                                                | Astex Benchmarked | PoseBusters Benchmarked | DockGen Benchmarked | CASP Benchmarked |
-| ---------------------- | --------------------------------------------------------------------- | ----------------- | ----------------------- | ------------------- | ---------------- |
-| `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)       | ✓                 | ✓                       | ✓                   | ✓                |
-| `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)     | ✓                 | ✓                       | ✓                   | ✓                |
-| `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528) | ✓                 | ✓                       | ✓                   | ✓                |
+| Name                   | Source                                                                        | Astex Benchmarked | PoseBusters Benchmarked | DockGen Benchmarked | CASP Benchmarked |
+| ---------------------- | ----------------------------------------------------------------------------- | ----------------- | ----------------------- | ------------------- | ---------------- |
+| `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)               | ✓                 | ✓                       | ✓                   | ✓                |
+| `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)             | ✓                 | ✓                       | ✓                   | ✓                |
+| `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528)         | ✓                 | ✓                       | ✓                   | ✓                |
+| `Chai-1`               | [Chai Discovery](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf) | ✓                 | ✓                       | ✓                   | ✓                |
 
 **NOTE**: Have a new method to add? Please let us know by creating a pull request. We would be happy to work with you to integrate new methodology into this benchmark!
 
@@ -649,6 +656,74 @@ python3 posebench/models/ensemble_generation.py ensemble_methods=\[rfaa\] input_
 ...
 # now score the CASP15-compliant submissions using the official CASP scoring pipeline
 python3 posebench/analysis/inference_analysis_casp.py method=rfaa dataset=casp15 targets='[T1124, T1127v2, T1146, T1152, T1158v1, T1158v2, T1158v3, T1158v4, T1186, T1187, T1188]' repeat_index=1
+...
+```
+
+### How to run inference with `Chai-1`
+
+Prepare CSV input files
+
+```bash
+python3 posebench/data/chai_input_preparation.py dataset=posebusters_benchmark
+python3 posebench/data/chai_input_preparation.py dataset=astex_diverse
+python3 posebench/data/chai_input_preparation.py dataset=dockgen
+python3 posebench/data/chai_input_preparation.py dataset=casp15 input_data_dir=data/casp15_set/targets
+```
+
+Run inference on each dataset
+
+```bash
+conda activate forks/chai-lab/chai-lab/
+python3 posebench/models/chai_inference.py dataset=posebusters_benchmark
+python3 posebench/models/chai_inference.py dataset=astex_diverse
+python3 posebench/models/chai_inference.py dataset=dockgen
+python3 posebench/models/chai_inference.py dataset=casp15
+conda deactivate
+```
+
+Extract predictions into separate files for proteins and ligands
+
+```bash
+python3 posebench/data/chai_output_extraction.py dataset=posebusters_benchmark
+python3 posebench/data/chai_output_extraction.py dataset=astex_diverse
+python3 posebench/data/chai_output_extraction.py dataset=dockgen
+python3 posebench/data/chai_output_extraction.py dataset=casp15
+```
+
+Relax the generated ligand structures inside of their respective protein pockets
+
+```bash
+python3 posebench/models/inference_relaxation.py method=chai-lab dataset=posebusters_benchmark remove_initial_protein_hydrogens=true
+python3 posebench/models/inference_relaxation.py method=chai-lab dataset=astex_diverse remove_initial_protein_hydrogens=true
+python3 posebench/models/inference_relaxation.py method=chai-lab dataset=dockgen remove_initial_protein_hydrogens=true
+```
+
+Align predicted protein-ligand structures to ground-truth complex structures
+
+```bash
+python3 posebench/analysis/complex_alignment.py method=chai-lab dataset=posebusters_benchmark
+python3 posebench/analysis/complex_alignment.py method=chai-lab dataset=astex_diverse
+python3 posebench/analysis/complex_alignment.py method=chai-lab dataset=dockgen
+```
+
+Analyze inference results for each dataset
+
+```bash
+python3 posebench/analysis/inference_analysis.py method=chai-lab dataset=posebusters_benchmark
+python3 posebench/analysis/inference_analysis.py method=chai-lab dataset=astex_diverse
+python3 posebench/analysis/inference_analysis.py method=chai-lab dataset=dockgen
+```
+
+Analyze inference results for the CASP15 dataset
+
+```bash
+# first assemble (unrelaxed and post ranking-relaxed) CASP15-compliant prediction submission files for scoring
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[chai-lab\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_chai-lab_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[chai-lab\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_chai-lab_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+# NOTE: the suffixes for both `output_dir` and `ensemble_benchmarking_repeat_index` should be modified to e.g., 2, 3, ...
+...
+# now score the CASP15-compliant submissions using the official CASP scoring pipeline
+python3 posebench/analysis/inference_analysis_casp.py method=chai-lab dataset=casp15 repeat_index=1
 ...
 ```
 

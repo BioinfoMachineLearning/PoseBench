@@ -302,7 +302,7 @@ def main(cfg: DictConfig):
     input_data_dir = Path(cfg.input_data_dir)
     for config in ["", "_relaxed"]:
         output_dir = Path(cfg.output_dir + config)
-        if not output_dir.exists() or cfg.method in ["neuralplexer", "rfaa"]:
+        if not output_dir.exists() or cfg.method in ["neuralplexer", "rfaa", "chai-lab"]:
             output_dir = Path(str(output_dir).replace("_relaxed", ""))
 
         # parse ligand files
@@ -333,6 +333,20 @@ def main(cfg: DictConfig):
             )
         elif cfg.method == "rfaa":
             output_ligand_files = sorted(list(output_dir.rglob(f"*ligand{config}.sdf")))
+        elif cfg.method == "chai-lab":
+            output_ligand_files = list(
+                output_dir.rglob(f"pred.model_idx_{cfg.rank_to_align - 1}_ligand*{config}.sdf")
+            )
+            output_ligand_files = sorted(
+                [
+                    file
+                    for file in output_ligand_files
+                    if config == "_relaxed"
+                    or (config == "" and "_relaxed" not in file.stem)
+                    and "_aligned" not in file.stem
+                    and "_LIG_" not in file.stem
+                ]
+            )
         else:
             raise ValueError(f"Invalid method: {cfg.method}")
 
@@ -366,6 +380,18 @@ def main(cfg: DictConfig):
             )
         elif cfg.method == "rfaa":
             output_protein_files = sorted(list(output_dir.rglob("*protein.pdb")))
+        elif cfg.method == "chai-lab":
+            output_protein_files = list(
+                output_dir.rglob(f"pred.model_idx_{cfg.rank_to_align - 1}_protein*.pdb")
+            )
+            output_protein_files = sorted(
+                [
+                    file
+                    for file in output_protein_files
+                    if (config == "_relaxed" or (config == "" and "_relaxed" not in file.stem))
+                    and "_aligned" not in file.stem
+                ]
+            )
         else:
             raise ValueError(f"Invalid method: {cfg.method}")
 
@@ -381,7 +407,7 @@ def main(cfg: DictConfig):
                         )
                     ]
                 )
-            elif cfg.method == "rfaa":
+            elif cfg.method in ["rfaa", "chai-lab"]:
                 output_protein_files = sorted(
                     [
                         item

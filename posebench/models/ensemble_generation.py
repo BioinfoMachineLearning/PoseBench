@@ -473,6 +473,56 @@ echo "Finished RoseTTAFold-All-Atom inference for input '{input_id}'!"
     logger.info(f"Bash script '{output_filepath}' created successfully.")
 
 
+def create_chai_bash_script(
+    protein_filepath: str,
+    ligand_smiles: str,
+    input_id: str,
+    cfg: DictConfig,
+    output_filepath: Optional[str] = None,
+    generate_hpc_scripts: bool = True,
+):
+    """Create a bash script to run Chai-1 protein-ligand complex prediction.
+
+    :param protein_filepath: Path to the input protein structure PDB file.
+    :param ligand_smiles: SMILES string of the input ligand.
+    :param input_id: Input ID.
+    :param cfg: Configuration dictionary for runtime arguments.
+    :param output_filepath: Optional path to the output bash script file.
+    :param generate_hpc_scripts: Whether to generate HPC scripts for RoseTTAFold-All-Atom.
+    """
+
+    if output_filepath is None:
+        output_filepath = os.path.join(cfg.output_dir, input_id, f"{input_id}_rfaa_inference.sh")
+        os.makedirs(os.path.dirname(output_filepath), exist_ok=True)
+
+    bash_script_content = f"""#!/bin/bash -l
+{insert_hpc_headers(method='chai-lab', time_limit='0-12:00:00') if generate_hpc_scripts else 'source /home/$USER/mambaforge/etc/profile.d/conda.sh'}
+conda activate {"$project_dir/forks/chai-lab/chai-lab/" if generate_hpc_scripts else 'forks/chai-lab/chai-lab/'}
+echo "Beginning Chai-1 inference for input '{input_id}'!"
+
+# command to run chai_input_preparation.py
+python posebench/data/chai_input_preparation.py \\
+    dataset=ensemble \\
+    protein_filepath='{protein_filepath}' \\
+    ligand_smiles='"{ligand_smiles}"' \\
+    input_id='{input_id}'
+
+# command to run chai_inference.py
+echo "Calling chai_inference.py!"
+python posebench/models/chai_inference.py \\
+    dataset=ensemble \\
+    cuda_device_index={cfg.cuda_device_index} \\
+    skip_existing={cfg.chai_skip_existing}
+
+echo "Finished calling chai_inference.py!"
+    """
+
+    with open(output_filepath, "w") as file:
+        file.write(bash_script_content)
+
+    logger.info(f"Bash script '{output_filepath}' created successfully.")
+
+
 def create_vina_bash_script(
     binding_site_method: Literal["diffdock", "fabind", "dynamicbind", "neuralplexer", "rfaa"],
     protein_filepath: str,
@@ -556,7 +606,7 @@ def generate_method_prediction_script(
         protein and ligand filepaths.
     """
 
-    def extract_chains_to_fasta_files(protein_filepath: str) -> List[str]:
+    def extract_protein_chains_to_fasta_files(protein_filepath: str) -> List[str]:
         """Extract individual chains from a protein file and save them as separate FASTA files.
 
         :param protein_filepath: Path to the protein file.
@@ -578,7 +628,7 @@ def generate_method_prediction_script(
             model_chains = [chain for chain in model]
             assert len(model_chains) == len(
                 sequences
-            ), "For RFAA, numbers of BioPython chains and parsed sequences do not match."
+            ), "For RFAA, numbers of Biopython chains and parsed sequences do not match."
             for chain_index, chain in enumerate(model_chains):
                 fasta_filename = f"{Path(protein_filepath).stem}_{chain.id}.fasta"
                 fasta_filepath = os.path.join(temp_dir, fasta_filename)
@@ -622,8 +672,8 @@ def generate_method_prediction_script(
             generate_hpc_scripts=generate_hpc_scripts,
         )
     elif method == "rfaa":
-        fasta_filepaths = extract_chains_to_fasta_files(protein_filepath)
-        smiles_strings = ligand_smiles.split(":") if ":" in ligand_smiles else [ligand_smiles]
+        fasta_filepaths = extract_protein_chains_to_fasta_files(protein_filepath)
+        smiles_strings = ligand_smiles.split(":")
         create_rfaa_bash_script(
             fasta_filepaths=fasta_filepaths,
             sdf_filepaths=None,
@@ -631,6 +681,15 @@ def generate_method_prediction_script(
             cfg=cfg,
             output_filepath=output_filepath,
             smiles_strings=smiles_strings,
+            generate_hpc_scripts=generate_hpc_scripts,
+        )
+    elif method == "chai-lab":
+        create_chai_bash_script(
+            protein_filepath=protein_filepath,
+            ligand_smiles=ligand_smiles,
+            input_id=input_id,
+            cfg=cfg,
+            output_filepath=output_filepath,
             generate_hpc_scripts=generate_hpc_scripts,
         )
     elif method == "vina":
@@ -879,6 +938,40 @@ def get_method_predictions(
                         f"{target}_ligand.sdf"
                     ),
                 )
+            ],
+            key=rank_key,
+        )[: cfg.method_top_n_to_select]
+    elif method == "chai-lab":
+        ensemble_benchmarking_output_dir = (
+            Path(cfg.input_dir if cfg.input_dir else cfg.chai_out_path).parent
+            / f"chai-lab{pocket_only_suffix}{no_ilcl_suffix}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
+            if cfg.ensemble_benchmarking
+            else (cfg.input_dir if cfg.input_dir else cfg.chai_out_path)
+        )
+        protein_output_files = sorted(
+            [
+                file
+                for file in map(
+                    str,
+                    Path(os.path.join(ensemble_benchmarking_output_dir, target)).rglob("*.pdb"),
+                )
+                if "model_idx" in os.path.basename(file)
+                and "relaxed" not in os.path.basename(file)
+                and "aligned" not in os.path.basename(file)
+            ],
+            key=rank_key,
+        )[: cfg.method_top_n_to_select]
+        ligand_output_files = sorted(
+            [
+                file
+                for file in map(
+                    str,
+                    Path(os.path.join(ensemble_benchmarking_output_dir, target)).rglob("*.sdf"),
+                )
+                if "model_idx" in os.path.basename(file)
+                and "relaxed" not in os.path.basename(file)
+                and "aligned" not in os.path.basename(file)
+                and "_LIG_" not in os.path.basename(file)
             ],
             key=rank_key,
         )[: cfg.method_top_n_to_select]

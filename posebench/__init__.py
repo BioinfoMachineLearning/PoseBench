@@ -14,6 +14,7 @@ METHOD_TITLE_MAPPING = {
     "dynamicbind": "DynamicBind",
     "neuralplexer": "NeuralPLexer",
     "rfaa": "RoseTTAFold-All-Atom",
+    "chai-lab": "chai-lab",
     "vina": "Vina",
     "tulip": "TULIP",
     "p2rank": "P2Rank",
@@ -97,7 +98,7 @@ def resolve_method_protein_dir(
             "results",
             f"{dataset}{pocket_only_suffix}",
         )
-    elif method in ["neuralplexer", "rfaa"]:
+    elif method in ["neuralplexer", "rfaa", "chai-lab"]:
         return os.path.join(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method),
@@ -128,8 +129,13 @@ def resolve_method_ligand_dir(
     """
     pocket_only_suffix = "_pocket_only" if pocket_only_baseline else ""
     v1_baseline_suffix = "v1" if v1_baseline else ""
-    if method in STANDARDIZED_DIR_METHODS or method in ["neuralplexer", "rfaa", "tulip"]:
-        output_suffix = "s" if method in ["neuralplexer", "rfaa", "tulip"] else ""
+    if method in STANDARDIZED_DIR_METHODS or method in [
+        "neuralplexer",
+        "rfaa",
+        "chai-lab",
+        "tulip",
+    ]:
+        output_suffix = "s" if method in ["neuralplexer", "rfaa", "chai-lab", "tulip"] else ""
         return os.path.join(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method) + v1_baseline_suffix,
@@ -178,8 +184,13 @@ def resolve_method_output_dir(
     """
     pocket_only_suffix = "_pocket_only" if pocket_only_baseline else ""
     v1_baseline_suffix = "v1" if v1_baseline else ""
-    if method in STANDARDIZED_DIR_METHODS or method in ["neuralplexer", "rfaa", "tulip"]:
-        output_suffix = "s" if method in ["neuralplexer", "rfaa", "tulip"] else ""
+    if method in STANDARDIZED_DIR_METHODS or method in [
+        "neuralplexer",
+        "rfaa",
+        "chai-lab",
+        "tulip",
+    ]:
+        output_suffix = "s" if method in ["neuralplexer", "rfaa", "chai-lab", "tulip"] else ""
         return os.path.join(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method) + v1_baseline_suffix,
@@ -222,7 +233,13 @@ def resolve_method_input_csv_path(method: str, dataset: str, pocket_only_baselin
     :return: The input CSV path for the given method.
     """
     pocket_only_suffix = "_pocket_only" if pocket_only_baseline else ""
-    if method in STANDARDIZED_DIR_METHODS or method in ["neuralplexer", "rfaa", "vina", "tulip"]:
+    if method in STANDARDIZED_DIR_METHODS or method in [
+        "neuralplexer",
+        "rfaa",
+        "chai-lab",
+        "vina",
+        "tulip",
+    ]:
         return os.path.join(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method),

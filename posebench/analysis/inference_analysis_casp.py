@@ -9,7 +9,7 @@ import shutil
 import subprocess  # nosec
 import tempfile
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Tuple
 
 import hydra
 import pandas as pd

@@ -26,14 +26,23 @@ def assemble_baseline_command(cfg: DictConfig) -> List[str]:
     :param cfg: The configuration object.
     :return: The baseline command as a list of strings (i.e., command segments).
     """
-    if cfg.method in ["diffdock", "fabind", "dynamicbind", "neuralplexer", "rfaa", "vina"]:
-        # NOTE: When running RoseTTAFold-All-Atom, the `RFAA` Conda environment must be activated instead of the `PoseBenchmark` environment
+    if cfg.method in [
+        "diffdock",
+        "fabind",
+        "dynamicbind",
+        "neuralplexer",
+        "rfaa",
+        "chai-lab",
+        "vina",
+    ]:
+        # NOTE: When running RoseTTAFold-All-Atom (or Chai-1), the `RFAA` (`chai-lab`) Conda environment must be activated instead of the `PoseBench` environment
         vina_suffix = f" method={cfg.vina_binding_site_method}" if cfg.method == "vina" else ""
         cuda_device_suffix = (
             "" if cfg.method == "vina" else f" cuda_device_index={cfg.cuda_device_index}"
         )
         rfaa_suffix = " run_inference_directly=true" if cfg.method == "rfaa" else ""
-        return f"python3 posebench/models/{cfg.method}_inference.py dataset={cfg.dataset} repeat_index={cfg.repeat_index} max_num_inputs={cfg.max_num_inputs}{vina_suffix}{cuda_device_suffix}{rfaa_suffix}".split()
+        method = cfg.method.split("-")[0] if cfg.method == "chai-lab" else cfg.method
+        return f"python3 posebench/models/{method}_inference.py dataset={cfg.dataset} repeat_index={cfg.repeat_index} max_num_inputs={cfg.max_num_inputs}{vina_suffix}{cuda_device_suffix}{rfaa_suffix}".split()
     else:
         raise ValueError(f"Invalid method: {cfg.method}")
 
