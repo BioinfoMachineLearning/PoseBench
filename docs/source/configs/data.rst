@@ -75,6 +75,18 @@ RoseTTAFold-All-Atom output extraction
     :language: yaml
     :caption: :file:`data/rfaa_output_extraction.yaml`
 
+Chai-1 input preparation
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/data/chai_input_preparation.yaml
+    :language: yaml
+    :caption: :file:`data/chai_input_preparation.yaml`
+
+Chai-1 output extraction
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/data/chai_output_extraction.yaml
+    :language: yaml
+    :caption: :file:`data/chai_output_extraction.yaml`
+
 TULIP output extraction
 ^^^^^^^^^^^^^^^^^^^^^^^^
 .. literalinclude:: ../../../configs/data/tulip_output_extraction.yaml

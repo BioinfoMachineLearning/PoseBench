@@ -2,5 +2,5 @@ For developers
 ================
 
 .. mdinclude:: ../../README.md
-    :start-line: 849
-    :end-line: 883
+    :start-line: 927
+    :end-line: 961

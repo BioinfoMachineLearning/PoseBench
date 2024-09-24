@@ -2,8 +2,8 @@ How to run inference with a method ensemble
 ================
 
 .. mdinclude:: ../../README.md
-    :start-line: 775
-    :end-line: 828
+    :start-line: 853
+    :end-line: 904
 
 .. note::
     In addition to having `consensus` as an available value for `ensemble_ranking_method`, one can also set `ensemble_ranking_method=ff` to have the method ensemble's top-ranked predictions selected using the criterion of "minimum (molecular dynamics) force field energy" (albeit while incurring a very large runtime complexity).
