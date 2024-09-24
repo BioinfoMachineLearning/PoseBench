@@ -1,5 +1,0 @@
-#!/bml/acmwhb/Repositories/Lab_Repositories/PoseBench-Public-AF3/forks/chai-lab/chai-lab/bin/python3.11
-import sys
-from lib2to3.main import main
-
-sys.exit(main("lib2to3.fixes"))

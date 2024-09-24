@@ -1,5 +1,0 @@
-#!/bml/acmwhb/Repositories/Lab_Repositories/PoseBench-Public-AF3/forks/chai-lab/chai-lab/bin/python3.11
-
-import pydoc
-if __name__ == '__main__':
-    pydoc.cli()
