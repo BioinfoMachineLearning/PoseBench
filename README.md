@@ -96,6 +96,9 @@ cd forks/NeuralPLexer/ && pip3 install -e . && cd ../../
 mamba env create -f environments/rfaa_environment.yaml --prefix forks/RoseTTAFold-All-Atom/RFAA/
 conda activate forks/RoseTTAFold-All-Atom/RFAA/  # NOTE: one still needs to use `conda` to (de)activate environments
 cd forks/RoseTTAFold-All-Atom/rf2aa/SE3Transformer/ && pip3 install --no-cache-dir -r requirements.txt && python3 setup.py install && cd ../../../../
+# - Chai-1 environment (~6 GB)
+mamba env create -f environments/chai_lab_environment.yaml --prefix forks/chai-lab/chai-lab/
+conda activate forks/chai-lab/chai-lab/  # NOTE: one still needs to use `conda` to (de)activate environments
 # - AutoDock Vina Tools environment (~1 GB)
 mamba env create -f environments/adfr_environment.yaml --prefix forks/Vina/ADFR/
 conda activate forks/Vina/ADFR/  # NOTE: one still needs to use `conda` to (de)activate environments

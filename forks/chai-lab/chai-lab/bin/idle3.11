@@ -1,0 +1,5 @@
+#!/bml/acmwhb/Repositories/Lab_Repositories/PoseBench-Public-AF3/forks/chai-lab/chai-lab/bin/python3.11
+
+from idlelib.pyshell import main
+if __name__ == '__main__':
+    main()
