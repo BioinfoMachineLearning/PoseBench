@@ -362,6 +362,17 @@ def build_inference_script(
             # `PoseBench` Conda environment was created using `--prefix PoseBench/`
             # to reduce storage usage in one's HPC home directory
             f.write("\nconda activate PoseBench/\n\n")
+
+            # NOTE: Model weights may take up too much space in one's HPC
+            # home directory, so we recommend using a command like the following
+            # to store the model weights in a larger storage location (e.g., `/scratch`):
+            f.write(
+                "# Store model weights in a larger storage location\n"
+                + 'export TORCH_HOME="/cluster/pixstor/chengji-lab/$USER/torch_cache"\n'
+                + 'export HF_HOME="/cluster/pixstor/chengji-lab/$USER/hf_cache"\n\n'
+                + 'mkdir -p "$TORCH_HOME"\n'
+                + 'mkdir -p "$HF_HOME"\n\n'
+            )
         else:
             f.write(
                 "# shellcheck source=/dev/null\n"
