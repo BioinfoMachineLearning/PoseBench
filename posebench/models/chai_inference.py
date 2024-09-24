@@ -47,7 +47,7 @@ def run_chai_inference(fasta_file: str, cfg: DictConfig):
         )
     except Exception as e:
         raise e
-    logger.info(f"Chai-1 inference for config input file `{cfg.inference_config_name}` complete.")
+    logger.info(f"Chai-1 inference for FASTA file `{fasta_file}` complete.")
 
 
 @hydra.main(
