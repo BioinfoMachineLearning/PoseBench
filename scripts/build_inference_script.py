@@ -111,7 +111,7 @@ COMMANDS = {
             "conda deactivate",
         ],
         "extract_outputs": [
-            "python3 posebench/data/rfaa_output_extraction.py dataset={dataset} pocket_only_baseline={pocket_only_baseline}",
+            "python3 posebench/data/rfaa_output_extraction.py dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
         ],
         "relax": [
             "python3 posebench/models/inference_relaxation.py method=rfaa dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true",
@@ -506,7 +506,12 @@ def build_inference_script(
             f.write("# Extract outputs\n")
             for cmd in commands.get("extract_outputs", []):
                 f.write(
-                    cmd.format(dataset=dataset, pocket_only_baseline=pocket_only_baseline) + "\n"
+                    cmd.format(
+                        dataset=dataset,
+                        pocket_only_baseline=pocket_only_baseline,
+                        repeat_index=repeat_index,
+                    )
+                    + "\n"
                 )
             f.write("\n")
 
