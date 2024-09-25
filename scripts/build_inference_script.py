@@ -136,20 +136,20 @@ COMMANDS = {
         ],
         "run_inference": [
             "conda activate forks/chai-lab/chai-lab/",
-            "python3 posebench/models/chai_inference.py dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline}",
+            "python3 posebench/models/chai_inference.py dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
             "conda deactivate",
         ],
         "extract_outputs": [
-            "python3 posebench/data/chai_output_extraction.py dataset={dataset} pocket_only_baseline={pocket_only_baseline}",
+            "python3 posebench/data/chai_output_extraction.py dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
         ],
         "relax": [
-            "python3 posebench/models/inference_relaxation.py method=chai-lab dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true",
+            "python3 posebench/models/inference_relaxation.py method=chai-lab dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true repeat_index={repeat_index}",
         ],
         "align_complexes": [
-            "python3 posebench/analysis/complex_alignment.py method=chai-lab dataset={dataset} pocket_only_baseline={pocket_only_baseline}",
+            "python3 posebench/analysis/complex_alignment.py method=chai-lab dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
         ],
         "analyze_results": [
-            "python3 posebench/analysis/inference_analysis.py method=chai-lab dataset={dataset} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein}",
+            "python3 posebench/analysis/inference_analysis.py method=chai-lab dataset={dataset} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} repeat_index={repeat_index}",
         ],
         "assemble_casp15": [
             "python3 posebench/models/ensemble_generation.py ensemble_methods=[chai-lab] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_chai-lab_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",

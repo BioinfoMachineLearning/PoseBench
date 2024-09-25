@@ -2,5 +2,5 @@ How to create comparative plots of inference results
 ================
 
 .. mdinclude:: ../../README.md
-    :start-line: 912
-    :end-line: 921
+    :start-line: 929
+    :end-line: 938

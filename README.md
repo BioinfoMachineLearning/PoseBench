@@ -674,44 +674,61 @@ Run inference on each dataset
 
 ```bash
 conda activate forks/chai-lab/chai-lab/
-python3 posebench/models/chai_inference.py dataset=posebusters_benchmark
-python3 posebench/models/chai_inference.py dataset=astex_diverse
-python3 posebench/models/chai_inference.py dataset=dockgen
-python3 posebench/models/chai_inference.py dataset=casp15
+python3 posebench/models/chai_inference.py dataset=posebusters_benchmark repeat_index=1
+...
+python3 posebench/models/chai_inference.py dataset=astex_diverse repeat_index=1
+...
+python3 posebench/models/chai_inference.py dataset=dockgen repeat_index=1
+...
+python3 posebench/models/chai_inference.py dataset=casp15 repeat_index=1
+...
 conda deactivate
 ```
 
 Extract predictions into separate files for proteins and ligands
 
 ```bash
-python3 posebench/data/chai_output_extraction.py dataset=posebusters_benchmark
-python3 posebench/data/chai_output_extraction.py dataset=astex_diverse
-python3 posebench/data/chai_output_extraction.py dataset=dockgen
-python3 posebench/data/chai_output_extraction.py dataset=casp15
+python3 posebench/data/chai_output_extraction.py dataset=posebusters_benchmark repeat_index=1
+...
+python3 posebench/data/chai_output_extraction.py dataset=astex_diverse repeat_index=1
+...
+python3 posebench/data/chai_output_extraction.py dataset=dockgen repeat_index=1
+...
+python3 posebench/data/chai_output_extraction.py dataset=casp15 repeat_index=1
+...
 ```
 
 Relax the generated ligand structures inside of their respective protein pockets
 
 ```bash
-python3 posebench/models/inference_relaxation.py method=chai-lab dataset=posebusters_benchmark remove_initial_protein_hydrogens=true
-python3 posebench/models/inference_relaxation.py method=chai-lab dataset=astex_diverse remove_initial_protein_hydrogens=true
-python3 posebench/models/inference_relaxation.py method=chai-lab dataset=dockgen remove_initial_protein_hydrogens=true
+python3 posebench/models/inference_relaxation.py method=chai-lab dataset=posebusters_benchmark remove_initial_protein_hydrogens=true repeat_index=1
+...
+python3 posebench/models/inference_relaxation.py method=chai-lab dataset=astex_diverse remove_initial_protein_hydrogens=true repeat_index=1
+...
+python3 posebench/models/inference_relaxation.py method=chai-lab dataset=dockgen remove_initial_protein_hydrogens=true repeat_index=1
+...
 ```
 
 Align predicted protein-ligand structures to ground-truth complex structures
 
 ```bash
-python3 posebench/analysis/complex_alignment.py method=chai-lab dataset=posebusters_benchmark
-python3 posebench/analysis/complex_alignment.py method=chai-lab dataset=astex_diverse
-python3 posebench/analysis/complex_alignment.py method=chai-lab dataset=dockgen
+python3 posebench/analysis/complex_alignment.py method=chai-lab dataset=posebusters_benchmark repeat_index=1
+...
+python3 posebench/analysis/complex_alignment.py method=chai-lab dataset=astex_diverse repeat_index=1
+...
+python3 posebench/analysis/complex_alignment.py method=chai-lab dataset=dockgen repeat_index=1
+...
 ```
 
 Analyze inference results for each dataset
 
 ```bash
-python3 posebench/analysis/inference_analysis.py method=chai-lab dataset=posebusters_benchmark
-python3 posebench/analysis/inference_analysis.py method=chai-lab dataset=astex_diverse
-python3 posebench/analysis/inference_analysis.py method=chai-lab dataset=dockgen
+python3 posebench/analysis/inference_analysis.py method=chai-lab dataset=posebusters_benchmark repeat_index=1
+...
+python3 posebench/analysis/inference_analysis.py method=chai-lab dataset=astex_diverse repeat_index=1
+...
+python3 posebench/analysis/inference_analysis.py method=chai-lab dataset=dockgen repeat_index=1
+...
 ```
 
 Analyze inference results for the CASP15 dataset
