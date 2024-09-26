@@ -77,7 +77,7 @@ def main(cfg: DictConfig):
                 break
             if (
                 cfg.skip_existing
-                and os.path.exists(os.path.join(cfg.output_dir, item, f"{item}.pdb"))
+                and os.path.exists(os.path.join(cfg.output_dir, item, "pred.model_idx_0.pdb"))
                 and not os.path.exists(os.path.join(cfg.output_dir, item, "error_log.txt"))
             ):
                 logger.info(f"Skipping inference for `{item}` as output directory already exists.")
