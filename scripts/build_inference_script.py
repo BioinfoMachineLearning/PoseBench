@@ -156,7 +156,7 @@ COMMANDS = {
             "python3 posebench/models/ensemble_generation.py ensemble_methods=[chai-lab] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_chai-lab_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
         ],
         "analyze_casp15": [
-            "python3 posebench/analysis/inference_analysis_casp.py method=chai-lab dataset=casp15 repeat_index={repeat_index} relax_protein={relax_protein}",
+            "python3 posebench/analysis/inference_analysis_casp.py method=chai-lab dataset=casp15 repeat_index={repeat_index} relax_protein={relax_protein} targets='[H1135, T1127v2, T1146, T1152, T1158v1, T1158v2, T1158v3, T1158v4, T1186, T1187, T1188]'",
         ],
     },
     "vina": {

@@ -411,8 +411,11 @@ def main(cfg: DictConfig):
                 output_protein_files = sorted(
                     [
                         item
-                        for item in output_dir.rglob("*protein.pdb")
-                        if any(
+                        for item in output_dir.rglob(
+                            f"pred.model_idx_{cfg.rank_to_align - 1}_protein*.pdb"
+                        )
+                        if "_aligned" not in item.stem
+                        and any(
                             [item.parent.stem in file.parent.stem for file in output_ligand_files]
                         )
                     ]
@@ -426,7 +429,9 @@ def main(cfg: DictConfig):
         ), f"Numbers of protein ({len(output_protein_files)}) and ligand ({len(output_ligand_files)}) files do not match."
 
         # align protein-ligand complexes
-        for protein_file, ligand_file in tqdm(zip(output_protein_files, output_ligand_files)):
+        for protein_file, ligand_file in tqdm(
+            zip(output_protein_files, output_ligand_files), desc="Aligning complexes"
+        ):
             protein_id, ligand_id = protein_file.stem, ligand_file.stem
             if protein_id != ligand_id and cfg.method == "dynamicbind":
                 protein_id, ligand_id = (
