@@ -64,6 +64,11 @@ def write_scripts(
         ]
         output_dir = os.path.join(output_scripts_path, input_id)
         fasta_filepath = os.path.join(output_dir, f"{input_id}.fasta")
+        if os.path.exists(fasta_filepath):
+            logger.warning(
+                f"FASTA file already exists for input ID {input_id}. Skipping writing to file..."
+            )
+            return
         for chain_index, sequence in enumerate(protein_sequence_list, start=1):
             with open(fasta_filepath, "a") as f:
                 f.write(f">protein|{input_id}-chain-{chain_index}\n{sequence}\n")
@@ -100,11 +105,17 @@ def write_scripts(
                 if len(seq) > 0
             ]
             ligand_smiles_list = smiles_string.split("|")
+            fasta_filepath = os.path.join(output_dir, f"{pdb_id}.fasta")
+            if os.path.exists(fasta_filepath):
+                logger.warning(
+                    f"FASTA file already exists for PDB ID {pdb_id}. Skipping writing to file..."
+                )
+                continue
             for chain_index, sequence in enumerate(protein_sequence_list, start=1):
-                with open(os.path.join(output_dir, f"{pdb_id}.fasta"), "a") as f:
+                with open(fasta_filepath, "a") as f:
                     f.write(f">protein|{pdb_id}-chain-{chain_index}\n{sequence}\n")
             for chain_index, sequence in enumerate(ligand_smiles_list, start=1):
-                with open(os.path.join(output_dir, f"{pdb_id}.fasta"), "a") as f:
+                with open(fasta_filepath, "a") as f:
                     f.write(f">ligand|{pdb_id}-chain-{chain_index}\n{sequence}\n")
 
 
