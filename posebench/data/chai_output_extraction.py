@@ -2,7 +2,6 @@
 # Following code curated for PoseBench: (https://github.com/BioinfoMachineLearning/PoseBench)
 # -------------------------------------------------------------------------------------------------------------------------------------
 
-import glob
 import logging
 import os
 
@@ -10,7 +9,6 @@ import hydra
 import rootutils
 from biopandas.pdb import PandasPdb
 from omegaconf import DictConfig, open_dict
-from rdkit import Chem
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
