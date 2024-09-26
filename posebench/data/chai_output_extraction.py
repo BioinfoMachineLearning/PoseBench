@@ -71,7 +71,7 @@ def main(cfg: DictConfig):
                 cfg.dataset, f"{cfg.dataset}_pocket_only"
             )
             cfg.inference_outputs_dir = cfg.inference_outputs_dir.replace(
-                f"rfaa_{cfg.dataset}", f"rfaa_pocket_only_{cfg.dataset}"
+                f"chai-lab_{cfg.dataset}", f"chai-lab_pocket_only_{cfg.dataset}"
             )
 
     if cfg.complex_filepath is not None:
