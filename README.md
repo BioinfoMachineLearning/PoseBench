@@ -984,6 +984,7 @@ rm -rf docs/build/ && sphinx-build docs/source/ docs/build/ # NOTE: errors can s
 
 - [AutoDock-Vina](https://github.com/ccsb-scripps/AutoDock-Vina)
 - [casp15_ligand](https://git.scicore.unibas.ch/schwede/casp15_ligand)
+- [chai-lab](https://github.com/chaidiscovery/chai-lab)
 - [DiffDock](https://github.com/gcorso/DiffDock)
 - [FABind](https://github.com/QizhiPei/FABind)
 - [DynamicBind](https://github.com/luwei0917/DynamicBind)
