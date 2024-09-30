@@ -9,7 +9,7 @@ import hydra
 import rootutils
 from beartype import beartype
 from beartype.typing import Any, List, Optional, Tuple
-from omegaconf import DictConfig
+from omegaconf import DictConfig, open_dict
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
@@ -61,12 +61,12 @@ def write_input_csv(
                     protein_filepath = (
                         os.path.join(
                             input_protein_structure_dir,
-                            f"{pdb_id}_holo_aligned_esmfold_protein.pdb",
+                            f"{pdb_id}_holo_aligned_predicted_protein.pdb",
                         )
                         if os.path.exists(
                             os.path.join(
                                 input_protein_structure_dir,
-                                f"{pdb_id}_holo_aligned_esmfold_protein.pdb",
+                                f"{pdb_id}_holo_aligned_predicted_protein.pdb",
                             )
                         )
                         else os.path.join(input_protein_structure_dir, f"{pdb_id}.pdb")
@@ -106,6 +106,13 @@ def main(cfg: DictConfig):
             pdb_ids = {line.replace(" ", "-") for line in f.read().splitlines()}
     elif cfg.dataset not in ["posebusters_benchmark", "astex_diverse", "dockgen", "casp15"]:
         raise ValueError(f"Dataset `{cfg.dataset}` not supported.")
+
+    if cfg.pocket_only_baseline:
+        with open_dict(cfg):
+            cfg.output_csv_path = cfg.output_csv_path.replace(
+                f"diffdock_{cfg.dataset}", f"diffdock_pocket_only_{cfg.dataset}"
+            )
+
     input_protein_structure_dir = (
         cfg.input_protein_structure_dir + "_bs_cropped"
         if cfg.pocket_only_baseline

@@ -7,3 +7,4 @@ complex_id: null # if not `null`, this should be the complex ID of the single co
 ligand_smiles: null # if not `null`, this should be the (i.e., `.` fragment-separated) complex ligand SMILES string of the single complex for which to extract outputs
 output_dir: null # if not `null`, this should be the path to the output file to which to write the extracted outputs
 repeat_index: 1 # the repeat index with which inference was run
+pocket_only_baseline: false # whether to prepare the pocket-only baseline

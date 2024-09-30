@@ -39,6 +39,12 @@ RoseTTAFold-All-Atom inference
     :language: yaml
     :caption: :file:`model/rfaa_inference.yaml`
 
+Chai-1 inference
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/model/chai_inference.yaml
+    :language: yaml
+    :caption: :file:`model/chai_inference.yaml`
+
 Vina inference
 ^^^^^^^^^^^^^^^^^^^^^^^^
 .. literalinclude:: ../../../configs/model/vina_inference.yaml

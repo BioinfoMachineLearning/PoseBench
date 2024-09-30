@@ -9,7 +9,7 @@ import datetime
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 project = "PoseBench"
 author = "Alex Morehead"
-release = "0.4.0"
+release = "0.5.0"
 copyright = f"{datetime.datetime.now().year}, {author}"
 
 # -- General configuration ---------------------------------------------------

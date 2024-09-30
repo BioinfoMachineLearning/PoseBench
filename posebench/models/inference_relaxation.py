@@ -12,7 +12,7 @@ from pathlib import Path
 
 import hydra
 import rootutils
-from omegaconf import DictConfig
+from omegaconf import DictConfig, open_dict
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
@@ -68,6 +68,13 @@ def relax_inference_results(
                 for filepath in protein_filepaths
                 if "_protein.pdb" in filepath.name and "relaxed" not in filepath.parent.stem
             ]
+        elif cfg.method == "chai-lab":
+            protein_filepaths = [
+                filepath
+                for filepath in protein_filepaths
+                if "model_idx_0_protein.pdb" in filepath.name
+                and "relaxed" not in filepath.parent.stem
+            ]
     if not ligand_file_dir.exists() or cfg.method == "dynamicbind":
         ligand_filepaths = [
             file
@@ -98,6 +105,13 @@ def relax_inference_results(
                 filepath
                 for filepath in ligand_filepaths
                 if "_ligand.sdf" in filepath.name and "relaxed" not in filepath.parent.stem
+            ]
+        elif cfg.method == "chai-lab":
+            ligand_filepaths = [
+                filepath
+                for filepath in ligand_filepaths
+                if "model_idx_0_ligand.sdf" in filepath.name
+                and "relaxed" not in filepath.parent.stem
             ]
         elif cfg.method == "vina":
             ligand_filepaths = [
@@ -130,6 +144,8 @@ def relax_inference_results(
                     for ligand_filepath in ligand_filepaths
                 )
             ]
+        elif cfg.method == "chai-lab":
+            raise NotImplementedError("Cannot subset `chai-lab` protein predictions at this time.")
         else:
             protein_filepaths = [
                 protein_filepath
@@ -289,6 +305,17 @@ def relax_single_filepair(
                 protein_filepath.stem.replace("_protein", ""),
                 f"{protein_filepath.stem}_relaxed.pdb",
             )
+        elif cfg.method == "chai-lab":
+            output_filepath = Path(
+                output_file_dir,
+                ligand_filepath.parent.stem,
+                f"{ligand_filepath.stem}_relaxed.sdf",
+            )
+            protein_output_filepath = Path(
+                output_file_dir,
+                protein_filepath.parent.stem,
+                f"{protein_filepath.stem}_relaxed.pdb",
+            )
         elif cfg.method == "vina":
             output_filepath = Path(
                 output_file_dir,
@@ -373,6 +400,10 @@ def relax_single_filepair(
 def main(cfg: DictConfig):
     """Run the relaxation inference process using the specified configuration."""
     logger.setLevel(cfg.log_level)
+
+    if cfg.v1_baseline:
+        with open_dict(cfg):
+            cfg.temp_dir = cfg.temp_dir.replace(cfg.method, f"{cfg.method}v1")
 
     protein_file_dir = Path(cfg.protein_dir)
     ligand_file_dir = Path(cfg.ligand_dir)

@@ -29,6 +29,7 @@ Welcome to PoseBench's documentation!
    tutorials
    data_preparation
    available_methods
+   sweep_inference
    method_inference
    ensemble_inference
    comparative_plots

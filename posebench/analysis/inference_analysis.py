@@ -120,15 +120,15 @@ def create_mol_table(
     pdb_ids = None
     relaxed_protein = relaxed and cfg.relax_protein
     if cfg.dataset == "dockgen" and cfg.dockgen_test_ids_filepath is not None:
-        # NOTE: for DockGen, we have each method predict for all 189 complexes
-        # but evaluate them here on an ESMFold RMSD-filtered subset of 91 complexes
+        # NOTE: for DockGen, we may have each method predict for all 189 complexes
+        # but evaluate them here on a predicted RMSD-filtered subset of 91 complexes
         assert os.path.exists(
             cfg.dockgen_test_ids_filepath
         ), f"Invalid test IDs file path for DockGen: {os.path.exists(cfg.dockgen_test_ids_filepath)}."
         with open(cfg.dockgen_test_ids_filepath) as f:
             pdb_ids = {line.replace(" ", "-") for line in f.read().splitlines()}
 
-    if cfg.method in ["dynamicbind", "rfaa"]:
+    if cfg.method in ["dynamicbind", "rfaa", "chai-lab"]:
         # NOTE: for methods such as DynamicBind and RoseTTAFold-All-Atom,
         # the input CSV file needs to be created manually from the input data directory
         input_smiles_and_pdb_ids = parse_inference_inputs_from_dir(input_data_dir, pdb_ids=pdb_ids)
@@ -194,6 +194,22 @@ def create_mol_table(
             )
             else None
         )
+    elif cfg.method == "chai-lab":
+        mol_table["mol_cond"] = input_table["pdb_id"].apply(
+            lambda x: list(
+                (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                    f"pred.model_idx_0_protein{'_relaxed' if relaxed_protein else ''}_aligned.pdb"
+                )
+            )[0]
+            if len(
+                list(
+                    (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                        f"pred.model_idx_0_protein{'_relaxed' if relaxed_protein else ''}_aligned.pdb"
+                    )
+                )
+            )
+            else None
+        )
     elif cfg.method == "ensemble":
         mol_table["mol_cond"] = input_table["pdb_id"].apply(
             lambda x: list(
@@ -211,25 +227,25 @@ def create_mol_table(
             else None
         )
     else:
-        pocket_postfix = "_bs_cropped" if cfg.pocket_only_baseline else ""
+        pocket_suffix = "_bs_cropped" if cfg.pocket_only_baseline else ""
         protein_structure_input_dir = (
             os.path.join(
-                input_data_dir, f"{cfg.dataset}_holo_aligned_esmfold_structures{pocket_postfix}"
+                input_data_dir, f"{cfg.dataset}_holo_aligned_predicted_structures{pocket_suffix}"
             )
             if os.path.exists(
                 os.path.join(
                     input_data_dir,
-                    f"{cfg.dataset}_holo_aligned_esmfold_structures{pocket_postfix}",
+                    f"{cfg.dataset}_holo_aligned_predicted_structures{pocket_suffix}",
                 )
             )
-            else os.path.join(input_data_dir, f"{cfg.dataset}_esmfold_structures")
+            else os.path.join(input_data_dir, f"{cfg.dataset}_predicted_structures")
         )
-        protein_structure_file_postfix = (
-            "_holo_aligned_esmfold_protein"
+        protein_structure_file_suffix = (
+            "_holo_aligned_predicted_protein"
             if os.path.exists(
                 os.path.join(
                     input_data_dir,
-                    f"{cfg.dataset}_holo_aligned_esmfold_structures{pocket_postfix}",
+                    f"{cfg.dataset}_holo_aligned_predicted_structures{pocket_suffix}",
                 )
             )
             and cfg.dataset != "casp15"
@@ -237,18 +253,18 @@ def create_mol_table(
         )
         if relaxed_protein:
             protein_structure_input_dir = str(inference_dir).replace("_relaxed", "")
-            protein_structure_file_postfix = "_relaxed"
+            protein_structure_file_suffix = "_relaxed"
             mol_table["mol_cond"] = input_table["pdb_id"].apply(
                 lambda x: os.path.join(
                     protein_structure_input_dir,
                     "_".join(x.split("_")[:3]),
-                    f"{'_'.join(x.split('_')[:2])}{protein_structure_file_postfix}.pdb",
+                    f"{'_'.join(x.split('_')[:2])}{protein_structure_file_suffix}.pdb",
                 )
                 if os.path.exists(
                     os.path.join(
                         protein_structure_input_dir,
                         "_".join(x.split("_")[:3]),
-                        f"{'_'.join(x.split('_')[:2])}{protein_structure_file_postfix}.pdb",
+                        f"{'_'.join(x.split('_')[:2])}{protein_structure_file_suffix}.pdb",
                     )
                 )
                 else None
@@ -256,11 +272,11 @@ def create_mol_table(
         else:
             mol_table["mol_cond"] = input_table["pdb_id"].apply(
                 lambda x: os.path.join(
-                    protein_structure_input_dir, f"{x}{protein_structure_file_postfix}.pdb"
+                    protein_structure_input_dir, f"{x}{protein_structure_file_suffix}.pdb"
                 )
                 if os.path.exists(
                     os.path.join(
-                        protein_structure_input_dir, f"{x}{protein_structure_file_postfix}.pdb"
+                        protein_structure_input_dir, f"{x}{protein_structure_file_suffix}.pdb"
                     )
                 )
                 else None
@@ -300,6 +316,22 @@ def create_mol_table(
                 list(
                     (Path(str(inference_dir).replace("_relaxed", ""))).rglob(
                         f"{x}_ligand{'_relaxed' if relaxed else ''}_aligned.sdf"
+                    )
+                )
+            )
+            else None
+        )
+    elif cfg.method == "chai-lab":
+        mol_table["mol_pred"] = input_table["pdb_id"].apply(
+            lambda x: list(
+                (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                    f"pred.model_idx_0_ligand{'_relaxed' if relaxed else ''}_aligned.sdf"
+                )
+            )[0]
+            if len(
+                list(
+                    (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                        f"pred.model_idx_0_ligand{'_relaxed' if relaxed else ''}_aligned.sdf"
                     )
                 )
             )
@@ -522,6 +554,28 @@ def create_mol_table(
                     )
                     else None
                 )
+            elif cfg.method == "chai-lab":
+                mol_table.loc[missing_pred_indices, "mol_pred"] = input_table.loc[
+                    missing_pred_indices, "pdb_id"
+                ].apply(
+                    lambda x: glob.glob(
+                        os.path.join(
+                            Path(str(inference_dir).replace("_relaxed", "")),
+                            x,
+                            "pred.model_idx_0_ligand_aligned.sdf",
+                        )
+                    )[0]
+                    if len(
+                        glob.glob(
+                            os.path.join(
+                                Path(str(inference_dir).replace("_relaxed", "")),
+                                x,
+                                "pred.model_idx_0_ligand_aligned.sdf",
+                            )
+                        )
+                    )
+                    else None
+                )
             elif cfg.method == "vina":
                 mol_table.loc[missing_pred_indices, "mol_pred"] = input_table.loc[
                     missing_pred_indices, "pdb_id"
@@ -593,6 +647,13 @@ def main(cfg: DictConfig):
         ):
             output_dir = Path(str(output_dir).replace("_relaxed", ""))
         bust_results_filepath = Path(str(output_dir) + config) / "bust_results.csv"
+
+        # differentiate relaxed and unrelaxed protein pose results
+        if "relaxed" in config and cfg.relax_protein:
+            bust_results_filepath = Path(
+                str(bust_results_filepath).replace(".csv", "_protein_relaxed.csv")
+            )
+
         os.makedirs(bust_results_filepath.parent, exist_ok=True)
 
         # collect test results

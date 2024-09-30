@@ -9,6 +9,7 @@ import shutil
 import subprocess  # nosec
 import tempfile
 from pathlib import Path
+from typing import Tuple
 
 import hydra
 import pandas as pd
@@ -94,16 +95,19 @@ PUBLIC_CASP15_MULTI_LIGAND_TARGETS = [
 NUM_SCOREABLE_CASP15_TARGETS = len(All_CASP15_SINGLE_LIGAND_TARGETS) + len(
     All_CASP15_MULTI_LIGAND_TARGETS
 )
+TOLERANT_METHODS = ["diffdock", "dynamicbind", "vina", "tulip"]
 
 
-def create_casp_input_dirs(cfg: DictConfig, config: str) -> str:
+def create_casp_input_dirs(cfg: DictConfig, config: str) -> Tuple[str, List[str]]:
     """Create the input directories for the CASP ligand scoring pipeline and return the resulting
     (temporary) parent directory as a `Path`.
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     :param config: The configuration suffix to append to the output directory.
-    :return: The path to the temporary parent directory as a `Path`.
+    :return: The path to the temporary parent directory as a `Path` as well as
+        a list of available prediction targets for "tolerant methods".
     """
+    target_ids = []
     temp_dir_path = Path(
         tempfile.mkdtemp(
             suffix=f"_{cfg.method}_{cfg.vina_binding_site_method}_{cfg.dataset}{config}"
@@ -127,15 +131,17 @@ def create_casp_input_dirs(cfg: DictConfig, config: str) -> str:
                 renumber_pdb_df_residues(
                     target_file, str(temp_dir_path / "targets" / Path(target_file).name)
                 )
+                target_ids.append(Path(target_file).stem.split("_")[0])
             else:
                 shutil.copy(target_file, temp_dir_path / "targets")
-    return temp_dir_path
+    return temp_dir_path, target_ids
 
 
 def create_casp_mol_table(
     input_data_dir: Path,
     targets_to_select: List[str],
     relaxed: bool = False,
+    relax_protein: bool = False,
     rank_to_select: int = 1,
 ) -> pd.DataFrame:
     """Create a table of CASP molecules and their corresponding ligand files.
@@ -154,12 +160,14 @@ def create_casp_mol_table(
                 continue
             sdf_data_files = glob.glob(str(data_dir / f"*_rank{rank_to_select}_*.sdf"))
             pdb_data_files = glob.glob(str(data_dir / f"*_rank{rank_to_select}_*.pdb"))
+            if relax_protein:
+                pdb_data_files = glob.glob(str(data_dir / f"*_rank{rank_to_select}_*_relaxed.pdb"))
             assert (
                 len(sdf_data_files) == 1
-            ), f"Expected 1 SDF file, but found {len(sdf_data_files)}."
+            ), f"Expected 1 SDF file, but found {len(sdf_data_files)}: {sdf_data_files}."
             assert (
                 len(pdb_data_files) == 1
-            ), f"Expected 1 PDB file, but found {len(pdb_data_files)}."
+            ), f"Expected 1 PDB file, but found {len(pdb_data_files)}: {pdb_data_files}."
             sdf_data_file = sdf_data_files[0]
             pdb_data_file = pdb_data_files[0]
             mol_table_rows.append(
@@ -183,10 +191,15 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
-    if cfg.no_pretraining:
+    if cfg.v1_baseline:
         with open_dict(cfg):
             cfg.predictions_dir = cfg.predictions_dir.replace(
-                "_ensemble_predictions", "_npt_ensemble_predictions"
+                f"top_{cfg.method}", f"top_{cfg.method}v1"
+            )
+    if cfg.no_ilcl:
+        with open_dict(cfg):
+            cfg.predictions_dir = cfg.predictions_dir.replace(
+                "_ensemble_predictions", "_no_ilcl_ensemble_predictions"
             )
     if cfg.method == "vina":
         with open_dict(cfg):
@@ -208,6 +221,11 @@ def main(cfg: DictConfig):
         output_dir = cfg.predictions_dir + config
         scoring_results_filepath = Path(output_dir) / "scoring_results.csv"
         bust_results_filepath = Path(output_dir) / "bust_results.csv"
+
+        # differentiate relaxed and unrelaxed protein pose results
+        if "relaxed" in config and cfg.relax_protein:
+            bust_results_filepath = bust_results_filepath.replace(".csv", "_protein_relaxed.csv")
+
         os.makedirs(scoring_results_filepath.parent, exist_ok=True)
 
         # collect analysis results
@@ -216,7 +234,7 @@ def main(cfg: DictConfig):
                 f"{resolve_method_title(cfg.method)}{config} analysis results for inference directory `{output_dir}` already exist at `{scoring_results_filepath}`. Directly analyzing..."
             )
         else:
-            temp_dir_path = create_casp_input_dirs(cfg, config)
+            temp_dir_path, available_targets = create_casp_input_dirs(cfg, config)
 
             # run CASP ligand scoring pipeline
             scoring_args = [
@@ -231,8 +249,17 @@ def main(cfg: DictConfig):
                 "-v",
                 "DEBUG",
             ]
-            if cfg.targets is not None:
-                scoring_args.extend(["--targets", *[str(t) for t in cfg.targets]])
+            targets_to_score = cfg.targets
+            if cfg.method in TOLERANT_METHODS:
+                # NOTE: Since e.g., DiffDock-L is notably unstable for the CASP15 multi-ligand
+                # targets, we only score the targets for which such a method was able to generate
+                # predictions after five retries of its respective inference script.
+                targets_to_score = available_targets
+                assert (
+                    len(targets_to_score) > 0
+                ), f"No available targets to score for {cfg.method}."
+            if targets_to_score is not None:
+                scoring_args.extend(["--targets", *[str(t) for t in targets_to_score]])
             if cfg.fault_tolerant:
                 scoring_args.append("--fault-tolerant")
             result = subprocess.run(scoring_args)  # nosec
@@ -263,6 +290,7 @@ def main(cfg: DictConfig):
                 Path(cfg.predictions_dir),
                 targets_to_select,
                 relaxed="relaxed" in config,
+                relax_protein=cfg.relax_protein,
             )
             assert len(mol_table) == len(
                 targets_to_select

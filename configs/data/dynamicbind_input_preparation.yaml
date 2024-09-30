@@ -6,3 +6,4 @@ posebusters_ccd_ids_filepath: ${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_id
 dockgen_test_ids_filepath: ${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt # the path to the DockGen test set IDs file
 protein_filepath: null # the path to the protein structure file to use
 ligand_smiles: null # the ligand SMILES string for which to predict the binding pose
+pocket_only_baseline: false # whether to prepare the pocket-only baseline

@@ -1,3 +1,12 @@
+### 0.5.0 - 09/30/2024
+
+- Added results with AlphaFold 3 predicted structures (now the default)
+- Added results for the new Chai-1 model from Chai Discovery
+- Added a new inference sweep pipeline for HPC clusters to allow users to quickly run an exhaustive sweep of all baseline methods, datasets, and tasks e.g., using generated batch scripts and a SLURM scheduler
+- Updated Zenodo links to point to the latest version of the project's Zenodo record, which now includes the above-mentioned AlphaFold 3 predicted structures and baseline method results using them
+- Updated documentation project-wide according to the additions listed above
+- Fixed some CI testing issues
+
 ### 0.4.0 - 08/12/2024
 
 - Renamed `src` root directory to `posebench` to support `pip` packaging

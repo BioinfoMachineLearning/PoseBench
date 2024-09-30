@@ -38,7 +38,7 @@ def save_aligned_complex(
     reference_ligand_sdf: str,
     save_protein: bool = True,
     save_ligand: bool = True,
-    aligned_filename_postfix: str = "_aligned",
+    aligned_filename_suffix: str = "_aligned",
     atom_df_name: str = "ATOM",
 ):
     """Align the predicted protein-ligand structures to the reference protein-ligand structures and
@@ -50,7 +50,7 @@ def save_aligned_complex(
     :param reference_ligand_sdf: Path to the reference ligand structure in SDF format
     :param save_protein: Whether to save the aligned protein structure
     :param save_ligand: Whether to save the aligned ligand structure
-    :param aligned_filename_postfix: Postfix to append to the aligned files
+    :param aligned_filename_suffix: suffix to append to the aligned files
     :param atom_df_name: Name of the atom dataframe in the PDB file
     """
     # Load protein and ligand structures
@@ -151,7 +151,7 @@ def save_aligned_complex(
     ] = predicted_protein_aligned
     if save_protein:
         predicted_protein.to_pdb(
-            path=predicted_protein_pdb.replace(".pdb", f"{aligned_filename_postfix}.pdb"),
+            path=predicted_protein_pdb.replace(".pdb", f"{aligned_filename_suffix}.pdb"),
             records=[atom_df_name],
             gz=False,
         )
@@ -167,7 +167,7 @@ def save_aligned_complex(
             predicted_ligand_conf.SetAtomPosition(i, Point3D(x, y, z))
         if save_ligand:
             with Chem.SDWriter(
-                predicted_ligand_sdf.replace(".sdf", f"{aligned_filename_postfix}.sdf")
+                predicted_ligand_sdf.replace(".sdf", f"{aligned_filename_suffix}.sdf")
             ) as f:
                 f.write(predicted_ligand)
 
@@ -178,7 +178,7 @@ def align_complex_to_protein_only(
     reference_protein_pdb: str,
     save_protein: bool = True,
     save_ligand: bool = True,
-    aligned_filename_postfix: str = "_aligned",
+    aligned_filename_suffix: str = "_aligned",
     atom_df_name: str = "ATOM",
 ):
     """Align a predicted protein-ligand structure to a reference protein structure.
@@ -188,7 +188,7 @@ def align_complex_to_protein_only(
     :param reference_protein_pdb: Path to the reference protein structure in PDB format
     :param save_protein: Whether to save the aligned protein structure
     :param save_ligand: Whether to save the aligned ligand structure
-    :param aligned_filename_postfix: Postfix to append to the aligned files
+    :param aligned_filename_suffix: suffix to append to the aligned files
     :param atom_df_name: Name of the atom dataframe in the PDB file
     """
     # Load protein and ligand structures
@@ -269,7 +269,7 @@ def align_complex_to_protein_only(
             ["x_coord", "y_coord", "z_coord"]
         ] = predicted_protein_aligned
         predicted_protein.to_pdb(
-            path=predicted_protein_pdb.replace(".pdb", f"{aligned_filename_postfix}.pdb"),
+            path=predicted_protein_pdb.replace(".pdb", f"{aligned_filename_suffix}.pdb"),
             records=[atom_df_name],
             gz=False,
         )
@@ -284,7 +284,7 @@ def align_complex_to_protein_only(
             x, y, z = predicted_ligand_aligned[i]
             predicted_ligand_conf.SetAtomPosition(i, Point3D(x, y, z))
         with Chem.SDWriter(
-            predicted_ligand_sdf.replace(".sdf", f"{aligned_filename_postfix}.sdf")
+            predicted_ligand_sdf.replace(".sdf", f"{aligned_filename_suffix}.sdf")
         ) as f:
             f.write(predicted_ligand)
 
@@ -302,7 +302,7 @@ def main(cfg: DictConfig):
     input_data_dir = Path(cfg.input_data_dir)
     for config in ["", "_relaxed"]:
         output_dir = Path(cfg.output_dir + config)
-        if not output_dir.exists() or cfg.method in ["neuralplexer", "rfaa"]:
+        if not output_dir.exists() or cfg.method in ["neuralplexer", "rfaa", "chai-lab"]:
             output_dir = Path(str(output_dir).replace("_relaxed", ""))
 
         # parse ligand files
@@ -333,6 +333,20 @@ def main(cfg: DictConfig):
             )
         elif cfg.method == "rfaa":
             output_ligand_files = sorted(list(output_dir.rglob(f"*ligand{config}.sdf")))
+        elif cfg.method == "chai-lab":
+            output_ligand_files = list(
+                output_dir.rglob(f"pred.model_idx_{cfg.rank_to_align - 1}_ligand*{config}.sdf")
+            )
+            output_ligand_files = sorted(
+                [
+                    file
+                    for file in output_ligand_files
+                    if config == "_relaxed"
+                    or (config == "" and "_relaxed" not in file.stem)
+                    and "_aligned" not in file.stem
+                    and "_LIG_" not in file.stem
+                ]
+            )
         else:
             raise ValueError(f"Invalid method: {cfg.method}")
 
@@ -366,6 +380,18 @@ def main(cfg: DictConfig):
             )
         elif cfg.method == "rfaa":
             output_protein_files = sorted(list(output_dir.rglob("*protein.pdb")))
+        elif cfg.method == "chai-lab":
+            output_protein_files = list(
+                output_dir.rglob(f"pred.model_idx_{cfg.rank_to_align - 1}_protein*.pdb")
+            )
+            output_protein_files = sorted(
+                [
+                    file
+                    for file in output_protein_files
+                    if (config == "_relaxed" or (config == "" and "_relaxed" not in file.stem))
+                    and "_aligned" not in file.stem
+                ]
+            )
         else:
             raise ValueError(f"Invalid method: {cfg.method}")
 
@@ -381,12 +407,15 @@ def main(cfg: DictConfig):
                         )
                     ]
                 )
-            elif cfg.method == "rfaa":
+            elif cfg.method in ["rfaa", "chai-lab"]:
                 output_protein_files = sorted(
                     [
                         item
-                        for item in output_dir.rglob("*protein.pdb")
-                        if any(
+                        for item in output_dir.rglob(
+                            f"pred.model_idx_{cfg.rank_to_align - 1}_protein*.pdb"
+                        )
+                        if "_aligned" not in item.stem
+                        and any(
                             [item.parent.stem in file.parent.stem for file in output_ligand_files]
                         )
                     ]
@@ -400,7 +429,9 @@ def main(cfg: DictConfig):
         ), f"Numbers of protein ({len(output_protein_files)}) and ligand ({len(output_ligand_files)}) files do not match."
 
         # align protein-ligand complexes
-        for protein_file, ligand_file in tqdm(zip(output_protein_files, output_ligand_files)):
+        for protein_file, ligand_file in tqdm(
+            zip(output_protein_files, output_ligand_files), desc="Aligning complexes"
+        ):
             protein_id, ligand_id = protein_file.stem, ligand_file.stem
             if protein_id != ligand_id and cfg.method == "dynamicbind":
                 protein_id, ligand_id = (
@@ -417,13 +448,13 @@ def main(cfg: DictConfig):
                 protein_id, ligand_id = protein_file.parent.stem, ligand_file.parent.stem
             if protein_id != ligand_id:
                 raise ValueError(f"Protein and ligand IDs do not match: {protein_id}, {ligand_id}")
-            pocket_postfix = "_bs_cropped" if cfg.pocket_only_baseline else ""
+            pocket_suffix = "_bs_cropped" if cfg.pocket_only_baseline else ""
             reference_protein_pdbs = [
                 item
                 for item in input_data_dir.rglob(
-                    f"*{protein_id.split(f'{cfg.dataset}_')[-1]}{'_lig.pdb' if cfg.dataset == 'casp15' else f'*_protein{pocket_postfix}.pdb'}"
+                    f"*{protein_id.split(f'{cfg.dataset}_')[-1]}{'_lig.pdb' if cfg.dataset == 'casp15' else f'*_protein{pocket_suffix}.pdb'}"
                 )
-                if "esmfold_structures" not in str(item)
+                if "predicted_structures" not in str(item)
             ]
             if cfg.dataset == "dockgen":
                 reference_protein_pdbs = [
@@ -458,10 +489,10 @@ def main(cfg: DictConfig):
             if (
                 cfg.force_process
                 or not os.path.exists(
-                    str(protein_file).replace(".pdb", f"{cfg.aligned_filename_postfix}.pdb")
+                    str(protein_file).replace(".pdb", f"{cfg.aligned_filename_suffix}.pdb")
                 )
                 or not os.path.exists(
-                    str(ligand_file).replace(".sdf", f"{cfg.aligned_filename_postfix}.sdf")
+                    str(ligand_file).replace(".sdf", f"{cfg.aligned_filename_suffix}.sdf")
                 )
             ):
                 if cfg.dataset == "casp15":
@@ -472,7 +503,7 @@ def main(cfg: DictConfig):
                         str(ligand_file),
                         str(reference_protein_pdb),
                         save_protein=cfg.method != "diffdock",
-                        aligned_filename_postfix=cfg.aligned_filename_postfix,
+                        aligned_filename_suffix=cfg.aligned_filename_suffix,
                     )
                 else:
                     save_aligned_complex(
@@ -481,7 +512,7 @@ def main(cfg: DictConfig):
                         str(reference_protein_pdb),
                         str(reference_ligand_sdf),
                         save_protein=cfg.method != "diffdock",
-                        aligned_filename_postfix=cfg.aligned_filename_postfix,
+                        aligned_filename_suffix=cfg.aligned_filename_suffix,
                     )
 
 

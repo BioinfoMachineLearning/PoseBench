@@ -28,18 +28,27 @@ logger = logging.getLogger(__name__)
 def main(cfg: DictConfig):
     """Extract proteins and ligands separately from the prediction outputs."""
     os.makedirs(cfg.inference_outputs_dir, exist_ok=True)
-    if cfg.dataset == "posebusters_benchmark":
+
+    pdb_ids = None
+    if cfg.dataset == "posebusters_benchmark" and cfg.posebusters_ccd_ids_filepath is not None:
         assert os.path.exists(
             cfg.posebusters_ccd_ids_filepath
-        ), "CCD IDs file path must be provided for PoseBusters Benchmark dataset."
+        ), f"Invalid CCD IDs file path for PoseBusters Benchmark: {os.path.exists(cfg.posebusters_ccd_ids_filepath)}."
         with open(cfg.posebusters_ccd_ids_filepath) as f:
-            ccd_ids = set(f.read().splitlines())
-    else:
-        ccd_ids = None
+            pdb_ids = set(f.read().splitlines())
+    elif cfg.dataset == "dockgen" and cfg.dockgen_test_ids_filepath is not None:
+        assert os.path.exists(
+            cfg.dockgen_test_ids_filepath
+        ), f"Invalid test IDs file path for DockGen: {os.path.exists(cfg.dockgen_test_ids_filepath)}."
+        with open(cfg.dockgen_test_ids_filepath) as f:
+            pdb_ids = {line.replace(" ", "-") for line in f.read().splitlines()}
+    elif cfg.dataset not in ["posebusters_benchmark", "astex_diverse", "dockgen", "casp15"]:
+        raise ValueError(f"Dataset `{cfg.dataset}` not supported.")
+
     for target_name in os.listdir(cfg.prediction_outputs_dir):
-        if ccd_ids is not None and target_name not in ccd_ids:
+        if pdb_ids is not None and target_name not in pdb_ids:
             logger.info(
-                f"Skipping target {target_name} as it is not in the PoseBusters Benchmark CCD IDs set."
+                f"Skipping target {target_name} as it is not in the specified PoseBusters Benchmark or DockGen PDB IDs set."
             )
             continue
         target_dir_path = os.path.join(cfg.prediction_outputs_dir, target_name)

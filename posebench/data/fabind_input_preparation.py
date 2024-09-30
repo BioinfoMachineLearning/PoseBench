@@ -9,7 +9,7 @@ import hydra
 import rootutils
 from beartype import beartype
 from beartype.typing import List, Tuple
-from omegaconf import DictConfig
+from omegaconf import DictConfig, open_dict
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
@@ -59,6 +59,12 @@ def main(cfg: DictConfig):
             pdb_ids = {line.replace(" ", "-") for line in f.read().splitlines()}
     elif cfg.dataset not in ["posebusters_benchmark", "astex_diverse", "dockgen", "casp15"]:
         raise ValueError(f"Dataset `{cfg.dataset}` not supported.")
+
+    if cfg.pocket_only_baseline:
+        with open_dict(cfg):
+            cfg.output_csv_path = cfg.output_csv_path.replace(
+                f"fabind_{cfg.dataset}", f"fabind_pocket_only_{cfg.dataset}"
+            )
 
     smiles_and_pdb_id_list = parse_inference_inputs_from_dir(
         cfg.input_data_dir,

@@ -3,3 +3,4 @@ input_data_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set # the input protein-l
 output_csv_path: ${oc.env:PROJECT_ROOT}/forks/FABind/inference/fabind_${dataset}_inputs.csv # the output CSV filepath to which to write the parsed input data
 posebusters_ccd_ids_filepath: ${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt # the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts
 dockgen_test_ids_filepath: ${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt # the path to the DockGen test set IDs file
+pocket_only_baseline: false # whether to prepare the pocket-only baseline

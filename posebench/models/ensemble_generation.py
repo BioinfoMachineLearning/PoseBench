@@ -473,6 +473,56 @@ echo "Finished RoseTTAFold-All-Atom inference for input '{input_id}'!"
     logger.info(f"Bash script '{output_filepath}' created successfully.")
 
 
+def create_chai_bash_script(
+    protein_filepath: str,
+    ligand_smiles: str,
+    input_id: str,
+    cfg: DictConfig,
+    output_filepath: Optional[str] = None,
+    generate_hpc_scripts: bool = True,
+):
+    """Create a bash script to run Chai-1 protein-ligand complex prediction.
+
+    :param protein_filepath: Path to the input protein structure PDB file.
+    :param ligand_smiles: SMILES string of the input ligand.
+    :param input_id: Input ID.
+    :param cfg: Configuration dictionary for runtime arguments.
+    :param output_filepath: Optional path to the output bash script file.
+    :param generate_hpc_scripts: Whether to generate HPC scripts for RoseTTAFold-All-Atom.
+    """
+
+    if output_filepath is None:
+        output_filepath = os.path.join(cfg.output_dir, input_id, f"{input_id}_rfaa_inference.sh")
+        os.makedirs(os.path.dirname(output_filepath), exist_ok=True)
+
+    bash_script_content = f"""#!/bin/bash -l
+{insert_hpc_headers(method='chai-lab', time_limit='0-12:00:00') if generate_hpc_scripts else 'source /home/$USER/mambaforge/etc/profile.d/conda.sh'}
+conda activate {"$project_dir/forks/chai-lab/chai-lab/" if generate_hpc_scripts else 'forks/chai-lab/chai-lab/'}
+echo "Beginning Chai-1 inference for input '{input_id}'!"
+
+# command to run chai_input_preparation.py
+python posebench/data/chai_input_preparation.py \\
+    dataset=ensemble \\
+    protein_filepath='{protein_filepath}' \\
+    ligand_smiles='"{ligand_smiles}"' \\
+    input_id='{input_id}'
+
+# command to run chai_inference.py
+echo "Calling chai_inference.py!"
+python posebench/models/chai_inference.py \\
+    dataset=ensemble \\
+    cuda_device_index={cfg.cuda_device_index} \\
+    skip_existing={cfg.chai_skip_existing}
+
+echo "Finished calling chai_inference.py!"
+    """
+
+    with open(output_filepath, "w") as file:
+        file.write(bash_script_content)
+
+    logger.info(f"Bash script '{output_filepath}' created successfully.")
+
+
 def create_vina_bash_script(
     binding_site_method: Literal["diffdock", "fabind", "dynamicbind", "neuralplexer", "rfaa"],
     protein_filepath: str,
@@ -520,6 +570,9 @@ python3 posebench/models/vina_inference.py \\
     ligand_filepath="{ligand_filepath}" \\
     apo_protein_filepath="{apo_protein_filepath}" \\
     input_id="{input_id}" \\
+    p2rank_exec_utility={cfg.vina_p2rank_exec_utility} \\
+    p2rank_config={cfg.vina_p2rank_config} \\
+    p2rank_enable_pymol_visualizations={cfg.vina_p2rank_enable_pymol_visualizations} \\
 
 echo "Finished calling vina_inference.py!"
     """
@@ -553,7 +606,7 @@ def generate_method_prediction_script(
         protein and ligand filepaths.
     """
 
-    def extract_chains_to_fasta_files(protein_filepath: str) -> List[str]:
+    def extract_protein_chains_to_fasta_files(protein_filepath: str) -> List[str]:
         """Extract individual chains from a protein file and save them as separate FASTA files.
 
         :param protein_filepath: Path to the protein file.
@@ -575,7 +628,7 @@ def generate_method_prediction_script(
             model_chains = [chain for chain in model]
             assert len(model_chains) == len(
                 sequences
-            ), "For RFAA, numbers of BioPython chains and parsed sequences do not match."
+            ), "For RFAA, numbers of Biopython chains and parsed sequences do not match."
             for chain_index, chain in enumerate(model_chains):
                 fasta_filename = f"{Path(protein_filepath).stem}_{chain.id}.fasta"
                 fasta_filepath = os.path.join(temp_dir, fasta_filename)
@@ -619,8 +672,8 @@ def generate_method_prediction_script(
             generate_hpc_scripts=generate_hpc_scripts,
         )
     elif method == "rfaa":
-        fasta_filepaths = extract_chains_to_fasta_files(protein_filepath)
-        smiles_strings = ligand_smiles.split(":") if ":" in ligand_smiles else [ligand_smiles]
+        fasta_filepaths = extract_protein_chains_to_fasta_files(protein_filepath)
+        smiles_strings = ligand_smiles.split(":")
         create_rfaa_bash_script(
             fasta_filepaths=fasta_filepaths,
             sdf_filepaths=None,
@@ -628,6 +681,15 @@ def generate_method_prediction_script(
             cfg=cfg,
             output_filepath=output_filepath,
             smiles_strings=smiles_strings,
+            generate_hpc_scripts=generate_hpc_scripts,
+        )
+    elif method == "chai-lab":
+        create_chai_bash_script(
+            protein_filepath=protein_filepath,
+            ligand_smiles=ligand_smiles,
+            input_id=input_id,
+            cfg=cfg,
+            output_filepath=output_filepath,
             generate_hpc_scripts=generate_hpc_scripts,
         )
     elif method == "vina":
@@ -688,10 +750,13 @@ def get_method_predictions(
     :return: List of method predictions, each as a tuple of the output protein filepath and the
         output ligand filepath.
     """
+    pocket_only_suffix = "_pocket_only" if cfg.pocket_only_baseline else ""
+    no_ilcl_suffix = "_no_ilcl" if cfg.neuralplexer_no_ilcl else ""
+
     if method == "diffdock":
         ensemble_benchmarking_output_dir = (
             Path(cfg.diffdock_output_dir).parent
-            / f"diffdock_{cfg.ensemble_benchmarking_dataset}_output_{cfg.ensemble_benchmarking_repeat_index}"
+            / f"diffdock{pocket_only_suffix}_{cfg.ensemble_benchmarking_dataset}_output_{cfg.ensemble_benchmarking_repeat_index}"
             if cfg.ensemble_benchmarking
             else cfg.diffdock_output_dir
         )
@@ -748,9 +813,9 @@ def get_method_predictions(
             ), "Ligand files must be for the designated target."
     elif method == "dynamicbind":
         target_dir_name = (
-            f"{cfg.ensemble_benchmarking_dataset}_{target}_{cfg.ensemble_benchmarking_repeat_index}"
+            f"{cfg.ensemble_benchmarking_dataset}{pocket_only_suffix}_{target}_{cfg.ensemble_benchmarking_repeat_index}"
             if cfg.ensemble_benchmarking
-            else f"{cfg.dynamicbind_header}_{target}"
+            else f"{cfg.dynamicbind_header}{pocket_only_suffix}_{target}"
         )
         protein_output_files = list(
             map(
@@ -815,7 +880,7 @@ def get_method_predictions(
     elif method == "neuralplexer":
         ensemble_benchmarking_output_dir = (
             Path(cfg.input_dir if cfg.input_dir else cfg.neuralplexer_out_path).parent
-            / f"neuralplexer{'_npt' if cfg.neuralplexer_no_pretraining else ''}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
+            / f"neuralplexer{pocket_only_suffix}{no_ilcl_suffix}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
             if cfg.ensemble_benchmarking
             else (cfg.input_dir if cfg.input_dir else cfg.neuralplexer_out_path)
         )
@@ -848,7 +913,7 @@ def get_method_predictions(
     elif method == "rfaa":
         ensemble_benchmarking_output_dir = (
             Path(cfg.rfaa_output_dir).parent
-            / f"rfaa_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
+            / f"rfaa{pocket_only_suffix}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
             if cfg.ensemble_benchmarking
             else cfg.rfaa_output_dir
         )
@@ -876,11 +941,45 @@ def get_method_predictions(
             ],
             key=rank_key,
         )[: cfg.method_top_n_to_select]
+    elif method == "chai-lab":
+        ensemble_benchmarking_output_dir = (
+            Path(cfg.input_dir if cfg.input_dir else cfg.chai_out_path).parent
+            / f"chai-lab{pocket_only_suffix}{no_ilcl_suffix}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
+            if cfg.ensemble_benchmarking
+            else (cfg.input_dir if cfg.input_dir else cfg.chai_out_path)
+        )
+        protein_output_files = sorted(
+            [
+                file
+                for file in map(
+                    str,
+                    Path(os.path.join(ensemble_benchmarking_output_dir, target)).rglob("*.pdb"),
+                )
+                if "model_idx" in os.path.basename(file)
+                and "relaxed" not in os.path.basename(file)
+                and "aligned" not in os.path.basename(file)
+            ],
+            key=rank_key,
+        )[: cfg.method_top_n_to_select]
+        ligand_output_files = sorted(
+            [
+                file
+                for file in map(
+                    str,
+                    Path(os.path.join(ensemble_benchmarking_output_dir, target)).rglob("*.sdf"),
+                )
+                if "model_idx" in os.path.basename(file)
+                and "relaxed" not in os.path.basename(file)
+                and "aligned" not in os.path.basename(file)
+                and "_LIG_" not in os.path.basename(file)
+            ],
+            key=rank_key,
+        )[: cfg.method_top_n_to_select]
     elif method == "vina":
         assert binding_site_method, "Binding site method must be provided for Vina predictions."
         ensemble_benchmarking_output_dir = (
             Path(cfg.vina_output_dir).parent
-            / f"vina_{binding_site_method}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
+            / f"vina{pocket_only_suffix}_{binding_site_method}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
             if cfg.ensemble_benchmarking
             else cfg.vina_output_dir.replace("vina_", f"vina_{binding_site_method}_")
         )
@@ -1245,7 +1344,7 @@ def rank_ensemble_predictions(
         ranking and valued as its method name, output protein filepath, output ligand filepath, and
         average pairwise RMSD or Vina energy score.
     """
-    # cache filepath to predicted apo protein structure e.g., from ESMFold
+    # cache filepath to predicted apo protein structure from a structure predictor e.g., ESMFold
     if cfg.ensemble_benchmarking:
         apo_reference_protein_filepaths = list(
             Path(cfg.ensemble_benchmarking_apo_protein_dir).rglob(f"*{name}*.pdb")
@@ -1542,9 +1641,11 @@ def export_ligands_in_casp15_format(
                     "Number of RFAA ligand numbers, names, and molecule fragments do not match. Note that this means it did not predict for all input ligands and that manual adjustments to the resulting CASP15 submission file may need to be made (e.g., to make sure ligand names are correctly aligned with listed molecular fragments)."
                 )
         else:
-            assert (
-                len(ligand_numbers_list) == len(ligand_names_list) == len(mol_frags)
-            ), "Number of ligand numbers, names, and molecule fragments must match."
+            if not (len(ligand_numbers_list) == len(ligand_names_list) == len(mol_frags)):
+                logger.warning(
+                    f"Number of ligand numbers, names, and molecule fragments must match. Skipping model {i}..."
+                )
+                continue
 
         sdf_content.write(f"MODEL {model_index if model_index is not None else i}\n")
 
@@ -1588,11 +1689,11 @@ def save_ranked_predictions(
         assert ligand_tasks == "P", "Only protein-ligand docking tasks are supported."
     ranking_metric = "ff" if cfg.ensemble_ranking_method == "ff" else "rmsd"
     relax_complex = cfg.relax_method_ligands_pre_ranking or cfg.relax_method_ligands_post_ranking
-    ligand_relaxed_postfix = "_relaxed" if relax_complex else ""
-    protein_relaxed_postfix = ligand_relaxed_postfix if cfg.relax_protein else ""
+    ligand_relaxed_suffix = "_relaxed" if relax_complex else ""
+    protein_relaxed_suffix = ligand_relaxed_suffix if cfg.relax_protein else ""
 
     os.makedirs(cfg.output_dir, exist_ok=True)
-    os.makedirs(os.path.join(cfg.output_dir, name + ligand_relaxed_postfix), exist_ok=True)
+    os.makedirs(os.path.join(cfg.output_dir, name + ligand_relaxed_suffix), exist_ok=True)
 
     relaxation_success_list = []
     if cfg.relax_method_ligands_post_ranking:
@@ -1725,14 +1826,14 @@ def save_ranked_predictions(
         ligand_affinity_value = (
             float(ligand_affinity_match.group(1)) if ligand_affinity_match else None
         )
-        ligand_plddt_postfix = f"_plddt{ligand_plddt_value:.7f}" if ligand_plddt_value else ""
-        ligand_affinity_postfix = (
+        ligand_plddt_suffix = f"_plddt{ligand_plddt_value:.7f}" if ligand_plddt_value else ""
+        ligand_affinity_suffix = (
             f"_affinity{ligand_affinity_value:.7f}" if ligand_affinity_value else ""
         )
         ligand_output_filepath = os.path.join(
             cfg.output_dir,
-            name + ligand_relaxed_postfix,
-            f"{method}_rank{rank}_{ranking_metric}{ranking_metric_value:.2e}{ligand_plddt_postfix}{ligand_affinity_postfix}{ligand_relaxed_postfix if 0 < len(relaxation_success_list) <= len(ranked_predictions) and relaxation_success_list[index] else ''}.sdf",
+            name + ligand_relaxed_suffix,
+            f"{method}_rank{rank}_{ranking_metric}{ranking_metric_value:.2e}{ligand_plddt_suffix}{ligand_affinity_suffix}{ligand_relaxed_suffix if 0 < len(relaxation_success_list) <= len(ranked_predictions) and relaxation_success_list[index] else ''}.sdf",
         )
         protein_output_filepath = protein_filepath
         if (
@@ -1749,16 +1850,16 @@ def save_ranked_predictions(
             protein_affinity_value = (
                 float(protein_affinity_match.group(1)) if protein_affinity_match else None
             )
-            protein_plddt_postfix = (
+            protein_plddt_suffix = (
                 f"_plddt{protein_plddt_value:.7f}" if protein_plddt_value else ""
             )
-            protein_affinity_postfix = (
+            protein_affinity_suffix = (
                 f"_affinity{protein_affinity_value:.7f}" if protein_affinity_value else ""
             )
             protein_output_filepath = os.path.join(
                 cfg.output_dir,
-                name + ligand_relaxed_postfix,
-                f"{method}_rank{rank}_{ranking_metric}{ranking_metric_value:.2e}{protein_plddt_postfix}{protein_affinity_postfix}{protein_relaxed_postfix if 0 < len(relaxation_success_list) <= len(ranked_predictions) and relaxation_success_list[index] else ''}.pdb",
+                name + ligand_relaxed_suffix,
+                f"{method}_rank{rank}_{ranking_metric}{ranking_metric_value:.2e}{protein_plddt_suffix}{protein_affinity_suffix}{protein_relaxed_suffix if 0 < len(relaxation_success_list) <= len(ranked_predictions) and relaxation_success_list[index] else ''}.pdb",
             )
 
         if not os.path.exists(ligand_output_filepath.replace(".sdf", "_bust_results.csv")):
@@ -1892,7 +1993,7 @@ def save_ranked_predictions(
         output_ligand_filepaths.append(pb_validated_ligand_output_filepaths[0])
         output_protein_filepaths.append(protein_output_filepath)
 
-    if cfg.export_file_format is not None:
+    if cfg.export_file_format is not None and "casp" in cfg.export_file_format:
         # NOTE: relaxed ligand (and potentially protein) files are used for CASP submission when `relax_complex=True`
         pdb_header = (
             f"PFRMAT TS\nTARGET {name}\nAUTHOR {cfg.casp_author}\nMETHOD {cfg.casp_method}\n"
@@ -1969,6 +2070,46 @@ def save_ranked_predictions(
 def main(cfg: DictConfig):
     """Generate predictions for a protein-ligand target pair using an ensemble of methods."""
     os.makedirs(cfg.temp_protein_dir, exist_ok=True)
+
+    if list(cfg.ensemble_methods) == ["neuralplexer"] and cfg.neuralplexer_no_ilcl:
+        with open_dict(cfg):
+            cfg.output_dir = cfg.output_dir.replace(
+                "top_neuralplexer",
+                "top_neuralplexer_no_ilcl",
+            )
+
+    if cfg.diffdock_v1_baseline:
+        with open_dict(cfg):
+            cfg.output_dir = cfg.output_dir.replace(
+                "top_diffdock",
+                "top_diffdockv1",
+            )
+            cfg.diffdock_exec_dir = cfg.diffdock_exec_dir.replace("DiffDock", "DiffDockv1")
+            cfg.diffdock_input_csv_path = cfg.diffdock_input_csv_path.replace(
+                "DiffDock", "DiffDockv1"
+            )
+            cfg.diffdock_model_dir = cfg.diffdock_model_dir.replace(
+                "forks/DiffDock/workdir/v1.1/score_model",
+                "forks/DiffDockv1/workdir/paper_score_model",
+            )
+            cfg.diffdock_confidence_model_dir = cfg.diffdock_confidence_model_dir.replace(
+                "forks/DiffDock/workdir/v1.1/confidence_model",
+                "forks/DiffDockv1/workdir/paper_confidence_model",
+            )
+            cfg.diffdock_output_dir = cfg.diffdock_output_dir.replace("DiffDock", "DiffDockv1")
+            cfg.diffdock_actual_steps = 18
+            cfg.diffdock_no_final_step_noise = True
+
+    if cfg.pocket_only_baseline:
+        with open_dict(cfg):
+            cfg.input_csv_filepath = cfg.input_csv_filepath.replace(
+                "ensemble_inputs.csv", "ensemble_pocket_only_inputs.csv"
+            )
+            cfg.output_dir = cfg.output_dir.replace(
+                f"top_{cfg.ensemble_ranking_method}",
+                f"top_{cfg.ensemble_ranking_method}_pocket_only",
+            )
+
     input_csv_df = pd.read_csv(cfg.input_csv_filepath)
     assert len(input_csv_df.name.unique()) == len(
         input_csv_df
@@ -2005,8 +2146,9 @@ def main(cfg: DictConfig):
             assert os.path.exists(
                 cfg.ensemble_benchmarking_apo_protein_dir
             ), "Ensemble benchmarking for protein pocket-based experiments requires `ensemble_benchmarking_apo_protein_dir` to be set to a valid directory."
+
         if not os.path.exists(cfg.ensemble_benchmarking_apo_protein_dir):
-            # NOTE: this is necessary to support e.g., CASP15 ensemble benchmarking
+            # NOTE: this may be necessary to support e.g., CASP15 ensemble benchmarking
             with open_dict(cfg):
                 cfg.ensemble_benchmarking_apo_protein_dir = os.path.join(
                     Path(cfg.ensemble_benchmarking_apo_protein_dir).parent,
@@ -2050,9 +2192,10 @@ def main(cfg: DictConfig):
             temp_protein_filepath = row.protein_input
         else:
             if cfg.ensemble_benchmarking:
-                raise FileNotFoundError(
-                    "An input (e.g., predicted) protein structure must be available for ensemble benchmarking."
+                logging.warning(
+                    f"The input (e.g., predicted) protein structure ({row.protein_input}) must be locally available for ensemble benchmarking. Skipping target {row.name + config}."
                 )
+                continue
             # NOTE: a placeholder protein sequence is used when making ligand-only predictions
             row_protein_input = (
                 row.protein_input
@@ -2108,11 +2251,9 @@ def main(cfg: DictConfig):
             continue
 
         # skip to the next target if no predictions from any method were found
-        predictions_found = False
-        for method in ensemble_predictions_dict:
-            if len(ensemble_predictions_dict[method]):
-                predictions_found = True
-                break
+        predictions_found = any(
+            len(ensemble_predictions_dict[method]) for method in ensemble_predictions_dict
+        )
         if not predictions_found:
             logger.warning(
                 f"No predictions from any method found for target {row.name}. Skipping..."

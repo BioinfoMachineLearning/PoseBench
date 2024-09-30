@@ -1,11 +1,12 @@
+# General inference arguments:
 dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
-method: diffdock # the method from which to use binding site predictions - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `p2rank`, `ensemble`) - NOTE: `p2rank` is not included in `ensemble`
+method: diffdock # the method from which to derive binding site predictions - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `p2rank`, `ensemble`)
 ensemble_ranking_method: consensus # the method with which to rank-order and select the top ensemble prediction for each target - NOTE: must be one of (`consensus`, `ff`)
 python2_exec_path: ${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/bin/python # the path to the Python 2 executable
 p2rank_exec_path: ${oc.env:PROJECT_ROOT}/forks/P2Rank/p2rank_2.4.2/prank # the path to the P2Rank executable
 prepare_receptor_script_path: ${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/CCSBpckgs/AutoDockTools/Utilities24/prepare_receptor4.py # the path to the prepare_receptor.py script
-input_dir: ${resolve_method_output_dir:${method},${dataset},${method},${ensemble_ranking_method},${repeat_index}} # the input directory with which to run inference
-input_protein_structure_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_esmfold_structures # the input protein structure directory to parse
+input_dir: ${resolve_method_output_dir:${method},${dataset},${method},${ensemble_ranking_method},${repeat_index},${pocket_only_baseline},${v1_baseline}} # the input directory with which to run inference
+input_protein_structure_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_predicted_structures # the input protein structure directory to parse
 output_dir: ${oc.env:PROJECT_ROOT}/data/test_cases/${dataset}/vina_${method}_${dataset}_outputs_${repeat_index} # the output directory to which to save the inference results
 cpu: 0 # the number of CPU workers to use with AutoDock Vina for parallel processing, 0 for all available
 seed: null # the random seed to use with AutoDock Vina
@@ -24,7 +25,9 @@ apo_protein_filepath: null # the apo protein file path to use for inference
 input_id: null # the input ID to use for inference
 repeat_index: 1 # the repeat index to use for inference
 pocket_only_baseline: false # whether to run the pocket-only baseline
+v1_baseline: false # whether to run the v1 baseline
+max_num_inputs: null # if provided, the number of (dataset subset) inputs over which to run inference
+# p2rank inference arguments:
 p2rank_exec_utility: predict # the P2Rank executable utility to use for inference
 p2rank_config: alphafold # the P2Rank configuration to use for inference
 p2rank_enable_pymol_visualizations: false # whether to enable P2Rank's PyMOL visualizations
-max_num_inputs: null # if provided, the number of (dataset subset) inputs over which to run inference

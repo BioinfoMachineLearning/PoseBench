@@ -80,7 +80,7 @@ if __name__ == "__main__":
         "-p" "--predicted-structures-dir",
         "--predicted_structures_dir",
         type=str,
-        default="data/casp15_set/predicted_structures",
+        default="data/casp15_set/casp15_holo_aligned_predicted_structures",
         help="The directory containing the CASP15 (ground truth binding site-aligned) predicted protein structures.",
     )
     parser.add_argument(

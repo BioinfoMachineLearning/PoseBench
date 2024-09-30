@@ -10,7 +10,7 @@ import hydra
 import numpy as np
 import rootutils
 from biopandas.pdb import PandasPdb
-from omegaconf import DictConfig
+from omegaconf import DictConfig, open_dict
 from rdkit import Chem
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
@@ -49,6 +49,19 @@ def main(cfg: DictConfig):
         "dockgen",
         "casp15",
     ], "Dataset must be one of 'posebusters_benchmark', 'astex_diverse', 'dockgen', 'casp15'."
+
+    if cfg.pocket_only_baseline:
+        with open_dict(cfg):
+            cfg.prediction_inputs_dir = cfg.prediction_inputs_dir.replace(
+                cfg.dataset, f"{cfg.dataset}_pocket_only"
+            )
+            cfg.prediction_outputs_dir = cfg.prediction_outputs_dir.replace(
+                cfg.dataset, f"{cfg.dataset}_pocket_only"
+            )
+            cfg.inference_outputs_dir = cfg.inference_outputs_dir.replace(
+                f"rfaa_{cfg.dataset}", f"rfaa_pocket_only_{cfg.dataset}"
+            )
+
     if cfg.complex_filepath is not None:
         # process single-complex inputs
         assert os.path.exists(

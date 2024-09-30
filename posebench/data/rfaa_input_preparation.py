@@ -49,6 +49,9 @@ def write_scripts(
     :param ligand_smiles: Optional SMILES string of the ligand.
     :param input_id: Optional input ID.
     """
+    if pocket_only_baseline:
+        output_scripts_path = output_scripts_path.replace(dataset, f"{dataset}_pocket_only")
+
     os.makedirs(output_scripts_path, exist_ok=True)
     if protein_filepath is not None and ligand_smiles is not None:
         input_id = (
@@ -94,8 +97,8 @@ def write_scripts(
                 if pocket_only_baseline:
                     protein_filepath = os.path.join(
                         input_data_dir,
-                        f"{dataset}_holo_aligned_esmfold_structures_bs_cropped",
-                        f"{pdb_id}_holo_aligned_esmfold_protein.pdb",
+                        f"{dataset}_holo_aligned_predicted_structures_bs_cropped",
+                        f"{pdb_id}_holo_aligned_predicted_protein.pdb",
                     )
                     if not os.path.exists(protein_filepath):
                         logger.warning(
@@ -103,9 +106,9 @@ def write_scripts(
                         )
                         continue
                 else:
-                    dockgen_postfix = "_processed" if dataset == "dockgen" else ""
+                    dockgen_suffix = "_processed" if dataset == "dockgen" else ""
                     protein_filepath = os.path.join(
-                        input_data_dir, pdb_id, f"{pdb_id}_protein{dockgen_postfix}.pdb"
+                        input_data_dir, pdb_id, f"{pdb_id}_protein{dockgen_suffix}.pdb"
                     )
                 if dataset == "dockgen":
                     ligand_filepaths = [
@@ -147,7 +150,7 @@ def write_scripts(
 )
 def main(cfg: DictConfig):
     """Parse a data directory containing subdirectories of protein-ligand complexes and prepare
-    corresponding inference CSV file for the DiffDock model.
+    corresponding inference CSV file for the RoseTTAFold-All-Atom model.
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """

@@ -6,6 +6,7 @@ import glob
 import logging
 import os
 import subprocess  # nosec
+import uuid
 from pathlib import Path
 
 import hydra
@@ -31,9 +32,11 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
-    pocket_postfix = "_bs_cropped" if cfg.pocket_only_baseline else ""
+    pocket_suffix = "_bs_cropped" if cfg.pocket_only_baseline else ""
+    pocket_only_suffix = "_pocket_only" if cfg.pocket_only_baseline else ""
+
     os.environ["MKL_THREADING_LAYER"] = "GNU"  # address MKL threading issue
-    protein_filepaths = find_protein_files(Path(cfg.input_data_dir + pocket_postfix))
+    protein_filepaths = find_protein_files(Path(cfg.input_data_dir + pocket_suffix))
     ligand_filepaths = [
         ligand_filepath
         for ligand_filepath in find_ligand_files(Path(cfg.input_ligand_csv_dir), extension="csv")
@@ -103,7 +106,7 @@ def main(cfg: DictConfig):
                     "inference",
                     "outputs",
                     "results",
-                    f"{cfg.dataset}_{ligand_filepath.stem}_{cfg.repeat_index}",
+                    f"{cfg.dataset}{pocket_only_suffix}_{ligand_filepath.stem}_{cfg.repeat_index}",
                     "index0_idx_0",
                     "rank1_ligand*.sdf",
                 )
@@ -114,6 +117,11 @@ def main(cfg: DictConfig):
                 f"Skipping inference for completed protein `{protein_filepath}` and ligand `{ligand_filepath}`."
             )
             continue
+        unique_cache_id = uuid.uuid4()
+        unique_cache_path = (
+            str(cfg.cache_path)
+            + f"_{cfg.dataset}{pocket_only_suffix}_{ligand_filepath.stem}_{cfg.repeat_index}_{unique_cache_id}"
+        )
         try:
             subprocess.run(
                 [
@@ -129,8 +137,12 @@ def main(cfg: DictConfig):
                     str(cfg.inference_steps),
                     "--batch_size",
                     str(cfg.batch_size),
+                    "--cache_path",
+                    unique_cache_path,
                     "--header",
-                    str(cfg.header) + f"_{ligand_filepath.stem}" + f"_{cfg.repeat_index}",
+                    str(cfg.header)
+                    + f"{pocket_only_suffix}_{ligand_filepath.stem}"
+                    + f"_{cfg.repeat_index}",
                     "--device",
                     str(cfg.cuda_device_index),
                     "--python",

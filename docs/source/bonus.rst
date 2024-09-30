@@ -2,8 +2,8 @@ Bonus
 ================
 
 .. mdinclude:: ../../README.md
-    :start-line: 910
-    :end-line: 912
+    :start-line: 1018
+    :end-line: 1026
 
 .. image:: ./_static/WorkBench.jpeg
   :alt: My brain after building PoseBench

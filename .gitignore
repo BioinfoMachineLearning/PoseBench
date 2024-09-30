@@ -163,6 +163,9 @@ configs/local/default.yaml
 
 # Forks
 /workdir/
+/forks/chai-lab/chai-lab/
+/forks/chai-lab/prediction_inputs/
+/forks/chai-lab/prediction_outputs/
 /forks/DiffDock1.0/
 /forks/DiffDock/DiffDock/
 /forks/DynamicBind/*.npy
@@ -189,4 +192,4 @@ configs/local/default.yaml
 /forks/RoseTTAFold-All-Atom/psipred/
 /forks/TULIP/outputs/
 /forks/Vina/ADFR/
-scripts/inference/
+scripts/*inference*/

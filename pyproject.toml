@@ -1,6 +1,6 @@
 [project]
 name = "posebench"
-version = "0.4.0"
+version = "0.5.0"
 description = "Comprehensive benchmarking of protein-ligand structure generation methods"
 authors = [
     { name = "Alex Morehead", email = "acmwhb@umsystem.edu" }

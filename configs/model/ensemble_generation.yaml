@@ -1,4 +1,5 @@
-ensemble_methods: [diffdock, dynamicbind, neuralplexer, rfaa, vina, tulip] # the methods from which to gather predictions for ensembling - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `rfaa`, `vina`, `tulip`)
+# General inference arguments:
+ensemble_methods: [diffdock, dynamicbind, neuralplexer, rfaa] # the methods from which to gather predictions for ensembling - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `rfaa`, `chai-lab`, `vina`, `tulip`)
 generate_vina_scripts: false # whether to generate Vina scripts using other methods' binding site predictions - NOTE: `resume` must also be `true` when this is `true`, meaning other methods' predictions must have already been generated locally
 rank_single_method_intrinsically: true # whether to rank single-method predictions using either `consensus` or `vina` ranking (false) or instead using their intrinsic (explicit) rank assignment (true)
 output_bash_file_dir: ensemble_generation_scripts # the directory in which to save the generated Bash scripts
@@ -10,7 +11,7 @@ structure_prediction_chunk_size: null # optional chunk size to use during ESMFol
 structure_prediction_cpu_only: false # whether to only use CPU for structure prediction
 structure_prediction_cpu_offload: false # whether to offload structure prediction to CPU
 max_method_predictions: 40 # maximum number of predictions to make with each method
-method_top_n_to_select: ${max_method_predictions} # number of top-ranked predictions to select from each method for subsequent ranking
+method_top_n_to_select: 3 # number of top-ranked predictions to select from each method for subsequent ranking
 skip_existing: false # whether to skip existing ensemble predictions
 relax_method_ligands_pre_ranking: false # whether to relax the predicted ligands (method-specifically) before ranking
 relax_method_ligands_post_ranking: true # whether to relax the predicted ligands (method-agnostically) after ranking
@@ -31,7 +32,7 @@ relax_skip_existing: false # whether to skip existing relaxation results
 resume: false # whether to resume from a previous run after generating and manually running each method's prediction script
 input_dir: null # optional path to the directory from which to load the ensemble predictions to rank - NOTE: currently, only `neuralplexer` makes use of this for inference output parsing
 output_dir: ${oc.env:PROJECT_ROOT}/data/test_cases/5S8I_2LY/top_${ensemble_ranking_method}_ensemble_predictions # path to the directory to save the top-ranked ensemble predictions
-export_file_format: casp15 # if not `null`, the CASP format (i.e., `casp15`) in which to export top-ranked predictions
+export_file_format: casp15 # the (optional) format (i.e., `casp15`) in which to export top-ranked predictions
 export_top_n: 5 # number of top-ranked predictions to export in CASP format
 casp_author: "001" # group number to report in CASP format
 casp_method: "Ligand_Predictor" # the method name to report in CASP format
@@ -42,7 +43,7 @@ ensemble_benchmarking: false # whether to run ensemble benchmarking
 ensemble_benchmarking_dataset: posebusters_benchmark # the dataset to use for ensemble benchmarking - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
 ensemble_benchmarking_repeat_index: 1 # the repeat index to use for ensemble benchmarking
 ensemble_ranking_method: consensus # the method with which to rank-order and select the top ensemble prediction for each target - NOTE: must be one of (`consensus`, `ff`)
-ensemble_benchmarking_apo_protein_dir: ${oc.env:PROJECT_ROOT}/data/${ensemble_benchmarking_dataset}_set/${ensemble_benchmarking_dataset}_holo_aligned_esmfold_structures # the directory containing the apo proteins to use for ensemble benchmarking
+ensemble_benchmarking_apo_protein_dir: ${oc.env:PROJECT_ROOT}/data/${ensemble_benchmarking_dataset}_set/${ensemble_benchmarking_dataset}_holo_aligned_predicted_structures # the directory containing the apo proteins to use for ensemble benchmarking
 # DiffDock inference arguments:
 diffdock_python_exec_path: ${oc.env:PROJECT_ROOT}/forks/DiffDock/DiffDock/bin/python3 # the Python executable to use
 diffdock_exec_dir: ${oc.env:PROJECT_ROOT}/forks/DiffDock # the DiffDock directory in which to execute the inference scripts
@@ -57,11 +58,12 @@ diffdock_batch_size: 10 # the batch size to use for inference
 diffdock_actual_steps: 19 # the actual number of inference steps to run (i.e., after how many steps to halt the reverse diffusion process)
 diffdock_no_final_step_noise: true # whether to disable the final inference step's noise from being added
 diffdock_skip_existing: true # whether to skip existing predictions
+diffdock_v1_baseline: false # whether to run the v1 baseline
 # DynamicBind inference arguments:
 dynamicbind_python_exec_path: ${oc.env:PROJECT_ROOT}/forks/DynamicBind/DynamicBind/bin/python3 # the Python executable to use
 dynamicbind_exec_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind # the DynamicBind directory in which to execute the inference scripts
 dynamicbind_dataset: ensemble # the dataset to use for inference - NOTE: must be one of (`ensemble`)
-dynamicbind_input_protein_data_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind/inference/ensemble_esmfold_structures # the input protein-ligand complex directory to recursively parse for protein inputs
+dynamicbind_input_protein_data_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind/inference/ensemble_predicted_structures # the input protein-ligand complex directory to recursively parse for protein inputs
 dynamicbind_input_ligand_csv_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind/inference/dynamicbind_ensemble_inputs # the input CSV directory with which to run inference
 dynamicbind_samples_per_complex: 40 # the number of samples to generate per complex
 dynamicbind_savings_per_complex: 1 # the (top-N) number of sample visualizations to save per complex
@@ -96,7 +98,7 @@ neuralplexer_use_template: true # whether to use the input template protein stru
 neuralplexer_separate_pdb: true # whether to separate the predicted protein structures into dedicated PDB files
 neuralplexer_rank_outputs_by_confidence: true # whether to rank the output conformations, by default, by ligand confidence (if available) and by protein confidence otherwise
 neuralplexer_plddt_ranking_type: ligand # the type of plDDT ranking to apply to generated samples - NOTE: must be one of (`protein`, `ligand`, `protein_ligand`)
-neuralplexer_no_pretraining: false # whether to avoid loading pretrained weights
+neuralplexer_no_ilcl: false # whether to score the NeuralPLexer weights trained without an inter-ligand clash loss (ILCL)
 # RoseTTAFold-All-Atom inference arguments:
 rfaa_python_exec_path: ${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/RFAA/bin/python3 # the Python executable to use
 rfaa_exec_dir: ${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom # the RoseTTAFold-All-Atom directory in which to execute the inference scripts
@@ -105,8 +107,11 @@ rfaa_output_dir: ${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/inference/rfa
 rfaa_max_cycles: 10 # the maximum number recycling iterations to run
 rfaa_inference_config_name: null # the name of the inference config to use - NOTE: if `run_inference_directly` is true, this must reference a valid YAML config file name e.g., that was generated by `python posebench/models/rfaa_inference.py` with `run_inference_directly=false`
 rfaa_inference_dir_name: null # the name of the inference output directory to use
+# Chai-1 inference arguments:
+chai_out_path: ${oc.env:PROJECT_ROOT}/forks/chai-lab/inference/chai-lab_ensemble_outputs # the output directory to which to write the predictions
+chai_skip_existing: true # whether to skip running inference if the prediction for a target already exists
 # Vina inference arguments:
-vina_binding_site_methods: [diffdock] # the methods to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `rfaa`)
+vina_binding_site_methods: [diffdock, p2rank] # the methods to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `p2rank`)
 vina_python2_exec_path: ${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/bin/python # the path to the Python 2 executable
 vina_prepare_receptor_script_path: ${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/CCSBpckgs/AutoDockTools/Utilities24/prepare_receptor4.py # the path to the prepare_receptor.py script
 vina_output_dir: ${oc.env:PROJECT_ROOT}/forks/Vina/inference/vina_ensemble_outputs # the output directory to which to save the inference results
@@ -121,5 +126,8 @@ vina_binding_site_size_z: 25.0 # the z-axis size of the binding site box to use 
 vina_binding_site_spacing: 1.0 # the spacing of the binding site box (in Angstrom) to use with AutoDock Vina
 vina_num_modes: 40 # the number of binding modes (i.e., poses) to generate with AutoDock Vina
 vina_skip_existing: true # whether to skip existing output files
+vina_p2rank_exec_utility: predict # the P2Rank executable utility to use for inference
+vina_p2rank_config: alphafold # the P2Rank configuration to use for inference
+vina_p2rank_enable_pymol_visualizations: false # whether to enable P2Rank's PyMOL visualizations
 # TULIP inference arguments:
 tulip_output_dir: ${oc.env:PROJECT_ROOT}/forks/TULIP/inference/tulip_ensemble_outputs # the output directory to which to save the inference results

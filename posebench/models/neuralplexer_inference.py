@@ -30,7 +30,13 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
-    if cfg.no_pretraining:
+    input_csv_path = (
+        cfg.input_csv_path.replace(".csv", f"_first_{cfg.max_num_inputs}.csv")
+        if cfg.max_num_inputs
+        else cfg.input_csv_path
+    )
+
+    if cfg.no_ilcl:
         with open_dict(cfg):
             cfg.frozen_prot = True
             cfg.model_checkpoint = os.path.join(
@@ -40,17 +46,21 @@ def main(cfg: DictConfig):
             )
             cfg.out_path = os.path.join(
                 os.path.dirname(cfg.out_path),
-                os.path.basename(cfg.out_path).replace("neuralplexer", "neuralplexer_npt"),
+                os.path.basename(cfg.out_path).replace("neuralplexer", "neuralplexer_no_ilcl"),
             )
             assert os.path.exists(
                 cfg.model_checkpoint
-            ), f"Non-pretrained (NPT) model checkpoint `{cfg.model_checkpoint}` not found."
+            ), f"Model checkpoint trained without an inter-ligand clash loss (ILCL) `{cfg.model_checkpoint}` not found."
+
+    if cfg.pocket_only_baseline:
+        with open_dict(cfg):
+            cfg.out_path = os.path.join(
+                os.path.dirname(cfg.out_path),
+                os.path.basename(cfg.out_path).replace("neuralplexer", "neuralplexer_pocket_only"),
+            )
+        input_csv_path = cfg.input_csv_path.replace("neuralplexer", "neuralplexer_pocket_only")
+
     os.makedirs(cfg.out_path, exist_ok=True)
-    input_csv_path = (
-        cfg.input_csv_path.replace(".csv", f"_first_{cfg.max_num_inputs}.csv")
-        if cfg.max_num_inputs
-        else cfg.input_csv_path
-    )
     assert os.path.exists(input_csv_path), f"Input CSV file `{input_csv_path}` not found."
     for _, row in pd.read_csv(input_csv_path).iterrows():
         out_dir = os.path.join(cfg.out_path, row.id)

@@ -1,9 +1,35 @@
-method: diffdock # the method for which to score predictions - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `rfaa`, `vina`, `ensemble`)
-vina_binding_site_method: diffdock # the method to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `rfaa`, `p2rank`)
+# run arguments:
+method: diffdock # the method for which to score predictions - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `rfaa`, `chai-lab`, `vina`, `ensemble`)
+vina_binding_site_method: diffdock # the method to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `rfaa`, `chai-lab`, `p2rank`)
+ensemble_ranking_method: consensus # the method to use for ensemble ranking - NOTE: must be one of (`consensus`, `ff`)
 dataset: astex_diverse # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
 repeat_index: 1 # the repeat index which was used for inference
-num_repeats: 3 # the number of repeats to be used when building all combinations of scripts
 cuda_device_index: 0 # the CUDA device index to use for inference (for all methods except AutoDock-Vina)
 output_script_dir: ${oc.env:PROJECT_ROOT}/scripts/inference # the directory in which to save the output script
-export_hpc_headers: false # whether to insert HPC headers into the output script
-build_all_scripts: false # whether to build all combinations of scripts
+pocket_only_baseline: null # whether to perform a pocket-only baseline for the PoseBusters Benchmark set - NOTE: not applicable only to `tulip`
+v1_baseline: false # whether to perform the V1 baseline for DiffDock
+no_ilcl: null # whether to use model weights trained with an inter-ligand clash loss (ILCL) for the CASP15 set - NOTE: only applicable to `neuralplexer`
+relax_protein: null # whether to relax the protein structure before scoring - NOTE: currently in an experimental state
+export_hpc_headers: true # whether to insert high-performance computing (by default, SLURM) headers into the output script
+verbose: false # whether to print verbose (e.g., invalid configuration) output
+# sweep arguments:
+sweep: false # whether to build all combinations of method-dataset run scripts
+methods_to_sweep: [
+    "diffdock",
+    "fabind",
+    "dynamicbind",
+    "neuralplexer",
+    "rfaa",
+    "chai-lab",
+    "vina",
+    "ensemble",
+  ] # the methods to sweep
+vina_binding_site_methods_to_sweep: ["diffdock", "p2rank"] # the Vina binding site prediction methods to sweep
+ensemble_ranking_methods_to_sweep: ["consensus"] # the ensemble ranking methods to sweep - NOTE: must be one of (`consensus`, `ff`)
+datasets_to_sweep: [
+    "posebusters_benchmark",
+    "astex_diverse",
+    "dockgen",
+    "casp15",
+  ] # the datasets to sweep
+num_sweep_repeats: 3 # the number of repeats to run for each method-dataset sweep (if the method is a generative method)
