@@ -126,7 +126,7 @@ def write_scripts(
 )
 def main(cfg: DictConfig):
     """Parse a data directory containing subdirectories of protein-ligand complexes and prepare
-    corresponding inference CSV file for the DiffDock model.
+    corresponding inference CSV file for the Chai-1 model.
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
