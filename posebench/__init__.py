@@ -18,6 +18,7 @@ METHOD_TITLE_MAPPING = {
     "vina": "Vina",
     "tulip": "TULIP",
     "p2rank": "P2Rank",
+    "consensus_ensemble": "Ensemble (Con)",
 }
 
 STANDARDIZED_DIR_METHODS = ["diffdock", "fabind"]
@@ -105,6 +106,13 @@ def resolve_method_protein_dir(
             "inference",
             f"{method}{pocket_only_suffix}_{dataset}_outputs_{repeat_index}",
         )
+    elif method == "consensus_ensemble":
+        return os.path.join(
+            "data",
+            "test_cases",
+            dataset,
+            f"top_consensus{pocket_only_suffix}_ensemble_predictions_{repeat_index}",
+        )
     else:
         raise ValueError(f"Invalid method: {method}")
 
@@ -157,6 +165,13 @@ def resolve_method_ligand_dir(
             METHOD_TITLE_MAPPING.get(method, method),
             "inference",
             f"vina{pocket_only_suffix}_{vina_binding_site_method}_{dataset}_outputs_{repeat_index}",
+        )
+    elif method == "consensus_ensemble":
+        return os.path.join(
+            "data",
+            "test_cases",
+            dataset,
+            f"top_consensus{pocket_only_suffix}_ensemble_predictions_{repeat_index}",
         )
     else:
         raise ValueError(f"Invalid method: {method}")
