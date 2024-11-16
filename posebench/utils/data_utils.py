@@ -12,10 +12,10 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import pypdb
+import requests
 import rootutils
 from beartype import beartype
-from beartype.typing import Any, List, Optional, Set, Tuple, Union
+from beartype.typing import Any, Dict, List, Optional, Set, Tuple, Union
 from Bio import PDB
 from Bio.PDB import PDBParser
 from Bio.PDB.Structure import Structure
@@ -33,6 +33,26 @@ logger = logging.getLogger(__name__)
 
 
 @beartype
+def extract_remarks_from_pdb(pdb_file: str, remark_number: Optional[int] = None) -> List[str]:
+    """Extract REMARK statements from a PDB file.
+
+    :param pdb_file: Path to the PDB file.
+    :param remark_number: Specific REMARK number to filter. If None, extracts all REMARKs.
+    :return list: List of REMARK statements.
+    """
+    remarks = []
+    with open(pdb_file) as file:
+        for line in file:
+            if line.startswith("REMARK"):
+                if remark_number is not None:
+                    if line[7:10].strip() == str(remark_number):
+                        remarks.append(line.strip())
+                else:
+                    remarks.append(line.strip())
+    return remarks
+
+
+@beartype
 def parse_inference_inputs_from_dir(
     input_data_dir: Union[str, Path], pdb_ids: Optional[Set[Any]] = None
 ) -> List[Tuple[str, str]]:
@@ -45,6 +65,9 @@ def parse_inference_inputs_from_dir(
     """
     smiles_and_pdb_id_list = []
     casp_dataset_requested = os.path.basename(input_data_dir) == "targets"
+
+    parser = PDBParser()
+
     if casp_dataset_requested:
         # parse CASP inputs uniquely
         smiles_filepaths = list(glob.glob(os.path.join(input_data_dir, "*.smiles.txt")))
@@ -60,45 +83,95 @@ def parse_inference_inputs_from_dir(
             mol_smiles = "|".join(smiles_df["SMILES"].tolist())
             assert len(mol_smiles) > 0, f"SMILES string for {pdb_id} cannot be empty."
             smiles_and_pdb_id_list.append((mol_smiles, pdb_id))
+
     else:
+        ligand_expo_mapping = read_ligand_expo()
+
         for pdb_name in os.listdir(input_data_dir):
             if any(substr in pdb_name.lower() for substr in ["sequence", "structure"]):
-                # e.g., skip ESMFold sequence files and structure directories
+                # e.g., skip sequence files and predicted structure directories
                 continue
             if pdb_ids is not None and pdb_name not in pdb_ids:
                 # e.g., skip PoseBusters Benchmark PDBs that contain crystal contacts
                 # reference: https://github.com/maabuu/posebusters/issues/26
                 continue
+
             pdb_dir = os.path.join(input_data_dir, pdb_name)
             if os.path.isdir(pdb_dir):
                 mol = None
                 pdb_id = os.path.split(pdb_dir)[-1]
-                # NOTE: we first try to parse `.sdf` files if they exist for the current dataset
+
+                # NOTE: the Astex Diverse and PoseBusters Benchmark datasets use `.sdf` files to store their
+                # primary ligands, but we want to extract all cofactors as well to enhance model context for predictions
                 if os.path.exists(os.path.join(pdb_dir, f"{pdb_id}_ligand.sdf")):
-                    mol = read_molecule(
-                        os.path.join(pdb_dir, f"{pdb_id}_ligand.sdf"),
-                        remove_hs=True,
+                    supplier = Chem.SDMolSupplier(
+                        os.path.join(pdb_dir, f"{pdb_id}_ligands.sdf"),
                         sanitize=True,
+                        removeHs=True,
                     )
+                    pdb_mol = extract_protein_and_ligands_with_prody(
+                        os.path.join(pdb_dir, f"{pdb_id}_protein.pdb"),
+                        protein_output_pdb_file=None,
+                        ligands_output_sdf_file=None,
+                        write_output_files=False,
+                        ligand_expo_mapping=ligand_expo_mapping,
+                    )
+                    pdb_mols = [pdb_mol] if pdb_mol is not None else []
+                    mol = combine_molecules([mol for mol in supplier] + pdb_mols)
+
                 # NOTE: DockGen uses `.pdb` files to store its ligands
-                if mol is None and os.path.exists(os.path.join(pdb_dir, f"{pdb_id}_ligand.pdb")):
-                    mol = read_molecule(
-                        os.path.join(pdb_dir, f"{pdb_id}_ligand.pdb"),
-                        remove_hs=True,
-                        sanitize=True,
+                if mol is None and os.path.exists(
+                    os.path.join(pdb_dir, f"{pdb_id.split('_')[0]}_processed.pdb")
+                ):
+                    mol = extract_protein_and_ligands_with_prody(
+                        os.path.join(pdb_dir, f"{pdb_id.split('_')[0]}_processed.pdb"),
+                        protein_output_pdb_file=None,
+                        ligands_output_sdf_file=None,
+                        write_output_files=False,
+                        ligand_expo_mapping=ligand_expo_mapping,
                     )
+
                     if mol is None:
-                        mol = read_molecule(
-                            os.path.join(pdb_dir, f"{pdb_id}_ligand.pdb"),
-                            remove_hs=True,
-                            sanitize=False,
-                        )
+                        logger.warning(f"Could not extract ligand molecule for PDB ID {pdb_id}")
+                        continue
+
+                    assert os.path.exists(
+                        os.path.join(pdb_dir, f"{pdb_id}_ligand.pdb")
+                    ), f"Could not find primary ligand file for PDB ID {pdb_id}"
+                    remarks = extract_remarks_from_pdb(
+                        os.path.join(pdb_dir, f"{pdb_id}_ligand.pdb")
+                    )
+
+                    assert (
+                        len(remarks) > 0
+                    ), f"No REMARK statements found in ligand PDB file for PDB ID {pdb_id}"
+                    remark = remarks[0]
+
+                    primary_ligand_resnum = int(
+                        remark.split("resnum ")[-1].split(")")[0].replace("`", "")
+                    )
+                    structure = parser.get_structure(
+                        "protein", os.path.join(pdb_dir, f"{pdb_id.split('_')[0]}_processed.pdb")
+                    )
+
+                    assert (
+                        structure is not None
+                    ), f"Could not parse protein structure for PDB ID {pdb_id}"
+                    assert primary_ligand_resnum in {
+                        residue.id[1] for chain in structure[0] for residue in chain
+                    }, f"Primary ligand residue number {primary_ligand_resnum} not found in protein structure for PDB ID {pdb_id}"
+
                 if mol is None:
-                    logger.info(f"No ligand file found for PDB ID {pdb_id}")
-                    continue
+                    raise ValueError(f"Could not extract ligand molecule for PDB ID {pdb_id}")
+
                 mol_smiles = Chem.MolToSmiles(mol)
-                if mol_smiles is not None:
-                    smiles_and_pdb_id_list.append((mol_smiles, pdb_id))
+                if mol_smiles is None:
+                    raise ValueError(
+                        f"Could not convert ligand molecule to SMILES for PDB ID {pdb_id}"
+                    )
+
+                smiles_and_pdb_id_list.append((mol_smiles, pdb_id))
+
     return smiles_and_pdb_id_list
 
 
@@ -279,6 +352,42 @@ def get_pdb_components_with_prody(pdb_id) -> tuple:
     return protein, ligand
 
 
+def read_ligand_expo(
+    ligand_expo_url: str = "http://ligand-expo.rcsb.org/dictionaries",
+    ligand_expo_filename: str = "Components-smiles-stereo-oe.smi",
+) -> Dict[str, Any]:
+    """Read Ligand Expo data, first trying to find a file called `Components-smiles-stereo-oe.smi`
+    in the current directory. If the file can't be found, grab it from the RCSB.
+
+    :param ligand_expo_url: URL to Ligand Expo.
+    :param ligand_expo_filename: Name of the Ligand Expo file.
+    :return: Ligand Expo as a dictionary with ligand id as the key
+    """
+    try:
+        df = pd.read_csv(
+            ligand_expo_filename, sep="\t", header=None, names=["SMILES", "ID", "Name"]
+        )
+
+    except FileNotFoundError:
+        r = requests.get(
+            f"{ligand_expo_url}/{ligand_expo_filename}", allow_redirects=True
+        )  # nosec
+
+        with open("Components-smiles-stereo-oe.smi", "wb") as f:
+            f.write(r.content)
+
+        df = pd.read_csv(
+            ligand_expo_filename, sep="\t", header=None, names=["SMILES", "ID", "Name"]
+        )
+
+    assert (
+        len(df) > 0
+    ), "Downloaded Ligand Expo file is empty. Please consult the Ligand Expo website for troubleshooting."
+
+    df.set_index("ID", inplace=True)
+    return df.to_dict("index")
+
+
 def write_pdb_with_prody(protein, pdb_name, add_element_types=False):
     """Write a protein to a pdb file using ProDy.
 
@@ -306,6 +415,7 @@ def process_ligand_with_prody(
     resnum,
     sanitize: bool = True,
     sub_smiles: Optional[str] = None,
+    ligand_expo_mapping: Optional[Dict[str, Any]] = None,
 ) -> Chem.Mol:
     """
     Add bond orders to a pdb ligand using ProDy.
@@ -322,19 +432,21 @@ def process_ligand_with_prody(
     :param resnum: residue number of ligand to extract
     :param sanitize: whether to sanitize the molecule
     :param sub_smiles: optional SMILES string of the ligand molecule
+    :param ligand_expo_mapping: optional Ligand Expo mapping
     :return: molecule with bond orders assigned
     """
     sub_smiles_provided = sub_smiles is not None
 
     output = StringIO()
     sub_mol = ligand.select(f"resname {res_name} and chain {chain} and resnum {resnum}")
-    chem_desc = pypdb.describe_chemical(f"{res_name}")
+
+    ligand_expo_mapping = ligand_expo_mapping or read_ligand_expo()
+    chem_desc = ligand_expo_mapping.get(res_name)
+
     if chem_desc is not None and not sub_smiles_provided:
         sub_smiles = None
-        for item in chem_desc.get("pdbx_chem_comp_descriptor", []):
-            if item.get("type") == "SMILES":
-                sub_smiles = item.get("descriptor")
-                break
+        if "SMILES" in chem_desc:
+            sub_smiles = chem_desc["SMILES"]
 
     if sub_smiles is not None:
         template = AllChem.MolFromSmiles(sub_smiles)
@@ -375,11 +487,13 @@ def write_sdf(new_mol: Chem.Mol, pdb_name: str):
 
 def extract_protein_and_ligands_with_prody(
     input_pdb_file: str,
-    protein_output_pdb_file: str,
-    ligands_output_sdf_file: str,
+    protein_output_pdb_file: Optional[str],
+    ligands_output_sdf_file: Optional[str],
     sanitize: bool = True,
     add_element_types: bool = False,
+    write_output_files: bool = True,
     ligand_smiles: Optional[str] = None,
+    ligand_expo_mapping: Optional[Dict[str, Any]] = None,
 ) -> Optional[Chem.Mol]:
     """Using ProDy, extract protein atoms and ligand molecules from a PDB file and write them to
     separate files.
@@ -389,11 +503,20 @@ def extract_protein_and_ligands_with_prody(
     :param ligands_output_sdf_file: The output SDF file for the ligand molecules.
     :param sanitize: Whether to sanitize the ligand molecules.
     :param add_element_types: Whether to add element types to the protein atoms.
+    :param write_output_files: Whether to write the output files.
     :param ligand_smiles: The SMILES string of the ligand molecule.
+    :param ligand_expo_mapping: The Ligand Expo mapping.
     :return: The combined final ligand molecule(s) as an RDKit molecule.
     """
     protein, ligand = get_pdb_components_with_prody(input_pdb_file)
-    write_pdb_with_prody(protein, protein_output_pdb_file, add_element_types=add_element_types)
+
+    if ligand is None:
+        logger.info(f"No ligand found in {input_pdb_file}. Returning None.")
+        return None
+
+    if write_output_files:
+        assert protein_output_pdb_file is not None, "Protein output PDB file must be provided."
+        write_pdb_with_prody(protein, protein_output_pdb_file, add_element_types=add_element_types)
 
     ligand_resnames = ligand.getResnames()
     ligand_chids = ligand.getChids()
@@ -418,21 +541,35 @@ def extract_protein_and_ligands_with_prody(
             else None
         )
         new_mol = process_ligand_with_prody(
-            ligand, resname, chain, resnum, sanitize=sanitize, sub_smiles=sub_smiles
+            ligand,
+            resname,
+            chain,
+            resnum,
+            sanitize=sanitize,
+            sub_smiles=sub_smiles,
+            ligand_expo_mapping=ligand_expo_mapping,
         )
         if new_mol is not None:
             new_mol_list.append(new_mol)
-            write_sdf(
-                new_mol,
-                os.path.join(
-                    os.path.dirname(ligands_output_sdf_file),
-                    f"{Path(ligands_output_sdf_file).stem}_{resname}_{i}.sdf",
-                ),
-            )
+
+            if write_output_files:
+                assert (
+                    ligands_output_sdf_file is not None
+                ), "Ligands output SDF file must be provided."
+                write_sdf(
+                    new_mol,
+                    os.path.join(
+                        os.path.dirname(ligands_output_sdf_file),
+                        f"{Path(ligands_output_sdf_file).stem}_{resname}_{i}.sdf",
+                    ),
+                )
 
     if len(new_mol_list):
         new_mol = combine_molecules(new_mol_list)
-        write_sdf(new_mol, ligands_output_sdf_file)
+
+        if write_output_files:
+            assert ligands_output_sdf_file is not None, "Ligands output SDF file must be provided."
+            write_sdf(new_mol, ligands_output_sdf_file)
 
     return new_mol
 

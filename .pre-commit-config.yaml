@@ -126,7 +126,7 @@ repos:
     hooks:
       - id: codespell
         args:
-          - --skip=logs/**,data/**,*.ipynb,posebench/utils/data_utils.py,posebench/utils/residue_utils.py,posebench/data/components/protein_fasta_preparation.py,posebench/models/minimize_energy.py,posebench/data/components/create_casp15_ensemble_input_csv.py,posebench/analysis/casp15_ligand_scoring/casp_parser.py
+          - --skip=logs/**,data/**,*.ipynb,posebench/utils/data_utils.py,posebench/utils/residue_utils.py,posebench/data/components/protein_fasta_preparation.py,posebench/models/minimize_energy.py,posebench/data/components/create_casp15_ensemble_input_csv.py,posebench/analysis/casp15_ligand_scoring/casp_parser.py,Components-smiles-stereo-oe.smi
           # - --ignore-words-list=abc,def
 
   # jupyter notebook cell output clearing
