@@ -1206,7 +1206,11 @@ def main(cfg: DictConfig):
         pdb_filepath = os.path.join(data_subdir, f"{name}_protein.pdb")
 
         if not os.path.exists(pdb_filepath):
-            raise FileNotFoundError(f"Could not find the PDB file {pdb_filepath}.")
+            # NOTE: this supports the DockGen dataset's file formatting
+            pdb_filepath = os.path.join(data_subdir, f"{name.split('_')[0]}_processed.pdb")
+        if not os.path.exists(pdb_filepath):
+            logger.warning(f"Skipping {name} as PDB file not found.")
+            continue
 
         # load the first model of the PDB file
         biopython_parser = PDBParser(QUIET=True)
@@ -1214,7 +1218,7 @@ def main(cfg: DictConfig):
         structure = models[0]
 
         structure_seqs = []
-        for chain_index, chain in enumerate(structure):
+        for chain in structure:
             aa_residues = [residue for residue in chain if is_aa(residue)]
             aa_residue_names = [
                 MODIFIED_TO_NATURAL_AMINO_ACID_RESNAME_MAP[residue.resname]
