@@ -13,7 +13,7 @@ log_level: "INFO" # logging level
 relax_protein: false # whether to relax the protein
 remove_initial_protein_hydrogens: false # whether to remove hydrogens from the initial protein
 assign_each_ligand_unique_force: false # whether to assign each ligand a unique force constant
-model_ions: false # whether to model ions
+model_ions: true # whether to model ions
 cache_files: true # whether to cache the prepared relaxation files
 assign_partial_charges_manually: false # whether to assign partial charges manually
 report_initial_energy_only: false # skip relaxation and return only the initial energy of the complex structure

@@ -16,7 +16,7 @@ output_dir: ${resolve_method_output_dir:${method},${dataset},${vina_binding_site
 relax_protein: false # whether to relax the protein - NOTE: currently periodically yields unpredictable protein-ligand separation
 remove_initial_protein_hydrogens: false # whether to remove hydrogens from the initial protein
 assign_each_ligand_unique_force: false # when relaxing the protein, whether to assign each ligand a unique force constant
-model_ions: false # whether to model ions
+model_ions: true # whether to model ions
 cache_files: false # whether to cache the prepared relaxation files
 assign_partial_charges_manually: false # whether to assign partial charges manually
 report_initial_energy_only: false # skip relaxation and return only the initial energy of the complex structure

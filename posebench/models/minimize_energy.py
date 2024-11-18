@@ -879,7 +879,7 @@ def optimize_ligand_in_pocket(
     relax_protein: bool = False,
     remove_initial_protein_hydrogens: bool = False,
     assign_each_ligand_unique_force: bool = False,
-    model_ions: bool = False,
+    model_ions: bool = True,
     cache_files: bool = True,
     assign_partial_charges_manually: bool = False,
     report_initial_energy_only: bool = False,
