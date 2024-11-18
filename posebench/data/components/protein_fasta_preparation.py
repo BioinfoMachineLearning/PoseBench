@@ -12,7 +12,7 @@ from Bio.PDB import PDBParser
 from Bio.PDB.Polypeptide import is_aa
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
-from omegaconf import DictConfig
+from omegaconf import DictConfig, open_dict
 from tqdm import tqdm
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
@@ -1173,7 +1173,7 @@ MODIFIED_TO_NATURAL_AMINO_ACID_RESNAME_MAP = {
 )
 def main(cfg: DictConfig):
     """Prepare reference FASTA sequence file for protein chains in the dataset."""
-    if cfg.dataset not in ["posebusters_benchmark", "astex_diverse", "dockgen"]:
+    if cfg.dataset not in ["posebusters_benchmark", "astex_diverse", "dockgen", "casp15"]:
         raise ValueError(f"Dataset {cfg.dataset} is not supported.")
 
     # load ID subset if requested
@@ -1197,6 +1197,12 @@ def main(cfg: DictConfig):
         if os.path.isdir(os.path.join(cfg.data_dir, name)) and (pdb_ids is None or name in pdb_ids)
     ]
 
+    if cfg.dataset == "casp15":
+        with open_dict(cfg):
+            cfg.data_dir = os.path.join(cfg.data_dir, "targets")
+
+        data_dir = [name for name in os.listdir(cfg.data_dir) if name.endswith("_lig.pdb")]
+
     entries = []
     for name in tqdm(
         data_dir,
@@ -1204,6 +1210,9 @@ def main(cfg: DictConfig):
     ):
         data_subdir = os.path.join(cfg.data_dir, name)
         pdb_filepath = os.path.join(data_subdir, f"{name}_protein.pdb")
+
+        if cfg.dataset == "casp15":
+            pdb_filepath = os.path.dirname(pdb_filepath)
 
         if not os.path.exists(pdb_filepath):
             # NOTE: this supports the DockGen dataset's file formatting
@@ -1220,6 +1229,10 @@ def main(cfg: DictConfig):
         structure_seqs = []
         for chain in structure:
             aa_residues = [residue for residue in chain if is_aa(residue)]
+            if cfg.dataset == "casp15":
+                # NOTE: for CASP15, we exclude modified (hetero) amino acid residues serving as ligands
+                name = name.split("_")[0]
+                aa_residues = [residue for residue in aa_residues if residue.id[0] == " "]
             aa_residue_names = [
                 MODIFIED_TO_NATURAL_AMINO_ACID_RESNAME_MAP[residue.resname]
                 for residue in aa_residues
