@@ -11,9 +11,11 @@ from pathlib import Path
 import hydra
 import pandas as pd
 import rootutils
+from beartype.typing import List, Tuple
 from omegaconf import DictConfig
 from posebusters import PoseBusters
 from rdkit import Chem
+from rdkit.Chem import AllChem, DataStructs, rdFingerprintGenerator
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
@@ -56,7 +58,52 @@ BUST_TEST_COLUMNS = [
 RANKED_METHODS = ["diffdock", "dynamicbind", "neuralplexer"]
 
 
-def df_split_mol_frags(mol_table: pd.DataFrame) -> pd.DataFrame:
+def find_most_similar_frag(
+    mol_true_frag: Chem.Mol, mol_pred_frags: List[Chem.Mol]
+) -> Tuple[Chem.Mol, float, float]:
+    """Find the most similar fragment to the true fragment among the predicted fragments.
+
+    :param mol_true_frag: True fragment molecule.
+    :param mol_pred_frags: List of predicted fragment molecules.
+    :return: Tuple of the most similar fragment molecule, the Tanimoto similarity, and the RMSD.
+    """
+    mfpgen = rdFingerprintGenerator.GetMorganGenerator(radius=2, fpSize=2048)
+
+    # Generate the fingerprint for the true fragment
+    fp_true = mfpgen.GetFingerprint(mol_true_frag)
+
+    max_similarity = -1
+    min_rmsd = float("inf")
+    most_similar_frag = None
+
+    for mol_pred_frag in mol_pred_frags:
+        # Skip fragments with different number of atoms
+        if mol_pred_frag.GetNumAtoms() != mol_true_frag.GetNumAtoms():
+            continue
+
+        # Generate the fingerprint for the predicted fragment
+        fp_pred = mfpgen.GetFingerprint(mol_pred_frag)
+
+        # Calculate the Tanimoto similarity
+        similarity = DataStructs.TanimotoSimilarity(fp_true, fp_pred)
+
+        # Calculate the RMSD
+        rmsd = (
+            AllChem.GetBestRMS(mol_true_frag, mol_pred_frag) if similarity > 0.5 else float("inf")
+        )
+
+        # Update the most similar fragment if the current one is more similar or has a lower RMSD
+        if similarity > max_similarity or (similarity == max_similarity and rmsd < min_rmsd):
+            max_similarity = similarity
+            min_rmsd = rmsd
+            most_similar_frag = mol_pred_frag
+
+    return most_similar_frag, max_similarity, min_rmsd
+
+
+def df_split_mol_frags(
+    mol_table: pd.DataFrame, select_most_similar_pred_frag: bool = True
+) -> pd.DataFrame:
     """Split the molecules in the DataFrame into fragments.
 
     :param mol_table: Molecule table DataFrame.
@@ -69,12 +116,26 @@ def df_split_mol_frags(mol_table: pd.DataFrame) -> pd.DataFrame:
         assert (
             len(mols_true) == 1 and len(mols_pred) == 1
         ), "Only one molecule per SDF file is supported."
+
         mol_true, mol_pred = mols_true[0], mols_pred[0]
         mol_true_frags = Chem.GetMolFrags(mol_true, asMols=True)
         mol_pred_frags = Chem.GetMolFrags(mol_pred, asMols=True)
+
+        if select_most_similar_pred_frag:
+            mol_pred_frags = [
+                find_most_similar_frag(mol_true_frag, mol_pred_frags)[0]
+                for mol_true_frag in mol_true_frags
+            ]
+            if not any(mol_pred_frags):
+                logger.warning(
+                    f"None of the predicted fragments are similar enough to the true fragments for row {row.Index}. Skipping this row."
+                )
+                continue
+
         assert len(mol_true_frags) == len(
             mol_pred_frags
         ), "The number of fragments should be the same."
+
         for frag_index, (mol_true_frag, mol_pred_frag) in enumerate(
             zip(mol_true_frags, mol_pred_frags)
         ):
@@ -86,14 +147,17 @@ def df_split_mol_frags(mol_table: pd.DataFrame) -> pd.DataFrame:
                 assert (
                     mol_true_frag.GetNumAtoms() == mol_pred_frag.GetNumAtoms()
                 ), "The number of atoms in each fragment should be the same."
+
                 Chem.MolToMolFile(mol_true_frag, temp_true.name)
                 Chem.MolToMolFile(mol_pred_frag, temp_pred.name)
-                if Chem.MolToSmiles(Chem.MolFromMolFile(temp_true.name)) != Chem.MolToSmiles(
-                    Chem.MolFromMolFile(temp_pred.name)
-                ):
+                true_smiles = Chem.MolToSmiles(Chem.MolFromMolFile(temp_true.name))
+                pred_smiles = Chem.MolToSmiles(Chem.MolFromMolFile(temp_pred.name))
+
+                if true_smiles != pred_smiles:
                     logger.warning(
-                        f"The SMILES strings of the index {frag_index} fragments differ for row {row.Index} after post-processing."
+                        f"The SMILES strings of the index {frag_index} fragments ({true_smiles} vs. {pred_smiles}) differ for row {row.Index} after post-processing."
                     )
+
                 new_row["mol_true"] = temp_true.name
                 new_row["mol_pred"] = temp_pred.name
             new_rows.append(new_row)
@@ -120,8 +184,7 @@ def create_mol_table(
     pdb_ids = None
     relaxed_protein = relaxed and cfg.relax_protein
     if cfg.dataset == "dockgen" and cfg.dockgen_test_ids_filepath is not None:
-        # NOTE: for DockGen, we may have each method predict for all 189 complexes
-        # but evaluate them here on a predicted RMSD-filtered subset of 91 complexes
+        # NOTE: for DockGen, we may have each method predict for all 189 test complexes
         assert os.path.exists(
             cfg.dockgen_test_ids_filepath
         ), f"Invalid test IDs file path for DockGen: {os.path.exists(cfg.dockgen_test_ids_filepath)}."
@@ -148,89 +211,100 @@ def create_mol_table(
     mol_table = pd.DataFrame()
     if cfg.method == "dynamicbind":
         mol_table["mol_cond"] = input_table["pdb_id"].apply(
-            lambda x: list(
-                Path(
-                    str(inference_dir).replace("_relaxed", "") + f"_{x}_{cfg.repeat_index}"
-                ).rglob(f"*rank1_receptor_*{'relaxed*' if relaxed_protein else ''}.pdb")
-            )[0]
-            if len(
+            lambda x: (
                 list(
                     Path(
                         str(inference_dir).replace("_relaxed", "") + f"_{x}_{cfg.repeat_index}"
-                    ).rglob(f"*rank1_receptor_*{'_relaxed' if relaxed_protein else ''}.pdb")
+                    ).rglob(f"*rank1_receptor_*{'relaxed*' if relaxed_protein else ''}.pdb")
+                )[0]
+                if len(
+                    list(
+                        Path(
+                            str(inference_dir).replace("_relaxed", "") + f"_{x}_{cfg.repeat_index}"
+                        ).rglob(f"*rank1_receptor_*{'_relaxed' if relaxed_protein else ''}.pdb")
+                    )
                 )
+                else None
             )
-            else None
         )
     elif cfg.method == "neuralplexer":
         mol_table["mol_cond"] = input_table["pdb_id"].apply(
-            lambda x: list(
-                (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
-                    f"prot_rank1_*_aligned{'_relaxed' if relaxed_protein else ''}.pdb"
-                )
-            )[0]
-            if len(
+            lambda x: (
                 list(
                     (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
                         f"prot_rank1_*_aligned{'_relaxed' if relaxed_protein else ''}.pdb"
                     )
+                )[0]
+                if len(
+                    list(
+                        (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                            f"prot_rank1_*_aligned{'_relaxed' if relaxed_protein else ''}.pdb"
+                        )
+                    )
                 )
+                else None
             )
-            else None
         )
     elif cfg.method == "rfaa":
         mol_table["mol_cond"] = input_table["pdb_id"].apply(
-            lambda x: list(
-                (Path(str(inference_dir).replace("_relaxed", ""))).rglob(
-                    f"{x}_protein_aligned{'_relaxed' if relaxed_protein else ''}.pdb"
-                )
-            )[0]
-            if len(
+            lambda x: (
                 list(
                     (Path(str(inference_dir).replace("_relaxed", ""))).rglob(
                         f"{x}_protein_aligned{'_relaxed' if relaxed_protein else ''}.pdb"
                     )
+                )[0]
+                if len(
+                    list(
+                        (Path(str(inference_dir).replace("_relaxed", ""))).rglob(
+                            f"{x}_protein_aligned{'_relaxed' if relaxed_protein else ''}.pdb"
+                        )
+                    )
                 )
+                else None
             )
-            else None
         )
     elif cfg.method == "chai-lab":
         mol_table["mol_cond"] = input_table["pdb_id"].apply(
-            lambda x: list(
-                (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
-                    f"pred.model_idx_0_protein{'_relaxed' if relaxed_protein else ''}_aligned.pdb"
-                )
-            )[0]
-            if len(
+            lambda x: (
                 list(
                     (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
                         f"pred.model_idx_0_protein{'_relaxed' if relaxed_protein else ''}_aligned.pdb"
                     )
+                )[0]
+                if len(
+                    list(
+                        (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                            f"pred.model_idx_0_protein{'_relaxed' if relaxed_protein else ''}_aligned.pdb"
+                        )
+                    )
                 )
+                else None
             )
-            else None
         )
     elif cfg.method == "ensemble":
         mol_table["mol_cond"] = input_table["pdb_id"].apply(
-            lambda x: list(
-                (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
-                    f"*_rank1_*{'_relaxed' if relaxed_protein else ''}.pdb"
-                )
-            )[0]
-            if len(
+            lambda x: (
                 list(
                     (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
                         f"*_rank1_*{'_relaxed' if relaxed_protein else ''}.pdb"
                     )
+                )[0]
+                if len(
+                    list(
+                        (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                            f"*_rank1_*{'_relaxed' if relaxed_protein else ''}.pdb"
+                        )
+                    )
                 )
+                else None
             )
-            else None
         )
     else:
         pocket_suffix = "_bs_cropped" if cfg.pocket_only_baseline else ""
         protein_structure_input_dir = (
             os.path.join(
-                input_data_dir, f"{cfg.dataset}_holo_aligned_predicted_structures{pocket_suffix}"
+                input_data_dir,
+                f"{cfg.dataset}_holo_aligned_predicted_structures{pocket_suffix}",
             )
             if os.path.exists(
                 os.path.join(
@@ -255,31 +329,37 @@ def create_mol_table(
             protein_structure_input_dir = str(inference_dir).replace("_relaxed", "")
             protein_structure_file_suffix = "_relaxed"
             mol_table["mol_cond"] = input_table["pdb_id"].apply(
-                lambda x: os.path.join(
-                    protein_structure_input_dir,
-                    "_".join(x.split("_")[:3]),
-                    f"{'_'.join(x.split('_')[:2])}{protein_structure_file_suffix}.pdb",
-                )
-                if os.path.exists(
+                lambda x: (
                     os.path.join(
                         protein_structure_input_dir,
                         "_".join(x.split("_")[:3]),
                         f"{'_'.join(x.split('_')[:2])}{protein_structure_file_suffix}.pdb",
                     )
+                    if os.path.exists(
+                        os.path.join(
+                            protein_structure_input_dir,
+                            "_".join(x.split("_")[:3]),
+                            f"{'_'.join(x.split('_')[:2])}{protein_structure_file_suffix}.pdb",
+                        )
+                    )
+                    else None
                 )
-                else None
             )
         else:
             mol_table["mol_cond"] = input_table["pdb_id"].apply(
-                lambda x: os.path.join(
-                    protein_structure_input_dir, f"{x}{protein_structure_file_suffix}.pdb"
-                )
-                if os.path.exists(
+                lambda x: (
                     os.path.join(
-                        protein_structure_input_dir, f"{x}{protein_structure_file_suffix}.pdb"
+                        protein_structure_input_dir,
+                        f"{x}{protein_structure_file_suffix}.pdb",
                     )
+                    if os.path.exists(
+                        os.path.join(
+                            protein_structure_input_dir,
+                            f"{x}{protein_structure_file_suffix}.pdb",
+                        )
+                    )
+                    else None
                 )
-                else None
             )
     # parse true molecule files
     mol_true_file_ext = ".pdb" if cfg.dataset == "dockgen" else ".sdf"
@@ -289,101 +369,103 @@ def create_mol_table(
     # parse predicted molecule files
     if cfg.method == "dynamicbind":
         mol_table["mol_pred"] = input_table["pdb_id"].apply(
-            lambda x: list(
-                Path(
-                    str(inference_dir).replace("_relaxed", "")
-                    + f"_{x}_{cfg.repeat_index}{'_relaxed' if relaxed else ''}"
-                ).rglob("*rank1_ligand_*.sdf")
-            )[0]
-            if len(
+            lambda x: (
                 list(
                     Path(
                         str(inference_dir).replace("_relaxed", "")
                         + f"_{x}_{cfg.repeat_index}{'_relaxed' if relaxed else ''}"
                     ).rglob("*rank1_ligand_*.sdf")
+                )[0]
+                if len(
+                    list(
+                        Path(
+                            str(inference_dir).replace("_relaxed", "")
+                            + f"_{x}_{cfg.repeat_index}{'_relaxed' if relaxed else ''}"
+                        ).rglob("*rank1_ligand_*.sdf")
+                    )
                 )
+                else None
             )
-            else None
         )
     elif cfg.method == "rfaa":
         mol_table["mol_pred"] = input_table["pdb_id"].apply(
-            lambda x: list(
-                (Path(str(inference_dir).replace("_relaxed", ""))).rglob(
-                    f"{x}_ligand{'_relaxed' if relaxed else ''}_aligned.sdf"
-                )
-            )[0]
-            if len(
+            lambda x: (
                 list(
                     (Path(str(inference_dir).replace("_relaxed", ""))).rglob(
                         f"{x}_ligand{'_relaxed' if relaxed else ''}_aligned.sdf"
-                    )
-                )
-            )
-            else None
-        )
-    elif cfg.method == "chai-lab":
-        mol_table["mol_pred"] = input_table["pdb_id"].apply(
-            lambda x: list(
-                (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
-                    f"pred.model_idx_0_ligand{'_relaxed' if relaxed else ''}_aligned.sdf"
-                )
-            )[0]
-            if len(
-                list(
-                    (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
-                        f"pred.model_idx_0_ligand{'_relaxed' if relaxed else ''}_aligned.sdf"
-                    )
-                )
-            )
-            else None
-        )
-    elif cfg.method == "vina":
-        mol_table["mol_pred"] = (
-            input_table["pdb_id"]
-            .transform(lambda x: "_".join(x.split("_")[:3]))
-            .apply(
-                lambda x: list(
-                    (Path(str(inference_dir).replace("_relaxed", ""))).rglob(
-                        f"{x}{'_relaxed' if relaxed else ''}.sdf"
                     )
                 )[0]
                 if len(
                     list(
                         (Path(str(inference_dir).replace("_relaxed", ""))).rglob(
-                            f"{x}{'_relaxed' if relaxed else ''}.sdf"
+                            f"{x}_ligand{'_relaxed' if relaxed else ''}_aligned.sdf"
                         )
                     )
                 )
                 else None
             )
         )
+    elif cfg.method == "chai-lab":
+        mol_table["mol_pred"] = input_table["pdb_id"].apply(
+            lambda x: (
+                list(
+                    (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                        f"pred.model_idx_0_ligand{'_relaxed' if relaxed else ''}_aligned.sdf"
+                    )
+                )[0]
+                if len(
+                    list(
+                        (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                            f"pred.model_idx_0_ligand{'_relaxed' if relaxed else ''}_aligned.sdf"
+                        )
+                    )
+                )
+                else None
+            )
+        )
+    elif cfg.method == "vina":
+        mol_table["mol_pred"] = (
+            input_table["pdb_id"]
+            .transform(lambda x: "_".join(x.split("_")[:3]))
+            .apply(
+                lambda x: (
+                    list(
+                        (Path(str(inference_dir).replace("_relaxed", ""))).rglob(
+                            f"{x}{'_relaxed' if relaxed else ''}.sdf"
+                        )
+                    )[0]
+                    if len(
+                        list(
+                            (Path(str(inference_dir).replace("_relaxed", ""))).rglob(
+                                f"{x}{'_relaxed' if relaxed else ''}.sdf"
+                            )
+                        )
+                    )
+                    else None
+                )
+            )
+        )
     elif cfg.method == "tulip":
         mol_table["mol_pred"] = input_table["pdb_id"].apply(
-            lambda x: list(
-                (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
-                    f"rank1{'_relaxed' if relaxed else ''}.sdf"
-                )
-            )[0]
-            if len(
+            lambda x: (
                 list(
                     (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
                         f"rank1{'_relaxed' if relaxed else ''}.sdf"
                     )
+                )[0]
+                if len(
+                    list(
+                        (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                            f"rank1{'_relaxed' if relaxed else ''}.sdf"
+                        )
+                    )
                 )
+                else None
             )
-            else None
         )
     elif cfg.method == "ensemble":
         mol_table["mol_pred"] = input_table["pdb_id"].apply(
-            lambda x: [
-                file
-                for file in (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
-                    "*_rank1_*.sdf"
-                )
-                if (relaxed and "relaxed" in os.path.basename(file))
-                or (not relaxed and "relaxed" not in os.path.basename(file))
-            ][0]
-            if len(
+            lambda x: (
                 [
                     file
                     for file in (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
@@ -391,9 +473,19 @@ def create_mol_table(
                     )
                     if (relaxed and "relaxed" in os.path.basename(file))
                     or (not relaxed and "relaxed" not in os.path.basename(file))
-                ]
+                ][0]
+                if len(
+                    [
+                        file
+                        for file in (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                            "*_rank1_*.sdf"
+                        )
+                        if (relaxed and "relaxed" in os.path.basename(file))
+                        or (not relaxed and "relaxed" not in os.path.basename(file))
+                    ]
+                )
+                else None
             )
-            else None
         )
     else:
         pdb_ids = (
@@ -403,36 +495,7 @@ def create_mol_table(
         )
         if cfg.method in RANKED_METHODS:
             mol_table["mol_pred"] = pdb_ids.apply(
-                lambda x: glob.glob(
-                    os.path.join(
-                        (
-                            Path(str(inference_dir).replace("_relaxed", ""))
-                            if cfg.method in ["neuralplexer", "rfaa"] or relaxed_protein
-                            else inference_dir
-                        ),
-                        x,
-                        (
-                            "lig_rank1*_relaxed_aligned.sdf"
-                            if cfg.method in ["neuralplexer", "rfaa"]
-                            else f"{x}_relaxed.sdf"
-                        ),
-                    )
-                    if relaxed
-                    else os.path.join(
-                        (
-                            Path(str(inference_dir).replace("_relaxed", ""))
-                            if cfg.method in ["neuralplexer", "rfaa"]
-                            else inference_dir
-                        ),
-                        x,
-                        (
-                            "lig_rank1*_aligned.sdf"
-                            if cfg.method in ["neuralplexer", "rfaa"]
-                            else "rank1.sdf"
-                        ),
-                    )
-                )[0]
-                if len(
+                lambda x: (
                     glob.glob(
                         os.path.join(
                             (
@@ -461,27 +524,60 @@ def create_mol_table(
                                 else "rank1.sdf"
                             ),
                         )
+                    )[0]
+                    if len(
+                        glob.glob(
+                            os.path.join(
+                                (
+                                    Path(str(inference_dir).replace("_relaxed", ""))
+                                    if cfg.method in ["neuralplexer", "rfaa"] or relaxed_protein
+                                    else inference_dir
+                                ),
+                                x,
+                                (
+                                    "lig_rank1*_relaxed_aligned.sdf"
+                                    if cfg.method in ["neuralplexer", "rfaa"]
+                                    else f"{x}_relaxed.sdf"
+                                ),
+                            )
+                            if relaxed
+                            else os.path.join(
+                                (
+                                    Path(str(inference_dir).replace("_relaxed", ""))
+                                    if cfg.method in ["neuralplexer", "rfaa"]
+                                    else inference_dir
+                                ),
+                                x,
+                                (
+                                    "lig_rank1*_aligned.sdf"
+                                    if cfg.method in ["neuralplexer", "rfaa"]
+                                    else "rank1.sdf"
+                                ),
+                            )
+                        )
                     )
+                    else None
                 )
-                else None
             )
         else:
             mol_table["mol_pred"] = pdb_ids.apply(
-                lambda x: glob.glob(
-                    os.path.join(
-                        inference_dir,
-                        f"{x}_*{'_relaxed' if relaxed else ''}{'_aligned' if cfg.method in ['neuralplexer', 'rfaa'] else ''}.sdf",
-                    )
-                )[0]
-                if len(
+                lambda x: (
                     glob.glob(
                         os.path.join(
                             inference_dir,
                             f"{x}_*{'_relaxed' if relaxed else ''}{'_aligned' if cfg.method in ['neuralplexer', 'rfaa'] else ''}.sdf",
                         )
+                    )[0]
+                    if len(
+                        glob.glob(
+                            os.path.join(
+                                inference_dir,
+                                f"{x}_*{'_relaxed' if relaxed else ''}{'_aligned' if cfg.method in ['neuralplexer', 'rfaa'] else ''}.sdf",
+                            )
+                        )
                     )
+                    else None
                 )
-                else None
             )
 
     # drop rows with missing conditioning inputs or true ligand structures
@@ -498,119 +594,141 @@ def create_mol_table(
                 mol_table.loc[missing_pred_indices, "mol_pred"] = input_table.loc[
                     missing_pred_indices, "pdb_id"
                 ].apply(
-                    lambda x: glob.glob(os.path.join(unrelaxed_inference_dir, x, "rank1.sdf"))[0]
-                    if len(glob.glob(os.path.join(unrelaxed_inference_dir, x, "rank1.sdf")))
-                    else None
+                    lambda x: (
+                        glob.glob(os.path.join(unrelaxed_inference_dir, x, "rank1.sdf"))[0]
+                        if len(glob.glob(os.path.join(unrelaxed_inference_dir, x, "rank1.sdf")))
+                        else None
+                    )
                 )
             elif cfg.method == "dynamicbind":
                 mol_table.loc[missing_pred_indices, "mol_pred"] = input_table.loc[
                     missing_pred_indices, "pdb_id"
                 ].apply(
-                    lambda x: list(
-                        Path(str(unrelaxed_inference_dir) + f"_{x}_{cfg.repeat_index}").rglob(
-                            "*rank1_ligand_*.sdf"
-                        )
-                    )[0]
-                    if len(
+                    lambda x: (
                         list(
                             Path(str(unrelaxed_inference_dir) + f"_{x}_{cfg.repeat_index}").rglob(
                                 "*rank1_ligand_*.sdf"
                             )
+                        )[0]
+                        if len(
+                            list(
+                                Path(
+                                    str(unrelaxed_inference_dir) + f"_{x}_{cfg.repeat_index}"
+                                ).rglob("*rank1_ligand_*.sdf")
+                            )
                         )
+                        else None
                     )
-                    else None
                 )
             elif cfg.method == "neuralplexer":
                 mol_table.loc[missing_pred_indices, "mol_pred"] = input_table.loc[
                     missing_pred_indices, "pdb_id"
                 ].apply(
-                    lambda x: glob.glob(
-                        os.path.join(
-                            Path(str(inference_dir).replace("_relaxed", "")),
-                            x,
-                            "lig_rank1_aligned.sdf",
-                        )
-                    )[0]
-                    if len(
+                    lambda x: (
                         glob.glob(
                             os.path.join(
                                 Path(str(inference_dir).replace("_relaxed", "")),
                                 x,
                                 "lig_rank1_aligned.sdf",
                             )
+                        )[0]
+                        if len(
+                            glob.glob(
+                                os.path.join(
+                                    Path(str(inference_dir).replace("_relaxed", "")),
+                                    x,
+                                    "lig_rank1_aligned.sdf",
+                                )
+                            )
                         )
+                        else None
                     )
-                    else None
                 )
             elif cfg.method == "rfaa":
                 mol_table.loc[missing_pred_indices, "mol_pred"] = input_table.loc[
                     missing_pred_indices, "pdb_id"
                 ].apply(
-                    lambda x: list(
-                        (Path(str(unrelaxed_inference_dir))).rglob(f"{x}_ligand_aligned.sdf")
-                    )[0]
-                    if len(
-                        list((Path(str(unrelaxed_inference_dir))).rglob(f"{x}_ligand_aligned.sdf"))
+                    lambda x: (
+                        list(
+                            (Path(str(unrelaxed_inference_dir))).rglob(f"{x}_ligand_aligned.sdf")
+                        )[0]
+                        if len(
+                            list(
+                                (Path(str(unrelaxed_inference_dir))).rglob(
+                                    f"{x}_ligand_aligned.sdf"
+                                )
+                            )
+                        )
+                        else None
                     )
-                    else None
                 )
             elif cfg.method == "chai-lab":
                 mol_table.loc[missing_pred_indices, "mol_pred"] = input_table.loc[
                     missing_pred_indices, "pdb_id"
                 ].apply(
-                    lambda x: glob.glob(
-                        os.path.join(
-                            Path(str(inference_dir).replace("_relaxed", "")),
-                            x,
-                            "pred.model_idx_0_ligand_aligned.sdf",
-                        )
-                    )[0]
-                    if len(
+                    lambda x: (
                         glob.glob(
                             os.path.join(
                                 Path(str(inference_dir).replace("_relaxed", "")),
                                 x,
                                 "pred.model_idx_0_ligand_aligned.sdf",
                             )
+                        )[0]
+                        if len(
+                            glob.glob(
+                                os.path.join(
+                                    Path(str(inference_dir).replace("_relaxed", "")),
+                                    x,
+                                    "pred.model_idx_0_ligand_aligned.sdf",
+                                )
+                            )
                         )
+                        else None
                     )
-                    else None
                 )
             elif cfg.method == "vina":
                 mol_table.loc[missing_pred_indices, "mol_pred"] = input_table.loc[
                     missing_pred_indices, "pdb_id"
                 ].apply(
-                    lambda x: list((Path(str(unrelaxed_inference_dir))).rglob(f"{x}.sdf"))[0]
-                    if len(list((Path(str(unrelaxed_inference_dir))).rglob(f"{x}.sdf")))
-                    else None
+                    lambda x: (
+                        list((Path(str(unrelaxed_inference_dir))).rglob(f"{x}.sdf"))[0]
+                        if len(list((Path(str(unrelaxed_inference_dir))).rglob(f"{x}.sdf")))
+                        else None
+                    )
                 )
             elif cfg.method == "tulip":
                 mol_table.loc[missing_pred_indices, "mol_pred"] = input_table.loc[
                     missing_pred_indices, "pdb_id"
                 ].apply(
-                    lambda x: list(
-                        (Path(str(unrelaxed_inference_dir)) / x).rglob(f"{x}_relaxed.sdf")
-                    )[0]
-                    if len(
-                        list((Path(str(unrelaxed_inference_dir)) / x).rglob(f"{x}_relaxed.sdf"))
+                    lambda x: (
+                        list((Path(str(unrelaxed_inference_dir)) / x).rglob(f"{x}_relaxed.sdf"))[0]
+                        if len(
+                            list(
+                                (Path(str(unrelaxed_inference_dir)) / x).rglob(f"{x}_relaxed.sdf")
+                            )
+                        )
+                        else None
                     )
-                    else None
                 )
             elif cfg.method == "ensemble":
                 mol_table.loc[missing_pred_indices, "mol_pred"] = input_table.loc[
                     missing_pred_indices, "pdb_id"
                 ].apply(
-                    lambda x: glob.glob(os.path.join(unrelaxed_inference_dir, x, "*.sdf"))[0]
-                    if len(glob.glob(os.path.join(unrelaxed_inference_dir, x, "*.sdf")))
-                    else None
+                    lambda x: (
+                        glob.glob(os.path.join(unrelaxed_inference_dir, x, "*.sdf"))[0]
+                        if len(glob.glob(os.path.join(unrelaxed_inference_dir, x, "*.sdf")))
+                        else None
+                    )
                 )
             else:
                 mol_table.loc[missing_pred_indices, "mol_pred"] = input_table.loc[
                     missing_pred_indices, "pdb_id"
                 ].apply(
-                    lambda x: glob.glob(os.path.join(unrelaxed_inference_dir, f"{x}_*.sdf"))[0]
-                    if len(glob.glob(os.path.join(unrelaxed_inference_dir, f"{x}_*.sdf")))
-                    else None
+                    lambda x: (
+                        glob.glob(os.path.join(unrelaxed_inference_dir, f"{x}_*.sdf"))[0]
+                        if len(glob.glob(os.path.join(unrelaxed_inference_dir, f"{x}_*.sdf")))
+                        else None
+                    )
                 )
             if mol_table["mol_pred"].isna().sum() > 0:
                 logger.warning(
@@ -623,9 +741,8 @@ def create_mol_table(
             )
             mol_table = mol_table.dropna(subset=["mol_pred"])
 
-    if cfg.dataset == "casp15":
-        mol_table.reset_index(drop=True, inplace=True)
-        mol_table = df_split_mol_frags(mol_table)
+    mol_table.reset_index(drop=True, inplace=True)
+    mol_table = df_split_mol_frags(mol_table)
 
     return mol_table
 
