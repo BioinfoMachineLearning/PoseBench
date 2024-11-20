@@ -147,6 +147,7 @@ dmypy.json
 # PoseBench
 configs/local/default.yaml
 /*cache_dir/
+/*complex_alignment_viz/
 /casp15_ligand_scoring/
 /data/
 /ensemble_generation_scripts/

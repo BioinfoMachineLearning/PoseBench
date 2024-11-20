@@ -75,6 +75,10 @@ cd PoseBench
 mamba env create -f environments/posebench_environment.yaml
 conda activate PoseBench  # NOTE: one still needs to use `conda` to (de)activate environments
 pip3 install -e .
+# - PyMOL environment # (~1 GB)
+mamba env create -f environments/pymol_environment.yaml
+conda activate PyMOL-PoseBench
+pip install -e . --no-deps
 # - casp15_ligand_scoring environment (~3 GB)
 mamba env create -f environments/casp15_ligand_scoring_environment.yaml
 conda activate casp15_ligand_scoring  # NOTE: one still needs to use `conda` to (de)activate environments
@@ -559,12 +563,14 @@ python3 posebench/models/inference_relaxation.py method=neuralplexer dataset=doc
 Align predicted protein-ligand structures to ground-truth complex structures
 
 ```bash
+conda activate PyMOL-PoseBench
 python3 posebench/analysis/complex_alignment.py method=neuralplexer dataset=posebusters_benchmark repeat_index=1
 ...
 python3 posebench/analysis/complex_alignment.py method=neuralplexer dataset=astex_diverse repeat_index=1
 ...
 python3 posebench/analysis/complex_alignment.py method=neuralplexer dataset=dockgen repeat_index=1
 ...
+conda deactivate
 ```
 
 Analyze inference results for each dataset
@@ -633,9 +639,11 @@ python3 posebench/models/inference_relaxation.py method=rfaa dataset=dockgen rem
 Align predicted protein-ligand structures to ground-truth complex structures
 
 ```bash
+conda activate PyMOL-PoseBench
 python3 posebench/analysis/complex_alignment.py method=rfaa dataset=posebusters_benchmark
 python3 posebench/analysis/complex_alignment.py method=rfaa dataset=astex_diverse
 python3 posebench/analysis/complex_alignment.py method=rfaa dataset=dockgen
+conda deactivate
 ```
 
 Analyze inference results for each dataset
@@ -712,11 +720,13 @@ python3 posebench/models/inference_relaxation.py method=chai-lab dataset=dockgen
 Align predicted protein-ligand structures to ground-truth complex structures
 
 ```bash
+conda activate PyMOL-PoseBench
 python3 posebench/analysis/complex_alignment.py method=chai-lab dataset=posebusters_benchmark repeat_index=1
 ...
 python3 posebench/analysis/complex_alignment.py method=chai-lab dataset=astex_diverse repeat_index=1
 ...
 python3 posebench/analysis/complex_alignment.py method=chai-lab dataset=dockgen repeat_index=1
+conda deactivate
 ...
 ```
 

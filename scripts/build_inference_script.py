@@ -88,7 +88,9 @@ COMMANDS = {
             "python3 posebench/models/inference_relaxation.py method=neuralplexer dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
         ],
         "align_complexes": [
+            "conda activate PyMOL-PoseBench",
             "python3 posebench/analysis/complex_alignment.py method=neuralplexer dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+            "conda deactivate",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=neuralplexer dataset={dataset} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} repeat_index={repeat_index}",
@@ -117,7 +119,9 @@ COMMANDS = {
             "python3 posebench/models/inference_relaxation.py method=rfaa dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true",
         ],
         "align_complexes": [
+            "conda activate PyMOL-PoseBench",
             "python3 posebench/analysis/complex_alignment.py method=rfaa dataset={dataset} pocket_only_baseline={pocket_only_baseline}",
+            "conda deactivate",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=rfaa dataset={dataset} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein}",
@@ -146,7 +150,9 @@ COMMANDS = {
             "python3 posebench/models/inference_relaxation.py method=chai-lab dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true repeat_index={repeat_index}",
         ],
         "align_complexes": [
+            "conda activate PyMOL-PoseBench",
             "python3 posebench/analysis/complex_alignment.py method=chai-lab dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+            "conda deactivate",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=chai-lab dataset={dataset} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} repeat_index={repeat_index}",
