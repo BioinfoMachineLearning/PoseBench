@@ -119,7 +119,7 @@ def insert_hpc_headers(
     method: str,
     gpu_partition: str = "chengji-lab-gpu",
     gpu_account: str = "chengji-lab",
-    gpu_type: Literal["A100", "H100"] = "H100",
+    gpu_type: Literal["A100", "H100", ""] = "",
     cpu_memory_in_gb: int = 59,
     time_limit: str = "7-00:00:00",
 ) -> str:
@@ -136,7 +136,7 @@ def insert_hpc_headers(
 #SBATCH --partition {gpu_partition} # use reserved partition `chengji-lab-gpu`
 #SBATCH --account {gpu_account}  # NOTE: this must be specified to use the reserved partition above
 #SBATCH --nodes=1              # NOTE: this needs to match Lightning's `Trainer(num_nodes=...)`
-#SBATCH --gres gpu:{gpu_type}:1      # request {gpu_type} GPU resource(s)
+#SBATCH --gres gpu:{f'{gpu_type}:' if gpu_type else ''}1      # request {gpu_type} GPU resource(s)
 #SBATCH --ntasks-per-node=1    # NOTE: this needs to be `1` on SLURM clusters when using Lightning's `ddp_spawn` strategy`; otherwise, set to match Lightning's quantity of `Trainer(devices=...)`
 #SBATCH --mem={cpu_memory_in_gb}G              # NOTE: use `--mem=0` to request all memory "available" on the assigned node
 #SBATCH -t {time_limit}          # time limit for the job (up to two days: `2-00:00:00`)

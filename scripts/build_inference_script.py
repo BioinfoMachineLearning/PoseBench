@@ -269,7 +269,7 @@ def build_inference_script(
     verbose: bool = False,
     gpu_partition: str = "chengji-lab-gpu",
     gpu_account: str = "chengji-lab",
-    gpu_type: Literal["A100", "H100"] = "A100",
+    gpu_type: Literal["A100", "H100", ""] = "",
     cpu_memory_in_gb: int = 59,
     time_limit: str = "2-00:00:00",
 ):

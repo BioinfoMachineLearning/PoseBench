@@ -11,7 +11,6 @@ import hydra
 import numpy as np
 import rootutils
 from omegaconf import DictConfig
-from pymol import cmd
 from tqdm import tqdm
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
@@ -48,6 +47,8 @@ def align_to_binding_site(
     :param save_ligand: Whether to save the aligned ligand structure (default True).
     :param verbose: Whether to print the alignment RMSD and number of aligned atoms (default True).
     """
+    from pymol import cmd
+
     # Refresh PyMOL
     cmd.reinitialize()
 
