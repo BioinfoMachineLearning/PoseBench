@@ -253,13 +253,13 @@ cd ../../
 First create all the corresponding FASTA files for each protein sequence
 
 ```bash
-python3 posebench/data/components/protein_fasta_preparation.py dataset=posebusters_benchmark
-python3 posebench/data/components/protein_fasta_preparation.py dataset=astex_diverse
+python3 posebench/data/components/fasta_preparation.py dataset=posebusters_benchmark
+python3 posebench/data/components/fasta_preparation.py dataset=astex_diverse
 ```
 
 To generate the apo version of each protein structure,
 create ESMFold-ready versions of the combined FASTA files
-prepared above by the script `protein_fasta_preparation.py`
+prepared above by the script `fasta_preparation.py`
 for the PoseBusters Benchmark and Astex Diverse sets, respectively
 
 ```bash

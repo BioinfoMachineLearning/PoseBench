@@ -15,11 +15,11 @@ Protein apo-to-holo alignment
     :language: yaml
     :caption: :file:`data/components/protein_apo_to_holo_alignment.yaml`
 
-Protein FASTA preparation
+FASTA preparation
 ^^^^^^^^^^^^^^^^^^^^^^^^
-.. literalinclude:: ../../../configs/data/components/protein_fasta_preparation.yaml
+.. literalinclude:: ../../../configs/data/components/fasta_preparation.yaml
     :language: yaml
-    :caption: :file:`data/components/protein_fasta_preparation.yaml`
+    :caption: :file:`data/components/fasta_preparation.yaml`
 
 ESMFold sequence preparation
 ^^^^^^^^^^^^^^^^^^^^^^^^

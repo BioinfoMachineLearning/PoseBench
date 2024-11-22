@@ -185,7 +185,9 @@ def parse_inference_inputs_from_dir(
                         continue
 
                 if mol is None:
-                    raise ValueError(f"Could not extract ligand molecule for PDB ID {pdb_id}")
+                    # raise ValueError(f"Could not extract ligand molecule for PDB ID {pdb_id}")
+                    logger.warning(f"Could not extract ligand molecule for PDB ID {pdb_id}")
+                    continue
 
                 mol_smiles = Chem.MolToSmiles(mol)
                 if mol_smiles is None:

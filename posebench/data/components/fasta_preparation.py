@@ -15,6 +15,8 @@ from Bio.SeqRecord import SeqRecord
 from omegaconf import DictConfig, open_dict
 from tqdm import tqdm
 
+from posebench.utils.data_utils import parse_inference_inputs_from_dir
+
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 # ------------------------------------------------------------------------------------ #
 # the setup_root above is equivalent to:
@@ -1169,7 +1171,7 @@ MODIFIED_TO_NATURAL_AMINO_ACID_RESNAME_MAP = {
 @hydra.main(
     version_base="1.3",
     config_path="../../../configs/data/components",
-    config_name="protein_fasta_preparation.yaml",
+    config_name="fasta_preparation.yaml",
 )
 def main(cfg: DictConfig):
     """Prepare reference FASTA sequence file for protein chains in the dataset."""
@@ -1191,6 +1193,18 @@ def main(cfg: DictConfig):
         with open(cfg.dockgen_test_ids_filepath) as f:
             pdb_ids = {line.replace(" ", "-") for line in f.read().splitlines()}
 
+    # prepare to parse all biomolecule sequences if requested
+    smiles_and_pdb_id_list = None
+
+    if cfg.include_all_biomolecules:
+        with open_dict(cfg):
+            cfg.out_file = cfg.out_file.replace(".fasta", "_all.fasta")
+
+        smiles_and_pdb_id_list = parse_inference_inputs_from_dir(
+            cfg.data_dir,
+            pdb_ids=pdb_ids,
+        )
+
     data_dir = [
         name
         for name in os.listdir(cfg.data_dir)
@@ -1202,6 +1216,10 @@ def main(cfg: DictConfig):
             cfg.data_dir = os.path.join(cfg.data_dir, "targets")
 
         data_dir = [name for name in os.listdir(cfg.data_dir) if name.endswith("_lig.pdb")]
+
+    chain_suffix = ""
+    if cfg.include_all_biomolecules:
+        chain_suffix = "protein:"
 
     entries = []
     for name in tqdm(
@@ -1233,6 +1251,7 @@ def main(cfg: DictConfig):
                 # NOTE: for CASP15, we exclude modified (hetero) amino acid residues serving as ligands
                 name = name.split("_")[0]
                 aa_residues = [residue for residue in aa_residues if residue.id[0] == " "]
+
             aa_residue_names = [
                 MODIFIED_TO_NATURAL_AMINO_ACID_RESNAME_MAP[residue.resname]
                 for residue in aa_residues
@@ -1246,9 +1265,20 @@ def main(cfg: DictConfig):
             if not seq:
                 continue
 
-            structure_seqs.append((f"{name}_chain_{chain.id}", seq))
+            structure_seqs.append((f"{chain_suffix}{name}_chain_{chain.id}", seq))
 
         entries.extend(structure_seqs)
+
+        # append SMILES chains if available
+        if smiles_and_pdb_id_list is not None:
+            target_smiles_and_pdb_id_list = [
+                (smi, pdb_id)
+                for smiles, pdb_id in smiles_and_pdb_id_list
+                for smi in smiles.split(".")
+                if pdb_id == name
+            ]
+            for chain_index, (smiles, _) in enumerate(target_smiles_and_pdb_id_list):
+                entries.append((f"ligand:{name}_chain_{chain_index}", smiles))
 
     records = []
     for seq_id, seq in entries:
