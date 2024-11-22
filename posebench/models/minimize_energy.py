@@ -1236,28 +1236,42 @@ def minimize_energy(cfg: DictConfig):
         shutil.copyfile(ligand_file_path, temp_ligand_file_path)
         logger.info("Performing iteration 0 of complex relaxation")
 
-    num_attempts = 0
-    results_dict = optimize_ligand_in_pocket(
-        protein_file=temp_protein_file_path,
-        ligand_file=temp_ligand_file_path,
-        output_file=output_file_path,
-        protein_output_file=protein_output_file_path,
-        complex_output_file=complex_output_file_path,
-        temp_dir=temp_directory,
-        prep_only=prep_only,
-        name=cfg.name,
-        platform_name=cfg.platform,
-        cuda_device_index=cfg.cuda_device_index,
-        add_solvent=cfg.add_solvent,
-        relax_protein=cfg.relax_protein,
-        remove_initial_protein_hydrogens=cfg.remove_initial_protein_hydrogens,
-        assign_each_ligand_unique_force=cfg.assign_each_ligand_unique_force,
-        report_initial_energy_only=cfg.report_initial_energy_only,
-        model_ions=cfg.model_ions,
-        cache_files=cfg.cache_files,
-        assign_partial_charges_manually=cfg.assign_partial_charges_manually,
-        tolerance=2.39 if cfg.relax_protein else 0.01,
-    )
+    try:
+        num_attempts = 0
+        results_dict = optimize_ligand_in_pocket(
+            protein_file=temp_protein_file_path,
+            ligand_file=temp_ligand_file_path,
+            output_file=output_file_path,
+            protein_output_file=protein_output_file_path,
+            complex_output_file=complex_output_file_path,
+            temp_dir=temp_directory,
+            prep_only=prep_only,
+            name=cfg.name,
+            platform_name=cfg.platform,
+            cuda_device_index=cfg.cuda_device_index,
+            add_solvent=cfg.add_solvent,
+            relax_protein=cfg.relax_protein,
+            remove_initial_protein_hydrogens=cfg.remove_initial_protein_hydrogens,
+            assign_each_ligand_unique_force=cfg.assign_each_ligand_unique_force,
+            report_initial_energy_only=cfg.report_initial_energy_only,
+            model_ions=cfg.model_ions,
+            cache_files=cfg.cache_files,
+            assign_partial_charges_manually=cfg.assign_partial_charges_manually,
+            tolerance=2.39 if cfg.relax_protein else 0.01,
+        )
+    except Exception as e:
+        logger.error(
+            f"Complex relaxation was not fully successful due to: {e}. Copying the input files as the relaxed output files."
+        )
+        # organize output files
+        shutil.copyfile(protein_file_path, protein_output_file_path)
+        shutil.copyfile(ligand_file_path, output_file_path)
+        try:
+            if complex_output_file_path is not None:
+                os.remove(complex_output_file_path)
+        except OSError:
+            pass
+
     if prep_only:
         sys.exit(0)
 
