@@ -285,8 +285,10 @@ or Astex Diverse set, taking ligand conformations into account
 during each alignment
 
 ```bash
+conda activate PyMOL-PoseBench
 python3 posebench/data/components/protein_apo_to_holo_alignment.py dataset=posebusters_benchmark num_workers=1
 python3 posebench/data/components/protein_apo_to_holo_alignment.py dataset=astex_diverse num_workers=1
+conda deactivate
 ```
 
 **NOTE:** The preprocessed Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 data available via [Zenodo](https://doi.org/10.5281/zenodo.13858866) provide pre-holo-aligned protein structures predicted by AlphaFold 3 for these respective datasets. Accordingly, users must ensure their usage of such predicted protein structures aligns with the AlphaFold Server's [Terms of Service](https://alphafoldserver.com/terms).
