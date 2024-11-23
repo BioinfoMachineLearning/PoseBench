@@ -72,6 +72,7 @@ def write_scripts(
         for chain_index, sequence in enumerate(protein_sequence_list, start=1):
             with open(fasta_filepath, "a") as f:
                 f.write(f">protein|{input_id}-chain-{chain_index}\n{sequence}\n")
+        # NOTE: in the inference setting, `:` is used to separate ligand SMILES strings
         for chain_index, smiles in enumerate(ligand_smiles.split(":"), start=1):
             with open(fasta_filepath, "a") as f:
                 f.write(f">ligand|{input_id}-chain-{chain_index}\n{smiles}\n")

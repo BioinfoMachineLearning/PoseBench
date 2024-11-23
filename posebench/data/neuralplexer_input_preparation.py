@@ -86,7 +86,7 @@ def write_input_csv(
                 if not os.path.exists(input_receptor):
                     logger.warning(f"Skipping input protein which was not found: {input_receptor}")
                     continue
-                f.write(f"{pdb_id},{input_receptor},{smiles},{input_receptor}\n")
+                f.write(f"{pdb_id},{input_receptor},{smiles.replace('.', '|')},{input_receptor}\n")
 
 
 @hydra.main(
