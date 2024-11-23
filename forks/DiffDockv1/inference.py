@@ -340,7 +340,7 @@ for ligand_description_group in ligand_description_groups:
                 if rank == 0:
                     rank_filenames = []
                     for filename in filenames:
-                        rank_fns = glob.glob(f'{args.out_dir}/{filename}/rank{rank+1}.sdf' for filename in filenames)
+                        rank_fns = glob.glob(f'{args.out_dir}/{filename}/rank{rank+1}.sdf')
                         if not rank_fns:
                             raise ValueError(f"Failed to find a rank {rank} SDF file for {filename} in `inference.py`. Skipping this complex...")
                         rank_filenames.append(rank_fns[0])
