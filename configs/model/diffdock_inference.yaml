@@ -8,7 +8,7 @@ output_dir: ${oc.env:PROJECT_ROOT}/forks/DiffDock/inference/diffdock_${dataset}_
 model_dir: ${oc.env:PROJECT_ROOT}/forks/DiffDock/workdir/v1.1/score_model # the directory in which the trained model is saved
 confidence_model_dir: ${oc.env:PROJECT_ROOT}/forks/DiffDock/workdir/v1.1/confidence_model # the directory in which the trained confidence model is saved
 inference_steps: 20 # the maximum number of inference (reverse diffusion) steps to run
-samples_per_complex: 40 # the number of samples to generate per complex
+samples_per_complex: 5 # the number of samples to generate per complex
 batch_size: 10 # the batch size to use for inference
 actual_steps: 19 # the actual number of inference steps to run (i.e., after how many steps to halt the reverse diffusion process)
 no_final_step_noise: true # whether to disable the final inference step's noise from being added

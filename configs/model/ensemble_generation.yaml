@@ -10,7 +10,7 @@ structure_prediction_script_path: ${oc.env:PROJECT_ROOT}/posebench/data/componen
 structure_prediction_chunk_size: null # optional chunk size to use during ESMFold structure prediction to reduce memory requirements
 structure_prediction_cpu_only: false # whether to only use CPU for structure prediction
 structure_prediction_cpu_offload: false # whether to offload structure prediction to CPU
-max_method_predictions: 40 # maximum number of predictions to make with each method
+max_method_predictions: 5 # maximum number of predictions to make with each method
 method_top_n_to_select: 3 # number of top-ranked predictions to select from each method for subsequent ranking
 skip_existing: false # whether to skip existing ensemble predictions
 relax_method_ligands_pre_ranking: false # whether to relax the predicted ligands (method-specifically) before ranking
@@ -65,7 +65,7 @@ dynamicbind_exec_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind # the DynamicBind
 dynamicbind_dataset: ensemble # the dataset to use for inference - NOTE: must be one of (`ensemble`)
 dynamicbind_input_protein_data_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind/inference/ensemble_predicted_structures # the input protein-ligand complex directory to recursively parse for protein inputs
 dynamicbind_input_ligand_csv_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind/inference/dynamicbind_ensemble_inputs # the input CSV directory with which to run inference
-dynamicbind_samples_per_complex: 40 # the number of samples to generate per complex
+dynamicbind_samples_per_complex: ${max_method_predictions} # the number of samples to generate per complex
 dynamicbind_savings_per_complex: 1 # the (top-N) number of sample visualizations to save per complex
 dynamicbind_inference_steps: 20 # the number of inference steps to run for each complex
 dynamicbind_batch_size: 5 # the batch size to use for inference
@@ -84,7 +84,7 @@ neuralplexer_sample_id: 0 # the sample ID to use for inference
 neuralplexer_template_id: 0 # the template ID to use for inference
 neuralplexer_model_checkpoint: ${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/neuralplexermodels_downstream_datasets_predictions/models/complex_structure_prediction.ckpt # the model checkpoint to use for inference
 neuralplexer_out_path: ${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/inference/neuralplexer_ensemble_outputs # the output directory to which to write the predictions
-neuralplexer_n_samples: 40 # the number of conformations to generate per complex
+neuralplexer_n_samples: ${max_method_predictions} # the number of conformations to generate per complex
 neuralplexer_chunk_size: 10 # the number of conformations to generate in parallel per complex
 neuralplexer_num_steps: 40 # the number of steps to take in the sampling process
 neuralplexer_sampler: langevin_simulated_annealing # the sampler to use - NOTE: must be one of (`DDIM`, `VPSDE`, `simulated_annealing_simple`, `langevin_simulated_annealing`)
