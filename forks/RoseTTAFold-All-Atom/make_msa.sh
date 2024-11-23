@@ -16,8 +16,8 @@ SCRIPT=`realpath -s $0`
 export PIPE_DIR=`dirname $SCRIPT`
 
 # sequence databases
-DB_UR30="/bmlfast/rfaa_databases/uniref30/UniRef30_2020_06"
-DB_BFD="/bmlfast/rfaa_databases/bfd/bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt"
+DB_UR30="/cluster/pixstor/chengji-lab/bml_casp16/tools/rfaa_databases_multicom3/uniref30/UniRef30_2020_06"
+DB_BFD="/cluster/pixstor/chengji-lab/bml_casp16/tools/rfaa_databases_multicom3/bfd/bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt"
 
 # Running signalP 6.0
 mkdir -p $out_dir/signalp

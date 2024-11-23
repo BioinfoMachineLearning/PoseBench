@@ -3,7 +3,7 @@ output_path: "prediction_outputs"
 checkpoint_path: RFAA_paper_weights.pt
 database_params:
   sequencedb: ""
-  hhdb: "/bmlfast/rfaa_databases/pdb100_2021Mar03/pdb100_2021Mar03"
+  hhdb: "/cluster/pixstor/chengji-lab/bml_casp16/tools/rfaa_databases_multicom3/pdb100_2021Mar03/pdb100_2021Mar03"
   command: make_msa.sh
   num_cpus: 4
   mem: 60
