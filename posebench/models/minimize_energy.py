@@ -16,12 +16,12 @@ import os
 import shutil
 import sys
 from pathlib import Path
-from typing import Any
 
 import hydra
 import numpy as np
 import rootutils
 import timeout_decorator
+from beartype.typing import Any, Dict, Optional
 from Bio.PDB import MMCIFIO, PDBIO, MMCIFParser, PDBParser, Select
 from omegaconf import DictConfig
 from openff.toolkit.topology import Molecule
@@ -1208,7 +1208,7 @@ def optimize_ligand_in_pocket(
     config_path="../../configs/model",
     config_name="minimize_energy.yaml",
 )
-def minimize_energy(cfg: DictConfig):
+def minimize_energy(cfg: DictConfig) -> Optional[Dict[str, Any]]:
     """Minimize the energy of a ligand in a protein pocket using OpenMM."""
     logger.setLevel(cfg.log_level)
 
@@ -1271,6 +1271,30 @@ def minimize_energy(cfg: DictConfig):
                 os.remove(complex_output_file_path)
         except OSError:
             pass
+
+        logger.info(f"Finalizing complex relaxation with relax_protein={cfg.relax_protein}")
+
+        # clean up temporary files
+        try:
+            os.remove(temp_protein_file_path)
+        except OSError:
+            pass
+        try:
+            os.remove(temp_ligand_file_path)
+        except OSError:
+            pass
+
+        temp_name = temp_protein_file_path.stem if cfg.name is None else cfg.name
+        try:
+            os.remove(temp_directory / f"{temp_name}_prepped_protein.pdb")
+        except OSError:
+            pass
+        try:
+            os.remove(temp_directory / f"{temp_name}_prepped_ligand.sdf")
+        except OSError:
+            pass
+
+        return None
 
     if prep_only:
         sys.exit(0)
