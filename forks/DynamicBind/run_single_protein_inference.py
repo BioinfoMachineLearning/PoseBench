@@ -210,7 +210,7 @@ if args.protein_path_in_ligandFile:
 
     ligands = pd.read_csv(ligandFile_with_protein_path)
     # handle multi-ligand inputs
-    multi_ligand_inputs = any(ligands['ligand'].str.contains('|'))
+    multi_ligand_inputs = any(ligands['ligand'].str.contains('.'))
     if multi_ligand_inputs:
         raise NotImplementedError("Multi-ligand inputs are not yet supported when using the `--protein_path_in_ligandFile` option.")
     assert 'ligand' in ligands.columns, "The ligand file should contain a column named 'ligand'."
@@ -240,10 +240,10 @@ elif args.ligand_is_sdf:
     w.close()
     ligands = pd.DataFrame({"ligand":[ligandFile], "protein_path":[cleaned_proteinFile]})
     # handle multi-ligand inputs
-    multi_ligand_inputs = any(ligands['ligand'].str.contains('|'))
+    multi_ligand_inputs = any(ligands['ligand'].str.contains('.'))
     if multi_ligand_inputs:
-        assert len(ligands) == 1, "The input ligand file should contain only one ligand entry. If you have multiple input ligands, separate them on a single line using `|`."
-        ligands['ligand'] = ligands['ligand'].str.split('|')
+        assert len(ligands) == 1, "The input ligand file should contain only one ligand entry. If you have multiple input ligands, separate them on a single line using `.`."
+        ligands['ligand'] = ligands['ligand'].str.split('.')
         ligands = ligands.explode('ligand')
     ligands.to_csv(ligandFile_with_protein_path, index=False)
 else:
@@ -256,10 +256,10 @@ else:
     ligands = pd.read_csv(args.ligandFile)
     assert 'ligand' in ligands.columns
     # handle multi-ligand inputs
-    multi_ligand_inputs = any(ligands['ligand'].str.contains('|'))
+    multi_ligand_inputs = any(ligands['ligand'].str.contains('.'))
     if multi_ligand_inputs:
-        assert len(ligands) == 1, "The input ligand file should contain only one ligand entry. If you have multiple input ligands, separate them on a single line using `|`."
-        ligands['ligand'] = ligands['ligand'].str.split('|')
+        assert len(ligands) == 1, "The input ligand file should contain only one ligand entry. If you have multiple input ligands, separate them on a single line using `.`."
+        ligands['ligand'] = ligands['ligand'].str.split('.')
         ligands = ligands.explode('ligand')
     ligands['protein_path'] = cleaned_proteinFile
     ligands.to_csv(ligandFile_with_protein_path, index=False)

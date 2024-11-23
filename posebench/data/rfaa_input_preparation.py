@@ -91,7 +91,7 @@ def write_scripts(
                     create_sdf_file_from_smiles(
                         smiles, os.path.join(output_dir, f"{pdb_id}_{i}.sdf")
                     )
-                    for i, smiles in enumerate(smiles_string.split("|"), start=1)
+                    for i, smiles in enumerate(smiles_string.split("."), start=1)
                 ]
             else:
                 if pocket_only_baseline:
@@ -115,7 +115,7 @@ def write_scripts(
                         create_sdf_file_from_smiles(
                             smiles, os.path.join(output_dir, f"{pdb_id}_{i}.sdf")
                         )
-                        for i, smiles in enumerate(smiles_string.split("|"), start=1)
+                        for i, smiles in enumerate(smiles_string.split("."), start=1)
                     ]
                 else:
                     ligand_filepaths = [

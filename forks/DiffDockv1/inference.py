@@ -131,10 +131,10 @@ else:
 # organize multi-ligand inputs by grouping complexes with multiple ligands together, predicting the ligand conformations separately, and then re-ranking and combining the ligands thereafter
 ligand_description_groups = [
     {
-        "ligand_descriptions": (ligand_description.split('|') if ligand_description is not None and '|' in ligand_description else [ligand_description]),
-        "complex_names": ([complex_name_list[i] + f'_{lig_idx}' for lig_idx in range(len(ligand_description.split('|')))] if ligand_description is not None and '|' in ligand_description else [complex_name_list[i]]),
-        "protein_paths": ([protein_path_list[i] for _ in range(len(ligand_description.split('|')))] if ligand_description is not None and '|' in ligand_description else [protein_path_list[i]]),
-        "protein_sequences": ([protein_sequence_list[i] for _ in range(len(ligand_description.split('|')))] if ligand_description is not None and '|' in ligand_description else [protein_sequence_list[i]]),
+        "ligand_descriptions": (ligand_description.split('.') if ligand_description is not None and '.' in ligand_description else [ligand_description]),
+        "complex_names": ([complex_name_list[i] + f'_{lig_idx}' for lig_idx in range(len(ligand_description.split('.')))] if ligand_description is not None and '.' in ligand_description else [complex_name_list[i]]),
+        "protein_paths": ([protein_path_list[i] for _ in range(len(ligand_description.split('.')))] if ligand_description is not None and '.' in ligand_description else [protein_path_list[i]]),
+        "protein_sequences": ([protein_sequence_list[i] for _ in range(len(ligand_description.split('.')))] if ligand_description is not None and '.' in ligand_description else [protein_sequence_list[i]]),
     } for i, ligand_description in enumerate(ligand_description_list)
 ]
 for ligand_description_group in ligand_description_groups:

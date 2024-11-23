@@ -643,8 +643,8 @@ def generate_method_prediction_script(
         create_diffdock_bash_script(
             protein_filepath,
             ligand_smiles.replace(
-                ":", "|"
-            ),  # NOTE: DiffDock supports multi-ligands using the separator "|"
+                ":", "."
+            ),  # NOTE: DiffDock supports multi-ligands using the separator "."
             input_id,
             output_filepath,
             cfg,
@@ -654,8 +654,8 @@ def generate_method_prediction_script(
         create_dynamicbind_bash_script(
             protein_filepath,
             ligand_smiles.replace(
-                ":", "|"
-            ),  # NOTE: DynamicBind supports multi-ligands using the separator "|"
+                ":", "."
+            ),  # NOTE: DynamicBind supports multi-ligands using the separator "."
             output_filepath,
             cfg,
             generate_hpc_scripts=generate_hpc_scripts,
@@ -664,8 +664,8 @@ def generate_method_prediction_script(
         create_neuralplexer_bash_script(
             protein_filepath,
             ligand_smiles.replace(
-                ":", "|"
-            ),  # NOTE: NeuralPLexer supports multi-ligands using the separator "|"
+                ":", "."
+            ),  # NOTE: NeuralPLexer supports multi-ligands using the separator "."
             input_id,
             output_filepath,
             cfg,

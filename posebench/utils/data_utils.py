@@ -82,7 +82,7 @@ def parse_inference_inputs_from_dir(
                 "SMILES",
                 "Relevant",
             ], "SMILES DataFrame must have columns ['ID', 'Name', 'SMILES', 'Relevant']."
-            mol_smiles = "|".join(smiles_df["SMILES"].tolist())
+            mol_smiles = ".".join(smiles_df["SMILES"].tolist())
             assert len(mol_smiles) > 0, f"SMILES string for {pdb_id} cannot be empty."
             smiles_and_pdb_id_list.append((mol_smiles, pdb_id))
 

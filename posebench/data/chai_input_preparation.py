@@ -104,7 +104,7 @@ def write_scripts(
                 for seq in extract_sequences_from_protein_structure_file(protein_filepath)
                 if len(seq) > 0
             ]
-            ligand_smiles_list = smiles_string.split("|")
+            ligand_smiles_list = smiles_string.split(".")
             fasta_filepath = os.path.join(output_dir, f"{pdb_id}.fasta")
             if os.path.exists(fasta_filepath):
                 logger.warning(

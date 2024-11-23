@@ -123,7 +123,7 @@ def main(cfg: DictConfig):
                     final_output_filepath = os.path.join(cfg.inference_outputs_dir, item, file)
                     os.makedirs(os.path.dirname(final_output_filepath), exist_ok=True)
                     if cfg.dataset in ["posebusters_benchmark", "astex_diverse", "dockgen"]:
-                        ligand_smiles = pdb_id_to_smiles[item].replace("|", ".")
+                        ligand_smiles = pdb_id_to_smiles[item]
                     else:
                         # NOTE: for the `casp15` dataset, standalone ligand SMILES are not available
                         ligand_smiles = None
