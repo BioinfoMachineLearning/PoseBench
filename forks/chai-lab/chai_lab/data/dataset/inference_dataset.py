@@ -1,3 +1,7 @@
+# Copyright (c) 2024 Chai Discovery, Inc.
+# This source code is licensed under the Chai Discovery Community License
+# Agreement (LICENSE.md) found in the root directory of this source tree.
+
 import logging
 import string
 from dataclasses import dataclass
@@ -9,6 +13,9 @@ import gemmi
 from chai_lab.data.dataset.structure.all_atom_residue_tokenizer import (
     AllAtomResidueTokenizer,
     _make_sym_ids,
+)
+from chai_lab.data.dataset.structure.all_atom_structure_context import (
+    AllAtomStructureContext,
 )
 from chai_lab.data.dataset.structure.chain import Chain
 from chai_lab.data.parsing.fasta import get_residue_name, read_fasta
@@ -32,6 +39,7 @@ logger = logging.getLogger(__name__)
 class Input:
     sequence: str
     entity_type: int
+    entity_name: str
 
 
 def get_lig_residues(
@@ -131,7 +139,7 @@ def raw_inputs_to_entitites_data(
                 release_datetime=datetime.now(),
                 pdb_id=identifier,
                 source_pdb_chain_id=_synth_subchain_id(i),
-                entity_name=f"entity_{i}_{entity_type.name}",
+                entity_name=input.entity_name,
                 entity_id=entity_id,
                 method="none",
                 entity_type=entity_type,
@@ -163,19 +171,22 @@ def load_chains_from_raw(
     )
 
     # Tokenize the entity data
-    structure_contexts = []
+    structure_contexts: list[AllAtomStructureContext | None] = []
     sym_ids = _make_sym_ids([x.entity_id for x in entities])
-    for idx, (entity_data, sym_id) in enumerate(zip(entities, sym_ids)):
+    for entity_data, sym_id in zip(entities, sym_ids):
+        # chain index should not count null contexts that result from failed tokenization
+        chain_index = sum(ctx is not None for ctx in structure_contexts) + 1
         try:
             tok = tokenizer._tokenize_entity(
                 entity_data,
-                chain_id=idx + 1,
+                chain_id=chain_index,
                 sym_id=sym_id,
             )
-            structure_contexts.append(tok)
         except Exception:
-            logger.exception(f"Failed to tokenize input {inputs[idx]}")
-
+            logger.exception(f"Failed to tokenize input {entity_data=}  {sym_id=}")
+            tok = None
+        structure_contexts.append(tok)
+    assert len(structure_contexts) == len(entities)
     # Join the untokenized entity data with the tokenized chain data, removing
     # chains we failed to tokenize
     chains = [
@@ -202,9 +213,14 @@ def read_inputs(fasta_file: str | Path, length_limit: int | None = None) -> list
     total_length: int = 0
     for desc, sequence in sequences:
         logger.info(f"[fasta] [{fasta_file}] {desc} {len(sequence)}")
-        # get the type of the sequence
-        entity_str = desc.split("|")[0].strip().lower()
-        match entity_str:
+        # examples of inputs
+        # 'protein|example-of-protein'
+        # 'protein|name=example-of-protein'
+        # 'protein|name=example-of-protein|use_esm=true' # example how it can be in the future
+
+        entity_str, *desc_parts = desc.split("|")
+
+        match entity_str.lower().strip():
             case "protein":
                 entity_type = EntityType.PROTEIN
             case "ligand":
@@ -216,6 +232,19 @@ def read_inputs(fasta_file: str | Path, length_limit: int | None = None) -> list
             case _:
                 raise ValueError(f"{entity_str} is not a valid entity type")
 
+        match desc_parts:
+            case []:
+                raise ValueError(f"label is not provided in {desc=}")
+            case [label_part]:
+                label_part = label_part.strip()
+                if "=" in label_part:
+                    field_name, entity_name = label_part.split("=")
+                    assert field_name == "name"
+                else:
+                    entity_name = label_part
+            case _:
+                raise ValueError(f"Unsupported inputs: {desc=}")
+
         possible_types = identify_potential_entity_types(sequence)
         if len(possible_types) == 0:
             logger.error(f"Provided {sequence=} is invalid")
@@ -225,13 +254,12 @@ def read_inputs(fasta_file: str | Path, length_limit: int | None = None) -> list
                 f"Provided {sequence=} is likely {types_fmt}, not {entity_type.name}"
             )
 
-        retval.append(Input(sequence, entity_type.value))
+        retval.append(Input(sequence, entity_type.value, entity_name))
         total_length += len(sequence)
 
     if length_limit is not None and total_length > length_limit:
-        logger.warning(
+        raise ValueError(
             f"[fasta] [{fasta_file}] too many chars ({total_length} > {length_limit}); skipping"
         )
-        return []
 
     return retval
