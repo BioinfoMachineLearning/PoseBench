@@ -40,7 +40,7 @@ def main(cfg: DictConfig):
         os.listdir(cfg.input_mmcif_dir),
         desc=f"Converting mmCIF to PDB for {cfg.dataset}",
     ):
-        new_id = os.path.splitext(file)[0].replace("_model", "")
+        new_id = os.path.splitext(file)[0].replace("_model", "").replace("_chain", "")
         if cfg.lowercase_id:
             # Support the DockGen dataset's hybrid lowercase-uppercase pdb id-CCD ID format
             new_id_parts = new_id.split("_")
@@ -51,6 +51,8 @@ def main(cfg: DictConfig):
                 + "_"
                 + new_id_parts[-1]
             )
+        elif cfg.dataset == "casp15":
+            new_id = new_id.upper().replace("V", "v")
         else:
             new_id = new_id.upper()
         mmcif_filepath = os.path.join(cfg.input_mmcif_dir, file)

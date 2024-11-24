@@ -173,6 +173,10 @@ def align_complex_to_protein_only(
     :param aligned_filename_suffix: suffix to append to the aligned files
     :param atom_df_name: Name of the atom dataframe in the PDB file
     """
+    raise NotImplementedError(
+        "align_complex_to_protein_only is not implemented with PyMOL yet. Use align_to_binding_site instead."
+    )
+
     from biopandas.pdb import PandasPdb
     from rdkit import Chem
     from rdkit.Geometry import Point3D

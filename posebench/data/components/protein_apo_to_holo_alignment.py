@@ -326,6 +326,10 @@ def get_alignment_rotation(
         dataset protein (Optional[np.ndarray]), and centroid of Ca atoms for a prediction
         (Optional[np.ndarray]).
     """
+    raise NotImplementedError(
+        "This function is not implemented in the current version of the codebase."
+    )
+
     try:
         dataset_rec = parse_pdb_from_path(dataset_protein_path)
     except Exception as e:
@@ -448,11 +452,12 @@ def align_apo_structure_to_holo_structure(
     # Load structures
     cmd.load(reference_protein_filename, "ref_protein")
     cmd.load(predicted_protein_filename, "pred_protein")
-    cmd.load(reference_ligand_filename, "ref_ligand")
 
     if is_casp_target:
         # Select the ligand chain(s) in the reference protein PDB file
         cmd.select("ref_ligand", "ref_protein and not polymer")
+    else:
+        cmd.load(reference_ligand_filename, "ref_ligand")
 
     # Select heavy atoms in the reference protein
     cmd.select("ref_protein_heavy", "ref_protein and not elem H")
@@ -480,7 +485,7 @@ def align_apo_structure_to_holo_structure(
 
     # reference_target = os.path.splitext(os.path.basename(reference_protein_filename))[0].split(
     #     "_protein"
-    # )[0]
+    # )[0].split("_lig")[0]
     # prediction_target = os.path.splitext(os.path.basename(predicted_protein_filename))[0]
     # assert (
     #     reference_target == prediction_target
