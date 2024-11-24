@@ -1204,7 +1204,7 @@ def parse_inference_inputs_from_dir(
         # parse CASP inputs uniquely
         smiles_filepaths = list(glob.glob(os.path.join(input_data_dir, "*.smiles.txt")))
         for smiles_filepath in smiles_filepaths:
-            pdb_id = os.path.basename(smiles_filepath).split(".")[0]
+            pdb_id = os.path.splitext(os.path.basename(smiles_filepath))[0]
             smiles_df = pd.read_csv(smiles_filepath, delim_whitespace=True)
             assert smiles_df.columns.tolist() == [
                 "ID",
