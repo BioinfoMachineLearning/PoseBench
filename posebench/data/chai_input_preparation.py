@@ -115,7 +115,9 @@ def write_scripts(
             for chain_index, sequence in enumerate(protein_sequence_list, start=1):
                 with open(fasta_filepath, "a") as f:
                     f.write(f">protein|{pdb_id}-chain-{chain_index}\n{sequence}\n")
-            for chain_index, sequence in enumerate(ligand_smiles_list, start=1):
+            for chain_index, sequence in enumerate(
+                ligand_smiles_list, start=len(protein_sequence_list) + 1
+            ):
                 with open(fasta_filepath, "a") as f:
                     f.write(f">ligand|{pdb_id}-chain-{chain_index}\n{sequence}\n")
 
