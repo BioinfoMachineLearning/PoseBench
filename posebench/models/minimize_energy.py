@@ -1274,25 +1274,26 @@ def minimize_energy(cfg: DictConfig) -> Optional[Dict[str, Any]]:
 
         logger.info(f"Finalizing complex relaxation with relax_protein={cfg.relax_protein}")
 
-        # clean up temporary files
-        try:
-            os.remove(temp_protein_file_path)
-        except OSError:
-            pass
-        try:
-            os.remove(temp_ligand_file_path)
-        except OSError:
-            pass
+        if cfg.relax_protein:
+            # clean up temporary files
+            try:
+                os.remove(temp_protein_file_path)
+            except OSError:
+                pass
+            try:
+                os.remove(temp_ligand_file_path)
+            except OSError:
+                pass
 
-        temp_name = temp_protein_file_path.stem if cfg.name is None else cfg.name
-        try:
-            os.remove(temp_directory / f"{temp_name}_prepped_protein.pdb")
-        except OSError:
-            pass
-        try:
-            os.remove(temp_directory / f"{temp_name}_prepped_ligand.sdf")
-        except OSError:
-            pass
+            temp_name = temp_protein_file_path.stem if cfg.name is None else cfg.name
+            try:
+                os.remove(temp_directory / f"{temp_name}_prepped_protein.pdb")
+            except OSError:
+                pass
+            try:
+                os.remove(temp_directory / f"{temp_name}_prepped_ligand.sdf")
+            except OSError:
+                pass
 
         return None
 
