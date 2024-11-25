@@ -68,18 +68,6 @@ def main(cfg: DictConfig):
         with open(cfg.dockgen_test_ids_filepath) as f:
             pdb_ids = {line.replace(" ", "-") for line in f.read().splitlines()}
 
-    # prepare to parse all biomolecule sequences if requested
-    smiles_and_pdb_id_list = None
-
-    if cfg.include_all_biomolecules:
-        with open_dict(cfg):
-            cfg.out_file = cfg.out_file.replace(".fasta", "_all.fasta")
-
-        smiles_and_pdb_id_list = parse_inference_inputs_from_dir(
-            cfg.data_dir,
-            pdb_ids=pdb_ids,
-        )
-
     data_dir = [
         name
         for name in os.listdir(cfg.data_dir)
@@ -91,6 +79,18 @@ def main(cfg: DictConfig):
             cfg.data_dir = os.path.join(cfg.data_dir, "targets")
 
         data_dir = [name for name in os.listdir(cfg.data_dir) if name.endswith("_lig.pdb")]
+
+    # prepare to parse all biomolecule sequences if requested
+    smiles_and_pdb_id_list = None
+
+    if cfg.include_all_biomolecules:
+        with open_dict(cfg):
+            cfg.out_file = cfg.out_file.replace(".fasta", "_all.fasta")
+
+        smiles_and_pdb_id_list = parse_inference_inputs_from_dir(
+            cfg.data_dir,
+            pdb_ids=pdb_ids,
+        )
 
     chain_suffix = ""
     if cfg.include_all_biomolecules:
