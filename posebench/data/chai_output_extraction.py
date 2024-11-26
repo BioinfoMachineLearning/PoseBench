@@ -75,14 +75,17 @@ def main(cfg: DictConfig):
             cfg.output_dir, cfg.complex_id, os.path.basename(cfg.complex_filepath)
         )
         os.makedirs(os.path.dirname(final_output_filepath), exist_ok=True)
-        extract_protein_and_ligands_with_prody(
-            intermediate_output_filepath,
-            final_output_filepath.replace(".cif", "_protein.pdb"),
-            final_output_filepath.replace(".cif", "_ligand.sdf"),
-            sanitize=False,
-            add_element_types=True,
-            ligand_smiles=cfg.ligand_smiles,
-        )
+        try:
+            extract_protein_and_ligands_with_prody(
+                intermediate_output_filepath,
+                final_output_filepath.replace(".cif", "_protein.pdb"),
+                final_output_filepath.replace(".cif", "_ligand.sdf"),
+                sanitize=False,
+                add_element_types=True,
+                ligand_smiles=cfg.ligand_smiles,
+            )
+        except Exception as e:
+            logger.error(f"Failed to extract protein and ligands for {cfg.complex_id} due to: {e}")
     else:
         # process all complexes in a dataset
         smiles_and_pdb_id_list = parse_inference_inputs_from_dir(
@@ -132,19 +135,25 @@ def main(cfg: DictConfig):
                     rank = all_ranks[intermediate_output_filepath]
                     model_idx = os.path.splitext(file)[0].split("_")[-1]
 
-                    extract_protein_and_ligands_with_prody(
-                        # NOTE: to simplify this implementation, we repurpose model indices as sample ranks past this point in the codebase
-                        intermediate_output_filepath,
-                        final_output_filepath.replace(
-                            f"model_idx_{model_idx}", f"model_idx_{rank}"
-                        ).replace(".cif", "_protein.pdb"),
-                        final_output_filepath.replace(
-                            f"model_idx_{model_idx}", f"model_idx_{rank}"
-                        ).replace(".cif", "_ligand.sdf"),
-                        sanitize=False,
-                        add_element_types=True,
-                        ligand_smiles=ligand_smiles,
-                    )
+                    try:
+                        extract_protein_and_ligands_with_prody(
+                            # NOTE: to simplify this implementation, we repurpose model
+                            # indices as sample ranks past this point in the codebase
+                            intermediate_output_filepath,
+                            final_output_filepath.replace(
+                                f"model_idx_{model_idx}", f"model_idx_{rank}"
+                            ).replace(".cif", "_protein.pdb"),
+                            final_output_filepath.replace(
+                                f"model_idx_{model_idx}", f"model_idx_{rank}"
+                            ).replace(".cif", "_ligand.sdf"),
+                            sanitize=False,
+                            add_element_types=True,
+                            ligand_smiles=ligand_smiles,
+                        )
+                    except Exception as e:
+                        logger.error(
+                            f"Failed to extract protein and ligands for {item} due to: {e}"
+                        )
 
     logger.info(
         f"Finished extracting {cfg.dataset} protein and ligands from all prediction outputs."
