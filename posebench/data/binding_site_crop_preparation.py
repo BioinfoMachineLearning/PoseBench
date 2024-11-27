@@ -44,7 +44,7 @@ class BindingSiteSelect(Select):
 def get_binding_site_residue_indices(
     protein_filepath: str,
     ligand_filepath: str,
-    protein_ligand_distance_threshold: float = 4.0,
+    protein_ligand_distance_threshold: float = 10.0,
     num_buffer_residues: int = 7,
 ) -> List[int]:
     """Get the zero-based residue indices of the protein binding site based on native protein-
@@ -168,7 +168,7 @@ def save_cropped_protein_binding_site(
     smiles_and_pdb_id_list: List[Tuple[Any, str]],
     input_data_dir: str,
     input_protein_structure_dir: str,
-    protein_ligand_distance_threshold: float = 4.0,
+    protein_ligand_distance_threshold: float = 10.0,
     num_buffer_residues: int = 7,
 ):
     """Save the cropped protein binding site to a separate file for each protein-ligand complex.

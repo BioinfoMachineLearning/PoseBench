@@ -12,7 +12,7 @@ cpu: 0 # the number of CPU workers to use with AutoDock Vina for parallel proces
 seed: null # the random seed to use with AutoDock Vina
 exhaustiveness: 32 # the exhaustiveness to use with AutoDock Vina
 ligand_ligand_distance_threshold: 25.0 # the distance threshold (in Angstrom) to use for finding shared binding sites amongst ligands
-protein_ligand_distance_threshold: 4.0 # the heavy-atom distance threshold (in Angstrom) to use for finding protein binding sites amongst grouped ligands
+protein_ligand_distance_threshold: 10.0 # the heavy-atom distance threshold (in Angstrom) to use for finding protein binding sites amongst grouped ligands
 binding_site_size_x: 25.0 # the x-axis size of the binding site box to use with AutoDock Vina
 binding_site_size_y: 25.0 # the y-axis size of the binding site box to use with AutoDock Vina
 binding_site_size_z: 25.0 # the z-axis size of the binding site box to use with AutoDock Vina
