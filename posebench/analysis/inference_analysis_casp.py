@@ -95,7 +95,6 @@ PUBLIC_CASP15_MULTI_LIGAND_TARGETS = [
 NUM_SCOREABLE_CASP15_TARGETS = len(All_CASP15_SINGLE_LIGAND_TARGETS) + len(
     All_CASP15_MULTI_LIGAND_TARGETS
 )
-TOLERANT_METHODS = ["diffdock", "dynamicbind", "vina", "tulip"]
 
 
 def create_casp_input_dirs(cfg: DictConfig, config: str) -> Tuple[str, List[str]]:
