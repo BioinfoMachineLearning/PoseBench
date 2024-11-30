@@ -250,7 +250,7 @@ def main(cfg: DictConfig):
                 "DEBUG",
             ]
             targets_to_score = cfg.targets
-            if cfg.method in TOLERANT_METHODS:
+            if cfg.allow_missing_predictions:
                 # NOTE: Since e.g., DiffDock-L is notably unstable for the CASP15 multi-ligand
                 # targets, we only score the targets for which such a method was able to generate
                 # predictions after five retries of its respective inference script.

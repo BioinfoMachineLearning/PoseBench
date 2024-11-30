@@ -15,3 +15,4 @@ repeat_index: 1 # the run index to use for scoring predictions
 no_ilcl: false # whether to score a model trained without an inter-ligand clash loss (ILCL) - NOTE: only applicable to the `neuralplexer` method
 relax_protein: false # whether to relax the protein - NOTE: currently periodically yields unpredictable protein-ligand separation
 v1_baseline: false # whether to score the v1 baseline predictions
+allow_missing_predictions: true # whether to allow missing predictions for a target
