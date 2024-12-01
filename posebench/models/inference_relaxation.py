@@ -117,8 +117,12 @@ def relax_inference_results(
             ligand_filepaths = [
                 filepath for filepath in ligand_filepaths if "relaxed" not in filepath.stem
             ]
-    protein_filepaths = sorted(protein_filepaths)
-    ligand_filepaths = sorted(ligand_filepaths)
+    protein_filepaths = sorted(
+        [fp for fp in protein_filepaths if not any(s in fp.stem for s in ("relaxed", "aligned"))]
+    )
+    ligand_filepaths = sorted(
+        [fp for fp in ligand_filepaths if not any(s in fp.stem for s in ("relaxed", "aligned"))]
+    )
     if len(protein_filepaths) < len(ligand_filepaths):
         if cfg.method == "dynamicbind":
             # NOTE: sometimes, DynamicBind mysteriously omits the protein output for a given complex
