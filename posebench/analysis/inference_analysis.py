@@ -111,56 +111,65 @@ def df_split_mol_frags(
     """
     new_rows = []
     for row in mol_table.itertuples():
-        mols_true = Chem.SDMolSupplier(str(row.mol_true), removeHs=False)
-        mols_pred = Chem.SDMolSupplier(str(row.mol_pred), removeHs=False)
-        assert (
-            len(mols_true) == 1 and len(mols_pred) == 1
-        ), "Only one molecule per SDF file is supported."
+        try:
+            mols_true = Chem.SDMolSupplier(str(row.mol_true), removeHs=False)
+            mols_pred = Chem.SDMolSupplier(str(row.mol_pred), removeHs=False)
+            assert (
+                len(mols_true) == 1 and len(mols_pred) == 1
+            ), "Only one molecule per SDF file is supported."
 
-        mol_true, mol_pred = mols_true[0], mols_pred[0]
-        mol_true_frags = Chem.GetMolFrags(mol_true, asMols=True)
-        mol_pred_frags = Chem.GetMolFrags(mol_pred, asMols=True)
+            mol_true, mol_pred = mols_true[0], mols_pred[0]
+            mol_true_frags = Chem.GetMolFrags(mol_true, asMols=True)
+            mol_pred_frags = Chem.GetMolFrags(mol_pred, asMols=True)
 
-        if select_most_similar_pred_frag:
-            mol_pred_frags = [
-                find_most_similar_frag(mol_true_frag, mol_pred_frags)[0]
-                for mol_true_frag in mol_true_frags
-            ]
-            if not any(mol_pred_frags):
-                logger.warning(
-                    f"None of the predicted fragments are similar enough to the true fragments for row {row.Index}. Skipping this row."
-                )
-                continue
-
-        assert len(mol_true_frags) == len(
-            mol_pred_frags
-        ), "The number of fragments should be the same."
-
-        for frag_index, (mol_true_frag, mol_pred_frag) in enumerate(
-            zip(mol_true_frags, mol_pred_frags)
-        ):
-            new_row = row._asdict()
-            new_row["mol_cond"] = row.mol_cond
-            with tempfile.NamedTemporaryFile(
-                suffix=".sdf", delete=False
-            ) as temp_true, tempfile.NamedTemporaryFile(suffix=".sdf", delete=False) as temp_pred:
-                assert (
-                    mol_true_frag.GetNumAtoms() == mol_pred_frag.GetNumAtoms()
-                ), "The number of atoms in each fragment should be the same."
-
-                Chem.MolToMolFile(mol_true_frag, temp_true.name)
-                Chem.MolToMolFile(mol_pred_frag, temp_pred.name)
-                true_smiles = Chem.MolToSmiles(Chem.MolFromMolFile(temp_true.name))
-                pred_smiles = Chem.MolToSmiles(Chem.MolFromMolFile(temp_pred.name))
-
-                if true_smiles != pred_smiles:
+            if select_most_similar_pred_frag:
+                mol_pred_frags = [
+                    find_most_similar_frag(mol_true_frag, mol_pred_frags)[0]
+                    for mol_true_frag in mol_true_frags
+                ]
+                if not any(mol_pred_frags):
                     logger.warning(
-                        f"The SMILES strings of the index {frag_index} fragments ({true_smiles} vs. {pred_smiles}) differ for row {row.Index} after post-processing."
+                        f"None of the predicted fragments are similar enough to the true fragments for row {row.Index}. Skipping this row."
                     )
+                    continue
 
-                new_row["mol_true"] = temp_true.name
-                new_row["mol_pred"] = temp_pred.name
-            new_rows.append(new_row)
+            assert len(mol_true_frags) == len(
+                mol_pred_frags
+            ), "The number of fragments should be the same."
+
+            for frag_index, (mol_true_frag, mol_pred_frag) in enumerate(
+                zip(mol_true_frags, mol_pred_frags)
+            ):
+                new_row = row._asdict()
+                new_row["mol_cond"] = row.mol_cond
+                with tempfile.NamedTemporaryFile(
+                    suffix=".sdf", delete=False
+                ) as temp_true, tempfile.NamedTemporaryFile(
+                    suffix=".sdf", delete=False
+                ) as temp_pred:
+                    assert (
+                        mol_true_frag.GetNumAtoms() == mol_pred_frag.GetNumAtoms()
+                    ), "The number of atoms in each fragment should be the same."
+
+                    Chem.MolToMolFile(mol_true_frag, temp_true.name)
+                    Chem.MolToMolFile(mol_pred_frag, temp_pred.name)
+                    true_smiles = Chem.MolToSmiles(Chem.MolFromMolFile(temp_true.name))
+                    pred_smiles = Chem.MolToSmiles(Chem.MolFromMolFile(temp_pred.name))
+
+                    if true_smiles != pred_smiles:
+                        logger.warning(
+                            f"The SMILES strings of the index {frag_index} fragments ({true_smiles} vs. {pred_smiles}) differ for row {row.Index} after post-processing."
+                        )
+
+                    new_row["mol_true"] = temp_true.name
+                    new_row["mol_pred"] = temp_pred.name
+                new_rows.append(new_row)
+
+        except Exception as e:
+            logger.warning(
+                f"An error occurred while splitting fragments for row {row.Index}: {e}. Skipping this row."
+            )
+
     return pd.DataFrame(new_rows)
 
 
