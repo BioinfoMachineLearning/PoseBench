@@ -1401,11 +1401,16 @@ def rank_ensemble_predictions(
                 method in METHODS_PREDICTING_HOLO_PROTEIN_AB_INITIO
                 and apo_reference_protein_filepath is not None
             ):
-                align_complex_to_protein_only(
-                    protein_filepath, ligand_filepath, apo_reference_protein_filepath
-                )
-                protein_filepath = protein_filepath.replace(".pdb", "_aligned.pdb")
-                ligand_filepath = ligand_filepath.replace(".sdf", "_aligned.sdf")
+                try:
+                    align_complex_to_protein_only(
+                        protein_filepath, ligand_filepath, apo_reference_protein_filepath
+                    )
+                    protein_filepath = protein_filepath.replace(".pdb", "_aligned.pdb")
+                    ligand_filepath = ligand_filepath.replace(".sdf", "_aligned.sdf")
+                except Exception as e:
+                    logger.warning(
+                        f"Failed to align protein-ligand complex {protein_filepath} and {ligand_filepath} to apo protein structure {apo_reference_protein_filepath}. Skipping alignment due to: {e}"
+                    )
             try:
                 ligand = read_molecule(ligand_filepath)
             except Exception as e:
