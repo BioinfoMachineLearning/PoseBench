@@ -197,7 +197,7 @@ def extract_binding_sites(
     return binding_site_mapping
 
 
-@timeout_decorator.timeout(VINA_TIMEOUT_IN_SECONDS, use_signals=True)
+@timeout_decorator.timeout(VINA_TIMEOUT_IN_SECONDS, use_signals=False)
 def run_vina_inference(
     protein_filepath: str,
     ligand_binding_site_mapping: BINDING_SITES_DICT,
