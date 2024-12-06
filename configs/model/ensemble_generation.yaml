@@ -85,7 +85,7 @@ neuralplexer_template_id: 0 # the template ID to use for inference
 neuralplexer_model_checkpoint: ${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/neuralplexermodels_downstream_datasets_predictions/models/complex_structure_prediction.ckpt # the model checkpoint to use for inference
 neuralplexer_out_path: ${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/inference/neuralplexer_ensemble_outputs # the output directory to which to write the predictions
 neuralplexer_n_samples: ${max_method_predictions} # the number of conformations to generate per complex
-neuralplexer_chunk_size: 10 # the number of conformations to generate in parallel per complex
+neuralplexer_chunk_size: 5 # the number of conformations to generate in parallel per complex
 neuralplexer_num_steps: 40 # the number of steps to take in the sampling process
 neuralplexer_sampler: langevin_simulated_annealing # the sampler to use - NOTE: must be one of (`DDIM`, `VPSDE`, `simulated_annealing_simple`, `langevin_simulated_annealing`)
 neuralplexer_start_time: "1.0" # the start time at which to start sampling - NOTE: must be a string representation of a float

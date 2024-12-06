@@ -447,7 +447,7 @@ def build_inference_script(
                 else ""
             )
             neuralplexer_casp15_inference_suffix = (
-                " chunk_size=4" if method == "neuralplexer" and dataset == "casp15" else ""
+                " chunk_size=5" if method == "neuralplexer" and dataset == "casp15" else ""
             )
             ensemble_casp15_inference_suffix = (
                 " combine_casp_output_files=true"
