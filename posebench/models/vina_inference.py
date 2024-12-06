@@ -37,7 +37,7 @@ MEEKO_ATOM_TYPES_TO_ADD = (
     {"smarts": "[#48]", "atype": "Cd"},
 )
 
-VINA_TIMEOUT_IN_SECONDS = 600
+VINA_TIMEOUT_IN_SECONDS = 3600
 
 
 def scatter_mean(indices: np.ndarray, values: np.ndarray, shape: Tuple[int, ...]) -> np.ndarray:
