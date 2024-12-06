@@ -357,7 +357,12 @@ def run_vina_inference(
             command.extend(["--seed", str(cfg.seed)])
         if cfg.exhaustiveness is not None:
             command.extend(["--exhaustiveness", str(cfg.exhaustiveness)])
-        run_command_with_timeout(" ".join(command), timeout=VINA_TIMEOUT_IN_SECONDS)
+        return_code = run_command_with_timeout(" ".join(command), timeout=VINA_TIMEOUT_IN_SECONDS)
+
+        if return_code != 0:
+            raise Exception(
+                f"AutoDock Vina failed for {ligand_filepaths} with return code: {return_code}."
+            )
 
         assert os.path.exists(output_filepath), f"Vina output file not found: {output_filepath}"
         output_filepaths.append(output_filepath)
