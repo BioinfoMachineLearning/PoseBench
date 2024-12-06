@@ -13,7 +13,6 @@ import hydra
 import numpy as np
 import pandas as pd
 import rootutils
-import timeout_decorator
 from beartype.typing import Dict, List, Optional, Tuple
 from biopandas.pdb import PandasPdb
 from meeko import MoleculePreparation, PDBQTMolecule, PDBQTWriterLegacy, RDKitMolCreate
@@ -26,6 +25,7 @@ rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
 from posebench import register_custom_omegaconf_resolvers
 from posebench.utils.data_utils import combine_molecules
+from posebench.utils.utils import run_command_with_timeout
 
 logging.basicConfig(format="[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -197,7 +197,6 @@ def extract_binding_sites(
     return binding_site_mapping
 
 
-@timeout_decorator.timeout(VINA_TIMEOUT_IN_SECONDS, use_signals=False)
 def run_vina_inference(
     protein_filepath: str,
     ligand_binding_site_mapping: BINDING_SITES_DICT,
@@ -358,7 +357,7 @@ def run_vina_inference(
             command.extend(["--seed", str(cfg.seed)])
         if cfg.exhaustiveness is not None:
             command.extend(["--exhaustiveness", str(cfg.exhaustiveness)])
-        os.system(" ".join(command))  # nosec
+        run_command_with_timeout(" ".join(command), timeout=VINA_TIMEOUT_IN_SECONDS)
 
         assert os.path.exists(output_filepath), f"Vina output file not found: {output_filepath}"
         output_filepaths.append(output_filepath)
