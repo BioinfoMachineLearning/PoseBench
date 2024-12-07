@@ -112,7 +112,7 @@ flowdock_input_receptor: null # NOTE: must be either a protein sequence string (
 flowdock_input_ligand: null # NOTE: must be either a ligand SMILES string (with chains/fragments separated by `|`) or a path to a ligand SDF file (from which ligand SMILES will be parsed)
 flowdock_input_template: null # path to a protein PDB file to use as a starting protein template for sampling (with an ESMFold prior model)
 flowdock_model_checkpoint: ${oc.env:PROJECT_ROOT}/forks/FlowDock/checkpoints/esmfold_prior_paper_weights.ckpt # the model checkpoint to use for inference
-flowdock_out_path: ${oc.env:PROJECT_ROOT}/forks/FlowDock/inference/flowdock_${dataset}_outputs_${repeat_index} # the output directory to which to write the predictions
+flowdock_out_path: ${oc.env:PROJECT_ROOT}/forks/FlowDock/inference/flowdock_ensemble_outputs # the output directory to which to write the predictions
 flowdock_n_samples: 5 # the number of conformations to generate per complex
 flowdock_chunk_size: 5 # the number of conformations to generate in parallel per complex
 flowdock_num_steps: 40 # the number of steps to take in the sampling process
