@@ -101,13 +101,13 @@ def main(cfg: DictConfig):
             f"FlowDock inference for complex with protein `{cfg.input_receptor}` and ligand `{cfg.input_ligand}` complete."
         )
     else:
-        auxiliary_estimation_combined_csv_filepath = os.path.join(
-            cfg.auxiliary_estimation_input_dir, "auxiliary_estimation.csv"
-        )
         auxiliary_estimation_only = (
             cfg.auxiliary_estimation_only and cfg.auxiliary_estimation_input_dir is not None
         )
         if auxiliary_estimation_only:
+            auxiliary_estimation_combined_csv_filepath = os.path.join(
+                cfg.auxiliary_estimation_input_dir, "auxiliary_estimation.csv"
+            )
             if cfg.skip_existing and os.path.exists(auxiliary_estimation_combined_csv_filepath):
                 logger.info(
                     f"Skipping completed auxiliary estimation inference for input directory `{cfg.auxiliary_estimation_input_dir}`."
