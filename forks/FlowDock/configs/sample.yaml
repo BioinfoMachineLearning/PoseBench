@@ -35,6 +35,7 @@ sampler_eta: 1.0 # the variance diminishing factor for the `VDODE` sampler - NOT
 start_time: "1.0" # time at which to start sampling
 max_chain_encoding_k: -1 # maximum number of chains to encode in the chain encoding
 exact_prior: false # whether to use the "ground-truth" binding site for sampling, if available
+prior_type: esmfold # the type of prior to use for sampling - NOTE: must be one of (`gaussian`, `harmonic`, `esmfold`)
 discard_ligand: false # whether to discard a given input ligand during sampling
 discard_sdf_coords: true # whether to discard the input ligand's 3D structure during sampling, if available
 detect_covalent: false # whether to detect covalent bonds between the input receptor and ligand

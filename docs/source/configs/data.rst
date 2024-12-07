@@ -63,6 +63,12 @@ NeuralPLexer input preparation
     :language: yaml
     :caption: :file:`data/neuralplexer_input_preparation.yaml`
 
+FlowDock input preparation
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/data/flowdock_input_preparation.yaml
+    :language: yaml
+    :caption: :file:`data/flowdock_input_preparation.yaml`
+
 RoseTTAFold-All-Atom input preparation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 .. literalinclude:: ../../../configs/data/rfaa_input_preparation.yaml

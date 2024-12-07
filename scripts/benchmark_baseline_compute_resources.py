@@ -31,6 +31,7 @@ def assemble_baseline_command(cfg: DictConfig) -> List[str]:
         "fabind",
         "dynamicbind",
         "neuralplexer",
+        "flowdock",
         "rfaa",
         "chai-lab",
         "vina",

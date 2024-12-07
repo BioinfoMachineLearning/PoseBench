@@ -33,6 +33,12 @@ NeuralPLexer inference
     :language: yaml
     :caption: :file:`model/neuralplexer_inference.yaml`
 
+FlowDock inference
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/model/flowdock_inference.yaml
+    :language: yaml
+    :caption: :file:`model/flowdock_inference.yaml`
+
 RoseTTAFold-All-Atom inference
 ^^^^^^^^^^^^^^^^^^^^^^^^
 .. literalinclude:: ../../../configs/model/rfaa_inference.yaml

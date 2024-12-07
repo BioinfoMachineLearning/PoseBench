@@ -289,7 +289,7 @@ def relax_single_filepair(
             )
             os.makedirs(output_filepath.parent, exist_ok=True)
             os.makedirs(protein_output_filepath.parent, exist_ok=True)
-        elif cfg.method == "neuralplexer":
+        elif cfg.method in ["neuralplexer", "flowdock"]:
             output_filepath = Path(
                 output_file_dir,
                 ligand_filepath.parent.stem,

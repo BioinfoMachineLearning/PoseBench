@@ -297,6 +297,7 @@ def main(cfg: DictConfig):
         output_dir = Path(cfg.output_dir + config)
         if not output_dir.exists() or cfg.method in [
             "neuralplexer",
+            "flowdock",
             "rfaa",
             "chai-lab",
         ]:
@@ -315,7 +316,7 @@ def main(cfg: DictConfig):
                     )
                 )
             )
-        elif cfg.method == "neuralplexer":
+        elif cfg.method in ["neuralplexer", "flowdock"]:
             output_ligand_files = list(
                 output_dir.rglob(f"lig_rank{cfg.rank_to_align}_*{config}.sdf")
             )
@@ -367,7 +368,7 @@ def main(cfg: DictConfig):
                     )
                 )
             )
-        elif cfg.method == "neuralplexer":
+        elif cfg.method in ["neuralplexer", "flowdock"]:
             output_protein_files = sorted(
                 [
                     file
@@ -393,7 +394,7 @@ def main(cfg: DictConfig):
             raise ValueError(f"Invalid method: {cfg.method}")
 
         if len(output_ligand_files) < len(output_protein_files):
-            if cfg.method == "neuralplexer":
+            if cfg.method in ["neuralplexer", "flowdock"]:
                 output_protein_files = sorted(
                     [
                         file

@@ -44,7 +44,7 @@ from posebench.utils.data_utils import (
 )
 from posebench.utils.model_utils import calculate_rmsd
 
-METHODS_PREDICTING_HOLO_PROTEIN_AB_INITIO = {"neuralplexer", "rfaa"}
+METHODS_PREDICTING_HOLO_PROTEIN_AB_INITIO = {"neuralplexer", "flowdock", "rfaa", "chai-lab"}
 
 ENSEMBLE_PREDICTIONS = Dict[str, List[Tuple[str, str]]]
 RANKED_ENSEMBLE_PREDICTIONS = Dict[int, Tuple[str, str, str, float]]
@@ -333,6 +333,83 @@ echo "Finished calling neuralplexer_inference.py!"
     logger.info(f"Bash script '{output_filepath}' created successfully.")
 
 
+def create_flowdock_bash_script(
+    protein_filepath: str,
+    ligand_smiles: str,
+    input_id: str,
+    output_filepath: str,
+    cfg: DictConfig,
+    generate_hpc_scripts: bool = True,
+):
+    """Create a bash script to run FlowDock protein-ligand complex prediction.
+
+    :param protein_filepath: Path to the input protein structure PDB file.
+    :param ligand_smiles: SMILES string of the input ligand.
+    :param input_id: Input ID.
+    :param output_filepath: Path to the output bash script file.
+    :param cfg: Configuration dictionary for runtime arguments.
+    :param generate_hpc_scripts: Whether to generate HPC scripts for FlowDock.
+    """
+    bash_script_content = f"""#!/bin/bash
+{insert_hpc_headers(method='flowdock') if generate_hpc_scripts else 'source /home/$USER/mambaforge/etc/profile.d/conda.sh'}
+conda activate {"$project_dir/PoseBench/" if generate_hpc_scripts else 'PoseBench'}
+
+# command to run flowdock_input_preparation.py
+python posebench/data/flowdock_input_preparation.py \\
+    output_csv_path={cfg.flowdock_input_csv_path} \\
+    input_receptor='{protein_filepath}' \\
+    input_ligand='"{ligand_smiles}"' \\
+    input_template='{protein_filepath}' \\
+    input_id='{input_id}'
+
+# command to run flowdock_inference.py
+echo "Calling flowdock_inference.py!"
+{cfg.flowdock_python_exec_path} posebench/models/flowdock_inference.py \\
+    python_exec_path={cfg.flowdock_python_exec_path} \\
+    flowdock_exec_dir={cfg.flowdock_exec_dir} \\
+    input_data_dir={cfg.flowdock_input_data_dir} \\
+    input_receptor_structure_dir={cfg.flowdock_input_receptor_structure_dir} \\
+    input_csv_path={cfg.flowdock_input_csv_path} \\
+    skip_existing={cfg.flowdock_skip_existing} \\
+    sampling_task={cfg.flowdock_sampling_task} \\
+    sample_id={cfg.flowdock_sample_id} \\
+    input_receptor={cfg.flowdock_input_receptor} \\
+    input_ligand={cfg.flowdock_input_ligand} \\
+    input_template={cfg.flowdock_input_template} \\
+    model_checkpoint={cfg.flowdock_model_checkpoint} \\
+    out_path={cfg.flowdock_out_path} \\
+    n_samples={min(cfg.flowdock_n_samples, cfg.max_method_predictions)} \\
+    chunk_size={cfg.flowdock_chunk_size} \\
+    num_steps={cfg.flowdock_num_steps} \\
+    latent_model={cfg.flowdock_latent_model} \\
+    sampler={cfg.flowdock_sampler} \\
+    sampler_eta={cfg.flowdock_sampler_eta} \\
+    start_time={cfg.flowdock_start_time} \\
+    max_chain_encoding_k={cfg.flowdock_max_chain_encoding_k} \\
+    exact_prior={cfg.flowdock_exact_prior} \\
+    prior_type={cfg.flowdock_prior_type} \\
+    discard_ligand={cfg.flowdock_discard_ligand} \\
+    discard_sdf_coords={cfg.flowdock_discard_sdf_coords} \\
+    detect_covalent={cfg.flowdock_detect_covalent} \\
+    use_template={cfg.flowdock_use_template} \\
+    separate_pdb={cfg.flowdock_separate_pdb} \\
+    rank_outputs_by_confidence={cfg.flowdock_rank_outputs_by_confidence} \\
+    plddt_ranking_type={cfg.flowdock_plddt_ranking_type} \\
+    visualize_sample_trajectories={cfg.flowdock_visualize_sample_trajectories} \\
+    auxiliary_estimation_only={cfg.flowdock_auxiliary_estimation_only} \\
+    auxiliary_estimation_input_dir={cfg.flowdock_auxiliary_estimation_input_dir} \\
+    csv_path={cfg.flowdock_csv_path} \\
+    esmfold_chunk_size={cfg.flowdock_esmfold_chunk_size}
+
+echo "Finished calling flowdock_inference.py!"
+    """
+
+    with open(output_filepath, "w") as file:
+        file.write(bash_script_content)
+
+    logger.info(f"Bash script '{output_filepath}' created successfully.")
+
+
 def rfaa_get_chain_letter(index: int) -> str:
     """Get the RFAA chain letter based on index."""
     alphabet = "abcdefghijklmnopqrstuvwxyz"
@@ -524,7 +601,9 @@ echo "Finished calling chai_inference.py!"
 
 
 def create_vina_bash_script(
-    binding_site_method: Literal["diffdock", "fabind", "dynamicbind", "neuralplexer", "rfaa"],
+    binding_site_method: Literal[
+        "diffdock", "fabind", "dynamicbind", "neuralplexer", "flowdock", "rfaa"
+    ],
     protein_filepath: str,
     ligand_filepath: str,
     apo_protein_filepath: str,
@@ -666,6 +745,17 @@ def generate_method_prediction_script(
             ligand_smiles.replace(
                 ":", "."
             ),  # NOTE: NeuralPLexer supports multi-ligands using the separator "."
+            input_id,
+            output_filepath,
+            cfg,
+            generate_hpc_scripts=generate_hpc_scripts,
+        )
+    elif method == "flowdock":
+        create_flowdock_bash_script(
+            protein_filepath,
+            ligand_smiles.replace(
+                ":", "."
+            ),  # NOTE: FlowDock supports multi-ligands using the separator "."
             input_id,
             output_filepath,
             cfg,
@@ -883,6 +973,39 @@ def get_method_predictions(
             / f"neuralplexer{pocket_only_suffix}{no_ilcl_suffix}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
             if cfg.ensemble_benchmarking
             else (cfg.input_dir if cfg.input_dir else cfg.neuralplexer_out_path)
+        )
+        protein_output_files = sorted(
+            [
+                file
+                for file in map(
+                    str,
+                    Path(os.path.join(ensemble_benchmarking_output_dir, target)).rglob("*.pdb"),
+                )
+                if "rank" in os.path.basename(file)
+                and "relaxed" not in os.path.basename(file)
+                and "aligned" not in os.path.basename(file)
+            ],
+            key=rank_key,
+        )[: cfg.method_top_n_to_select]
+        ligand_output_files = sorted(
+            [
+                file
+                for file in map(
+                    str,
+                    Path(os.path.join(ensemble_benchmarking_output_dir, target)).rglob("*.sdf"),
+                )
+                if "rank" in os.path.basename(file)
+                and "relaxed" not in os.path.basename(file)
+                and "aligned" not in os.path.basename(file)
+            ],
+            key=rank_key,
+        )[: cfg.method_top_n_to_select]
+    elif method == "flowdock":
+        ensemble_benchmarking_output_dir = (
+            Path(cfg.input_dir if cfg.input_dir else cfg.flowdock_out_path).parent
+            / f"flowdock_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
+            if cfg.ensemble_benchmarking
+            else (cfg.input_dir if cfg.input_dir else cfg.flowdock_out_path)
         )
         protein_output_files = sorted(
             [

@@ -1,6 +1,6 @@
 # General inference arguments:
 dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
-method: diffdock # the method from which to derive binding site predictions - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `p2rank`, `ensemble`)
+method: diffdock # the method from which to derive binding site predictions - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `flowdock`, `p2rank`, `ensemble`)
 ensemble_ranking_method: consensus # the method with which to rank-order and select the top ensemble prediction for each target - NOTE: must be one of (`consensus`, `ff`)
 python2_exec_path: ${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/bin/python # the path to the Python 2 executable
 p2rank_exec_path: ${oc.env:PROJECT_ROOT}/forks/P2Rank/p2rank_2.4.2/prank # the path to the P2Rank executable

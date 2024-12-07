@@ -1,8 +1,8 @@
 full_report: true # whether to generate a full PoseBusters report (i.e. with all metrics) or a summary report (i.e. with only the most important metrics)
 python_exec_path: ${oc.env:HOME}/mambaforge/envs/casp15_ligand_scoring/bin/python3 # the Python executable to use
 scoring_script_path: ${oc.env:PROJECT_ROOT}/posebench/analysis/casp15_ligand_scoring/score_predictions.py # the path to the script to use for scoring CASP predictions
-method: diffdock # the method for which to score predictions - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `rfaa`, `chai-lab`, `vina`, `ensemble`, `tulip`)
-vina_binding_site_method: diffdock # the method to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `rfaa`, `chai-lab`)
+method: diffdock # the method for which to score predictions - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `flowdock`, `rfaa`, `chai-lab`, `vina`, `ensemble`, `tulip`)
+vina_binding_site_method: diffdock # the method to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `flowdock`, `rfaa`, `chai-lab`)
 dataset: casp15 # the dataset to use - NOTE: must be one of (`casp15`)
 ensemble_ranking_method: consensus # the method with which to rank-order and select the top ensemble prediction for each target - NOTE: must be one of (`consensus`, `ff`)
 predictions_dir: ${oc.env:PROJECT_ROOT}/data/test_cases/${dataset}/top_${method}_ensemble_predictions_${repeat_index} # the directory containing the predictions to analyze

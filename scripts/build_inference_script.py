@@ -103,6 +103,32 @@ COMMANDS = {
             "python3 posebench/analysis/inference_analysis_casp.py method=neuralplexer dataset=casp15 no_ilcl={no_ilcl} relax_protein={relax_protein} repeat_index={repeat_index}",
         ],
     },
+    "flowdock": {
+        "prepare_input": [
+            "python3 posebench/data/flowdock_input_preparation.py dataset={dataset} pocket_only_baseline={pocket_only_baseline}",
+        ],
+        "run_inference": [
+            "python3 posebench/models/flowdock_inference.py dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+        ],
+        "relax": [
+            "python3 posebench/models/inference_relaxation.py method=flowdock dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
+        ],
+        "align_complexes": [
+            "conda activate PyMOL-PoseBench",
+            "python3 posebench/analysis/complex_alignment.py method=flowdock dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+            "conda deactivate",
+        ],
+        "analyze_results": [
+            "python3 posebench/analysis/inference_analysis.py method=flowdock dataset={dataset} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} repeat_index={repeat_index}",
+        ],
+        "assemble_casp15": [
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[flowdock] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_flowdock_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[flowdock] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_flowdock_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+        ],
+        "analyze_casp15": [
+            "python3 posebench/analysis/inference_analysis_casp.py method=flowdock dataset=casp15 relax_protein={relax_protein} repeat_index={repeat_index}",
+        ],
+    },
     "rfaa": {
         "prepare_input": [
             "python3 posebench/data/rfaa_input_preparation.py dataset={dataset} pocket_only_baseline={pocket_only_baseline}",
@@ -226,6 +252,7 @@ INFERENCE_METHODS = Literal[
     "fabind",
     "dynamicbind",
     "neuralplexer",
+    "flowdock",
     "rfaa",
     "chai-lab",
     "vina",
@@ -242,6 +269,7 @@ POCKET_ONLY_COMPATIBLE_METHODS = {
     "fabind",
     "dynamicbind",
     "neuralplexer",
+    "flowdock",
     "rfaa",
     "chai-lab",
     "vina",
@@ -399,9 +427,9 @@ def build_inference_script(
                 if method == "dynamicbind" and dataset == "casp15"
                 else ""
             )
-            neuralplexer_casp15_input_suffix = (
+            neuralplexer_and_flowdock_casp15_input_suffix = (
                 " input_data_dir=data/casp15_set/targets input_receptor_structure_dir=data/casp15_set/casp15_holo_aligned_predicted_structures"
-                if method == "neuralplexer" and dataset == "casp15"
+                if method in ["neuralplexer", "flowdock"] and dataset == "casp15"
                 else ""
             )
             rfaa_casp15_input_suffix = (
@@ -420,7 +448,7 @@ def build_inference_script(
                     cmd.format(dataset=dataset, pocket_only_baseline=pocket_only_baseline)
                     + diffdock_casp15_input_suffix
                     + dynamicbind_casp15_input_suffix
-                    + neuralplexer_casp15_input_suffix
+                    + neuralplexer_and_flowdock_casp15_input_suffix
                     + rfaa_casp15_input_suffix
                     + chai_casp15_input_suffix
                     + "\n"
@@ -446,8 +474,10 @@ def build_inference_script(
                 if method == "dynamicbind" and dataset == "casp15"
                 else ""
             )
-            neuralplexer_casp15_inference_suffix = (
-                " chunk_size=5" if method == "neuralplexer" and dataset == "casp15" else ""
+            neuralplexer_and_flowdock_casp15_inference_suffix = (
+                " chunk_size=5"
+                if method in ["neuralplexer", "flowdock"] and dataset == "casp15"
+                else ""
             )
             ensemble_casp15_inference_suffix = (
                 " combine_casp_output_files=true"
@@ -471,7 +501,7 @@ def build_inference_script(
                     )
                     + diffdock_casp15_inference_suffix
                     + dynamicbind_casp15_inference_suffix
-                    + neuralplexer_casp15_inference_suffix
+                    + neuralplexer_and_flowdock_casp15_inference_suffix
                     + ensemble_casp15_inference_suffix
                     + "\n"
                 )

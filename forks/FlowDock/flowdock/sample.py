@@ -160,6 +160,7 @@ def sample(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     # Establish model input arguments
     with open_dict(cfg):
         # NOTE: Structure trajectories will not be visualized when performing auxiliary estimation only
+        cfg.model.cfg.prior_type = cfg.prior_type
         cfg.model.cfg.task.detect_covalent = cfg.detect_covalent
         cfg.model.cfg.task.use_template = cfg.use_template
         cfg.model.cfg.task.csv_path = cfg.csv_path

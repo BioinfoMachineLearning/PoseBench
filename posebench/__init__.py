@@ -13,6 +13,7 @@ METHOD_TITLE_MAPPING = {
     "fabind": "FABind",
     "dynamicbind": "DynamicBind",
     "neuralplexer": "NeuralPLexer",
+    "flowdock": "FlowDock",
     "rfaa": "RoseTTAFold-All-Atom",
     "chai-lab": "chai-lab",
     "vina": "Vina",
@@ -99,7 +100,7 @@ def resolve_method_protein_dir(
             "results",
             f"{dataset}{pocket_only_suffix}",
         )
-    elif method in ["neuralplexer", "rfaa", "chai-lab"]:
+    elif method in ["neuralplexer", "flowdock", "rfaa", "chai-lab"]:
         return os.path.join(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method),
@@ -139,11 +140,14 @@ def resolve_method_ligand_dir(
     v1_baseline_suffix = "v1" if v1_baseline else ""
     if method in STANDARDIZED_DIR_METHODS or method in [
         "neuralplexer",
+        "flowdock",
         "rfaa",
         "chai-lab",
         "tulip",
     ]:
-        output_suffix = "s" if method in ["neuralplexer", "rfaa", "chai-lab", "tulip"] else ""
+        output_suffix = (
+            "s" if method in ["neuralplexer", "flowdock", "rfaa", "chai-lab", "tulip"] else ""
+        )
         return os.path.join(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method) + v1_baseline_suffix,
@@ -201,11 +205,14 @@ def resolve_method_output_dir(
     v1_baseline_suffix = "v1" if v1_baseline else ""
     if method in STANDARDIZED_DIR_METHODS or method in [
         "neuralplexer",
+        "flowdock",
         "rfaa",
         "chai-lab",
         "tulip",
     ]:
-        output_suffix = "s" if method in ["neuralplexer", "rfaa", "chai-lab", "tulip"] else ""
+        output_suffix = (
+            "s" if method in ["neuralplexer", "flowdock", "rfaa", "chai-lab", "tulip"] else ""
+        )
         return os.path.join(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method) + v1_baseline_suffix,
@@ -250,6 +257,7 @@ def resolve_method_input_csv_path(method: str, dataset: str, pocket_only_baselin
     pocket_only_suffix = "_pocket_only" if pocket_only_baseline else ""
     if method in STANDARDIZED_DIR_METHODS or method in [
         "neuralplexer",
+        "flowdock",
         "rfaa",
         "chai-lab",
         "vina",

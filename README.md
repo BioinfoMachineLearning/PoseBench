@@ -134,6 +134,13 @@ unzip neuralplexermodels_downstream_datasets_predictions.zip
 rm neuralplexermodels_downstream_datasets_predictions.zip
 cd ../../
 
+# FlowDock checkpoint (~2 GB)
+cd forks/FlowDock/
+wget https://zenodo.org/records/10373582/files/flowdock_weights.zip
+unzip flowdock_weights.zip
+rm flowdock_weights.zip
+cd ../../
+
 # RoseTTAFold-All-Atom checkpoint (~1.5 GB)
 cd forks/RoseTTAFold-All-Atom/
 wget http://files.ipd.uw.edu/pub/RF-All-Atom/weights/RFAA_paper_weights.pt
@@ -184,15 +191,15 @@ rm casp15_set.tar.gz
 wget https://zenodo.org/records/13858866/files/diffdock_benchmark_method_predictions.tar.gz
 tar -xzf diffdock_benchmark_method_predictions.tar.gz
 rm diffdock_benchmark_method_predictions.tar.gz
-# FABind predictions and results
-wget https://zenodo.org/records/13858866/files/fabind_benchmark_method_predictions.tar.gz
-tar -xzf fabind_benchmark_method_predictions.tar.gz
-rm fabind_benchmark_method_predictions.tar.gz
 # DynamicBind predictions and results
 wget https://zenodo.org/records/13858866/files/dynamicbind_benchmark_method_predictions.tar.gz
 tar -xzf dynamicbind_benchmark_method_predictions.tar.gz
 rm dynamicbind_benchmark_method_predictions.tar.gz
 # NeuralPLexer predictions and results
+wget https://zenodo.org/records/13858866/files/neuralplexer_benchmark_method_predictions.tar.gz
+tar -xzf neuralplexer_benchmark_method_predictions.tar.gz
+rm neuralplexer_benchmark_method_predictions.tar.gz
+# FlowDock predictions and results
 wget https://zenodo.org/records/13858866/files/neuralplexer_benchmark_method_predictions.tar.gz
 tar -xzf neuralplexer_benchmark_method_predictions.tar.gz
 rm neuralplexer_benchmark_method_predictions.tar.gz
@@ -204,15 +211,11 @@ rm rfaa_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/13858866/files/chai_benchmark_method_predictions.tar.gz
 tar -xzf chai_benchmark_method_predictions.tar.gz
 rm chai_benchmark_method_predictions.tar.gz
-# TULIP predictions and results
-wget https://zenodo.org/records/13858866/files/tulip_benchmark_method_predictions.tar.gz
-tar -xzf tulip_benchmark_method_predictions.tar.gz
-rm tulip_benchmark_method_predictions.tar.gz
 # AutoDock Vina predictions and results
 wget https://zenodo.org/records/13858866/files/vina_benchmark_method_predictions.tar.gz
 tar -xzf vina_benchmark_method_predictions.tar.gz
 rm vina_benchmark_method_predictions.tar.gz
-# Astex Diverse, PoseBusters Benchmark (w/ pocket-only results), DockGen, and CASP15 consensus ensemble predictions and results
+# Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 consensus ensemble predictions and results
 wget https://zenodo.org/records/13858866/files/astex_diverse_ensemble_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/13858866/files/posebusters_benchmark_ensemble_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/13858866/files/dockgen_ensemble_benchmark_method_predictions.tar.gz
@@ -226,8 +229,6 @@ rm posebusters_benchmark_ensemble_benchmark_method_predictions.tar.gz
 rm dockgen_ensemble_benchmark_method_predictions.tar.gz
 rm casp15_ensemble_benchmark_method_predictions.tar.gz
 ```
-
-**NOTE:** One can reproduce the *pocket-only* experiments with the PoseBusters Benchmark set by adding the argument `pocket_only_baseline=true` to each command below used to run PoseBusters Benchmark dataset inference with all the baseline methods (n.b., besides `tulip`, which does not support pocket-level docking currently), since the pocket-only versions of the dataset's holo-aligned predicted protein structures have also been included in the downloadable Zenodo archive `posebusters_benchmark_set.tar.gz` referenced above. Similarly, one can reproduce the *NeuralPLexer w/o inter-ligand clash loss (ILCL)* experiments with the CASP15 set by adding the argument `no_ilcl=true` (`neuralplexer_no_ilcl=true`) to the commands `python3 posebench/models/neuralplexer_inference.py dataset=casp15 ...` and `python3 posebench/analysis/inference_analysis_casp.py dataset=casp15 ...` below (`python3 posebench/models/ensemble_generation.py ensemble_benchmarking_dataset=casp15 ...`) used to run CASP15 dataset inference with NeuralPLexer. Lastly, one can reproduce the *DiffDock w/o structural cluster training (SCT)* experiments by adding the argument `v1_baseline=true` to the DiffDock inference commands below. Please see the config files within `configs/data/`, `configs/model/`, and `configs/analysis/` for more details.
 
 ### Downloading sequence databases (required only for RoseTTAFold-All-Atom inference)
 
@@ -295,7 +296,7 @@ python3 posebench/data/components/protein_apo_to_holo_alignment.py dataset=astex
 conda deactivate
 ```
 
-**NOTE:** The preprocessed Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 data available via [Zenodo](https://doi.org/10.5281/zenodo.13858866) provide pre-holo-aligned protein structures predicted by AlphaFold 3 for these respective datasets. Accordingly, users must ensure their usage of such predicted protein structures aligns with the AlphaFold Server's [Terms of Service](https://alphafoldserver.com/terms).
+**NOTE:** The preprocessed Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 data available via [Zenodo](https://doi.org/10.5281/zenodo.13858866) provide pre-holo-aligned protein structures predicted by AlphaFold 3 for these respective datasets. Accordingly, users must ensure their usage of such predicted protein structures aligns with AlphaFold 3's [Terms of Use](https://github.com/google-deepmind/alphafold3/blob/main/WEIGHTS_TERMS_OF_USE.md).
 
 </details>
 
@@ -320,6 +321,7 @@ conda deactivate
 | ---------------------- | ----------------------------------------------------------------------------- | ----------------- | ----------------------- | ------------------- | ---------------- |
 | `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)               | ✓                 | ✓                       | ✓                   | ✓                |
 | `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)             | ✓                 | ✓                       | ✓                   | ✓                |
+| `FlowDock`             | [Morehead et al.](https://github.com/BioinfoMachineLearning/FlowDock)         | ✓                 | ✓                       | ✓                   | ✓                |
 | `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528)         | ✓                 | ✓                       | ✓                   | ✓                |
 | `Chai-1`               | [Chai Discovery](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf) | ✓                 | ✓                       | ✓                   | ✓                |
 
@@ -339,6 +341,7 @@ conda deactivate
 | ---------------------- | ----------------------------------------------------------------------------- | ----------------- | ----------------------- | ------------------- | ---------------- |
 | `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)               | ✓                 | ✓                       | ✓                   | ✓                |
 | `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)             | ✓                 | ✓                       | ✓                   | ✓                |
+| `FlowDock`             | [Morehead et al.](https://github.com/BioinfoMachineLearning/FlowDock)         | ✓                 | ✓                       | ✓                   | ✓                |
 | `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528)         | ✓                 | ✓                       | ✓                   | ✓                |
 | `Chai-1`               | [Chai Discovery](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf) | ✓                 | ✓                       | ✓                   | ✓                |
 
@@ -600,6 +603,78 @@ python3 posebench/models/ensemble_generation.py ensemble_methods=\[neuralplexer\
 ...
 # now score the CASP15-compliant submissions using the official CASP scoring pipeline
 python3 posebench/analysis/inference_analysis_casp.py method=neuralplexer dataset=casp15 repeat_index=1
+...
+```
+
+### How to run inference with `FlowDock`
+
+Prepare CSV input files
+
+```bash
+python3 posebench/data/flowdock_input_preparation.py dataset=posebusters_benchmark
+python3 posebench/data/flowdock_input_preparation.py dataset=astex_diverse
+python3 posebench/data/flowdock_input_preparation.py dataset=dockgen
+python3 posebench/data/flowdock_input_preparation.py dataset=casp15 input_data_dir=data/casp15_set/targets input_receptor_structure_dir=data/casp15_set/casp15_holo_aligned_predicted_structures
+```
+
+Run inference on each dataset
+
+```bash
+python3 posebench/models/flowdock_inference.py dataset=posebusters_benchmark repeat_index=1
+...
+python3 posebench/models/flowdock_inference.py dataset=astex_diverse repeat_index=1
+...
+python3 posebench/models/flowdock_inference.py dataset=dockgen repeat_index=1
+...
+python3 posebench/models/flowdock_inference.py dataset=casp15 chunk_size=5 repeat_index=1
+...
+```
+
+Relax the generated ligand structures inside of their respective protein pockets
+
+```bash
+python3 posebench/models/inference_relaxation.py method=flowdock dataset=posebusters_benchmark remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index=1
+...
+python3 posebench/models/inference_relaxation.py method=flowdock dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index=1
+...
+python3 posebench/models/inference_relaxation.py method=flowdock dataset=dockgen remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index=1
+...
+```
+
+Align predicted protein-ligand structures to ground-truth complex structures
+
+```bash
+conda activate PyMOL-PoseBench
+python3 posebench/analysis/complex_alignment.py method=flowdock dataset=posebusters_benchmark repeat_index=1
+...
+python3 posebench/analysis/complex_alignment.py method=flowdock dataset=astex_diverse repeat_index=1
+...
+python3 posebench/analysis/complex_alignment.py method=flowdock dataset=dockgen repeat_index=1
+...
+conda deactivate
+```
+
+Analyze inference results for each dataset
+
+```bash
+python3 posebench/analysis/inference_analysis.py method=flowdock dataset=posebusters_benchmark repeat_index=1
+...
+python3 posebench/analysis/inference_analysis.py method=flowdock dataset=astex_diverse repeat_index=1
+...
+python3 posebench/analysis/inference_analysis.py method=flowdock dataset=dockgen repeat_index=1
+...
+```
+
+Analyze inference results for the CASP15 dataset
+
+```bash
+# first assemble (unrelaxed and post ranking-relaxed) CASP15-compliant prediction submission files for scoring
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[flowdock\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_flowdock_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[flowdock\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_flowdock_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+# NOTE: the suffixes for both `output_dir` and `ensemble_benchmarking_repeat_index` should be modified to e.g., 2, 3, ...
+...
+# now score the CASP15-compliant submissions using the official CASP scoring pipeline
+python3 posebench/analysis/inference_analysis_casp.py method=flowdock dataset=casp15 repeat_index=1
 ...
 ```
 
@@ -1004,6 +1079,7 @@ rm -rf docs/build/ && sphinx-build docs/source/ docs/build/ # NOTE: errors can s
 - [DiffDock](https://github.com/gcorso/DiffDock)
 - [FABind](https://github.com/QizhiPei/FABind)
 - [DynamicBind](https://github.com/luwei0917/DynamicBind)
+- [FlowDock](https://github.com/BioinfoMachineLearning/FlowDock)
 - [lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template)
 - [NeuralPLexer](https://github.com/zrqiao/NeuralPLexer)
 - [posebusters](https://github.com/maabuu/posebusters)
