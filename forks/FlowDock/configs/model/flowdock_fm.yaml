@@ -1,0 +1,148 @@
+_target_: flowdock.models.flowdock_fm_module.FlowDockFMLitModule
+
+net:
+  _target_: flowdock.models.components.flowdock.FlowDock
+  _partial_: true
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 2e-4
+  weight_decay: 0.0
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.CosineAnnealingWarmRestarts
+  _partial_: true
+  T_0: ${int_divide:${trainer.max_epochs},15}
+  T_mult: 2
+  eta_min: 1e-8
+  verbose: true
+
+# compile model for faster training with pytorch 2.0
+compile: false
+
+# model arguments
+cfg:
+  mol_encoder:
+    node_channels: 512
+    pair_channels: 64
+    n_atom_encodings: 23
+    n_bond_encodings: 4
+    n_atom_pos_encodings: 6
+    n_stereo_encodings: 14
+    n_attention_heads: 8
+    attention_head_dim: 8
+    hidden_dim: 2048
+    max_path_integral_length: 6
+    n_transformer_stacks: 8
+    n_heads: 8
+    n_patches: ${data.n_lig_patches}
+    checkpoint_file: ${oc.env:PROJECT_ROOT}/checkpoints/neuralplexermodels_downstream_datasets_predictions/models/complex_structure_prediction.ckpt
+    megamolbart: null
+    from_pretrained: true
+
+  protein_encoder:
+    use_esm_embedding: true
+    esm_version: esm2_t33_650M_UR50D
+    esm_repr_layer: 33
+    residue_dim: 512
+    plm_embed_dim: 1280
+    n_aa_types: 21
+    atom_padding_dim: 37
+    n_atom_types: 4 # [C, N, O, S]
+    n_patches: ${data.n_protein_patches}
+    n_attention_heads: 8
+    scalar_dim: 16
+    point_dim: 4
+    pair_dim: 64
+    n_heads: 8
+    head_dim: 8
+    max_residue_degree: 32
+    n_encoder_stacks: 2
+    from_pretrained: true
+
+  relational_reasoning:
+    from_pretrained: true
+
+  contact_predictor:
+    n_stacks: 4
+    dropout: 0.01
+    from_pretrained: true
+
+  score_head:
+    fiber_dim: 64
+    hidden_dim: 512
+    n_stacks: 4
+    max_atom_degree: 8
+    from_pretrained: true
+
+  confidence:
+    enabled: true # whether the confidence prediction head is to be used e.g., during inference
+    fiber_dim: ${..score_head.fiber_dim}
+    hidden_dim: ${..score_head.hidden_dim}
+    n_stacks: ${..score_head.n_stacks}
+    from_pretrained: true
+
+  affinity:
+    enabled: true # whether the affinity prediction head is to be used e.g., during inference
+    fiber_dim: ${..score_head.fiber_dim}
+    hidden_dim: ${..score_head.hidden_dim}
+    n_stacks: ${..score_head.n_stacks}
+    ligand_pooling: sum # NOTE: must be a value in (`sum`, `mean`)
+    dropout: 0.01
+    from_pretrained: false
+
+  latent_model: default
+  prior_type: esmfold # NOTE: must be a value in (`gaussian`, `harmonic`, `esmfold`)
+
+  task:
+    pretrained: null
+    ligands: true
+    epoch_frac: ${data.epoch_frac}
+    label_name: null
+    sequence_crop_size: 1600
+    edge_crop_size: ${data.edge_crop_size} # NOTE: for dynamic batching via `max_n_edges`
+    max_masking_rate: 0.0
+    n_modes: 8
+    dropout: 0.01
+    # pretraining: true
+    freeze_mol_encoder: true
+    freeze_protein_encoder: false
+    freeze_relational_reasoning: false
+    freeze_contact_predictor: true
+    freeze_score_head: false
+    freeze_confidence: true
+    freeze_affinity: false
+    use_template: true
+    use_plddt: false
+    block_contact_decoding_scheme: "beam"
+    frozen_ligand_backbone: false
+    frozen_protein_backbone: false
+    single_protein_batch: true
+    contact_loss_weight: 0.2
+    global_score_loss_weight: 0.2
+    ligand_score_loss_weight: 0.1
+    clash_loss_weight: 10.0
+    local_distgeom_loss_weight: 10.0
+    drmsd_loss_weight: 2.0
+    distogram_loss_weight: 0.05
+    plddt_loss_weight: 1.0
+    affinity_loss_weight: 0.1
+    aux_batch_freq: 10 # NOTE: e.g., `10` means that auxiliary estimation losses will be calculated every 10th batch
+    global_max_sigma: 5.0
+    internal_max_sigma: 2.0
+    detect_covalent: true
+    # runtime configs
+    float32_matmul_precision: highest
+    # sampling configs
+    constrained_inpainting: false
+    visualize_generated_samples: true
+    # testing configs
+    loss_mode: auxiliary_estimation # NOTE: must be one of (`structure_prediction`, `auxiliary_estimation`, `auxiliary_estimation_without_structure_prediction`)
+    num_steps: 20
+    sampler: VDODE # NOTE: must be one of (`ODE`, `VDODE`)
+    sampler_eta: 1.0 # NOTE: this corresponds to the variance diminishing factor for the `VDODE` sampler, which offers a trade-off between exploration (1.0) and exploitation (> 1.0)
+    start_time: 1.0
+    eval_structure_prediction: false # whether to evaluate structure prediction performance (`true`) or instead only binding affinity performance (`false`) when running a test epoch
+    # overfitting configs
+    overfitting_example_name: ${data.overfitting_example_name}

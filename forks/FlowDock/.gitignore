@@ -144,55 +144,23 @@ dmypy.json
 *.tar
 *.tar.gz
 
-# PoseBench
+# FlowDock
 configs/local/default.yaml
-/*cache_dir/
-/*alignment_viz/
-/casp15_ligand_scoring/
+!/data/splits/
+/checkpoints/
 /data/
-/ensemble_generation_scripts/
+/FlowDock/
 /logs/
 /outputs/
-/PoseBench/
-/results/
+/*sampled_structures*/
+/workdir/
 .env
 *.npy
-*.pdb
 
 # Aim logging
 .aim
 
 # Forks
-/workdir/
-/forks/chai-lab/chai-lab/
-/forks/chai-lab/prediction_inputs/
-/forks/chai-lab/prediction_outputs/
-/forks/DiffDock1.0/
 /forks/DiffDock/DiffDock/
-/forks/DynamicBind/*.npy
-/forks/DynamicBind/DynamicBind/
-/forks/DynamicBind/esm_models/
-/forks/DynamicBind/workdir/
-/forks/FABind/ckpt/best_model.bin
-/forks/FABind/FABind/
-/forks/FlowDock/FlowDock/
-/forks/FlowDock/checkpoints/
 /forks/NeuralPLexer/NeuralPLexer/
-/forks/NeuralPLexer/**/neuralplexermodels*
-/forks/P2Rank/
 /forks/*/inference*/
-/forks/RoseTTAFold-All-Atom/blast-2.2.26
-/forks/RoseTTAFold-All-Atom/rf2aa/config/inference/*_rfaa_inference.yaml
-/forks/RoseTTAFold-All-Atom/csblast-2.2.3
-/forks/RoseTTAFold-All-Atom/ensemble_generation_scripts/
-/forks/RoseTTAFold-All-Atom/outputs/
-/forks/RoseTTAFold-All-Atom/pdb100_2021Mar03/
-/forks/RoseTTAFold-All-Atom/prediction_inputs/
-/forks/RoseTTAFold-All-Atom/prediction_outputs/
-/forks/RoseTTAFold-All-Atom/RFAA/
-/forks/RoseTTAFold-All-Atom/RFAA_paper_weights.pt
-/forks/RoseTTAFold-All-Atom/SE3nv-20240131.sif
-/forks/RoseTTAFold-All-Atom/psipred/
-/forks/TULIP/outputs/
-/forks/Vina/ADFR/
-scripts/*inference*/

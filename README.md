@@ -96,6 +96,10 @@ conda activate forks/DynamicBind/DynamicBind/  # NOTE: one still needs to use `c
 mamba env create -f environments/neuralplexer_environment.yaml --prefix forks/NeuralPLexer/NeuralPLexer/
 conda activate forks/NeuralPLexer/NeuralPLexer/  # NOTE: one still needs to use `conda` to (de)activate environments
 cd forks/NeuralPLexer/ && pip3 install -e . && cd ../../
+# - FlowDock environment (~14 GB)
+mamba env create -f environments/flowdock_environment.yaml --prefix forks/FlowDock/FlowDock/
+conda activate forks/FlowDock/FlowDock/  # NOTE: one still needs to use `conda` to (de)activate environments
+cd forks/FlowDock/ && pip3 install -e . && cd ../../
 # - RoseTTAFold-All-Atom environment (~14 GB) - NOTE: after running these commands, follow the installation instructions in `forks/RoseTTAFold-All-Atom/README.md` starting at Step 4 (with `forks/RoseTTAFold-All-Atom/` as the current working directory)
 mamba env create -f environments/rfaa_environment.yaml --prefix forks/RoseTTAFold-All-Atom/RFAA/
 conda activate forks/RoseTTAFold-All-Atom/RFAA/  # NOTE: one still needs to use `conda` to (de)activate environments

@@ -1,0 +1,5 @@
+dataset: pdbbind # the dataset to use - NOTE: must be one of (`pdbbind`, `moad`, `dockgen`, `pdbsidechain`)
+data_dir: ${oc.env:PROJECT_ROOT}/data # where the processed PDBBind, Binding MOAD, and van der Mers datasets are placed
+esmfold_structures_dir: ${oc.env:PROJECT_ROOT}/data/${resolve_dataset_path_dirname:${dataset}}/${dataset}_esmfold_structures # where the ESMFold-predicted protein structures are placed
+output_dir: ${oc.env:PROJECT_ROOT}/data/${resolve_dataset_path_dirname:${dataset}}/${dataset}_holo_aligned_esmfold_structures # where the holo-aligned ESMFold apo structures should be stored
+num_workers: 1 # number of CPU workers for parallel processing

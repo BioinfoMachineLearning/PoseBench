@@ -1,0 +1,46 @@
+# @package _global_
+
+defaults:
+  - data: combined # choose datamodule with `test_dataloader()` for evaluation
+  - model: flowdock_fm
+  - logger: null
+  - strategy: default
+  - trainer: default
+  - paths: default
+  - extras: default
+  - hydra: default
+  - environment: default
+  - _self_
+
+task_name: "eval"
+
+tags: ["eval", "combined", "flowdock_fm"]
+
+# passing checkpoint path is necessary for evaluation
+ckpt_path: ???
+
+# model arguments
+model:
+  cfg:
+    mol_encoder:
+      from_pretrained: false
+    protein_encoder:
+      from_pretrained: false
+    relational_reasoning:
+      from_pretrained: false
+    contact_predictor:
+      from_pretrained: false
+    score_head:
+      from_pretrained: false
+    confidence:
+      from_pretrained: false
+    affinity:
+      from_pretrained: false
+    task:
+      freeze_mol_encoder: true
+      freeze_protein_encoder: false
+      freeze_relational_reasoning: false
+      freeze_contact_predictor: false
+      freeze_score_head: false
+      freeze_confidence: true
+      freeze_affinity: false

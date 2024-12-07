@@ -1,0 +1,29 @@
+_target_: lightning.pytorch.trainer.Trainer
+
+default_root_dir: ${paths.output_dir}
+
+min_epochs: 1 # prevents early stopping
+max_epochs: 10
+
+accelerator: cpu
+devices: 1
+
+# mixed precision for extra speed-up
+# precision: 16
+
+# perform a validation loop every N training epochs
+check_val_every_n_epoch: 1
+
+# set True to to ensure deterministic results
+# makes training slower but gives more reproducibility than just setting seeds
+deterministic: False
+
+# determine the frequency of how often to reload the dataloaders
+reload_dataloaders_every_n_epochs: 1
+
+# if `gradient_clip_val` is not `null`, gradients will be norm-clipped during training
+gradient_clip_algorithm: norm
+gradient_clip_val: 1.0
+
+# if `num_sanity_val_steps` is > 0, then specifically that many validation steps will be run during the first call to `trainer.fit`
+num_sanity_val_steps: 0

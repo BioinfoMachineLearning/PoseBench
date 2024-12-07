@@ -1,0 +1,8 @@
+dataset: pdbbind # the dataset to use - NOTE: must be one of (`pdbbind`, `moad`, `dockgen`, `pdbsidechain`)
+data_dir: ${oc.env:PROJECT_ROOT}/data # where the processed datasets are placed
+aligned_dir: ${oc.env:PROJECT_ROOT}/data/${resolve_dataset_path_dirname:${dataset}}/${dataset}_holo_aligned_esmfold_structures # where the holo-aligned ESMFold apo structures are stored
+usalign_exec_path: ??? # path to a local copy of a precompiled USalign executable and its source files
+preprocessed_graph_dirs: null # if provided, all (dataset split) directories from which to load processed `HeteroData` graphs for apo-to-holo alignment assessment
+# preprocessed_graph_dirs: [data/cache/PDBBind_limit4_INDEXtimesplit_no_lig_overlap_train_maxLigSizeNone_H0_chainCutoffNone_esmEmbeddings_full_chainOrd_minProteinLength50_maxProteinLength750,] # note: an example of where preprocessed graphs may reside locally
+output_filepath: ${oc.env:PROJECT_ROOT}/data/${resolve_dataset_path_dirname:${dataset}}/${dataset}_apo_to_holo_assessment.csv # where to save the assessment results
+erroneous_output_filepath: ${oc.env:PROJECT_ROOT}/data/${resolve_dataset_path_dirname:${dataset}}/${dataset}_apo_to_holo_assessment_erroneous_file_inputs.csv # where to save the assessment errors
