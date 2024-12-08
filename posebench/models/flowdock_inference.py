@@ -147,7 +147,7 @@ def main(cfg: DictConfig):
                     )
             input_df = pd.DataFrame(input_rows)
         else:
-            input_df = pd.read_csv(cfg.input_csv_path)
+            input_df = pd.read_csv(input_csv_path)
         auxiliary_estimation_csv_filepaths = []
         for _, row in input_df.iterrows():
             out_dir = os.path.join(cfg.out_path, row.id)
