@@ -60,7 +60,7 @@ def main(cfg: DictConfig):
 
         if cfg.max_num_inputs:
             cfg.output_dir = cfg.output_dir.replace(
-                f"_{cfg.dataset}", f"_first_{cfg.max_num_inputs}_{cfg.dataset}"
+                f"_{cfg.dataset}", f"_{cfg.dataset}_first_{cfg.max_num_inputs}"
             )
 
     assert os.path.exists(input_csv_path), f"Input CSV file `{input_csv_path}` not found."

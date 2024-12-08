@@ -43,15 +43,15 @@ def main(cfg: DictConfig):
         if cfg.pocket_only_baseline:
             cfg.out_path = os.path.join(
                 os.path.dirname(cfg.out_path),
-                os.path.basename(cfg.out_path).replace("neuralplexer", "neuralplexer_pocket_only"),
+                os.path.basename(cfg.out_path).replace("flowdock", "flowdock_pocket_only"),
             )
-            input_csv_path = cfg.input_csv_path.replace("neuralplexer", "neuralplexer_pocket_only")
+            input_csv_path = cfg.input_csv_path.replace("flowdock", "flowdock_pocket_only")
 
         if cfg.max_num_inputs:
             cfg.out_path = os.path.join(
                 os.path.dirname(cfg.out_path),
                 os.path.basename(cfg.out_path).replace(
-                    "neuralplexer", f"neuralplexer_first_{cfg.max_num_inputs}"
+                    "flowdock", f"flowdock_first_{cfg.max_num_inputs}"
                 ),
             )
 
