@@ -34,27 +34,33 @@ def main(cfg: DictConfig):
         else cfg.input_csv_path
     )
 
-    if cfg.v1_baseline:
-        cfg.diffdock_exec_dir = cfg.diffdock_exec_dir.replace("DiffDock", "DiffDockv1")
-        cfg.input_csv_path = cfg.input_csv_path.replace("DiffDock", "DiffDockv1")
-        cfg.model_dir = cfg.model_dir.replace(
-            "forks/DiffDock/workdir/v1.1/score_model", "forks/DiffDockv1/workdir/paper_score_model"
-        )
-        cfg.confidence_model_dir = cfg.confidence_model_dir.replace(
-            "forks/DiffDock/workdir/v1.1/confidence_model",
-            "forks/DiffDockv1/workdir/paper_confidence_model",
-        )
-        cfg.output_dir = cfg.output_dir.replace("DiffDock", "DiffDockv1")
-        cfg.actual_steps = 18
-        cfg.no_final_step_noise = True
+    with open_dict(cfg):
+        if cfg.v1_baseline:
+            cfg.diffdock_exec_dir = cfg.diffdock_exec_dir.replace("DiffDock", "DiffDockv1")
+            cfg.input_csv_path = cfg.input_csv_path.replace("DiffDock", "DiffDockv1")
+            cfg.model_dir = cfg.model_dir.replace(
+                "forks/DiffDock/workdir/v1.1/score_model",
+                "forks/DiffDockv1/workdir/paper_score_model",
+            )
+            cfg.confidence_model_dir = cfg.confidence_model_dir.replace(
+                "forks/DiffDock/workdir/v1.1/confidence_model",
+                "forks/DiffDockv1/workdir/paper_confidence_model",
+            )
+            cfg.output_dir = cfg.output_dir.replace("DiffDock", "DiffDockv1")
+            cfg.actual_steps = 18
+            cfg.no_final_step_noise = True
 
-    if cfg.pocket_only_baseline:
-        with open_dict(cfg):
+        if cfg.pocket_only_baseline:
             input_csv_path = input_csv_path.replace(
                 f"diffdock_{cfg.dataset}", f"diffdock_pocket_only_{cfg.dataset}"
             )
             cfg.output_dir = cfg.output_dir.replace(
                 f"diffdock_{cfg.dataset}", f"diffdock_pocket_only_{cfg.dataset}"
+            )
+
+        if cfg.max_num_inputs:
+            cfg.output_dir = cfg.output_dir.replace(
+                f"_{cfg.dataset}", f"_first_{cfg.max_num_inputs}_{cfg.dataset}"
             )
 
     assert os.path.exists(input_csv_path), f"Input CSV file `{input_csv_path}` not found."

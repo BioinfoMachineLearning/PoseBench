@@ -60,10 +60,15 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
-    if cfg.pocket_only_baseline:
-        with open_dict(cfg):
+    with open_dict(cfg):
+        if cfg.pocket_only_baseline:
             cfg.input_dir = cfg.input_dir.replace(cfg.dataset, f"{cfg.dataset}_pocket_only")
             cfg.output_dir = cfg.output_dir.replace(cfg.dataset, f"{cfg.dataset}_pocket_only")
+
+        if cfg.max_num_inputs:
+            cfg.output_dir = cfg.output_dir.replace(
+                cfg.dataset, f"{cfg.dataset}_first_{cfg.max_num_inputs}"
+            )
 
     num_dir_items_found = 0
     for item in os.listdir(cfg.input_dir):

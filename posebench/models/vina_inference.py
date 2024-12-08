@@ -433,10 +433,16 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
-    if cfg.pocket_only_baseline:
-        with open_dict(cfg):
+    with open_dict(cfg):
+        if cfg.pocket_only_baseline:
+            cfg.input_protein_structure_dir += "_bs_cropped"
             cfg.output_dir = cfg.output_dir.replace(
                 f"vina_{cfg.method}", f"vina_pocket_only_{cfg.method}"
+            )
+
+        if cfg.max_num_inputs:
+            cfg.output_dir = cfg.output_dir.replace(
+                f"_{cfg.method}", f"_first_{cfg.max_num_inputs}_{cfg.method}"
             )
 
     if cfg.protein_filepath and cfg.ligand_filepaths and cfg.apo_protein_filepath:
@@ -490,10 +496,6 @@ def main(cfg: DictConfig):
         raise ValueError(
             "AutoDock Vina inference requires protein, ligand, and apo protein files as inputs."
         )
-
-    if cfg.pocket_only_baseline:
-        with open_dict(cfg):
-            cfg.input_protein_structure_dir += "_bs_cropped"
 
     assert os.path.exists(
         cfg.input_protein_structure_dir
