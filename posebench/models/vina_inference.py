@@ -442,7 +442,7 @@ def main(cfg: DictConfig):
 
         if cfg.max_num_inputs:
             cfg.output_dir = cfg.output_dir.replace(
-                f"_{cfg.method}", f"_first_{cfg.max_num_inputs}_{cfg.method}"
+                f"_{cfg.method}", f"_{cfg.method}_first_{cfg.max_num_inputs}"
             )
 
     if cfg.protein_filepath and cfg.ligand_filepaths and cfg.apo_protein_filepath:
