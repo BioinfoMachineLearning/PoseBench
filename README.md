@@ -849,48 +849,48 @@ cp forks/DiffDock/inference/diffdock_casp15_inputs.csv forks/Vina/inference/vina
 Run inference on each dataset
 
 ```bash
-python3 posebench/models/vina_inference.py dataset=posebusters_benchmark method=diffdock repeat_index=1 # NOTE: DiffDock-L's binding pockets are recommended as the default Vina input
+python3 posebench/models/vina_inference.py dataset=posebusters_benchmark method=p2rank repeat_index=1 # NOTE: P2Rank's binding pockets are recommended as the default Vina input
 ...
-python3 posebench/models/vina_inference.py dataset=astex_diverse method=diffdock repeat_index=1
+python3 posebench/models/vina_inference.py dataset=astex_diverse method=p2rank repeat_index=1
 ...
-python3 posebench/models/vina_inference.py dataset=dockgen method=diffdock repeat_index=1
+python3 posebench/models/vina_inference.py dataset=dockgen method=p2rank repeat_index=1
 ...
-python3 posebench/models/vina_inference.py dataset=casp15 method=diffdock repeat_index=1
+python3 posebench/models/vina_inference.py dataset=casp15 method=p2rank repeat_index=1
 ...
 ```
 
 Copy Vina's predictions to the corresponding inference directory for each repeat
 
 ```bash
-mkdir -p forks/Vina/inference/vina_diffdock_posebusters_benchmark_outputs_1 && cp -r data/test_cases/posebusters_benchmark/vina_diffdock_posebusters_benchmark_outputs_1/* forks/Vina/inference/vina_diffdock_posebusters_benchmark_outputs_1
+mkdir -p forks/Vina/inference/vina_p2rank_posebusters_benchmark_outputs_1 && cp -r data/test_cases/posebusters_benchmark/vina_p2rank_posebusters_benchmark_outputs_1/* forks/Vina/inference/vina_p2rank_posebusters_benchmark_outputs_1
 ...
-mkdir -p forks/Vina/inference/vina_diffdock_astex_diverse_outputs_1 && cp -r data/test_cases/astex_diverse/vina_diffdock_astex_diverse_outputs_1/* forks/Vina/inference/vina_diffdock_astex_diverse_outputs_1
+mkdir -p forks/Vina/inference/vina_p2rank_astex_diverse_outputs_1 && cp -r data/test_cases/astex_diverse/vina_p2rank_astex_diverse_outputs_1/* forks/Vina/inference/vina_p2rank_astex_diverse_outputs_1
 ...
-mkdir -p forks/Vina/inference/vina_diffdock_dockgen_outputs_1 && cp -r data/test_cases/dockgen/vina_diffdock_dockgen_outputs_1/* forks/Vina/inference/vina_diffdock_dockgen_outputs_1
+mkdir -p forks/Vina/inference/vina_p2rank_dockgen_outputs_1 && cp -r data/test_cases/dockgen/vina_p2rank_dockgen_outputs_1/* forks/Vina/inference/vina_p2rank_dockgen_outputs_1
 ...
-mkdir -p forks/Vina/inference/vina_diffdock_casp15_outputs_1 && cp -r data/test_cases/casp15/vina_diffdock_casp15_outputs_1/* forks/Vina/inference/vina_diffdock_casp15_outputs_1
+mkdir -p forks/Vina/inference/vina_p2rank_casp15_outputs_1 && cp -r data/test_cases/casp15/vina_p2rank_casp15_outputs_1/* forks/Vina/inference/vina_p2rank_casp15_outputs_1
 ...
 ```
 
 Relax the generated ligand structures inside of their respective protein pockets
 
 ```bash
-python3 posebench/models/inference_relaxation.py method=vina vina_binding_site_method=diffdock dataset=posebusters_benchmark remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index=1
+python3 posebench/models/inference_relaxation.py method=vina vina_binding_site_method=p2rank dataset=posebusters_benchmark remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index=1
 ...
-python3 posebench/models/inference_relaxation.py method=vina vina_binding_site_method=diffdock dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index=1
+python3 posebench/models/inference_relaxation.py method=vina vina_binding_site_method=p2rank dataset=astex_diverse remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index=1
 ...
-python3 posebench/models/inference_relaxation.py method=vina vina_binding_site_method=diffdock dataset=dockgen remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index=1
+python3 posebench/models/inference_relaxation.py method=vina vina_binding_site_method=p2rank dataset=dockgen remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index=1
 ...
 ```
 
 Analyze inference results for each dataset
 
 ```bash
-python3 posebench/analysis/inference_analysis.py method=vina vina_binding_site_method=diffdock dataset=posebusters_benchmark repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=vina vina_binding_site_method=p2rank dataset=posebusters_benchmark repeat_index=1
 ...
-python3 posebench/analysis/inference_analysis.py method=vina vina_binding_site_method=diffdock dataset=astex_diverse repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=vina vina_binding_site_method=p2rank dataset=astex_diverse repeat_index=1
 ...
-python3 posebench/analysis/inference_analysis.py method=vina vina_binding_site_method=diffdock dataset=dockgen repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=vina vina_binding_site_method=p2rank dataset=dockgen repeat_index=1
 ...
 ```
 
@@ -898,12 +898,12 @@ Analyze inference results for the CASP15 dataset
 
 ```bash
 # assemble (unrelaxed and post ranking-relaxed) CASP15-compliant prediction submission files for scoring
-python3 posebench/models/ensemble_generation.py ensemble_methods=\[vina\] vina_binding_site_methods=\[diffdock\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_vina_diffdock_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
-python3 posebench/models/ensemble_generation.py ensemble_methods=\[vina\] vina_binding_site_methods=\[diffdock\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_vina_diffdock_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[vina\] vina_binding_site_methods=\[p2rank\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_vina_p2rank_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[vina\] vina_binding_site_methods=\[p2rank\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_vina_p2rank_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
 # NOTE: the suffixes for both `output_dir` and `ensemble_benchmarking_repeat_index` should be modified to e.g., 2, 3, ...
 ...
 # now score the CASP15-compliant submissions using the official CASP scoring pipeline
-python3 posebench/analysis/inference_analysis_casp.py method=vina vina_binding_site_method=diffdock dataset=casp15 repeat_index=1
+python3 posebench/analysis/inference_analysis_casp.py method=vina vina_binding_site_method=p2rank dataset=casp15 repeat_index=1
 ...
 ```
 
@@ -968,11 +968,11 @@ python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cas
 # ...
 # now, manually run each desired method's generated prediction script, with the exception of AutoDock Vina which uses other methods' predictions
 # ...
-python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/5S8I_2LY/ensemble_inputs.csv output_dir=data/test_cases/5S8I_2LY/top_consensus_ensemble_predictions_1 max_method_predictions=5 method_top_n_to_select=3 ensemble_ranking_method=consensus resume=true generate_vina_scripts=true vina_binding_site_methods=[diffdock]
+python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/5S8I_2LY/ensemble_inputs.csv output_dir=data/test_cases/5S8I_2LY/top_consensus_ensemble_predictions_1 max_method_predictions=5 method_top_n_to_select=3 ensemble_ranking_method=consensus resume=true generate_vina_scripts=true vina_binding_site_methods=[p2rank]
 # now, manually run AutoDock Vina's generated prediction script for each binding site prediction method
 #...
 # lastly, organize each method's predictions together
-python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/5S8I_2LY/ensemble_inputs.csv output_dir=data/test_cases/5S8I_2LY/top_consensus_ensemble_predictions_1 max_method_predictions=5 method_top_n_to_select=3 ensemble_ranking_method=consensus resume=true generate_vina_scripts=false vina_binding_site_methods=[diffdock]
+python3 posebench/models/ensemble_generation.py input_csv_filepath=data/test_cases/5S8I_2LY/ensemble_inputs.csv output_dir=data/test_cases/5S8I_2LY/top_consensus_ensemble_predictions_1 max_method_predictions=5 method_top_n_to_select=3 ensemble_ranking_method=consensus resume=true generate_vina_scripts=false vina_binding_site_methods=[p2rank]
 ```
 
 Benchmark (ensemble-)ranked predictions across each test dataset

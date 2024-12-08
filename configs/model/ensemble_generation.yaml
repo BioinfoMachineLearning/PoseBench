@@ -147,7 +147,7 @@ rfaa_inference_dir_name: null # the name of the inference output directory to us
 chai_out_path: ${oc.env:PROJECT_ROOT}/forks/chai-lab/inference/chai-lab_ensemble_outputs # the output directory to which to write the predictions
 chai_skip_existing: true # whether to skip running inference if the prediction for a target already exists
 # Vina inference arguments:
-vina_binding_site_methods: [diffdock, p2rank] # the methods to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `flowdock`, `p2rank`)
+vina_binding_site_methods: [p2rank] # the methods to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `flowdock`, `p2rank`)
 vina_python2_exec_path: ${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/bin/python # the path to the Python 2 executable
 vina_prepare_receptor_script_path: ${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/CCSBpckgs/AutoDockTools/Utilities24/prepare_receptor4.py # the path to the prepare_receptor.py script
 vina_output_dir: ${oc.env:PROJECT_ROOT}/forks/Vina/inference/vina_ensemble_outputs # the output directory to which to save the inference results

@@ -118,7 +118,11 @@ def relax_inference_results(
                 filepath for filepath in ligand_filepaths if "relaxed" not in filepath.stem
             ]
     protein_filepaths = sorted(
-        [fp for fp in protein_filepaths if not any(s in fp.stem for s in ("relaxed", "aligned"))]
+        [
+            fp
+            for fp in protein_filepaths
+            if not any(s in fp.stem for s in ("relaxed", "aligned")) or "holo_aligned" in fp.stem
+        ]
     )
     ligand_filepaths = sorted(
         [fp for fp in ligand_filepaths if not any(s in fp.stem for s in ("relaxed", "aligned"))]
