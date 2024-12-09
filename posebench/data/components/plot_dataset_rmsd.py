@@ -272,9 +272,7 @@ def main(cfg: DictConfig):
             "dockgen_set",
         ),
         usalign_exec_path=cfg.usalign_exec_path,
-        filtered_ids_to_keep_file=os.path.join(
-            cfg.data_dir, "dockgen_set", "split_test_rmsd_filtered.txt"
-        ),
+        filtered_ids_to_keep_file=os.path.join(cfg.data_dir, "dockgen_set", "split_test.txt"),
     )
 
     plot_dataset_rmsd(
