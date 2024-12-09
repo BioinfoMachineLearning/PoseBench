@@ -469,12 +469,16 @@ def align_apo_structure_to_holo_structure(
     cmd.select("binding_site", f"ref_protein_heavy within {cutoff} of ref_ligand_heavy")
 
     # Align the predicted protein to the reference binding site(s)
-    alignment_result = cmd.align("pred_protein", "binding_site")
+    align_cmd = cmd.super if cfg.dataset == "dockgen" else cmd.align
+    # NOTE: Since with DockGen we are aligning full predicted bioassemblies
+    # to primary interacting chains, we instead use the `super` command to align
+    # since it is more robust to large quaternary sequence differences
+    alignment_result = align_cmd("pred_protein", "binding_site")
 
     # Report alignment RMSD and number of aligned atoms
     if verbose:
         logger.info(
-            f"Alignment RMSD with {alignment_result[1]} aligned atoms: {alignment_result[0]:.3f} Å"
+            f"Alignment RMSD for {pdb_id} with {alignment_result[1]} aligned atoms: {alignment_result[0]:.3f} Å"
         )
 
     # Apply the transformation to the predicted protein object
@@ -491,7 +495,7 @@ def align_apo_structure_to_holo_structure(
     #     reference_target == prediction_target
     # ), f"Reference target {reference_target} does not match prediction target {prediction_target}"
 
-    # protein_a2h_alignment_viz_dir = os.path.join("protein_apo_to_holo_alignment_viz", reference_target)
+    # protein_a2h_alignment_viz_dir = os.path.join("protein_apo_to_holo_alignment_viz", prediction_target)
     # os.makedirs(protein_a2h_alignment_viz_dir, exist_ok=True)
 
     # Save the aligned protein

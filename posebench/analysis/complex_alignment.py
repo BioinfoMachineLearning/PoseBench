@@ -10,6 +10,7 @@ from typing import Optional
 import hydra
 import numpy as np
 import rootutils
+from beartype.typing import Literal
 from omegaconf import DictConfig
 from tqdm import tqdm
 
@@ -26,9 +27,9 @@ def align_to_binding_site(
     predicted_ligand: Optional[str],
     reference_protein: str,
     reference_ligand: Optional[str],
+    dataset: Literal["dockgen", "casp15", "posebusters_benchmark", "astex_diverse"],
     aligned_filename_suffix: str = "_aligned",
     cutoff: float = 10.0,
-    is_casp_target: bool = False,
     save_protein: bool = True,
     save_ligand: bool = True,
     verbose: bool = True,
@@ -40,14 +41,20 @@ def align_to_binding_site(
     :param predicted_ligand: File path to the optional predicted ligand (SDF).
     :param reference_protein: File path to the reference protein (PDB).
     :param reference_ligand: File path to the optional reference ligand (SDF).
+    :param dataset: Dataset name (e.g., "dockgen", "casp15", "posebusters_benchmark", or
+        "astex_diverse").
     :param aligned_filename_suffix: Suffix to append to the aligned files (default "_aligned").
     :param cutoff: Distance cutoff in Å to define the binding site (default 10.0).
-    :param is_casp_target: Whether the input is a CASP target (default False).
     :param save_protein: Whether to save the aligned protein structure (default True).
     :param save_ligand: Whether to save the aligned ligand structure (default True).
     :param verbose: Whether to print the alignment RMSD and number of aligned atoms (default True).
     """
     from pymol import cmd
+
+    reference_target = os.path.splitext(os.path.basename(reference_protein))[0].split("_protein")[
+        0
+    ]
+    prediction_target = os.path.basename(os.path.dirname(predicted_protein))
 
     # Refresh PyMOL
     cmd.reinitialize()
@@ -58,7 +65,7 @@ def align_to_binding_site(
 
     if reference_ligand is not None:
         cmd.load(reference_ligand, "ref_ligand")
-    elif is_casp_target:
+    elif dataset == "casp15":
         # Select the ligand chain(s) in the reference protein PDB file
         cmd.select("ref_ligand", "ref_protein and not polymer")
 
@@ -81,12 +88,16 @@ def align_to_binding_site(
     cmd.select("binding_site", f"ref_protein_heavy within {cutoff} of ref_ligand_heavy")
 
     # Align the predicted protein to the reference binding site(s)
-    alignment_result = cmd.align("pred_complex", "binding_site")
+    align_cmd = cmd.super if dataset == "dockgen" else cmd.align
+    # NOTE: Since with DockGen we are aligning full predicted bioassemblies
+    # to primary interacting chains, we instead use the `super` command to align
+    # since it is more robust to large quaternary sequence differences
+    alignment_result = align_cmd("pred_complex", "binding_site")
 
     # Report alignment RMSD and number of aligned atoms
     if verbose:
         logger.info(
-            f"Alignment RMSD with {alignment_result[1]} aligned atoms: {alignment_result[0]:.3f} Å"
+            f"Alignment RMSD for {reference_target} with {alignment_result[1]} aligned atoms: {alignment_result[0]:.3f} Å"
         )
 
     # Apply the transformation to the individual objects
@@ -95,15 +106,9 @@ def align_to_binding_site(
 
     # # Maybe prepare to visualize the computed alignments
     # import shutil
-
-    # reference_target = os.path.splitext(os.path.basename(reference_protein))[0].split(
-    #     "_protein"
-    # )[0]
-    # prediction_target = os.path.basename(os.path.dirname(predicted_protein))
     # assert (
     #     reference_target == prediction_target
     # ), f"Reference target {reference_target} does not match prediction target {prediction_target}"
-
     # complex_alignment_viz_dir = os.path.join("complex_alignment_viz", reference_target)
     # os.makedirs(complex_alignment_viz_dir, exist_ok=True)
 
@@ -496,14 +501,15 @@ def main(cfg: DictConfig):
                     str(ligand_file).replace(".sdf", f"{cfg.aligned_filename_suffix}.sdf")
                 )
             ):
-                is_casp_target = cfg.dataset == "casp15"
                 align_to_binding_site(
                     predicted_protein=str(protein_file),
                     predicted_ligand=str(ligand_file),
                     reference_protein=str(reference_protein_pdb),
-                    reference_ligand=(None if is_casp_target else str(reference_ligand_sdf)),
+                    reference_ligand=(
+                        None if cfg.dataset == "casp15" else str(reference_ligand_sdf)
+                    ),
+                    dataset=cfg.dataset,
                     aligned_filename_suffix=cfg.aligned_filename_suffix,
-                    is_casp_target=is_casp_target,
                     save_protein=cfg.method not in ("diffdock", "fabind"),
                 )
 
