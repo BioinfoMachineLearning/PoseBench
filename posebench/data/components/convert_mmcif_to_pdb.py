@@ -22,9 +22,12 @@ def convert_mmcif_to_pdb(mmcif_file: str, pdb_file: str):
     parser = PDB.MMCIFParser(QUIET=True)
     structure = parser.get_structure("structure", mmcif_file)
 
-    io = PDB.PDBIO()
-    io.set_structure(structure)
-    io.save(pdb_file)
+    try:
+        io = PDB.PDBIO()
+        io.set_structure(structure)
+        io.save(pdb_file)
+    except Exception as e:
+        logger.error(f"Error converting {mmcif_file} to PDB: {e}")
 
 
 @hydra.main(
@@ -37,7 +40,7 @@ def main(cfg: DictConfig):
     os.makedirs(cfg.output_pdb_dir, exist_ok=True)
 
     for file in tqdm(
-        os.listdir(cfg.input_mmcif_dir),
+        [file for file in os.listdir(cfg.input_mmcif_dir) if file.endswith(".cif")],
         desc=f"Converting mmCIF to PDB for {cfg.dataset}",
     ):
         new_id = os.path.splitext(file)[0].replace("_model", "").replace("_chain", "")
