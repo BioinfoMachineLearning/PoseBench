@@ -5,6 +5,7 @@
 import glob
 import logging
 import os
+import re
 import shutil
 import subprocess  # nosec
 from collections import defaultdict
@@ -1508,14 +1509,14 @@ def read_ligand_expo(
     return df.to_dict("index")
 
 
-def write_pdb_with_prody(protein, pdb_name, add_element_types=False):
-    """Write a protein to a pdb file using ProDy.
+def write_pdb_with_prody(atoms, pdb_name, add_element_types=False):
+    """Write atoms to a pdb file using ProDy.
 
-    :param protein: protein object from prody
+    :param atoms: atoms object from prody
     :param pdb_name: base name for the pdb file
     :param add_element_types: whether to add element types to the pdb file
     """
-    writePDB(pdb_name, protein)
+    writePDB(pdb_name, atoms)
     if add_element_types:
         with open(pdb_name.replace(".pdb", "_elem.pdb"), "w") as f:
             subprocess.run(  # nosec
@@ -1556,8 +1557,6 @@ def process_ligand_with_prody(
     :return: molecule with bond orders assigned
     """
     sub_smiles_provided = sub_smiles is not None
-
-    output = StringIO()
     sub_mol = ligand.select(f"resname {res_name} and chain {chain} and resnum {resnum}")
 
     ligand_expo_mapping = ligand_expo_mapping or read_ligand_expo()
@@ -1573,6 +1572,7 @@ def process_ligand_with_prody(
     else:
         template = None
 
+    output = StringIO()
     writePDBStream(output, sub_mol)
     pdb_string = output.getvalue()
     rd_mol = AllChem.MolFromPDBBlock(pdb_string, sanitize=sanitize)
