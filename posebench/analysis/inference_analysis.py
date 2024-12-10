@@ -200,7 +200,7 @@ def create_mol_table(
         with open(cfg.dockgen_test_ids_filepath) as f:
             pdb_ids = {line.replace(" ", "-") for line in f.read().splitlines()}
 
-    if cfg.method in ["dynamicbind", "rfaa", "chai-lab"]:
+    if cfg.method in ["dynamicbind", "rfaa", "chai-lab", "alphafold3"]:
         # NOTE: for methods such as DynamicBind and RoseTTAFold-All-Atom,
         # the input CSV file needs to be created manually from the input data directory
         input_smiles_and_pdb_ids = parse_inference_inputs_from_dir(input_data_dir, pdb_ids=pdb_ids)
@@ -284,6 +284,24 @@ def create_mol_table(
                     list(
                         (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
                             f"pred.model_idx_0_protein{'_relaxed' if relaxed_protein else ''}_aligned.pdb"
+                        )
+                    )
+                )
+                else None
+            )
+        )
+    elif cfg.method == "alphafold3":
+        mol_table["mol_cond"] = input_table["pdb_id"].apply(
+            lambda x: (
+                list(
+                    (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                        f"*_model_protein{'_relaxed' if relaxed_protein else ''}_aligned.pdb"
+                    )
+                )[0]
+                if len(
+                    list(
+                        (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                            f"*_model_protein{'_relaxed' if relaxed_protein else ''}_aligned.pdb"
                         )
                     )
                 )
@@ -426,6 +444,24 @@ def create_mol_table(
                     list(
                         (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
                             f"pred.model_idx_0_ligand{'_relaxed' if relaxed else ''}_aligned.sdf"
+                        )
+                    )
+                )
+                else None
+            )
+        )
+    elif cfg.method == "alphafold3":
+        mol_table["mol_pred"] = input_table["pdb_id"].apply(
+            lambda x: (
+                list(
+                    (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                        f"*_model_ligand{'_relaxed' if relaxed else ''}_aligned.sdf"
+                    )
+                )[0]
+                if len(
+                    list(
+                        (Path(str(inference_dir).replace("_relaxed", "")) / x).rglob(
+                            f"*_model_ligand{'_relaxed' if relaxed else ''}_aligned.sdf"
                         )
                     )
                 )
@@ -691,6 +727,30 @@ def create_mol_table(
                                     Path(str(inference_dir).replace("_relaxed", "")),
                                     x,
                                     "pred.model_idx_0_ligand_aligned.sdf",
+                                )
+                            )
+                        )
+                        else None
+                    )
+                )
+            elif cfg.method == "alphafold3":
+                mol_table.loc[missing_pred_indices, "mol_pred"] = input_table.loc[
+                    missing_pred_indices, "pdb_id"
+                ].apply(
+                    lambda x: (
+                        glob.glob(
+                            os.path.join(
+                                Path(str(inference_dir).replace("_relaxed", "")),
+                                x,
+                                "*_model_ligand_aligned.sdf",
+                            )
+                        )[0]
+                        if len(
+                            glob.glob(
+                                os.path.join(
+                                    Path(str(inference_dir).replace("_relaxed", "")),
+                                    x,
+                                    "*_model_ligand_aligned.sdf",
                                 )
                             )
                         )

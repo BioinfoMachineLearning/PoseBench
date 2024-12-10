@@ -861,11 +861,11 @@ python3 posebench/data/af3_output_extraction.py dataset=casp15 repeat_index=1
 Relax the generated ligand structures inside of their respective protein pockets
 
 ```bash
-python3 posebench/models/inference_relaxation.py method=chai-lab dataset=posebusters_benchmark remove_initial_protein_hydrogens=true repeat_index=1
+python3 posebench/models/inference_relaxation.py method=alphafold3 dataset=posebusters_benchmark remove_initial_protein_hydrogens=true repeat_index=1
 ...
-python3 posebench/models/inference_relaxation.py method=chai-lab dataset=astex_diverse remove_initial_protein_hydrogens=true repeat_index=1
+python3 posebench/models/inference_relaxation.py method=alphafold3 dataset=astex_diverse remove_initial_protein_hydrogens=true repeat_index=1
 ...
-python3 posebench/models/inference_relaxation.py method=chai-lab dataset=dockgen remove_initial_protein_hydrogens=true repeat_index=1
+python3 posebench/models/inference_relaxation.py method=alphafold3 dataset=dockgen remove_initial_protein_hydrogens=true repeat_index=1
 ...
 ```
 
@@ -873,11 +873,11 @@ Align predicted protein-ligand structures to ground-truth complex structures
 
 ```bash
 conda activate PyMOL-PoseBench
-python3 posebench/analysis/complex_alignment.py method=chai-lab dataset=posebusters_benchmark repeat_index=1
+python3 posebench/analysis/complex_alignment.py method=alphafold3 dataset=posebusters_benchmark repeat_index=1
 ...
-python3 posebench/analysis/complex_alignment.py method=chai-lab dataset=astex_diverse repeat_index=1
+python3 posebench/analysis/complex_alignment.py method=alphafold3 dataset=astex_diverse repeat_index=1
 ...
-python3 posebench/analysis/complex_alignment.py method=chai-lab dataset=dockgen repeat_index=1
+python3 posebench/analysis/complex_alignment.py method=alphafold3 dataset=dockgen repeat_index=1
 conda deactivate
 ...
 ```
@@ -885,11 +885,11 @@ conda deactivate
 Analyze inference results for each dataset
 
 ```bash
-python3 posebench/analysis/inference_analysis.py method=chai-lab dataset=posebusters_benchmark repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=alphafold3 dataset=posebusters_benchmark repeat_index=1
 ...
-python3 posebench/analysis/inference_analysis.py method=chai-lab dataset=astex_diverse repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=alphafold3 dataset=astex_diverse repeat_index=1
 ...
-python3 posebench/analysis/inference_analysis.py method=chai-lab dataset=dockgen repeat_index=1
+python3 posebench/analysis/inference_analysis.py method=alphafold3 dataset=dockgen repeat_index=1
 ...
 ```
 
@@ -897,12 +897,12 @@ Analyze inference results for the CASP15 dataset
 
 ```bash
 # first assemble (unrelaxed and post ranking-relaxed) CASP15-compliant prediction submission files for scoring
-python3 posebench/models/ensemble_generation.py ensemble_methods=\[chai-lab\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_chai-lab_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
-python3 posebench/models/ensemble_generation.py ensemble_methods=\[chai-lab\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_chai-lab_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[alphafold3\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_alphafold3_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[alphafold3\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_alphafold3_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
 # NOTE: the suffixes for both `output_dir` and `ensemble_benchmarking_repeat_index` should be modified to e.g., 2, 3, ...
 ...
 # now score the CASP15-compliant submissions using the official CASP scoring pipeline
-python3 posebench/analysis/inference_analysis_casp.py method=chai-lab dataset=casp15 repeat_index=1
+python3 posebench/analysis/inference_analysis_casp.py method=alphafold3 dataset=casp15 repeat_index=1
 ...
 ```
 

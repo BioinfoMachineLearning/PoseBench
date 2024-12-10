@@ -75,6 +75,12 @@ def relax_inference_results(
                 if "model_idx_0_protein.pdb" in filepath.name
                 and "relaxed" not in filepath.parent.stem
             ]
+        elif cfg.method == "alphafold3":
+            protein_filepaths = [
+                filepath
+                for filepath in protein_filepaths
+                if "_model_protein.pdb" in filepath.name and "relaxed" not in filepath.parent.stem
+            ]
     if not ligand_file_dir.exists() or cfg.method == "dynamicbind":
         ligand_filepaths = [
             file
@@ -112,6 +118,12 @@ def relax_inference_results(
                 for filepath in ligand_filepaths
                 if "model_idx_0_ligand.sdf" in filepath.name
                 and "relaxed" not in filepath.parent.stem
+            ]
+        elif cfg.method == "alphafold3":
+            ligand_filepaths = [
+                filepath
+                for filepath in ligand_filepaths
+                if "_model_ligand.sdf" in filepath.name and "relaxed" not in filepath.parent.stem
             ]
         elif cfg.method == "vina":
             ligand_filepaths = [
@@ -164,8 +176,10 @@ def relax_inference_results(
                     for ligand_filepath in ligand_filepaths
                 )
             ]
-        elif cfg.method == "chai-lab":
-            raise NotImplementedError("Cannot subset `chai-lab` protein predictions at this time.")
+        elif cfg.method == "chai-lab" or cfg.method == "alphafold3":
+            raise NotImplementedError(
+                "Cannot subset `chai-lab` or `alphafold3` protein predictions at this time."
+            )
         else:
             protein_filepaths = [
                 protein_filepath
@@ -326,6 +340,17 @@ def relax_single_filepair(
                 f"{protein_filepath.stem}_relaxed.pdb",
             )
         elif cfg.method == "chai-lab":
+            output_filepath = Path(
+                output_file_dir,
+                ligand_filepath.parent.stem,
+                f"{ligand_filepath.stem}_relaxed.sdf",
+            )
+            protein_output_filepath = Path(
+                output_file_dir,
+                protein_filepath.parent.stem,
+                f"{protein_filepath.stem}_relaxed.pdb",
+            )
+        elif cfg.method == "alphafold3":
             output_filepath = Path(
                 output_file_dir,
                 ligand_filepath.parent.stem,

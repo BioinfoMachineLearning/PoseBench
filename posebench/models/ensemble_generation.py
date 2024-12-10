@@ -44,7 +44,13 @@ from posebench.utils.data_utils import (
 )
 from posebench.utils.model_utils import calculate_rmsd
 
-METHODS_PREDICTING_HOLO_PROTEIN_AB_INITIO = {"neuralplexer", "flowdock", "rfaa", "chai-lab"}
+METHODS_PREDICTING_HOLO_PROTEIN_AB_INITIO = {
+    "neuralplexer",
+    "flowdock",
+    "rfaa",
+    "chai-lab",
+    "alphafold3",
+}
 
 ENSEMBLE_PREDICTIONS = Dict[str, List[Tuple[str, str]]]
 RANKED_ENSEMBLE_PREDICTIONS = Dict[int, Tuple[str, str, str, float]]
@@ -782,6 +788,10 @@ def generate_method_prediction_script(
             output_filepath=output_filepath,
             generate_hpc_scripts=generate_hpc_scripts,
         )
+    elif method == "alphafold3":
+        logger.info(
+            "AlphaFold-3 ensemble prediction Bash scripts are not supported. Skipping script creation."
+        )
     elif method == "vina":
         assert (
             cfg.generate_vina_scripts and cfg.resume
@@ -1067,7 +1077,7 @@ def get_method_predictions(
     elif method == "chai-lab":
         ensemble_benchmarking_output_dir = (
             Path(cfg.input_dir if cfg.input_dir else cfg.chai_out_path).parent
-            / f"chai-lab{pocket_only_suffix}{no_ilcl_suffix}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
+            / f"chai-lab{pocket_only_suffix}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
             if cfg.ensemble_benchmarking
             else (cfg.input_dir if cfg.input_dir else cfg.chai_out_path)
         )
@@ -1092,6 +1102,40 @@ def get_method_predictions(
                     Path(os.path.join(ensemble_benchmarking_output_dir, target)).rglob("*.sdf"),
                 )
                 if "model_idx" in os.path.basename(file)
+                and "relaxed" not in os.path.basename(file)
+                and "aligned" not in os.path.basename(file)
+                and "_LIG_" not in os.path.basename(file)
+            ],
+            key=rank_key,
+        )[: cfg.method_top_n_to_select]
+    elif method == "alphafold3":
+        ensemble_benchmarking_output_dir = (
+            Path(cfg.input_dir if cfg.input_dir else cfg.alphafold3_out_path).parent
+            / f"alphafold3{pocket_only_suffix}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
+            if cfg.ensemble_benchmarking
+            else (cfg.input_dir if cfg.input_dir else cfg.alphafold3_out_path)
+        )
+        protein_output_files = sorted(
+            [
+                file
+                for file in map(
+                    str,
+                    Path(os.path.join(ensemble_benchmarking_output_dir, target)).rglob("*.pdb"),
+                )
+                if "model_protein" in os.path.basename(file)
+                and "relaxed" not in os.path.basename(file)
+                and "aligned" not in os.path.basename(file)
+            ],
+            key=rank_key,
+        )[: cfg.method_top_n_to_select]
+        ligand_output_files = sorted(
+            [
+                file
+                for file in map(
+                    str,
+                    Path(os.path.join(ensemble_benchmarking_output_dir, target)).rglob("*.sdf"),
+                )
+                if "model_ligand" in os.path.basename(file)
                 and "relaxed" not in os.path.basename(file)
                 and "aligned" not in os.path.basename(file)
                 and "_LIG_" not in os.path.basename(file)

@@ -305,6 +305,7 @@ def main(cfg: DictConfig):
             "flowdock",
             "rfaa",
             "chai-lab",
+            "alphafold3",
         ]:
             output_dir = Path(str(output_dir).replace("_relaxed", ""))
 
@@ -340,6 +341,18 @@ def main(cfg: DictConfig):
             output_ligand_files = list(
                 output_dir.rglob(f"pred.model_idx_{cfg.rank_to_align - 1}_ligand*{config}.sdf")
             )
+            output_ligand_files = sorted(
+                [
+                    file
+                    for file in output_ligand_files
+                    if config == "_relaxed"
+                    or (config == "" and "_relaxed" not in file.stem)
+                    and "_aligned" not in file.stem
+                    and "_LIG_" not in file.stem
+                ]
+            )
+        elif cfg.method == "alphafold3":
+            output_ligand_files = list(output_dir.rglob(f"*_model_ligand{config}.sdf"))
             output_ligand_files = sorted(
                 [
                     file
@@ -395,6 +408,16 @@ def main(cfg: DictConfig):
                     and "_aligned" not in file.stem
                 ]
             )
+        elif cfg.method == "alphafold3":
+            output_protein_files = list(output_dir.rglob("*_model_protein.pdb"))
+            output_protein_files = sorted(
+                [
+                    file
+                    for file in output_protein_files
+                    if (config == "_relaxed" or (config == "" and "_relaxed" not in file.stem))
+                    and "_aligned" not in file.stem
+                ]
+            )
         else:
             raise ValueError(f"Invalid method: {cfg.method}")
 
@@ -410,7 +433,7 @@ def main(cfg: DictConfig):
                         )
                     ]
                 )
-            elif cfg.method in ["rfaa", "chai-lab"]:
+            elif cfg.method == "chai-lab":
                 output_protein_files = sorted(
                     [
                         item

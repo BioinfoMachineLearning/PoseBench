@@ -93,6 +93,12 @@ Chai-1 output extraction
     :language: yaml
     :caption: :file:`data/chai_output_extraction.yaml`
 
+AlphaFold 3 output extraction
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/data/alphafold3_output_extraction.yaml
+    :language: yaml
+    :caption: :file:`data/alphafold3_output_extraction.yaml`
+
 TULIP output extraction
 ^^^^^^^^^^^^^^^^^^^^^^^^
 .. literalinclude:: ../../../configs/data/tulip_output_extraction.yaml

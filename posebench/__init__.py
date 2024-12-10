@@ -16,6 +16,7 @@ METHOD_TITLE_MAPPING = {
     "flowdock": "FlowDock",
     "rfaa": "RoseTTAFold-All-Atom",
     "chai-lab": "chai-lab",
+    "alphafold3": "AlphaFold 3",
     "vina": "Vina",
     "tulip": "TULIP",
     "p2rank": "P2Rank",
@@ -100,7 +101,7 @@ def resolve_method_protein_dir(
             "results",
             f"{dataset}{pocket_only_suffix}",
         )
-    elif method in ["neuralplexer", "flowdock", "rfaa", "chai-lab"]:
+    elif method in ["neuralplexer", "flowdock", "rfaa", "chai-lab", "alphafold3"]:
         return os.path.join(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method),
@@ -143,10 +144,13 @@ def resolve_method_ligand_dir(
         "flowdock",
         "rfaa",
         "chai-lab",
+        "alphafold3",
         "tulip",
     ]:
         output_suffix = (
-            "s" if method in ["neuralplexer", "flowdock", "rfaa", "chai-lab", "tulip"] else ""
+            "s"
+            if method in ["neuralplexer", "flowdock", "rfaa", "chai-lab", "alphafold3", "tulip"]
+            else ""
         )
         return os.path.join(
             "forks",
@@ -208,10 +212,13 @@ def resolve_method_output_dir(
         "flowdock",
         "rfaa",
         "chai-lab",
+        "alphafold3",
         "tulip",
     ]:
         output_suffix = (
-            "s" if method in ["neuralplexer", "flowdock", "rfaa", "chai-lab", "tulip"] else ""
+            "s"
+            if method in ["neuralplexer", "flowdock", "rfaa", "chai-lab", "alphafold3", "tulip"]
+            else ""
         )
         return os.path.join(
             "forks",
@@ -260,6 +267,7 @@ def resolve_method_input_csv_path(method: str, dataset: str, pocket_only_baselin
         "flowdock",
         "rfaa",
         "chai-lab",
+        "alphafold3",
         "vina",
         "tulip",
     ]:

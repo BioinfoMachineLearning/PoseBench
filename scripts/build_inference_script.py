@@ -191,6 +191,29 @@ COMMANDS = {
             "python3 posebench/analysis/inference_analysis_casp.py method=chai-lab dataset=casp15 repeat_index={repeat_index} relax_protein={relax_protein}",
         ],
     },
+    "alphafold3": {
+        "extract_outputs": [
+            "python3 posebench/data/alphafold3_output_extraction.py dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+        ],
+        "relax": [
+            "python3 posebench/models/inference_relaxation.py method=alphafold3 dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true repeat_index={repeat_index}",
+        ],
+        "align_complexes": [
+            "conda activate PyMOL-PoseBench",
+            "python3 posebench/analysis/complex_alignment.py method=alphafold3 dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+            "conda deactivate",
+        ],
+        "analyze_results": [
+            "python3 posebench/analysis/inference_analysis.py method=alphafold3 dataset={dataset} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} repeat_index={repeat_index}",
+        ],
+        "assemble_casp15": [
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[alphafold3] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_alphafold3_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[alphafold3] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_alphafold3_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+        ],
+        "analyze_casp15": [
+            "python3 posebench/analysis/inference_analysis_casp.py method=alphafold3 dataset=casp15 repeat_index={repeat_index} relax_protein={relax_protein}",
+        ],
+    },
     "vina": {
         "prepare_input": [
             "cp forks/DiffDock/inference/diffdock_{dataset}_inputs.csv forks/Vina/inference/vina_{dataset}_inputs.csv",
@@ -255,6 +278,7 @@ INFERENCE_METHODS = Literal[
     "flowdock",
     "rfaa",
     "chai-lab",
+    "alphafold3",
     "vina",
     "tulip",
     "ensemble",
@@ -272,6 +296,7 @@ POCKET_ONLY_COMPATIBLE_METHODS = {
     "flowdock",
     "rfaa",
     "chai-lab",
+    "alphafold3",
     "vina",
     "ensemble",
 }
@@ -442,6 +467,11 @@ def build_inference_script(
                 if method == "chai-lab" and dataset == "casp15"
                 else ""
             )
+            alphafold3_casp15_input_suffix = (
+                " input_data_dir=data/casp15_set/targets"
+                if method == "alphafold3" and dataset == "casp15"
+                else ""
+            )
             f.write("# Prepare input files\n")
             for cmd in commands.get("prepare_input", []):
                 prepare_input_string = (
@@ -451,6 +481,7 @@ def build_inference_script(
                     + neuralplexer_and_flowdock_casp15_input_suffix
                     + rfaa_casp15_input_suffix
                     + chai_casp15_input_suffix
+                    + alphafold3_casp15_input_suffix
                     + "\n"
                 )
                 if method == "vina" and pocket_only_baseline:
