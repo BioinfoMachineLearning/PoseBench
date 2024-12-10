@@ -6,9 +6,10 @@ import logging
 import os
 
 import hydra
-import numpy as np
 import rootutils
 from omegaconf import DictConfig, open_dict
+from openmm.app import PDBFile
+from pdbfixer import PDBFixer
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
@@ -19,6 +20,21 @@ from posebench.utils.data_utils import (
 
 logging.basicConfig(format="[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
+
+def convert_cif_to_clean_pdb(input_cif: str, output_pdb: str):
+    """Convert a CIF file to a clean PDB file using PDBFixer.
+
+    NOTE: We use PDBFixer here since Biopython does not
+    correctly handle the conversion of mmCIF files to PDB
+    files for certain mmCIF files produced by AlphaFold 3.
+
+    :param input_cif: Path to the input CIF file.
+    :param output_pdb: Path to the output PDB file.
+    """
+    fixer = PDBFixer(filename=input_cif)
+    with open(output_pdb, "w") as output:
+        PDBFile.writeFile(fixer.topology, fixer.positions, output, keepIds=True)
 
 
 @hydra.main(
@@ -69,14 +85,17 @@ def main(cfg: DictConfig):
         ), "Output directory must be provided when extracting single complex outputs."
         intermediate_output_filepath = cfg.complex_filepath
         final_output_filepath = os.path.join(
-            cfg.output_dir, cfg.complex_id, os.path.basename(cfg.complex_filepath)
+            cfg.output_dir,
+            cfg.complex_id,
+            os.path.basename(cfg.complex_filepath).replace(".cif", ".pdb"),
         )
         os.makedirs(os.path.dirname(final_output_filepath), exist_ok=True)
+        convert_cif_to_clean_pdb(intermediate_output_filepath, final_output_filepath)
         try:
             extract_protein_and_ligands_with_prody(
-                intermediate_output_filepath,
-                final_output_filepath.replace(".cif", "_protein.pdb"),
-                final_output_filepath.replace(".cif", "_ligand.sdf"),
+                final_output_filepath,
+                final_output_filepath.replace(".pdb", "_protein.pdb"),
+                final_output_filepath.replace(".pdb", "_ligand.sdf"),
                 sanitize=False,
                 add_element_types=True,
                 ligand_smiles=cfg.ligand_smiles,
@@ -110,14 +129,18 @@ def main(cfg: DictConfig):
                         ligand_smiles = None
 
                     intermediate_output_filepath = os.path.join(output_item_path, file)
-                    final_output_filepath = os.path.join(cfg.inference_outputs_dir, item, file)
+                    final_output_filepath = os.path.join(
+                        cfg.inference_outputs_dir, item, file
+                    ).replace(".cif", ".pdb")
                     os.makedirs(os.path.dirname(final_output_filepath), exist_ok=True)
+
+                    convert_cif_to_clean_pdb(intermediate_output_filepath, final_output_filepath)
 
                     try:
                         extract_protein_and_ligands_with_prody(
-                            intermediate_output_filepath,
-                            final_output_filepath.replace(".cif", "_protein.pdb"),
-                            final_output_filepath.replace(".cif", "_ligand.sdf"),
+                            final_output_filepath,
+                            final_output_filepath.replace(".pdb", "_protein.pdb"),
+                            final_output_filepath.replace(".pdb", "_ligand.sdf"),
                             sanitize=False,
                             add_element_types=True,
                             ligand_smiles=ligand_smiles,
@@ -127,8 +150,9 @@ def main(cfg: DictConfig):
                             f"Failed to extract protein and ligands for {item} due to: {e}"
                         )
                         try:
-                            os.remove(final_output_filepath.replace(".cif", "_protein.pdb"))
-                            os.remove(final_output_filepath.replace(".cif", "_ligand.sdf"))
+                            os.remove(final_output_filepath)
+                            os.remove(final_output_filepath.replace(".pdb", "_protein.pdb"))
+                            os.remove(final_output_filepath.replace(".pdb", "_ligand.sdf"))
                         except Exception as e:
                             logger.error(
                                 f"Failed to remove partially extracted protein and ligands for {item} due to: {e}"
