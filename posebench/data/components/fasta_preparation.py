@@ -142,8 +142,6 @@ def main(cfg: DictConfig):
 
             structure_seqs.append((f"{chain_suffix}{name}_chain_{chain.id}", seq))
 
-        entries.extend(structure_seqs)
-
         # append SMILES chains if available
         if smiles_and_pdb_id_list is not None:
             target_smiles_and_pdb_id_list = [
@@ -152,8 +150,12 @@ def main(cfg: DictConfig):
                 for smi in smiles.split(".")
                 if pdb_id == name
             ]
-            for chain_index, (smiles, _) in enumerate(target_smiles_and_pdb_id_list):
-                entries.append((f"ligand:{name}_chain_{chain_index}", smiles))
+            if target_smiles_and_pdb_id_list:
+                entries.extend(structure_seqs)
+                for chain_index, (smiles, _) in enumerate(target_smiles_and_pdb_id_list):
+                    entries.append((f"ligand:{name}_chain_{chain_index}", smiles))
+        else:
+            entries.extend(structure_seqs)
 
     records = []
     for seq_id, seq in entries:
