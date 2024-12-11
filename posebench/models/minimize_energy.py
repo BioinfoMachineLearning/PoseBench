@@ -1264,7 +1264,6 @@ def minimize_energy(cfg: DictConfig) -> Optional[Dict[str, Any]]:
             f"Complex relaxation was not fully successful due to: {e}. Copying the input files as the relaxed output files."
         )
         # organize output files
-        shutil.copyfile(protein_file_path, protein_output_file_path)
         shutil.copyfile(ligand_file_path, output_file_path)
         try:
             if complex_output_file_path is not None:
@@ -1275,6 +1274,8 @@ def minimize_energy(cfg: DictConfig) -> Optional[Dict[str, Any]]:
         logger.info(f"Finalizing complex relaxation with relax_protein={cfg.relax_protein}")
 
         if cfg.relax_protein:
+            # organize output files
+            shutil.copyfile(protein_file_path, protein_output_file_path)
             # clean up temporary files
             try:
                 os.remove(temp_protein_file_path)
