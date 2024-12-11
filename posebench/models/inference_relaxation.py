@@ -139,6 +139,7 @@ def relax_inference_results(
     ligand_filepaths = sorted(
         [fp for fp in ligand_filepaths if not any(s in fp.stem for s in ("relaxed", "aligned"))]
     )
+    id_slice = slice(0, 4) if cfg.dataset == "dockgen" else slice(2)
     if len(protein_filepaths) < len(ligand_filepaths):
         if cfg.method == "dynamicbind":
             # NOTE: sometimes, DynamicBind mysteriously omits the protein output for a given complex
@@ -158,11 +159,12 @@ def relax_inference_results(
                 protein_filepath
                 for protein_filepath in protein_filepaths
                 if any(
-                    "_".join(protein_filepath.stem.split("_")[:2]) in ligand_filepath.stem
+                    "_".join(protein_filepath.stem.split("_")[id_slice]) in ligand_filepath.stem
                     for ligand_filepath in ligand_filepaths
                 )
                 or any(
-                    "_".join(protein_filepath.stem.split("_")[:2]) in ligand_filepath.parent.stem
+                    "_".join(protein_filepath.stem.split("_")[id_slice])
+                    in ligand_filepath.parent.stem
                     for ligand_filepath in ligand_filepaths
                 )
             ]
@@ -185,25 +187,13 @@ def relax_inference_results(
                 protein_filepath
                 for protein_filepath in protein_filepaths
                 if (
-                    cfg.dataset == "dockgen"
-                    and any(
-                        "_".join(protein_filepath.stem.split("_")[:4]) in ligand_filepath.stem
+                    any(
+                        "_".join(protein_filepath.stem.split("_")[id_slice])
+                        in ligand_filepath.stem
                         for ligand_filepath in ligand_filepaths
                     )
                     or any(
-                        "_".join(protein_filepath.stem.split("_")[:4])
-                        in ligand_filepath.parent.stem
-                        for ligand_filepath in ligand_filepaths
-                    )
-                )
-                or (
-                    cfg.dataset != "dockgen"
-                    and any(
-                        "_".join(protein_filepath.stem.split("_")[:2]) in ligand_filepath.stem
-                        for ligand_filepath in ligand_filepaths
-                    )
-                    or any(
-                        "_".join(protein_filepath.stem.split("_")[:2])
+                        "_".join(protein_filepath.stem.split("_")[id_slice])
                         in ligand_filepath.parent.stem
                         for ligand_filepath in ligand_filepaths
                     )
@@ -228,8 +218,9 @@ def relax_inference_results(
                 ligand_filepath
                 for ligand_filepath in ligand_filepaths
                 if any(
-                    ligand_filepath.stem.split("_")[0] in protein_filepath.stem
-                    or ligand_filepath.parent.stem.split("_")[0] in protein_filepath.stem
+                    "_".join(ligand_filepath.stem.split("_")[id_slice]) in protein_filepath.stem
+                    or "_".join(ligand_filepath.parent.stem.split("_")[id_slice])
+                    in protein_filepath.stem
                     for protein_filepath in protein_filepaths
                 )
             ]
