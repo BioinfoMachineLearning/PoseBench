@@ -1220,22 +1220,24 @@ def parse_inference_inputs_from_dir(
     else:
         ligand_expo_mapping = read_ligand_expo()
 
-        for pdb_name in tqdm(os.listdir(input_data_dir), desc="Parsing input data directory"):
-            if any(substr in pdb_name.lower() for substr in ["sequence", "structure"]):
-                # e.g., skip sequence files and predicted structure directories
-                continue
-            if pdb_ids is not None and pdb_name not in pdb_ids:
-                # e.g., skip PoseBusters Benchmark PDBs that contain crystal contacts
-                # reference: https://github.com/maabuu/posebusters/issues/26
-                continue
-
+        num_skipped_inputs = 0
+        input_data_dirs = [
+            item
+            for item in os.listdir(input_data_dir)
+            # e.g., skip sequence files and predicted structure directories
+            if not any(substr in item.lower() for substr in ["sequence", "structure"])
+            # e.g., skip PoseBusters Benchmark PDBs that contain crystal contacts
+            # reference: https://github.com/maabuu/posebusters/issues/26
+            and not (pdb_ids is not None and item not in pdb_ids)
+        ]
+        for pdb_name in tqdm(input_data_dirs, desc="Parsing input data directory"):
             pdb_dir = os.path.join(input_data_dir, pdb_name)
             if os.path.isdir(pdb_dir):
                 mol = None
                 pdb_id = os.path.split(pdb_dir)[-1]
 
-                # NOTE: the Astex Diverse and PoseBusters Benchmark datasets use `.sdf` files to store their
-                # primary ligands, but we want to extract all cofactors as well to enhance model context for predictions
+                # NOTE: the Astex Diverse and PoseBusters Benchmark datasets use `.sdf` files to store their primary
+                # ligands, but we want to extract all cofactors as well to enhance model context for predictions
                 if os.path.exists(os.path.join(pdb_dir, f"{pdb_id}_ligand.sdf")):
                     supplier = Chem.SDMolSupplier(
                         os.path.join(pdb_dir, f"{pdb_id}_ligand.sdf"),
@@ -1258,8 +1260,8 @@ def parse_inference_inputs_from_dir(
                 if mol is None and os.path.exists(
                     os.path.join(pdb_dir, f"{pdb_id.split('_')[0]}_processed.pdb")
                 ):
-                    # ensure the primary ligand exists in the crystal structure and extract
-                    # only the primary copy of this ligand for the protein-ligand complex
+                    # ensure the primary ligand exists in the crystal structure of the first bioassembly, and then
+                    # extract all cofactors in the protein-ligand complex to enhance model context for predictions
                     assert os.path.exists(
                         os.path.join(pdb_dir, f"{pdb_id}_ligand.pdb")
                     ), f"Could not find primary ligand file for PDB ID {pdb_id}"
@@ -1267,56 +1269,88 @@ def parse_inference_inputs_from_dir(
                         os.path.join(pdb_dir, f"{pdb_id}_ligand.pdb")
                     )
 
+                    primary_ligand_structure = parser.get_structure(
+                        "protein", os.path.join(pdb_dir, f"{pdb_id}_ligand.pdb")
+                    )
+                    assert (
+                        primary_ligand_structure is not None
+                    ), f"Could not parse primary ligand structure for PDB ID {pdb_id}"
+
+                    primary_ligand_resnames = [
+                        res.resname for res in primary_ligand_structure.get_residues()
+                    ]
+                    assert (
+                        len(primary_ligand_resnames) > 0
+                    ), f"Expected at least one primary ligand residue for PDB ID {pdb_id}"
+
                     assert (
                         len(remarks) > 0
                     ), f"No REMARK statements found in ligand PDB file for PDB ID {pdb_id}"
                     remark = remarks[0]
+                    primary_ligand_chainid = remark.split("segment ")[-1].split(")")[0]
+                    primary_ligand_resnum = remark.split("num ")[-1].split(")")[0].replace("`", "")
+                    if "to" in primary_ligand_resnum:
+                        primary_ligand_chain_res_ids = []
+                        start_resnum, end_resnum = primary_ligand_resnum.split("to")
+                        num_res = min(
+                            int(end_resnum) - int(start_resnum) + 1, len(primary_ligand_resnames)
+                        )
+                        for resnum in range(int(start_resnum), int(start_resnum) + num_res):
+                            primary_ligand_chain_res_ids.append(
+                                f"{primary_ligand_chainid}_{resnum}"
+                            )
+                    else:
+                        primary_ligand_chain_res_ids = [
+                            f"{primary_ligand_chainid}_{primary_ligand_resnum}"
+                        ]
+                    assert len(primary_ligand_resnames) == len(
+                        primary_ligand_chain_res_ids
+                    ), f"Expected primary ligand residues to match chain-residue IDs for PDB ID {pdb_id}"
 
-                    primary_ligand_resnum = (
-                        remark.split("resnum ")[-1].split(")")[0].replace("`", "")
-                    )
                     structure = parser.get_structure(
                         "protein", os.path.join(pdb_dir, f"{pdb_id.split('_')[0]}_processed.pdb")
                     )
-
                     assert (
                         structure is not None
                     ), f"Could not parse protein structure for PDB ID {pdb_id}"
 
-                    res_id_to_name = {
-                        str(res.id[1]): res.resname for res in structure.get_residues()
+                    detected_missing_input = False
+                    chain_res_id_to_name = {
+                        f"{res.parent.id}_{res.id[1]}": res.resname
+                        for res in structure.get_residues()
                     }
-                    if primary_ligand_resnum not in res_id_to_name:
-                        logger.warning(
-                            f"Primary ligand residue number {primary_ligand_resnum} not found in protein structure for PDB ID {pdb_id}. Skipping this complex."
-                        )
+                    for ligand_idx, chain_res_id in enumerate(primary_ligand_chain_res_ids):
+                        if (
+                            chain_res_id not in chain_res_id_to_name
+                            or chain_res_id_to_name[chain_res_id]
+                            != primary_ligand_resnames[ligand_idx]
+                        ):
+                            logger.warning(
+                                f"Primary ligand residue {primary_ligand_resnames[ligand_idx]} at chain-residue ID {chain_res_id.replace('_', '-')} not found in protein structure for PDB ID {pdb_id}. Skipping this complex."
+                            )
+                            detected_missing_input = True
+                            break
+
+                    if detected_missing_input:
+                        num_skipped_inputs += 1
                         continue
-
-                    res_name_to_id = defaultdict(list)
-                    for res_id, res_name in res_id_to_name.items():
-                        res_name_to_id[res_name].append(res_id)
-
-                    non_primary_ligand_residues = [
-                        i
-                        for i in res_name_to_id[res_id_to_name[primary_ligand_resnum]]
-                        if i != primary_ligand_resnum
-                    ]
 
                     mol = extract_protein_and_ligands_with_prody(
                         os.path.join(pdb_dir, f"{pdb_id.split('_')[0]}_processed.pdb"),
                         protein_output_pdb_file=None,
                         ligands_output_sdf_file=None,
                         write_output_files=False,
+                        load_hetatms_as_ligands=True,
                         ligand_expo_mapping=ligand_expo_mapping,
-                        ligand_residue_ids_to_drop=non_primary_ligand_residues,
                     )
 
                     if mol is None:
+                        num_skipped_inputs += 1
                         logger.warning(f"Could not extract ligand molecule for PDB ID {pdb_id}")
                         continue
 
                 if mol is None:
-                    # raise ValueError(f"Could not extract ligand molecule for PDB ID {pdb_id}")
+                    num_skipped_inputs += 1
                     logger.warning(f"Could not extract ligand molecule for PDB ID {pdb_id}")
                     continue
 
@@ -1327,6 +1361,11 @@ def parse_inference_inputs_from_dir(
                     )
 
                 smiles_and_pdb_id_list.append((mol_smiles, pdb_id))
+
+    if num_skipped_inputs > 0:
+        logger.warning(
+            f"Skipped {num_skipped_inputs} complexes with missing or unmappable primary ligand residues."
+        )
 
     return smiles_and_pdb_id_list
 
@@ -1461,15 +1500,23 @@ def renumber_biopython_structure_residues(
     return structure
 
 
-def get_pdb_components_with_prody(pdb_id) -> tuple:
+def get_pdb_components_with_prody(
+    input_pdb_file: str, load_hetatms_as_ligands: bool = False
+) -> tuple:
     """Split a protein-ligand pdb into protein and ligand components using ProDy.
 
-    :param pdb_id: PDB ID
-    :return: protein structure and ligand residues
+    :param input_pdb_file: Path to the input PDB file.
+    :param load_hetatms_as_ligands: Whether to load HETATM records as ligands if no ligands are
+        initially found.
+    :return: Tuple of protein and ligand components.
     """
-    pdb = parsePDB(pdb_id)
+    pdb = parsePDB(input_pdb_file)
     protein = pdb.select("protein")
     ligand = pdb.select("not (protein or nucleotide or water)")
+
+    if ligand is None and load_hetatms_as_ligands:
+        ligand = pdb.select("hetatm and not water")
+
     return protein, ligand
 
 
@@ -1622,9 +1669,9 @@ def extract_protein_and_ligands_with_prody(
     sanitize: bool = True,
     add_element_types: bool = False,
     write_output_files: bool = True,
+    load_hetatms_as_ligands: bool = False,
     ligand_smiles: Optional[str] = None,
     ligand_expo_mapping: Optional[Dict[str, Any]] = None,
-    ligand_residue_ids_to_drop: Optional[List[int]] = None,
 ) -> Optional[Chem.Mol]:
     """Using ProDy, extract protein atoms and ligand molecules from a PDB file and write them to
     separate files.
@@ -1635,19 +1682,19 @@ def extract_protein_and_ligands_with_prody(
     :param sanitize: Whether to sanitize the ligand molecules.
     :param add_element_types: Whether to add element types to the protein atoms.
     :param write_output_files: Whether to write the output files.
+    :param load_hetatms_as_ligands: Whether to load HETATM records as ligands if no ligands are
+        initially found.
     :param ligand_smiles: The SMILES string of the ligand molecule.
     :param ligand_expo_mapping: The Ligand Expo mapping.
-    :param ligand_residue_ids_to_drop: The residue IDs of ligands to drop.
     :return: The combined final ligand molecule(s) as an RDKit molecule.
     """
-    protein, ligand = get_pdb_components_with_prody(input_pdb_file)
+    protein, ligand = get_pdb_components_with_prody(
+        input_pdb_file, load_hetatms_as_ligands=load_hetatms_as_ligands
+    )
 
     if ligand is None:
         logger.info(f"No ligand found in {input_pdb_file}. Returning None.")
         return None
-
-    if ligand_residue_ids_to_drop:
-        ligand = ligand.select(f"not resnum {' '.join(map(str, ligand_residue_ids_to_drop))}")
 
     if write_output_files:
         assert protein_output_pdb_file is not None, "Protein output PDB file must be provided."
