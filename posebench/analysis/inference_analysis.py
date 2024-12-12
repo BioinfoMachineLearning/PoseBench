@@ -82,6 +82,8 @@ def find_most_similar_frag(
             continue
 
         # Generate the fingerprint for the predicted fragment
+        mol_pred_frag.UpdatePropertyCache()
+        Chem.GetSymmSSSR(mol_pred_frag)  # Perceive rings for fingerprinting
         fp_pred = mfpgen.GetFingerprint(mol_pred_frag)
 
         # Calculate the Tanimoto similarity
@@ -112,15 +114,20 @@ def df_split_mol_frags(
     new_rows = []
     for row in mol_table.itertuples():
         try:
-            mols_true = Chem.SDMolSupplier(str(row.mol_true), removeHs=False)
-            mols_pred = Chem.SDMolSupplier(str(row.mol_pred), removeHs=False)
-            assert (
-                len(mols_true) == 1 and len(mols_pred) == 1
-            ), "Only one molecule per SDF file is supported."
+            mol_true_file_fn = (
+                Chem.MolFromPDBFile if str(row.mol_true).endswith(".pdb") else Chem.MolFromMolFile
+            )
 
-            mol_true, mol_pred = mols_true[0], mols_pred[0]
-            mol_true_frags = Chem.GetMolFrags(mol_true, asMols=True)
-            mol_pred_frags = Chem.GetMolFrags(mol_pred, asMols=True)
+            mol_true = mol_true_file_fn(str(row.mol_true), removeHs=False)
+            mol_pred = Chem.MolFromMolFile(str(row.mol_pred), removeHs=False)
+
+            assert mol_true is not None, f"Failed to load the true molecule from {row.mol_true}."
+            assert (
+                mol_pred is not None
+            ), f"Failed to load the predicted molecule from {row.mol_pred}."
+
+            mol_true_frags = Chem.GetMolFrags(mol_true, asMols=True, sanitizeFrags=False)
+            mol_pred_frags = Chem.GetMolFrags(mol_pred, asMols=True, sanitizeFrags=False)
 
             if select_most_similar_pred_frag:
                 mol_pred_frags = [
@@ -533,11 +540,7 @@ def create_mol_table(
             )
         )
     else:
-        pdb_ids = (
-            input_table["pdb_id"].transform(lambda x: "_".join(x.split("_")[:3]))
-            if cfg.method == "diffdock"
-            else input_table["pdb_id"]
-        )
+        pdb_ids = input_table["pdb_id"]
         if cfg.method in RANKED_METHODS:
             mol_table["mol_pred"] = pdb_ids.apply(
                 lambda x: (
