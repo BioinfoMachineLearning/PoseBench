@@ -36,6 +36,8 @@ def main(cfg: DictConfig):
         desc="Evaluating protein conformation changes",
     ):
         pdb_id = os.path.basename(item).split("_holo_aligned")[0]
+        reference_protein_suffix = "_processed" if cfg.dataset == "dockgen" else ""
+        reference_ligand_file_ext = ".pdb" if cfg.dataset == "dockgen" else ".sdf"
 
         # Parse filepaths
         input_protein_structure_filepath = os.path.join(
@@ -43,10 +45,10 @@ def main(cfg: DictConfig):
             f"{pdb_id}_holo_aligned_predicted_protein.pdb",
         )
         reference_protein_structure_filepath = os.path.join(
-            cfg.reference_structure_dir, pdb_id, f"{pdb_id}_protein.pdb"
+            cfg.reference_structure_dir, pdb_id, f"{pdb_id}_protein{reference_protein_suffix}.pdb"
         )
         reference_ligand_structure_filepath = os.path.join(
-            cfg.reference_structure_dir, pdb_id, f"{pdb_id}_ligand.sdf"
+            cfg.reference_structure_dir, pdb_id, f"{pdb_id}_ligand{reference_ligand_file_ext}"
         )
 
         if cfg.method == "dynamicbind":
