@@ -1201,6 +1201,7 @@ def parse_inference_inputs_from_dir(
 
     parser = PDBParser()
 
+    num_skipped_inputs = 0
     if casp_dataset_requested:
         # parse CASP inputs uniquely
         smiles_filepaths = list(glob.glob(os.path.join(input_data_dir, "*.smiles.txt")))
@@ -1219,8 +1220,6 @@ def parse_inference_inputs_from_dir(
 
     else:
         ligand_expo_mapping = read_ligand_expo()
-
-        num_skipped_inputs = 0
         input_data_dirs = [
             item
             for item in os.listdir(input_data_dir)
