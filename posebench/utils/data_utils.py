@@ -1636,9 +1636,11 @@ def process_ligand_with_prody(
 
     if sub_smiles_provided and template is not None:
         # Ensure the input ligand perfectly matches the template ligand
-        assert (
-            rd_mol.GetNumAtoms() == template.GetNumAtoms()
-        ), "Number of atoms in both molecules is different."
+        if rd_mol.GetNumAtoms() != template.GetNumAtoms():
+            template = None
+            logger.warning(
+                f"Number of atoms in both molecules is different ({rd_mol.GetNumAtoms()} vs. {template.GetNumAtoms()}). Cannot assign bond orders from template."
+            )
 
     try:
         if template is not None:
@@ -1672,6 +1674,7 @@ def extract_protein_and_ligands_with_prody(
     load_hetatms_as_ligands: bool = False,
     ligand_smiles: Optional[str] = None,
     ligand_expo_mapping: Optional[Dict[str, Any]] = None,
+    permute_ligand_smiles: bool = False,
 ) -> Optional[Chem.Mol]:
     """Using ProDy, extract protein atoms and ligand molecules from a PDB file and write them to
     separate files.
@@ -1686,6 +1689,8 @@ def extract_protein_and_ligands_with_prody(
         initially found.
     :param ligand_smiles: The SMILES string of the ligand molecule.
     :param ligand_expo_mapping: The Ligand Expo mapping.
+    :param permute_ligand_smiles: Whether to permute the ligand SMILES string's fragment components
+        if necessary.
     :return: The combined final ligand molecule(s) as an RDKit molecule.
     """
     protein, ligand = get_pdb_components_with_prody(
@@ -1713,6 +1718,7 @@ def extract_protein_and_ligands_with_prody(
 
     new_mol = None
     new_mol_list = []
+    ligand_smiles_component_indices_seen = set()
     ligand_smiles_components = ligand_smiles.split(".") if ligand_smiles is not None else None
     for i, resname_chain_resnum in enumerate(resname_chain_resnum_list, start=1):
         resname, chain, resnum = resname_chain_resnum
@@ -1722,6 +1728,23 @@ def extract_protein_and_ligands_with_prody(
             and len(ligand_smiles_components) == len(resname_chain_resnum_list)
             else None
         )
+
+        if permute_ligand_smiles and sub_smiles is not None:
+            # E.g., for RFAA with the DockGen dataset, find the matching template SMILES string
+            sub_mol = ligand.select(f"resname {resname} and chain {chain} and resnum {resnum}")
+            template = AllChem.MolFromSmiles(sub_smiles)
+
+            if len(sub_mol) != len(template.GetAtoms()):
+                sub_smiles = None
+                for comp_idx, comp in enumerate(ligand_smiles_components):
+                    if (
+                        len(sub_mol) == AllChem.MolFromSmiles(comp).GetNumAtoms()
+                        and comp_idx not in ligand_smiles_component_indices_seen
+                    ):
+                        sub_smiles = comp
+                        ligand_smiles_component_indices_seen.add(comp_idx)
+                        break
+
         new_mol = process_ligand_with_prody(
             ligand,
             resname,

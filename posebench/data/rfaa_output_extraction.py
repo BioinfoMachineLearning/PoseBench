@@ -142,6 +142,7 @@ def main(cfg: DictConfig):
                         sanitize=False,
                         add_element_types=True,
                         ligand_smiles=ligand_smiles,
+                        permute_ligand_smiles=True,
                     )
                     os.remove(final_output_filepath.replace(".pdb", "_fixed.pdb"))
 
