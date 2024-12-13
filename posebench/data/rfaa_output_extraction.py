@@ -15,7 +15,10 @@ from rdkit import Chem
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
-from posebench.utils.data_utils import extract_protein_and_ligands_with_prody
+from posebench.utils.data_utils import (
+    combine_molecules,
+    extract_protein_and_ligands_with_prody,
+)
 
 logging.basicConfig(format="[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -113,14 +116,18 @@ def main(cfg: DictConfig):
                             input_filepaths = glob.glob(
                                 input_filepath.replace("_ligands.sdf", "*.sdf")
                             )
-                            assert (
-                                len(input_filepaths) == 1
-                            ), f"Expected 1 DockGen ligand SDF file, but found {len(input_filepaths)}."
-                            input_filepath = input_filepaths[0]
-                        assert os.path.exists(
-                            input_filepath
-                        ), f"Ligand SDF file not found: {input_filepath}"
-                        ligand_smiles = Chem.MolToSmiles(Chem.MolFromMolFile(input_filepath))
+                            assert len(input_filepaths) > 0, "No DockGen ligand SDF files found."
+                            ligand_mols = [
+                                Chem.MolFromMolFile(input_file, sanitize=False)
+                                for input_file in input_filepaths
+                            ]
+                            ligand_mol = combine_molecules(ligand_mols)
+                            ligand_smiles = Chem.MolToSmiles(ligand_mol)
+                        else:
+                            assert os.path.exists(
+                                input_filepath
+                            ), f"Ligand SDF file not found: {input_filepath}"
+                            ligand_smiles = Chem.MolToSmiles(Chem.MolFromMolFile(input_filepath))
                     else:
                         # NOTE: for the `casp15` dataset, standalone ligand SMILES are not available
                         ligand_smiles = None
