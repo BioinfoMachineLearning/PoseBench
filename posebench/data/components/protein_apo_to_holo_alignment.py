@@ -15,7 +15,7 @@ from beartype.typing import Any, List, Optional, Tuple, Union
 from Bio.PDB import PDBParser
 from Bio.PDB.Model import Model
 from Bio.PDB.PDBExceptions import PDBConstructionWarning
-from omegaconf import DictConfig
+from omegaconf import DictConfig, open_dict
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from scipy import spatial
@@ -529,6 +529,16 @@ def main(cfg: DictConfig):
     """
     if cfg.dataset not in ["posebusters_benchmark", "astex_diverse", "dockgen", "casp15"]:
         raise ValueError(f"Dataset {cfg.dataset} is not supported.")
+
+    if cfg.processing_esmfold_structures:
+        with open_dict(cfg):
+            cfg.predicted_structures_dir = cfg.predicted_structures_dir.replace(
+                "_predicted_structures", "_esmfold_predicted_structures"
+            )
+            cfg.output_dir = cfg.output_dir.replace(
+                "_predicted_structures", "_esmfold_predicted_structures"
+            )
+
     output_dir = cfg.output_dir
     os.makedirs(output_dir, exist_ok=True)
     structure_file_inputs = [

@@ -264,6 +264,8 @@ First create all the corresponding FASTA files for each protein sequence
 ```bash
 python3 posebench/data/components/fasta_preparation.py dataset=posebusters_benchmark
 python3 posebench/data/components/fasta_preparation.py dataset=astex_diverse
+python3 posebench/data/components/fasta_preparation.py dataset=dockgen
+python3 posebench/data/components/fasta_preparation.py dataset=casp15
 ```
 
 To generate the apo version of each protein structure,
@@ -274,14 +276,18 @@ for the PoseBusters Benchmark and Astex Diverse sets, respectively
 ```bash
 python3 posebench/data/components/esmfold_sequence_preparation.py dataset=posebusters_benchmark
 python3 posebench/data/components/esmfold_sequence_preparation.py dataset=astex_diverse
+python3 posebench/data/components/esmfold_sequence_preparation.py dataset=dockgen
+python3 posebench/data/components/esmfold_sequence_preparation.py dataset=casp15
 ```
 
 Then, predict each apo protein structure using ESMFold's batch
 inference script
 
 ```bash
-python3 posebench/data/components/esmfold_batch_structure_prediction.py -i data/posebusters_benchmark_set/posebusters_benchmark_esmfold_sequences.fasta -o data/posebusters_benchmark_set/posebusters_benchmark_predicted_structures --skip-existing
-python3 posebench/data/components/esmfold_batch_structure_prediction.py -i data/astex_diverse_set/astex_diverse_esmfold_sequences.fasta -o data/astex_diverse_set/astex_diverse_predicted_structures --skip-existing
+python3 posebench/data/components/esmfold_batch_structure_prediction.py -i data/posebusters_benchmark_set/reference_posebusters_benchmark_esmfold_sequences.fasta -o data/posebusters_benchmark_set/posebusters_benchmark_esmfold_predicted_structures --skip-existing
+python3 posebench/data/components/esmfold_batch_structure_prediction.py -i data/astex_diverse_set/reference_astex_diverse_esmfold_sequences.fasta -o data/astex_diverse_set/astex_diverse_esmfold_predicted_structures --skip-existing
+python3 posebench/data/components/esmfold_batch_structure_prediction.py -i data/dockgen_set/reference_dockgen_esmfold_sequences.fasta -o data/dockgen_set/dockgen_esmfold_predicted_structures --skip-existing
+python3 posebench/data/components/esmfold_batch_structure_prediction.py -i data/casp15_set/reference_casp15_esmfold_sequences.fasta -o data/casp15_set/casp15_esmfold_predicted_structures --skip-existing
 ```
 
 **NOTE:** Having a CUDA-enabled device available when running ESMFold is highly recommended
@@ -289,14 +295,15 @@ python3 posebench/data/components/esmfold_batch_structure_prediction.py -i data/
 **NOTE:** ESMFold may not be able to predict apo protein structures for a handful of exceedingly-long (e.g., >2000 token) input sequences
 
 Lastly, align each apo protein structure to its corresponding
-holo protein structure counterpart in the PoseBusters Benchmark
-or Astex Diverse set, taking ligand conformations into account
-during each alignment
+holo protein structure counterpart for each dataset, taking ligand
+conformations into account during each alignment
 
 ```bash
 conda activate PyMOL-PoseBench
-python3 posebench/data/components/protein_apo_to_holo_alignment.py dataset=posebusters_benchmark num_workers=1
-python3 posebench/data/components/protein_apo_to_holo_alignment.py dataset=astex_diverse num_workers=1
+python3 posebench/data/components/protein_apo_to_holo_alignment.py dataset=posebusters_benchmark processing_esmfold_structures=true num_workers=1
+python3 posebench/data/components/protein_apo_to_holo_alignment.py dataset=astex_diverse processing_esmfold_structures=true num_workers=1
+python3 posebench/data/components/protein_apo_to_holo_alignment.py dataset=dockgen processing_esmfold_structures=true num_workers=1
+python3 posebench/data/components/protein_apo_to_holo_alignment.py dataset=casp15 processing_esmfold_structures=true num_workers=1
 conda deactivate
 ```
 

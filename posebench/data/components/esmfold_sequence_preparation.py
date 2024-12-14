@@ -57,12 +57,11 @@ def combine_sequences(sequences: Dict[str, str]) -> Dict[str, str]:
     """
     combined_sequences = {}
     for identifier, sequence in sequences.items():
-        if sequence and list(set(sequence)) not in [[""], ["-"]]:
-            pdb_code = "_".join(identifier.split("_")[:2])
-            if pdb_code in combined_sequences:
-                combined_sequences[pdb_code] += ":" + sequence
-            else:
-                combined_sequences[pdb_code] = sequence
+        pdb_code = identifier.split("_chain_")[0]
+        if pdb_code in combined_sequences:
+            combined_sequences[pdb_code] += ":" + sequence
+        else:
+            combined_sequences[pdb_code] = sequence
     return combined_sequences
 
 
