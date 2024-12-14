@@ -193,7 +193,7 @@ COMMANDS = {
     },
     "alphafold3": {
         "extract_outputs": [
-            "python3 posebench/data/alphafold3_output_extraction.py dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+            "python3 posebench/data/af3_output_extraction.py dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
         ],
         "relax": [
             "python3 posebench/models/inference_relaxation.py method=alphafold3 dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true repeat_index={repeat_index}",
