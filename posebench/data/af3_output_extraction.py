@@ -117,11 +117,17 @@ def main(cfg: DictConfig):
                     if not file.endswith(".cif"):
                         continue
 
+                    item = item.upper()
+                    mapped_file = "_".join(
+                        [
+                            part.upper() if i == 0 else part
+                            for i, part in enumerate(file.split("_"))
+                        ]
+                    )
+
                     if cfg.dataset in ["posebusters_benchmark", "astex_diverse"]:
-                        item = item.upper()
                         ligand_smiles = pdb_id_to_smiles[item]
                     elif cfg.dataset == "dockgen":
-                        item = item.upper()
                         item = "_".join([item.split("_")[0].lower(), *item.split("_")[1:]])
                         ligand_smiles = pdb_id_to_smiles[item]
                     else:
@@ -130,7 +136,7 @@ def main(cfg: DictConfig):
 
                     intermediate_output_filepath = os.path.join(output_item_path, file)
                     final_output_filepath = os.path.join(
-                        cfg.inference_outputs_dir, item, file
+                        cfg.inference_outputs_dir, item, mapped_file
                     ).replace(".cif", ".pdb")
                     os.makedirs(os.path.dirname(final_output_filepath), exist_ok=True)
 
