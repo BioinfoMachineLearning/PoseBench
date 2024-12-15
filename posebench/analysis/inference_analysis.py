@@ -191,6 +191,7 @@ def create_mol_table(
     inference_dir: Path,
     cfg: DictConfig,
     relaxed: bool = False,
+    add_pdb_ids: bool = False,
 ) -> pd.DataFrame:
     """Create a table of molecules and their corresponding ligand files.
 
@@ -200,6 +201,7 @@ def create_mol_table(
     :param mol_table_filepath: Molecule table DataFrame.
     :param cfg: Hydra configuration dictionary.
     :param relaxed: Whether to use the relaxed poses.
+    :param add_pdb_ids: Whether to add the PDB IDs to the molecule table DataFrame.
     :return: Molecule table DataFrame.
     """
     pdb_ids = None
@@ -230,6 +232,10 @@ def create_mol_table(
 
     # parse molecule (e.g., protein-)conditioning files
     mol_table = pd.DataFrame()
+
+    if add_pdb_ids:
+        mol_table["pdb_id"] = input_table["pdb_id"]
+
     if cfg.method == "dynamicbind":
         mol_table["mol_cond"] = input_table["pdb_id"].apply(
             lambda x: (
