@@ -440,7 +440,7 @@ dependencies:
       - ply==3.11
       - poethepoet==0.10.0
       - posebusters==0.3.1
-      - git+https://github.com/cch1999/posecheck.git@1d2b2e99bfe3f4b1aa80c1f7e62a4805b48ebebf
+      - git+https://github.com/amorehead/posecheck.git@posebench
       - pot==0.9.1
       - pre-commit==3.6.2
       - prettytable==3.8.0
