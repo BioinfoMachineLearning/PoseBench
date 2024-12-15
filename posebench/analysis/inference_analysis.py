@@ -103,13 +103,18 @@ def find_most_similar_frag(
     return most_similar_frag, max_similarity, min_rmsd
 
 
-def df_split_mol_frags(
+def select_primary_ligands_in_df(
     mol_table: pd.DataFrame, select_most_similar_pred_frag: bool = True
 ) -> pd.DataFrame:
-    """Split the molecules in the DataFrame into fragments.
+    """Select the primary ligands predictions from the molecule table DataFrame.
+
+    NOTE: This function is used for single-primary-ligand datasets such as Astex Diverse, PoseBusters Benchmark, and DockGen
+    to identify a method's (most likely) prediction for a specific primary ligand crystal structure when the method is tasked
+    with predicting all cofactors as well (to enhance its molecular context for primary ligand predictions).
 
     :param mol_table: Molecule table DataFrame.
-    :return: Molecule table DataFrame with fragments.
+    :param select_most_similar_pred_frag: Whether to select the predicted ligand fragment most similar (chemically and structurally) to the true ligand fragment.
+    :return: Molecule table DataFrame with primary ligand predictions.
     """
     new_rows = []
     for row in mol_table.itertuples():
@@ -816,7 +821,7 @@ def create_mol_table(
             mol_table = mol_table.dropna(subset=["mol_pred"])
 
     mol_table.reset_index(drop=True, inplace=True)
-    mol_table = df_split_mol_frags(mol_table)
+    mol_table = select_primary_ligands_in_df(mol_table)
 
     return mol_table
 
