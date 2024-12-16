@@ -147,11 +147,13 @@ def create_temp_pdb_with_only_molecule_type_residues(
 # %%
 if not os.path.exists("posebusters_benchmark_interaction_dataframes.h5"):
     posebusters_ccd_ids_filepath = os.path.join(
-        "..", "data", "posebusters_benchmark_set", "posebusters_ccd_ids.txt"
+        "..",
+        "data",
+        "posebusters_pdb_ccd_ids.txt",
     )
     assert os.path.exists(
         posebusters_ccd_ids_filepath
-    ), f"Invalid CCD IDs file path for PoseBusters Benchmark: {os.path.exists(posebusters_ccd_ids_filepath)}."
+    ), f"Invalid CCD IDs file path for PoseBusters Benchmark: {posebusters_ccd_ids_filepath}."
     with open(posebusters_ccd_ids_filepath) as f:
         pdb_ids = set(f.read().splitlines())
     pb_protein_ligand_filepath_pairs = []
