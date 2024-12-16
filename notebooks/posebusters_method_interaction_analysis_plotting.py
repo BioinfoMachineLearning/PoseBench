@@ -309,7 +309,7 @@ def process_method(file_path, category):
                 interaction_types = [
                     interaction[2]
                     for interaction in store[key].iloc[row_index].keys().tolist()
-                    if interaction[2]
+                    if interaction[2]  # NOTE: this excludes the `target` column's singular value
                 ]
                 num_hb_acceptors = interaction_types.count("HBAcceptor")
                 num_hb_donors = interaction_types.count("HBDonor")
