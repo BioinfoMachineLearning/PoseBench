@@ -252,9 +252,9 @@ for method in baseline_methods:
                 desc=f"Processing interactions for {method_title}",
             ):
                 try:
-                    protein_filepath, ligand_filepath = row.mol_cond, row.mol_pred
+                    protein_filepath, ligand_filepath = str(row.mol_cond), str(row.mol_pred)
                     num_residues_in_target_protein = count_num_residues_in_pdb_file(
-                        str(protein_filepath)
+                        protein_filepath
                     )
                     if (
                         num_residues_in_target_protein
