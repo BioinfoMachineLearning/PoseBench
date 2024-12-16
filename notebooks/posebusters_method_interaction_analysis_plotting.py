@@ -121,7 +121,8 @@ def create_temp_pdb_with_only_molecule_type_residues(
     # create a temporary PDB filepdb_name
     temp_pdb_filepath = tempfile.NamedTemporaryFile(delete=False, suffix=".pdb")
     io.save(
-        temp_pdb_filepath.name, ProteinSelect() if molecule_type == "protein" else LigandSelect()
+        temp_pdb_filepath.name,
+        ProteinSelect() if molecule_type == "protein" else LigandSelect(),
     )
 
     if add_element_types:
@@ -169,16 +170,22 @@ if not os.path.exists("posebusters_benchmark_interaction_dataframes.h5"):
     for protein_filepath, ligand_filepath in tqdm(
         pb_protein_ligand_filepath_pairs, desc="Processing PoseBusters Benchmark set"
     ):
-        temp_protein_filepath = create_temp_pdb_with_only_molecule_type_residues(
-            protein_filepath, molecule_type="protein"
-        )
-        pc.load_protein_from_pdb(temp_protein_filepath)
-        pc.load_ligands_from_sdf(ligand_filepath)
-        pb_protein_ligand_interaction_df = pc.calculate_interactions()
-        pb_protein_ligand_interaction_df["target"] = Path(protein_filepath).stem.split("_protein")[
-            0
-        ]
-        pb_protein_ligand_interaction_dfs.append(pb_protein_ligand_interaction_df)
+        try:
+            temp_protein_filepath = create_temp_pdb_with_only_molecule_type_residues(
+                protein_filepath, molecule_type="protein"
+            )
+            pc.load_protein_from_pdb(temp_protein_filepath)
+            pc.load_ligands_from_sdf(ligand_filepath)
+            pb_protein_ligand_interaction_df = pc.calculate_interactions()
+            pb_protein_ligand_interaction_df["target"] = Path(protein_filepath).stem.split(
+                "_protein"
+            )[0]
+            pb_protein_ligand_interaction_dfs.append(pb_protein_ligand_interaction_df)
+        except Exception as e:
+            print(
+                f"Error processing PoseBusters Benchmark target {protein_filepath, ligand_filepath} due to: {e}. Skipping..."
+            )
+            continue
 
         # NOTE: we iteratively save the interaction dataframes to an HDF5 file
         with pd.HDFStore("posebusters_benchmark_interaction_dataframes.h5") as store:
