@@ -41,11 +41,16 @@ def get_msa_contexts(
     pdb_ids = set(chain.entity_data.pdb_id for chain in chains)
     assert len(pdb_ids) == 1, f"Found >1 pdb ids in chains: {pdb_ids=}"
 
+    pdb_id = pdb_ids.pop()
+
     # MSAs are constructed based on sequence, so use the unique sequences present
     # in input chains to determine the MSAs that need to be loaded
 
-    def get_msa_contexts_for_seq(seq) -> MSAContext:
+    def get_msa_contexts_for_seq(seq, chain_index) -> MSAContext:
         path = msa_directory / expected_basename(seq)
+        if not path.is_file():
+            # Try parsing custom chain MSA file
+            path = msa_directory / f"{pdb_id}_chain_{chain_index}.aligned.pqt"
         if not path.is_file():
             logger.warning(f"No MSA found for sequence: {seq}")
             [tokenized_seq] = tokenize_sequences_to_arrays([seq])[0]
@@ -59,10 +64,10 @@ def get_msa_contexts(
     # For each chain, either fetch the corresponding MSA or create an empty MSA if it is missing
     # + reindex to handle residues that are tokenized per-atom (this also crops if necessary)
     msa_contexts = [
-        get_msa_contexts_for_seq(chain.entity_data.sequence)[
+        get_msa_contexts_for_seq(chain.entity_data.sequence, chain_index)[
             :, chain.structure_context.token_residue_index
         ]
-        for chain in chains
+        for chain_index, chain in enumerate(chains)
     ]
 
     # used later only for profile statistics

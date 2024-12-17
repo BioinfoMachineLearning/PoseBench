@@ -37,6 +37,7 @@ def run_chai_inference(fasta_file: str, cfg: DictConfig):
     try:
         run_inference(
             fasta_file=Path(fasta_file),
+            msa_dir=Path(cfg.msa_dir) if cfg.msa_dir else None,
             output_dir=Path(output_dir),
             # 'default' setup
             num_trunk_recycles=3,
