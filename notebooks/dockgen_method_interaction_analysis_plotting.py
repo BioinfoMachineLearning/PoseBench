@@ -433,12 +433,16 @@ def bin_interactions(file_path, category):
     with pd.HDFStore(file_path) as store:
         for key in store.keys():
             for row_index in range(len(store[key])):
-                interactions[store[key].iloc[row_index]["target"].values[0]].extend(
-                    [
-                        f"{split_string_at_numeric(row[0])[0]}:{split_string_at_numeric(row[1])[0]}:{row[2]}"
-                        for row in store[key].iloc[row_index].index.values[:-1]
-                    ]
-                )
+                try:
+                    interactions[store[key].iloc[row_index]["target"].values[0]].extend(
+                        [
+                            f"{split_string_at_numeric(row[0])[0]}:{split_string_at_numeric(row[1])[0]}:{row[2]}"
+                            for row in store[key].iloc[row_index].index.values[:-1]
+                        ]
+                    )
+                except Exception as e:
+                    print(f"Error processing {key} row {row_index} due to: {e}. Skipping...")
+                    continue
     df_rows = []
     for target in interactions:
         target_interactions = interactions[target]
