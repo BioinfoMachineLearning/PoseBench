@@ -74,33 +74,40 @@ def main(cfg: DictConfig):
         if not msa_file.endswith(".npz"):
             continue
 
-        input_msa_path = os.path.join(cfg.input_msa_dir, msa_file)
-        input_msa = dict(np.load(input_msa_path))
-
         item = msa_file.split("_protein")[0].split("_lig")[0]
+        input_msa_path = os.path.join(cfg.input_msa_dir, msa_file)
 
-        for chain_index in range(input_msa["n"]):
-            output_msas = [
-                {
-                    "sequence": "".join(ID_TO_HHBLITS_AA[c] for c in seq),
-                    "source_database": "query" if seq_index == 0 else "uniref90",
-                    "pairing_key": f"sequence:{seq_index}"
-                    if input_msa[f"is_paired_{chain_index}"][seq_index].item() is True
-                    else "",
-                    "comment": "",
-                }
-                for seq_index, seq in enumerate(input_msa[f"msa_{chain_index}"])
-            ]
-            output_msa_df = pd.DataFrame(output_msas)
+        try:
+            input_msa = dict(np.load(input_msa_path))
 
-            output_msa_path = os.path.join(
-                cfg.output_msa_dir, item + f"_chain_{chain_index}.aligned.pqt"
-            )
+            for chain_index in range(input_msa["n"]):
+                output_msa_path = os.path.join(
+                    cfg.output_msa_dir, item + f"_chain_{chain_index}.aligned.pqt"
+                )
+                if os.path.exists(output_msa_path) and cfg.skip_existing:
+                    logger.info(f"MSA already exists: {output_msa_path}. Skipping...")
+                    continue
 
-            logger.info(
-                f"Converting chain MSA to DataFrame: {input_msa_path} -> {output_msa_path}"
-            )
-            output_msa_df.to_parquet(output_msa_path)
+                output_msas = [
+                    {
+                        "sequence": "".join(ID_TO_HHBLITS_AA[c] for c in seq),
+                        "source_database": "query" if seq_index == 0 else "uniref90",
+                        "pairing_key": f"sequence:{seq_index}"
+                        if input_msa[f"is_paired_{chain_index}"][seq_index].item() is True
+                        else "",
+                        "comment": "",
+                    }
+                    for seq_index, seq in enumerate(input_msa[f"msa_{chain_index}"])
+                ]
+                output_msa_df = pd.DataFrame(output_msas)
+
+                logger.info(
+                    f"Converting chain MSA to DataFrame: {input_msa_path} -> {output_msa_path}"
+                )
+                output_msa_df.to_parquet(output_msa_path)
+
+        except Exception as e:
+            logger.error(f"Failed to process MSA {input_msa_path} due to: {e}. Skipping...")
 
 
 if __name__ == "__main__":

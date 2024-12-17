@@ -1,3 +1,4 @@
 dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
 input_msa_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_msas # where the original MSA files are placed
 output_msa_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_chai_msas # where the processed MSA files should be stored
+skip_existing: True # whether to skip processing if the output file already exists
