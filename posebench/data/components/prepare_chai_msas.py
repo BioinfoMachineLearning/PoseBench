@@ -77,7 +77,7 @@ def main(cfg: DictConfig):
         input_msa_path = os.path.join(cfg.input_msa_dir, msa_file)
         input_msa = dict(np.load(input_msa_path))
 
-        item = msa_file.split("_protein_msa")[0]
+        item = msa_file.split("_protein")[0].split("_lig")[0]
 
         for chain_index in range(input_msa["n"]):
             output_msas = [
