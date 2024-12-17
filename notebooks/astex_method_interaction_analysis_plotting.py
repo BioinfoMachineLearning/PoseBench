@@ -42,12 +42,12 @@ pd.options.mode.copy_on_write = True
 # %%
 # General variables
 baseline_methods = [
+    "vina_p2rank",
     "diffdock",
     "dynamicbind",
     "neuralplexer",
     "rfaa",
     "chai-lab",
-    # "vina_p2rank",
 ]
 max_num_repeats_per_method = (
     1  # NOTE: Here, to simplify the analysis, we only consider the first run of each method
@@ -64,12 +64,12 @@ assert os.path.exists(
 
 # Mappings
 method_mapping = {
+    "vina_p2rank": "P2Rank-Vina",
     "diffdock": "DiffDock-L",
     "dynamicbind": "DynamicBind",
     "neuralplexer": "NeuralPLexer",
     "rfaa": "RoseTTAFold-AA",
     "chai-lab": "Chai-1",
-    "vina_p2rank": "P2Rank-Vina",
 }
 
 MAX_ASTEX_DIVERSE_ANALYSIS_PROTEIN_SEQUENCE_LENGTH = (
