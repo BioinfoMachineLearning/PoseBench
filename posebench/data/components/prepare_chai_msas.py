@@ -83,7 +83,7 @@ def main(cfg: DictConfig):
             output_msas = [
                 {
                     "sequence": "".join(ID_TO_HHBLITS_AA[c] for c in seq),
-                    "source_database": "uniref90",
+                    "source_database": "query" if seq_index == 0 else "uniref90",
                     "pairing_key": f"sequence:{seq_index}"
                     if input_msa[f"is_paired_{chain_index}"][seq_index].item() is True
                     else "",
