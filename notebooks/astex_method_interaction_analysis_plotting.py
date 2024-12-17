@@ -420,16 +420,23 @@ def bin_interactions(file_path, category):
     with pd.HDFStore(file_path) as store:
         for key in store.keys():
             for row_index in range(len(store[key])):
+                target = store[key].iloc[row_index]["target"]
+                if not isinstance(target, str):
+                    target = target.values[0]
+
                 try:
-                    interactions[store[key].iloc[row_index]["target"].values[0]].extend(
+                    interactions[target].extend(
                         [
                             f"{split_string_at_numeric(row[0])[0]}:{split_string_at_numeric(row[1])[0]}:{row[2]}"
                             for row in store[key].iloc[row_index].index.values[:-1]
                         ]
                     )
                 except Exception as e:
-                    print(f"Error processing {key} row {row_index} due to: {e}. Skipping...")
+                    print(
+                        f"Error processing {key} row {row_index} for target {target} due to: {e}. Skipping..."
+                    )
                     continue
+
     df_rows = []
     for target in interactions:
         target_interactions = interactions[target]
@@ -462,7 +469,7 @@ for method in baseline_methods:
 
 assert os.path.exists(
     "astex_diverse_interaction_dataframes.h5"
-), "No reference Astex Diverse interaction dataframe found."
+), "No reference interaction dataframe found."
 reference_df = bin_interactions("astex_diverse_interaction_dataframes.h5", "Reference")
 
 # combine bins from all method dataframes
@@ -508,14 +515,28 @@ for method in df["Category"].unique():
             }
         )
 
+# plot the EMD and WM values for each method
+all_emd_values = [entry["EMD"] for entry in emd_values]
+min_emd = np.min(all_emd_values)
+max_emd = np.max(all_emd_values)
+for entry in emd_values:
+    emd = entry["EMD"]
+    normalized_score = 1 - (emd - min_emd) / (max_emd - min_emd)
+    entry["WM"] = normalized_score
 
-# plot the EMD values for each method
-emd_values_df = pd.DataFrame(emd_values, columns=["Category", "Target", "EMD"])
-emd_values_df.to_csv("astex_diverse_plif_emd_values.csv")
+emd_values_df = pd.DataFrame(emd_values, columns=["Category", "Target", "EMD", "WM"])
+emd_values_df.to_csv("astex_diverse_plif_metrics.csv")
 
 plt.figure(figsize=(10, 5))
 sns.boxplot(data=emd_values_df, x="Category", y="EMD")
 plt.xlabel("")
 plt.ylabel("PLIF-EMD")
 plt.savefig("astex_diverse_plif_emd_values.png")
+plt.show()
+
+plt.figure(figsize=(10, 5))
+sns.boxplot(data=emd_values_df, x="Category", y="WM")
+plt.xlabel("")
+plt.ylabel("PLIF-WM")
+plt.savefig("astex_diverse_plif_wm_values.png")
 plt.show()
