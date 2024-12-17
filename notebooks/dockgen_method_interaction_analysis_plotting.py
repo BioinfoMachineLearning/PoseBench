@@ -421,6 +421,7 @@ plt.show()
 dfs = []
 
 
+# define helper functions
 def split_string_at_numeric(s: str) -> list:
     """Split a string at numeric characters."""
     return re.split(r"\d+", s)
@@ -455,6 +456,11 @@ def bin_interactions(file_path, category):
     return pd.DataFrame(df_rows)
 
 
+def histogram_to_vector(histogram, bins):
+    """Convert a histogram dictionary to a vector aligned with bins."""
+    return np.array([histogram.get(bin, 0) for bin in bins])
+
+
 # load data from files
 for method in baseline_methods:
     for repeat_index in range(1, max_num_repeats_per_method + 1):
@@ -472,14 +478,7 @@ reference_df = bin_interactions("dockgen_interaction_dataframes.h5", "Reference"
 assert len(dfs) > 0, "No interaction dataframes found."
 df = pd.concat(dfs)
 
-
-# define helper functions
-def histogram_to_vector(histogram, bins):
-    """Convert a histogram dictionary to a vector aligned with bins."""
-    return np.array([histogram.get(bin, 0) for bin in bins])
-
-
-method_emd_values = defaultdict(list)
+emd_values = []
 for method in df["Category"].unique():
     for target in reference_df["Target"]:
         # step 1: extract unique bins for each pair of method and reference histograms
@@ -492,7 +491,7 @@ for method in df["Category"].unique():
         if method_histogram.empty:
             # NOTE: if a method does not have any ProLIF-parseable interactions
             # for a target, we skip-penalize it with a maximum EMD value
-            method_emd_values[method].append(1.0)
+            emd_values.append({"Category": method, "Target": target, "EMD": 1.0})
             continue
 
         # NOTE: collecting bins from both histograms allows us to penalize "hallucinated" interactions
@@ -510,14 +509,22 @@ for method in df["Category"].unique():
         ).squeeze()
 
         # step 3: compute the EMD values of each method's PLIF histograms
-        method_emd_values[method].append(
-            wasserstein_distance(method_histogram_vector, reference_histogram_vector)
+        emd_values.append(
+            {
+                "Category": method,
+                "Target": target,
+                "EMD": wasserstein_distance(method_histogram_vector, reference_histogram_vector),
+            }
         )
 
 
 # plot the EMD values for each method
+emd_values_df = pd.DataFrame(emd_values, columns=["Category", "Target", "EMD"])
+emd_values_df.to_csv("dockgen_plif_emd_values.csv")
+
 plt.figure(figsize=(10, 5))
-sns.boxplot(data=pd.DataFrame(method_emd_values))
+sns.boxplot(data=emd_values_df, x="Category", y="EMD")
+plt.xlabel("")
 plt.ylabel("PLIF-EMD")
 plt.savefig("dockgen_plif_emd_values.png")
 plt.show()
