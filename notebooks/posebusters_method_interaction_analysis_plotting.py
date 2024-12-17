@@ -6,12 +6,15 @@
 
 # %%
 import os
+import re
 import shutil
 import subprocess  # nosec
 import tempfile
+from collections import defaultdict
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
 from beartype import beartype
@@ -20,6 +23,7 @@ from Bio.PDB import PDBIO, PDBParser, Select
 from omegaconf import DictConfig, open_dict
 from posecheck import PoseCheck
 from rdkit import Chem
+from scipy.stats import wasserstein_distance
 from tqdm import tqdm
 
 from posebench import resolve_method_input_csv_path, resolve_method_output_dir
@@ -121,8 +125,7 @@ def create_temp_pdb_with_only_molecule_type_residues(
     # create a temporary PDB filepdb_name
     temp_pdb_filepath = tempfile.NamedTemporaryFile(delete=False, suffix=".pdb")
     io.save(
-        temp_pdb_filepath.name,
-        ProteinSelect() if molecule_type == "protein" else LigandSelect(),
+        temp_pdb_filepath.name, ProteinSelect() if molecule_type == "protein" else LigandSelect()
     )
 
     if add_element_types:
@@ -408,4 +411,112 @@ for ax, interaction, plot_type in zip(axes.flatten(), interaction_types, plot_ty
 
 plt.tight_layout()
 plt.savefig("posebusters_benchmark_method_interaction_analysis.png", dpi=300)
+plt.show()
+
+# %% [markdown]
+# #### Plot interaction metrics for each method
+
+# %%
+dfs = []
+
+
+def split_string_at_numeric(s: str) -> list:
+    """Split a string at numeric characters."""
+    return re.split(r"\d+", s)
+
+
+def bin_interactions(file_path, category):
+    """Bin interactions for each target."""
+    interactions = defaultdict(list)
+    with pd.HDFStore(file_path) as store:
+        for key in store.keys():
+            for row_index in range(len(store[key])):
+                interactions[store[key].iloc[row_index]["target"].values[0]].extend(
+                    [
+                        f"{split_string_at_numeric(row[0])[0]}:{split_string_at_numeric(row[1])[0]}:{row[2]}"
+                        for row in store[key].iloc[row_index].index.values[:-1]
+                    ]
+                )
+    df_rows = []
+    for target in interactions:
+        target_interactions = interactions[target]
+        target_interactions_histogram = defaultdict(int)
+        for target_interaction in target_interactions:
+            target_interactions_histogram[target_interaction] += 1
+
+        df_rows.append(
+            {
+                "Category": category,
+                "Target": target,
+                "Interactions_Histogram": target_interactions_histogram,
+            }
+        )
+    return pd.DataFrame(df_rows)
+
+
+# load data from files
+for method in baseline_methods:
+    for repeat_index in range(1, max_num_repeats_per_method + 1):
+        method_title = method_mapping[method]
+        file_path = f"{method}_posebusters_benchmark_interaction_dataframes_{repeat_index}.h5"
+        if os.path.exists(file_path):
+            dfs.append(bin_interactions(file_path, method_title))
+
+assert os.path.exists(
+    "posebusters_benchmark_interaction_dataframes.h5"
+), "No reference PoseBusters Benchmark interaction dataframe found."
+reference_df = bin_interactions("posebusters_benchmark_interaction_dataframes.h5", "Reference")
+
+# combine bins from all method dataframes
+assert len(dfs) > 0, "No interaction dataframes found."
+df = pd.concat(dfs)
+
+
+# define helper functions
+def histogram_to_vector(histogram, bins):
+    """Convert a histogram dictionary to a vector aligned with bins."""
+    return np.array([histogram.get(bin, 0) for bin in bins])
+
+
+method_emd_values = defaultdict(list)
+for method in df["Category"].unique():
+    for target in reference_df["Target"]:
+        # step 1: extract unique bins for each pair of method and reference histograms
+        method_histogram = df[(df["Category"] == method) & (df["Target"] == target)][
+            "Interactions_Histogram"
+        ]
+        reference_histogram = reference_df[reference_df["Target"] == target][
+            "Interactions_Histogram"
+        ]
+        if method_histogram.empty:
+            # NOTE: if a method does not have any ProLIF-parseable interactions
+            # for a target, we skip-penalize it with a maximum EMD value
+            method_emd_values[method].append(1.0)
+            continue
+
+        # NOTE: collecting bins from both histograms allows us to penalize "hallucinated" interactions
+        all_bins = set(method_histogram.values[0].keys()) | set(
+            reference_histogram.values[0].keys()
+        )
+        all_bins = sorted(all_bins)  # keep bins in a fixed order for consistency
+
+        # step 2: convert histograms to aligned vectors
+        method_histogram_vector = method_histogram.apply(
+            lambda h: histogram_to_vector(h, all_bins)
+        ).squeeze()
+        reference_histogram_vector = reference_histogram.apply(
+            lambda h: histogram_to_vector(h, all_bins)
+        ).squeeze()
+
+        # step 3: compute the EMD values of each method's PLIF histograms
+        method_emd_values[method].append(
+            wasserstein_distance(method_histogram_vector, reference_histogram_vector)
+        )
+
+
+# plot the EMD values for each method
+plt.figure(figsize=(10, 5))
+sns.boxplot(data=pd.DataFrame(method_emd_values))
+plt.ylabel("PLIF-EMD")
+plt.savefig("posebusters_benchmark_plif_emd_values.png")
 plt.show()
