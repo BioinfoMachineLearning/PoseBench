@@ -523,11 +523,11 @@ for method in df["Category"].unique():
 
 # plot the EMD values for each method
 emd_values_df = pd.DataFrame(emd_values, columns=["Category", "Target", "EMD"])
-emd_values_df.to_csv("dockgen_plif_emd_values.csv")
+emd_values_df.to_csv("posebusters_benchmark_plif_emd_values.csv")
 
 plt.figure(figsize=(10, 5))
 sns.boxplot(data=emd_values_df, x="Category", y="EMD")
 plt.xlabel("")
 plt.ylabel("PLIF-EMD")
-plt.savefig("dockgen_plif_emd_values.png")
+plt.savefig("posebusters_benchmark_plif_emd_values.png")
 plt.show()
