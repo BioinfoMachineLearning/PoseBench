@@ -52,7 +52,7 @@ def get_msa_contexts(
             # Try parsing custom chain MSA file
             path = msa_directory / f"{pdb_id}_chain_{chain_index}.aligned.pqt"
         if not path.is_file():
-            logger.warning(f"No MSA found for sequence: {seq}")
+            logger.warning(f"No MSA found for {pdb_id} sequence: {seq}")
             [tokenized_seq] = tokenize_sequences_to_arrays([seq])[0]
             return MSAContext.create_single_seq(
                 MSADataSource.QUERY, tokens=torch.from_numpy(tokenized_seq)
