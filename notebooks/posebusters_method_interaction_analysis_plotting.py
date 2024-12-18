@@ -5,6 +5,7 @@
 # #### Import packages
 
 # %%
+import copy
 import os
 import re
 import shutil
@@ -219,14 +220,19 @@ cfg = DictConfig(
     }
 )
 
-for method in baseline_methods:
+for method in copy.deepcopy(baseline_methods):
     for repeat_index in range(1, max_num_repeats_per_method + 1):
         method_title = method_mapping[method]
 
-        if not os.path.exists(f"{method}_{dataset}_interaction_dataframes_{repeat_index}.h5"):
-            v1_baseline = method == "diffdockv1"
-            vina_binding_site_method = method.split("_")[-1] if "_" in method else "p2rank"
+        v1_baseline = method == "diffdockv1"
+        vina_binding_site_method = method.split("_")[-1] if "_" in method else "p2rank"
 
+        vina_suffix = f"_{vina_binding_site_method}" if "_" in method else ""
+        method = method.split("_")[0]
+
+        if not os.path.exists(
+            f"{method}{vina_suffix}_{dataset}_interaction_dataframes_{repeat_index}.h5"
+        ):
             with open_dict(cfg):
                 cfg.method = method
                 cfg.repeat_index = repeat_index
@@ -300,7 +306,7 @@ for method in baseline_methods:
 
                 # NOTE: we iteratively save the interaction dataframes to an HDF5 file
                 with pd.HDFStore(
-                    f"{method}_posebusters_benchmark_interaction_dataframes_{repeat_index}.h5"
+                    f"{method}{vina_suffix}_posebusters_benchmark_interaction_dataframes_{repeat_index}.h5"
                 ) as store:
                     for i, df in enumerate(posebusters_protein_ligand_interaction_dfs):
                         store.put(f"df_{i}", df)
