@@ -28,6 +28,7 @@ logger.setLevel(logging.INFO)
 def get_msa_contexts(
     chains: list[Chain],
     msa_directory: Path,
+    pdb_id: str | None = None,
 ) -> tuple[MSAContext, MSAContext]:
     """
     Looks inside msa_directory to find .aligned.pqt files to load alignments from.
@@ -41,7 +42,7 @@ def get_msa_contexts(
     pdb_ids = set(chain.entity_data.pdb_id for chain in chains)
     assert len(pdb_ids) == 1, f"Found >1 pdb ids in chains: {pdb_ids=}"
 
-    pdb_id = pdb_ids.pop()
+    pdb_id = pdb_id if pdb_id else pdb_ids.pop()
 
     # MSAs are constructed based on sequence, so use the unique sequences present
     # in input chains to determine the MSAs that need to be loaded

@@ -298,8 +298,9 @@ def run_inference(
 
     # Load MSAs
     if msa_directory is not None:
+        pdb_id = fasta_file.stem
         msa_context, msa_profile_context = get_msa_contexts(
-            chains, msa_directory=msa_directory
+            chains, msa_directory=msa_directory, pdb_id=pdb_id,
         )
     else:
         msa_context = MSAContext.create_empty(
