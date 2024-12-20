@@ -188,7 +188,7 @@ if os.path.exists(pdbbind_set_dir) and not os.path.exists(
                     raise ValueError(f"Could not load PDBBind 2020 ligand from {ligand_filepath}.")
             pc.load_protein_from_pdb(temp_protein_filepath)
             pc.load_ligands_from_mols([ligand_mol])
-            pdbbind_protein_ligand_interaction_df = pc.calculate_interactions()
+            pdbbind_protein_ligand_interaction_df = pc.calculate_interactions(n_jobs=1)
             pdbbind_protein_ligand_interaction_df["target"] = os.path.basename(
                 protein_filepath
             ).split("_protein")[0]
@@ -231,7 +231,7 @@ if not os.path.exists("astex_diverse_interaction_dataframes.h5"):
             )
             pc.load_protein_from_pdb(temp_protein_filepath)
             pc.load_ligands_from_sdf(ligand_filepath)
-            ad_protein_ligand_interaction_df = pc.calculate_interactions()
+            ad_protein_ligand_interaction_df = pc.calculate_interactions(n_jobs=1)
             ad_protein_ligand_interaction_df["target"] = os.path.basename(protein_filepath).split(
                 "_protein"
             )[0]
@@ -284,7 +284,7 @@ if not os.path.exists("posebusters_benchmark_interaction_dataframes.h5"):
             )
             pc.load_protein_from_pdb(temp_protein_filepath)
             pc.load_ligands_from_sdf(ligand_filepath)
-            pb_protein_ligand_interaction_df = pc.calculate_interactions()
+            pb_protein_ligand_interaction_df = pc.calculate_interactions(n_jobs=1)
             pb_protein_ligand_interaction_df["target"] = os.path.basename(protein_filepath).split(
                 "_protein"
             )[0]
@@ -338,7 +338,7 @@ if not os.path.exists("dockgen_interaction_dataframes.h5"):
                 ligand_mol = Chem.MolFromPDFile(ligand_filepath, sanitize=False)
             pc.load_protein_from_pdb(temp_protein_filepath)
             pc.load_ligands_from_mols([ligand_mol])
-            dg_protein_ligand_interaction_df = pc.calculate_interactions()
+            dg_protein_ligand_interaction_df = pc.calculate_interactions(n_jobs=1)
             dg_protein_ligand_interaction_df["target"] = os.path.basename(protein_filepath).split(
                 "_protein"
             )[0]
@@ -388,7 +388,7 @@ if not os.path.exists("casp15_interaction_dataframes.h5"):
             pc.load_ligands_from_mols(
                 Chem.GetMolFrags(ligand_mol, asMols=True, sanitizeFrags=False)
             )
-            casp15_protein_ligand_interaction_df = pc.calculate_interactions()
+            casp15_protein_ligand_interaction_df = pc.calculate_interactions(n_jobs=1)
             casp15_protein_ligand_interaction_df["target"] = os.path.basename(
                 protein_ligand_complex_filepath
             ).split("_lig")[0]

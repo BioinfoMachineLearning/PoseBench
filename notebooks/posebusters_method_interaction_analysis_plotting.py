@@ -182,7 +182,7 @@ if not os.path.exists("posebusters_benchmark_interaction_dataframes.h5"):
             )
             pc.load_protein_from_pdb(temp_protein_filepath)
             pc.load_ligands_from_sdf(ligand_filepath)
-            pb_protein_ligand_interaction_df = pc.calculate_interactions()
+            pb_protein_ligand_interaction_df = pc.calculate_interactions(n_jobs=1)
             pb_protein_ligand_interaction_df["target"] = Path(protein_filepath).stem.split(
                 "_protein"
             )[0]
@@ -295,7 +295,7 @@ for method in copy.deepcopy(baseline_methods):
                     pc.load_ligands_from_mols(
                         Chem.GetMolFrags(ligand_mol, asMols=True, sanitizeFrags=False)
                     )
-                    protein_ligand_interaction_df = pc.calculate_interactions()
+                    protein_ligand_interaction_df = pc.calculate_interactions(n_jobs=1)
                     protein_ligand_interaction_df["target"] = row.pdb_id
                     posebusters_protein_ligand_interaction_dfs.append(
                         protein_ligand_interaction_df

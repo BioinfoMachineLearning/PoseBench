@@ -181,7 +181,7 @@ if not os.path.exists("casp15_interaction_dataframes.h5"):
             pc.load_ligands_from_mols(
                 Chem.GetMolFrags(ligand_mol, asMols=True, sanitizeFrags=False)
             )
-            casp15_protein_ligand_interaction_df = pc.calculate_interactions()
+            casp15_protein_ligand_interaction_df = pc.calculate_interactions(n_jobs=1)
             casp15_protein_ligand_interaction_df["target"] = os.path.basename(
                 protein_ligand_complex_filepath
             ).split("_lig")[0]
@@ -268,7 +268,7 @@ for method in baseline_methods:
                     pc.load_ligands_from_mols(
                         Chem.GetMolFrags(ligand_mol, asMols=True, sanitizeFrags=False)
                     )
-                    casp15_protein_ligand_interaction_df = pc.calculate_interactions()
+                    casp15_protein_ligand_interaction_df = pc.calculate_interactions(n_jobs=1)
                     casp15_protein_ligand_interaction_df["target"] = os.path.basename(
                         os.path.dirname(protein_ligand_complex_filepath)
                     )

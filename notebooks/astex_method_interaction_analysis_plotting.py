@@ -172,7 +172,7 @@ if not os.path.exists("astex_diverse_interaction_dataframes.h5"):
             )
             pc.load_protein_from_pdb(temp_protein_filepath)
             pc.load_ligands_from_sdf(ligand_filepath)
-            ad_protein_ligand_interaction_df = pc.calculate_interactions()
+            ad_protein_ligand_interaction_df = pc.calculate_interactions(n_jobs=1)
             ad_protein_ligand_interaction_df["target"] = Path(protein_filepath).stem.split(
                 "_protein"
             )[0]
@@ -285,7 +285,7 @@ for method in copy.deepcopy(baseline_methods):
                     pc.load_ligands_from_mols(
                         Chem.GetMolFrags(ligand_mol, asMols=True, sanitizeFrags=False)
                     )
-                    protein_ligand_interaction_df = pc.calculate_interactions()
+                    protein_ligand_interaction_df = pc.calculate_interactions(n_jobs=1)
                     protein_ligand_interaction_df["target"] = row.pdb_id
                     astex_protein_ligand_interaction_dfs.append(protein_ligand_interaction_df)
                 except Exception as e:
