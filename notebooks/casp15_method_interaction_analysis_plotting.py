@@ -45,6 +45,7 @@ baseline_methods = [
     "neuralplexer",
     "rfaa",
     "chai-lab",
+    "alphafold3",
 ]
 max_num_repeats_per_method = (
     1  # NOTE: Here, to simplify the analysis, we only consider the first run of each method
@@ -68,6 +69,7 @@ method_mapping = {
     "neuralplexer": "NeuralPLexer",
     "rfaa": "RoseTTAFold-AA",
     "chai-lab": "Chai-1",
+    "alphafold3": "AlphaFold 3",
 }
 
 CASP15_ANALYSIS_TARGETS_TO_SKIP = [
@@ -270,7 +272,7 @@ for method in baseline_methods:
                     )
                     casp15_protein_ligand_interaction_df = pc.calculate_interactions(n_jobs=1)
                     casp15_protein_ligand_interaction_df["target"] = os.path.basename(
-                        os.path.dirname(protein_ligand_complex_filepath)
+                        os.path.dirname(protein_filepath)
                     )
                     casp15_protein_ligand_interaction_dfs.append(
                         casp15_protein_ligand_interaction_df
