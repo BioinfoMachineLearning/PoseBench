@@ -445,7 +445,7 @@ dependencies:
       - pre-commit==3.6.2
       - prettytable==3.8.0
       - prody==2.4.1
-      - git+https://github.com/amorehead/ProLIF.git@17b5d7dee34dafea4f39dd76f75ecd13ba8eaef2
+      - git+https://github.com/chemosim-lab/ProLIF.git@f1fcb315cf0a4fb00e7fc2aa4c3ed0f5ad88e238
       - prompt-toolkit==3.0.39
       - protobuf==4.24.1
       - pyaml==21.10.1
