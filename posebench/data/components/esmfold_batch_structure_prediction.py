@@ -202,6 +202,9 @@ def run(args: argparse.Namespace):
     num_completed = 0
     num_sequences = len(all_sequences)
     for headers, sequences in batched_sequences:
+        logger.info(
+            f"Predicting structures for {len(sequences)} sequences of {headers} with total length {sum(len(seq) for seq in sequences)}"
+        )
         start = timer()
         try:
             output = model.infer(sequences, num_recycles=args.num_recycles)
