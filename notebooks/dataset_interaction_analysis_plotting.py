@@ -19,8 +19,6 @@ from posecheck import PoseCheck
 from rdkit import Chem
 from tqdm import tqdm
 
-from posebench.utils.data_utils import count_num_residues_in_pdb_file
-
 # %% [markdown]
 # #### Configure packages
 
@@ -113,6 +111,24 @@ def create_temp_pdb_with_only_molecule_type_residues(
     )
 
     return temp_pdb_filepath.name
+
+
+@beartype
+def count_num_residues_in_pdb_file(pdb_filepath: str) -> int:
+    """Count the number of Ca atoms (i.e., residues) in a PDB file.
+
+    :param pdb_filepath: Path to PDB file.
+    :return: Number of Ca atoms (i.e., residues) in the PDB file.
+    """
+    parser = PDBParser()
+    structure = parser.get_structure("protein", pdb_filepath)
+    count = 0
+    for model in structure:
+        for chain in model:
+            for residue in chain:
+                if "CA" in residue:
+                    count += 1
+    return count
 
 
 # %% [markdown]
@@ -333,6 +349,9 @@ if not os.path.exists("dockgen_interaction_dataframes.h5"):
             temp_protein_filepath = create_temp_pdb_with_only_molecule_type_residues(
                 protein_filepath, molecule_type="protein"
             )
+            # NOTE: due to a bug in RDKit up until version 2024.09.2 (see https://github.com/rdkit/rdkit/issues/5599),
+            # to cache DockGen's PLIs, one may need to temporarily install the latest RDKit within a temporary new environment
+            # via `mamba env create -f environments/posebench_rd_environment.yaml` to avoid a segmentation fault (i.e., core dumped)
             ligand_mol = Chem.MolFromPDBFile(ligand_filepath)
             if ligand_mol is None:
                 ligand_mol = Chem.MolFromPDFile(ligand_filepath, sanitize=False)
@@ -383,6 +402,9 @@ if not os.path.exists("casp15_interaction_dataframes.h5"):
             temp_ligand_filepath = create_temp_pdb_with_only_molecule_type_residues(
                 protein_ligand_complex_filepath, molecule_type="ligand"
             )
+            # NOTE: due to a bug in RDKit up until version 2024.09.2 (see https://github.com/rdkit/rdkit/issues/5599),
+            # to cache CASP15's PLIs, one may need to temporarily install the latest RDKit within a temporary new environment
+            # via `mamba env create -f environments/posebench_rd_environment.yaml` to avoid a segmentation fault (i.e., core dumped)
             ligand_mol = Chem.MolFromPDBFile(temp_ligand_filepath)
             pc.load_protein_from_pdb(temp_protein_filepath)
             pc.load_ligands_from_mols(
