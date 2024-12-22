@@ -136,9 +136,9 @@ cd ../../
 
 # FlowDock checkpoint (~2 GB)
 cd forks/FlowDock/
-wget https://zenodo.org/records/10373582/files/flowdock_weights.zip
-unzip flowdock_weights.zip
-rm flowdock_weights.zip
+wget https://zenodo.org/records/14478459/files/flowdock_checkpoints.tar.gz
+tar -xzf flowdock_checkpoints.tar.gz
+rm flowdock_checkpoints.tar.gz
 cd ../../
 
 # RoseTTAFold-All-Atom checkpoint (~1.5 GB)
@@ -200,9 +200,9 @@ wget https://zenodo.org/records/13858866/files/neuralplexer_benchmark_method_pre
 tar -xzf neuralplexer_benchmark_method_predictions.tar.gz
 rm neuralplexer_benchmark_method_predictions.tar.gz
 # FlowDock predictions and results
-wget https://zenodo.org/records/13858866/files/neuralplexer_benchmark_method_predictions.tar.gz
-tar -xzf neuralplexer_benchmark_method_predictions.tar.gz
-rm neuralplexer_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/13858866/files/flowdock_benchmark_method_predictions.tar.gz
+tar -xzf flowdock_benchmark_method_predictions.tar.gz
+rm flowdock_benchmark_method_predictions.tar.gz
 # RoseTTAFold-All-Atom predictions and results
 wget https://zenodo.org/records/13858866/files/rfaa_benchmark_method_predictions.tar.gz
 tar -xzf rfaa_benchmark_method_predictions.tar.gz
@@ -332,7 +332,7 @@ conda deactivate
 | ---------------------- | ----------------------------------------------------------------------------- | ----------------- | ----------------------- | ------------------- | ---------------- |
 | `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)               | ✓                 | ✓                       | ✓                   | ✓                |
 | `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)             | ✓                 | ✓                       | ✓                   | ✓                |
-| `FlowDock`             | [Morehead et al.](https://github.com/BioinfoMachineLearning/FlowDock)         | ✓                 | ✓                       | ✓                   | ✓                |
+| `FlowDock`             | [Morehead et al.](https://arxiv.org/abs/2412.10966)                           | ✓                 | ✓                       | ✓                   | ✓                |
 | `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528)         | ✓                 | ✓                       | ✓                   | ✓                |
 | `Chai-1`               | [Chai Discovery](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf) | ✓                 | ✓                       | ✓                   | ✓                |
 | `AlphaFold 3`          | [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w)         | ✓                 | ✓                       | ✓                   | ✓                |
@@ -353,7 +353,7 @@ conda deactivate
 | ---------------------- | ----------------------------------------------------------------------------- | ----------------- | ----------------------- | ------------------- | ---------------- |
 | `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)               | ✓                 | ✓                       | ✓                   | ✓                |
 | `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)             | ✓                 | ✓                       | ✓                   | ✓                |
-| `FlowDock`             | [Morehead et al.](https://github.com/BioinfoMachineLearning/FlowDock)         | ✓                 | ✓                       | ✓                   | ✓                |
+| `FlowDock`             | [Morehead et al.](https://arxiv.org/abs/2412.10966)                           | ✓                 | ✓                       | ✓                   | ✓                |
 | `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528)         | ✓                 | ✓                       | ✓                   | ✓                |
 | `Chai-1`               | [Chai Discovery](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf) | ✓                 | ✓                       | ✓                   | ✓                |
 | `AlphaFold 3`          | [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w)         | ✓                 | ✓                       | ✓                   | ✓                |
