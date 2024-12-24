@@ -120,7 +120,7 @@ def main(cfg: DictConfig):
                     item = item.upper()
                     mapped_file = "_".join(
                         [
-                            part.upper() if i == 0 else part
+                            part.upper() if i < len(file.split("_")) - 1 else part
                             for i, part in enumerate(file.split("_"))
                         ]
                     )
@@ -129,11 +129,17 @@ def main(cfg: DictConfig):
                         ligand_smiles = pdb_id_to_smiles[item]
                     elif cfg.dataset == "dockgen":
                         item = "_".join([item.split("_")[0].lower(), *item.split("_")[1:]])
+                        mapped_file = "_".join(
+                            [
+                                part.lower() if i == 0 else part
+                                for i, part in enumerate(file.split("_"))
+                            ]
+                        )
                         ligand_smiles = pdb_id_to_smiles[item]
                     else:
                         # NOTE: for the `casp15` dataset, standalone ligand SMILES are not available
                         item = item.replace("V", "v")
-                        mapped_file = mapped_file.replace("V", "v")
+                        mapped_file = mapped_file.upper().replace("V", "v")
                         ligand_smiles = None
 
                     intermediate_output_filepath = os.path.join(output_item_path, file)
