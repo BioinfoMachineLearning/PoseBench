@@ -16,7 +16,7 @@ METHOD_TITLE_MAPPING = {
     "flowdock": "FlowDock",
     "rfaa": "RoseTTAFold-All-Atom",
     "chai-lab": "chai-lab",
-    "alphafold3": "AlphaFold 3",
+    "alphafold3": "alphafold3",
     "vina": "Vina",
     "tulip": "TULIP",
     "p2rank": "P2Rank",
@@ -87,9 +87,11 @@ def resolve_method_protein_dir(
             else os.path.join(
                 "data",
                 f"{dataset}_set",
-                "predicted_structures"
-                if dataset == "casp15"
-                else f"{dataset}_predicted_structures",
+                (
+                    "predicted_structures"
+                    if dataset == "casp15"
+                    else f"{dataset}_predicted_structures"
+                ),
             )
         )
     elif method == "dynamicbind":
