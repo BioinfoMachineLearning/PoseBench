@@ -47,8 +47,9 @@ baseline_methods = [
     "diffdock",
     "dynamicbind",
     "neuralplexer",
-    # "rfaa",
+    "rfaa",
     "chai-lab",
+    "alphafold3",
 ]
 max_num_repeats_per_method = (
     1  # NOTE: Here, to simplify the analysis, we only consider the first run of each method
@@ -71,6 +72,7 @@ method_mapping = {
     "neuralplexer": "NeuralPLexer",
     "rfaa": "RoseTTAFold-AA",
     "chai-lab": "Chai-1",
+    "alphafold3": "AlphaFold 3",
 }
 
 MAX_POSEBUSTERS_BENCHMARK_ANALYSIS_PROTEIN_SEQUENCE_LENGTH = 2000  # Only PoseBusters Benchmark targets with protein sequences below this threshold can be analyzed
