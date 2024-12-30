@@ -522,6 +522,13 @@ for method in df["Category"].unique():
             # for a target, we skip-penalize it with a null EMD value
             emd_values.append({"Category": method, "Target": target, "EMD": np.nan})
             continue
+        if reference_histogram.empty:
+            # NOTE: if a target does not have any ProLIF-parseable interactions
+            # in the reference data, we skip this target
+            print(
+                f"Skipping target {target} for method {method} due to missing reference interaction data."
+            )
+            continue
 
         # NOTE: collecting bins from both histograms allows us to penalize "hallucinated" interactions
         all_bins = set(method_histogram.values[0].keys()) | set(
@@ -538,11 +545,17 @@ for method in df["Category"].unique():
         ).squeeze()
 
         # step 3: compute the EMD values of each method's PLIF histograms
+        try:
+            emd = wasserstein_distance(method_histogram_vector, reference_histogram_vector)
+        except Exception as e:
+            emd = np.nan
+            print(f"Skipping EMD computation for {method} target {target} due to: {e}")
+
         emd_values.append(
             {
                 "Category": method,
                 "Target": target,
-                "EMD": wasserstein_distance(method_histogram_vector, reference_histogram_vector),
+                "EMD": emd,
             }
         )
 
