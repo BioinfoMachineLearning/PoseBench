@@ -195,6 +195,7 @@ def resolve_method_output_dir(
     repeat_index: int,
     pocket_only_baseline: bool,
     v1_baseline: bool,
+    single_seq_baseline: bool = False,
 ) -> str:
     """Resolve the output directory for a given method.
 
@@ -205,10 +206,12 @@ def resolve_method_output_dir(
     :param repeat_index: The repeat index for the method.
     :param pocket_only_baseline: Whether to output files for a pocket-only baseline.
     :param v1_baseline: Whether to output files for a V1 baseline.
+    :param single_seq_baseline: Whether to output files for a single-sequence baseline.
     :return: The output directory for the given method.
     """
     pocket_only_suffix = "_pocket_only" if pocket_only_baseline else ""
     v1_baseline_suffix = "v1" if v1_baseline else ""
+    single_seq_suffix = "_ss" if single_seq_baseline else ""
     if method in STANDARDIZED_DIR_METHODS or method in [
         "neuralplexer",
         "flowdock",
@@ -226,7 +229,7 @@ def resolve_method_output_dir(
             "forks",
             METHOD_TITLE_MAPPING.get(method, method) + v1_baseline_suffix,
             "inference",
-            f"{method}{pocket_only_suffix}_{dataset}_output{output_suffix}_{repeat_index}",
+            f"{method}{single_seq_suffix}{pocket_only_suffix}_{dataset}_output{output_suffix}_{repeat_index}",
         )
     elif method == "dynamicbind":
         return os.path.join(

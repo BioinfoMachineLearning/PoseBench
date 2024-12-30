@@ -48,6 +48,7 @@ baseline_methods = [
     "dynamicbind",
     "neuralplexer",
     "rfaa",
+    # "chai-lab_ss",
     "chai-lab",
     "alphafold3",
 ]
@@ -71,6 +72,7 @@ method_mapping = {
     "dynamicbind": "DynamicBind",
     "neuralplexer": "NeuralPLexer",
     "rfaa": "RoseTTAFold-AA",
+    "chai-lab_ss": "Chai-1 (Single-Seq)",
     "chai-lab": "Chai-1",
     "alphafold3": "AlphaFold 3",
 }
@@ -229,14 +231,22 @@ for method in copy.deepcopy(baseline_methods):
     for repeat_index in range(1, max_num_repeats_per_method + 1):
         method_title = method_mapping[method]
 
+        single_seq_method = "_ss" in method
         v1_baseline = method == "diffdockv1"
-        vina_binding_site_method = method.split("_")[-1] if "_" in method else "p2rank"
 
-        vina_suffix = f"_{vina_binding_site_method}" if "_" in method else ""
+        vina_binding_site_method = (
+            method.split("_")[-1] if "_" in method and not single_seq_method else "p2rank"
+        )
+
+        vina_suffix = (
+            f"_{vina_binding_site_method}" if "_" in method and not single_seq_method else ""
+        )
+        single_seq_suffix = "_ss" if single_seq_method else ""
+
         method = method.split("_")[0]
 
         if not os.path.exists(
-            f"{method}{vina_suffix}_{dataset}_interaction_dataframes_{repeat_index}.h5"
+            f"{method}{single_seq_suffix}{vina_suffix}_{dataset}_interaction_dataframes_{repeat_index}.h5"
         ):
             with open_dict(cfg):
                 cfg.method = method
@@ -256,6 +266,7 @@ for method in copy.deepcopy(baseline_methods):
                             repeat_index,
                             pocket_only_baseline,
                             v1_baseline,
+                            single_seq_baseline=True,
                         )
                     )
                 )
@@ -309,7 +320,7 @@ for method in copy.deepcopy(baseline_methods):
 
                 # NOTE: we iteratively save the interaction dataframes to an HDF5 file
                 with pd.HDFStore(
-                    f"{method}{vina_suffix}_dockgen_interaction_dataframes_{repeat_index}.h5"
+                    f"{method}{single_seq_suffix}{vina_suffix}_dockgen_interaction_dataframes_{repeat_index}.h5"
                 ) as store:
                     for i, df in enumerate(dockgen_protein_ligand_interaction_dfs):
                         store.put(f"df_{i}", df)
