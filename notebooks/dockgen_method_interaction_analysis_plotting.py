@@ -520,8 +520,8 @@ for method in df["Category"].unique():
         ]
         if method_histogram.empty:
             # NOTE: if a method does not have any ProLIF-parseable interactions
-            # for a target, we skip-penalize it with a maximum EMD value
-            emd_values.append({"Category": method, "Target": target, "EMD": 1.0})
+            # for a target, we skip-penalize it with a null EMD value
+            emd_values.append({"Category": method, "Target": target, "EMD": np.nan})
             continue
 
         # NOTE: collecting bins from both histograms allows us to penalize "hallucinated" interactions
@@ -549,10 +549,13 @@ for method in df["Category"].unique():
 
 # plot the EMD and WM values for each method
 all_emd_values = [entry["EMD"] for entry in emd_values]
-min_emd = np.min(all_emd_values)
-max_emd = np.max(all_emd_values)
+min_emd = np.nanmin(all_emd_values)
+max_emd = np.nanmax(all_emd_values)
 for entry in emd_values:
-    emd = entry["EMD"]
+    # NOTE: we normalize the EMD values to the range `[0, 1]`
+    # to compute the Wasserstein Matching (WM) metric while
+    # ensuring missing predictions are maximally skip-penalized
+    emd = max_emd if np.isnan(entry["EMD"]).item() else entry["EMD"]
     normalized_score = 1 - (emd - min_emd) / (max_emd - min_emd)
     entry["WM"] = normalized_score
 
