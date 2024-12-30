@@ -423,7 +423,7 @@ dependencies:
       - nglview==3.0.8
       - ninja==1.11.1
       - nodeenv==1.9.0
-      - numpy==1.23.0
+      - numpy==1.24.4
       - git+https://github.com/amorehead/openfold.git@4ef71646ed031f69716097a9352d21778369136d
       - opt-einsum==3.3.0
       - opt-einsum-fx==0.1.4
