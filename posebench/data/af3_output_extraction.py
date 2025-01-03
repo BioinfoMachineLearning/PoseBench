@@ -140,7 +140,7 @@ def main(cfg: DictConfig):
                         # NOTE: for the `casp15` dataset, standalone ligand SMILES are not available
                         item = item.replace("V", "v")
                         mapped_file = (
-                            mapped_file.upper().replace("V", "v").replace("MODEL", "model")
+                            mapped_file.upper().replace("V", "v").replace("MODEL.CIF", "model.cif")
                         )
                         ligand_smiles = None
 
