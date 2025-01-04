@@ -44,7 +44,9 @@ baseline_methods = [
     "dynamicbind",
     "neuralplexer",
     "rfaa",
+    "chai-lab_ss",
     "chai-lab",
+    "alphafold3_ss",
     "alphafold3",
 ]
 max_num_repeats_per_method = (
@@ -68,8 +70,10 @@ method_mapping = {
     "dynamicbind": "DynamicBind",
     "neuralplexer": "NeuralPLexer",
     "rfaa": "RoseTTAFold-AA",
+    "chai-lab_ss": "Chai-1-Single-Seq",
     "chai-lab": "Chai-1",
-    "alphafold3": "AlphaFold 3",
+    "alphafold3_ss": "AF3-Single-Seq",
+    "alphafold3": "AF3",
 }
 
 CASP15_ANALYSIS_TARGETS_TO_SKIP = [
@@ -204,11 +208,13 @@ if not os.path.exists("casp15_interaction_dataframes.h5"):
 
 # %%
 # calculate and cache CASP15 interaction statistics for each baseline method
+dataset = "casp15"
+
 for method in baseline_methods:
     for repeat_index in range(1, max_num_repeats_per_method + 1):
         method_title = method_mapping[method]
 
-        if not os.path.exists(f"{method}_casp15_interaction_dataframes_{repeat_index}.h5"):
+        if not os.path.exists(f"{method}_{dataset}_interaction_dataframes_{repeat_index}.h5"):
             method_casp15_set_dir = os.path.join(
                 "..",
                 "data",
@@ -285,7 +291,7 @@ for method in baseline_methods:
 
                 # NOTE: we iteratively save the interaction dataframes to an HDF5 file
                 with pd.HDFStore(
-                    f"{method}_casp15_interaction_dataframes_{repeat_index}.h5"
+                    f"{method}_{dataset}_interaction_dataframes_{repeat_index}.h5"
                 ) as store:
                     for i, df in enumerate(casp15_protein_ligand_interaction_dfs):
                         store.put(f"df_{i}", df)

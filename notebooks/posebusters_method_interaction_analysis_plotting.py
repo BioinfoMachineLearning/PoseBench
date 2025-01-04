@@ -48,8 +48,9 @@ baseline_methods = [
     "dynamicbind",
     "neuralplexer",
     "rfaa",
-    # "chai-lab_ss",
+    "chai-lab_ss",
     "chai-lab",
+    "alphafold3_ss",
     "alphafold3",
 ]
 max_num_repeats_per_method = (
@@ -72,9 +73,10 @@ method_mapping = {
     "dynamicbind": "DynamicBind",
     "neuralplexer": "NeuralPLexer",
     "rfaa": "RoseTTAFold-AA",
-    "chai-lab_ss": "Chai-1 (Single-Seq)",
+    "chai-lab_ss": "Chai-1-Single-Seq",
     "chai-lab": "Chai-1",
-    "alphafold3": "AlphaFold 3",
+    "alphafold3_ss": "AF3-Single-Seq",
+    "alphafold3": "AF3",
 }
 
 MAX_POSEBUSTERS_BENCHMARK_ANALYSIS_PROTEIN_SEQUENCE_LENGTH = 2000  # Only PoseBusters Benchmark targets with protein sequences below this threshold can be analyzed
@@ -263,7 +265,7 @@ for method in copy.deepcopy(baseline_methods):
                             repeat_index,
                             pocket_only_baseline,
                             v1_baseline,
-                            single_seq_baseline=True,
+                            single_seq_baseline=single_seq_method,
                         )
                     )
                 )
@@ -319,7 +321,7 @@ for method in copy.deepcopy(baseline_methods):
 
                 # NOTE: we iteratively save the interaction dataframes to an HDF5 file
                 with pd.HDFStore(
-                    f"{method}{single_seq_suffix}{vina_suffix}_posebusters_benchmark_interaction_dataframes_{repeat_index}.h5"
+                    f"{method}{single_seq_suffix}{vina_suffix}_{dataset}_interaction_dataframes_{repeat_index}.h5"
                 ) as store:
                     for i, df in enumerate(posebusters_protein_ligand_interaction_dfs):
                         store.put(f"df_{i}", df)
