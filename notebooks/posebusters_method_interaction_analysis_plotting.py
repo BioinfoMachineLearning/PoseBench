@@ -562,7 +562,9 @@ for method in df["Category"].unique():
         )
 
 # plot the EMD and WM values for each method
-all_emd_values = [entry["EMD"] for entry in emd_values]
+all_emd_values = [
+    min(10.0, entry["EMD"]) for entry in emd_values
+]  # clip EMD values to 10.0 when constructing WM values
 min_emd = np.nanmin(all_emd_values)
 max_emd = np.nanmax(all_emd_values)
 for entry in emd_values:
