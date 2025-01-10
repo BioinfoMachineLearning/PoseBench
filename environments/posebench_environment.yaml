@@ -441,7 +441,7 @@ dependencies:
       - plumbum==1.8.3
       - ply==3.11
       - poethepoet==0.10.0
-      - posebusters==0.3.1
+      - git+https://github.com/amorehead/posebusters.git@posebench
       - git+https://github.com/amorehead/posecheck.git@posebench
       - pot==0.9.1
       - pre-commit==3.6.2
