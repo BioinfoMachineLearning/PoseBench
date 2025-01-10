@@ -199,10 +199,6 @@ rm dynamicbind_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/13858866/files/neuralplexer_benchmark_method_predictions.tar.gz
 tar -xzf neuralplexer_benchmark_method_predictions.tar.gz
 rm neuralplexer_benchmark_method_predictions.tar.gz
-# FlowDock predictions and results
-wget https://zenodo.org/records/13858866/files/flowdock_benchmark_method_predictions.tar.gz
-tar -xzf flowdock_benchmark_method_predictions.tar.gz
-rm flowdock_benchmark_method_predictions.tar.gz
 # RoseTTAFold-All-Atom predictions and results
 wget https://zenodo.org/records/13858866/files/rfaa_benchmark_method_predictions.tar.gz
 tar -xzf rfaa_benchmark_method_predictions.tar.gz
@@ -219,19 +215,6 @@ rm af3_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/13858866/files/vina_benchmark_method_predictions.tar.gz
 tar -xzf vina_benchmark_method_predictions.tar.gz
 rm vina_benchmark_method_predictions.tar.gz
-# Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 consensus ensemble predictions and results
-wget https://zenodo.org/records/13858866/files/astex_diverse_ensemble_benchmark_method_predictions.tar.gz
-wget https://zenodo.org/records/13858866/files/posebusters_benchmark_ensemble_benchmark_method_predictions.tar.gz
-wget https://zenodo.org/records/13858866/files/dockgen_ensemble_benchmark_method_predictions.tar.gz
-wget https://zenodo.org/records/13858866/files/casp15_ensemble_benchmark_method_predictions.tar.gz
-tar -xzf astex_diverse_ensemble_benchmark_method_predictions.tar.gz
-tar -xzf posebusters_benchmark_ensemble_benchmark_method_predictions.tar.gz
-tar -xzf dockgen_ensemble_benchmark_method_predictions.tar.gz
-tar -xzf casp15_ensemble_benchmark_method_predictions.tar.gz
-rm astex_diverse_ensemble_benchmark_method_predictions.tar.gz
-rm posebusters_benchmark_ensemble_benchmark_method_predictions.tar.gz
-rm dockgen_ensemble_benchmark_method_predictions.tar.gz
-rm casp15_ensemble_benchmark_method_predictions.tar.gz
 ```
 
 ### Downloading sequence databases (required only for RoseTTAFold-All-Atom inference)
@@ -307,7 +290,7 @@ python3 posebench/data/components/protein_apo_to_holo_alignment.py dataset=casp1
 conda deactivate
 ```
 
-**NOTE:** The preprocessed Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 data available via [Zenodo](https://doi.org/10.5281/zenodo.13858866) provide pre-holo-aligned protein structures predicted by AlphaFold 3 for these respective datasets. Accordingly, users must ensure their usage of such predicted protein structures aligns with AlphaFold 3's [Terms of Use](https://github.com/google-deepmind/alphafold3/blob/main/WEIGHTS_TERMS_OF_USE.md).
+**NOTE:** The preprocessed Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 data available via [Zenodo](https://doi.org/10.5281/zenodo.13858866) provide pre-holo-aligned protein structures predicted by AlphaFold 3 (and alternatively MIT-licensed ESMFold) for these respective datasets. Accordingly, users must ensure their usage of such predicted protein structures from AlphaFold 3 aligns with AlphaFold 3's [Terms of Use](https://github.com/google-deepmind/alphafold3/blob/main/WEIGHTS_TERMS_OF_USE.md).
 
 </details>
 
@@ -1151,19 +1134,19 @@ rm -rf docs/build/ && sphinx-build docs/source/ docs/build/ # NOTE: errors can s
 
 `PoseBench` builds upon the source code and data from the following projects:
 
-- [alphafold3](https://github.com/google-deepmind/alphafold3)
 - [AutoDock-Vina](https://github.com/ccsb-scripps/AutoDock-Vina)
+- [alphafold3](https://github.com/google-deepmind/alphafold3)
 - [casp15_ligand](https://git.scicore.unibas.ch/schwede/casp15_ligand)
 - [chai-lab](https://github.com/chaidiscovery/chai-lab)
 - [DiffDock](https://github.com/gcorso/DiffDock)
-- [FABind](https://github.com/QizhiPei/FABind)
 - [DynamicBind](https://github.com/luwei0917/DynamicBind)
+- [FABind](https://github.com/QizhiPei/FABind)
 - [FlowDock](https://github.com/BioinfoMachineLearning/FlowDock)
 - [lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template)
 - [NeuralPLexer](https://github.com/zrqiao/NeuralPLexer)
+- [ProteinWorkshop](https://github.com/a-r-j/ProteinWorkshop)
 - [posebusters](https://github.com/maabuu/posebusters)
 - [posebusters_em](https://github.com/maabuu/posebusters_em)
-- [ProteinWorkshop](https://github.com/a-r-j/ProteinWorkshop)
 - [RoseTTAFold-All-Atom](https://github.com/baker-laboratory/RoseTTAFold-All-Atom)
 - [tulip](https://github.com/BioinfoMachineLearning/tulip)
 
