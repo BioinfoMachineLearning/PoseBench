@@ -240,6 +240,16 @@ tar xfz pdb100_2021Mar03.tar.gz
 cd ../../
 ```
 
+### Downloading the PDB Chemical Components Dictionary (CCD)
+
+```bash
+# download and extract the PDB CCD's metadata files
+mkdir -p ./data/ccd_data/
+wget -P ./data/ccd_data/ https://files.wwpdb.org/pub/pdb/data/monomers/components.cif.gz
+wget -P ./data/ccd_data/ https://files.wwpdb.org/pub/pdb/data/component-models/complete/chem_comp_model.cif.gz
+find ./data/ccd_data/ -type f -name "*.gz" -exec gzip -d {} \;
+```
+
 ### Predicting apo protein structures using ESMFold (optional, preprocessed data available)
 
 First create all the corresponding FASTA files for each protein sequence

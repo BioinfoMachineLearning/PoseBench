@@ -373,6 +373,7 @@ dependencies:
       - frozenlist==1.4.0
       - fsspec==2023.12.0
       - furo==2024.5.6
+      - gemmi==0.6.7
       - gevent==23.9.1
       - gitdb==4.0.10
       - gitpython==3.1.32
@@ -419,7 +420,7 @@ dependencies:
       - natsort==8.4.0
       - nbconvert==6.5.4
       - nbstripout==0.7.1
-      - networkx==2.8.7
+      - networkx==3.4.2
       - nglview==3.0.8
       - ninja==1.11.1
       - nodeenv==1.9.0
@@ -437,6 +438,7 @@ dependencies:
       - pbr==5.11.1
       - pdb-tools==2.5.0
       - pdb4amber==22.0
+      - pdbeccdutils==0.8.6
       - plotly==5.17.0
       - plumbum==1.8.3
       - ply==3.11
@@ -472,7 +474,7 @@ dependencies:
       - s3transfer==0.7.0
       - sander==22.0
       - scikit-learn==1.1.2
-      - scipy==1.9.1
+      - scipy==1.15.1
       - seaborn==0.12.2
       - selfies==2.1.1
       - sentry-sdk==1.29.2
