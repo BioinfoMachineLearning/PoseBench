@@ -8,12 +8,13 @@ channels:
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_kmp_llvm
-  - ambertools=22.5=py310hd182041_0
+  - alsa-lib=1.1.5=h516909a_1002
+  - ambertools=23.3=py310h05519df_6
   - annotated-types=0.7.0=pyhd8ed1ab_0
   - antlr-python-runtime=4.9.3=pyhd8ed1ab_1
   - argon2-cffi=23.1.0=pyhd8ed1ab_0
   - argon2-cffi-bindings=21.2.0=py310h2372a71_4
-  - arpack=3.7.0=hdefa2d7_2
+  - arpack=3.8.0=nompi_h0baa96a_101
   - arrow=1.3.0=pyhd8ed1ab_0
   - astunparse=1.6.3=pyhd8ed1ab_0
   - async-lru=2.0.4=pyhd8ed1ab_0
@@ -27,8 +28,8 @@ dependencies:
   - blas-devel=3.9.0=16_linux64_mkl
   - bleach=6.1.0=pyhd8ed1ab_0
   - blosc=1.21.5=hc2324a3_1
-  - boost=1.78.0=py310hcb52e73_5
-  - boost-cpp=1.78.0=h2c5509c_4
+  - boost=1.82.0=h17c5347_6
+  - boost-cpp=1.82.0=h44aadfe_6
   - brotli=1.1.0=hd590300_1
   - brotli-bin=1.1.0=hd590300_1
   - brotli-python=1.1.0=py310hc6cd4ac_1
@@ -37,12 +38,12 @@ dependencies:
   - c-ares=1.28.1=hd590300_0
   - c-blosc2=2.14.4=hb4ffafa_1
   - c-compiler=1.5.0=h166bdaf_0
-  - ca-certificates=2024.6.2=hbcca054_0
+  - ca-certificates=2024.12.14=hbcca054_0
   - cached-property=1.5.2=hd8ed1ab_1
   - cached_property=1.5.2=pyha770c72_1
   - cachetools=5.3.3=pyhd8ed1ab_0
   - cairo=1.18.0=h3faef2a_0
-  - certifi=2024.2.2=pyhd8ed1ab_0
+  - certifi=2024.12.14=pyhd8ed1ab_0
   - cffi=1.16.0=py310h2fee648_0
   - charset-normalizer=3.3.2=pyhd8ed1ab_0
   - colorama=0.4.6=pyhd8ed1ab_0
@@ -78,6 +79,7 @@ dependencies:
   - gcc=10.4.0=hb92f740_13
   - gcc_impl_linux-64=10.4.0=h5231bdf_19
   - gcc_linux-64=10.4.0=h9215b83_13
+  - giflib=5.2.2=hd590300_0
   - gmp=6.3.0=h59595ed_1
   - gmpy2=2.1.5=py310hc7909c9_1
   - gnutls=3.6.13=h85f3911_1
@@ -101,6 +103,7 @@ dependencies:
   - ipywidgets=8.1.3=pyhd8ed1ab_0
   - isoduration=20.11.0=pyhd8ed1ab_0
   - jinja2=3.1.4=pyhd8ed1ab_0
+  - joblib=1.4.2=pyhd8ed1ab_1
   - jpeg=9e=h166bdaf_2
   - json5=0.9.25=pyhd8ed1ab_0
   - jsonpointer=2.4=py310hff52083_3
@@ -127,6 +130,11 @@ dependencies:
   - lerc=3.0=h9c3ff4c_0
   - libaec=1.1.3=h59595ed_0
   - libblas=3.9.0=16_linux64_mkl
+  - libboost=1.82.0=h6fcfa73_6
+  - libboost-devel=1.82.0=h00ab1b0_6
+  - libboost-headers=1.82.0=ha770c72_6
+  - libboost-python=1.82.0=py310hcb52e73_6
+  - libboost-python-devel=1.82.0=py310h17c5347_6
   - libbrotlicommon=1.1.0=hd590300_1
   - libbrotlidec=1.1.0=hd590300_1
   - libbrotlienc=1.1.0=hd590300_1
@@ -143,12 +151,13 @@ dependencies:
   - libev=4.33=hd590300_2
   - libexpat=2.6.2=h59595ed_0
   - libffi=3.4.2=h7f98852_5
+  - libgcc=14.2.0=h77fa898_1
   - libgcc-devel_linux-64=10.4.0=hd38fd1e_19
-  - libgcc-ng=13.1.0=he5830b7_0
+  - libgcc-ng=14.2.0=h69a702a_1
   - libgfortran-ng=13.2.0=h69a702a_0
   - libgfortran5=13.2.0=ha4646dd_0
   - libglib=2.80.2=hf974151_0
-  - libgomp=13.1.0=he5830b7_0
+  - libgomp=14.2.0=h77fa898_1
   - libhwloc=2.10.0=default_h5622ce7_1001
   - libiconv=1.17=hd590300_2
   - libjpeg-turbo=2.0.0=h9bf148f_0
@@ -164,6 +173,7 @@ dependencies:
   - libsodium=1.0.18=h36c2ea0_1
   - libsqlite=3.45.3=h2797004_0
   - libssh2=1.11.0=h0841786_0
+  - libstdcxx=14.2.0=hc0a3c3a_1
   - libstdcxx-devel_linux-64=10.4.0=hd38fd1e_19
   - libstdcxx-ng=13.2.0=hc0a3c3a_7
   - libtiff=4.3.0=h0fcbabc_4
@@ -198,6 +208,7 @@ dependencies:
   - notebook=7.2.0=pyhd8ed1ab_0
   - notebook-shim=0.2.4=pyhd8ed1ab_0
   - numexpr=2.7.3=py310hb5077e9_1
+  - numpy=1.26.4=py310hb13e2d6_0
   - ocl-icd=2.3.2=hd590300_1
   - ocl-icd-system=1.0.0=1
   - olefile=0.47=pyhd8ed1ab_0
@@ -216,8 +227,8 @@ dependencies:
   - openjdk=11.0.1=h600c080_1018
   - openjpeg=2.5.0=h7d73246_0
   - openmm=8.1.1=py310h43b6314_1
-  - openmmforcefields=0.12.0=pyhd8ed1ab_0
-  - openssl=3.3.0=h4ab18f5_3
+  - openmmforcefields=0.14.1=pyhd8ed1ab_0
+  - openssl=3.4.0=hb9d3cd8_0
   - overrides=7.7.0=pyhd8ed1ab_0
   - packmol=20.14.4=ha36c22a_0
   - pandocfilters=1.5.0=pyhd8ed1ab_0
@@ -229,7 +240,6 @@ dependencies:
   - perl=5.32.1=7_hd590300_perl5
   - pexpect=4.9.0=pyhd8ed1ab_0
   - pickleshare=0.7.5=py_1003
-  - pillow=8.4.0=py310h07f4688_0
   - pint=0.23=pyhd8ed1ab_1
   - pip=24.0=pyhd8ed1ab_0
   - pixman=0.43.2=h59595ed_0
@@ -265,7 +275,6 @@ dependencies:
   - reduce=4.14=py310h8ea774a_3
   - referencing=0.35.1=pyhd8ed1ab_0
   - reportlab=3.5.68=py310h94fcab3_1
-  - requests=2.32.2=pyhd8ed1ab_0
   - rfc3339-validator=0.1.4=pyhd8ed1ab_0
   - rfc3986-validator=0.1.1=pyh9f0ad1d_0
   - rpds-py=0.18.1=py310he421c4c_0
@@ -298,7 +307,7 @@ dependencies:
   - unicodedata2=15.1.0=py310h2372a71_0
   - uri-template=1.3.0=pyhd8ed1ab_0
   - validators=0.28.3=pyhd8ed1ab_0
-  - vina=1.2.5=py310hc3c6c4f_1
+  - vina=1.2.5=py310hf71b8c6_5
   - wcwidth=0.2.13=pyhd8ed1ab_0
   - webcolors=1.13=pyhd8ed1ab_0
   - webencodings=0.5.1=pyhd8ed1ab_2
@@ -306,6 +315,8 @@ dependencies:
   - wheel=0.43.0=pyhd8ed1ab_1
   - widgetsnbextension=4.0.11=pyhd8ed1ab_0
   - xmltodict=0.13.0=pyhd8ed1ab_0
+  - xorg-fixesproto=5.0=h7f98852_1002
+  - xorg-inputproto=2.3.2=h7f98852_1002
   - xorg-kbproto=1.0.7=h7f98852_1002
   - xorg-libice=1.1.1=hd590300_0
   - xorg-libsm=1.2.4=h7391055_0
@@ -313,8 +324,12 @@ dependencies:
   - xorg-libxau=1.0.11=hd590300_0
   - xorg-libxdmcp=1.1.3=h7f98852_0
   - xorg-libxext=1.3.4=h0b41bf4_2
+  - xorg-libxfixes=5.0.3=h7f98852_1004
+  - xorg-libxi=1.7.10=h4bc722e_1
   - xorg-libxrender=0.9.11=hd590300_0
   - xorg-libxt=1.3.0=hd590300_1
+  - xorg-libxtst=1.2.5=h4bc722e_0
+  - xorg-recordproto=1.14.2=h7f98852_1002
   - xorg-renderproto=0.11.1=h7f98852_1002
   - xorg-xextproto=7.3.0=h0b41bf4_1003
   - xorg-xproto=7.0.31=h7f98852_1007
@@ -324,6 +339,7 @@ dependencies:
   - zipp=3.17.0=pyhd8ed1ab_0
   - zlib=1.2.13=h4ab18f5_6
   - zlib-ng=2.0.7=h0b41bf4_0
+  - zstandard=0.18.0=py310h5764c6d_1
   - zstd=1.5.6=ha6fb4c9_0
   - pip:
       - absl-py==1.4.0
@@ -331,7 +347,6 @@ dependencies:
       - aiosignal==1.3.1
       - alabaster==0.7.16
       - alembic==1.11.3
-      - amberlite==22.0
       - amberutils==21.0
       - anyio==3.7.1
       - appdirs==1.4.4
@@ -363,6 +378,7 @@ dependencies:
       - docker-pycreds==0.4.0
       - docutils==0.20.1
       - easydev==0.12.1
+      - edgembar==0.2
       - einops==0.6.1
       - executing==1.2.0
       - fair-esm==2.0.0
@@ -392,7 +408,6 @@ dependencies:
       - jaxtyping==0.2.21
       - jedi==0.19.0
       - jmespath==1.0.1
-      - joblib==1.4.2
       - lightning==2.1.3
       - lightning-cloud==0.5.61
       - lightning-utilities==0.10.0
@@ -404,6 +419,7 @@ dependencies:
       - m2r2==0.3.3.post2
       - mako==1.2.4
       - markdown-it-py==3.0.0
+      - mdahole2==0.5.0
       - mdanalysis==2.7.0
       - mdurl==0.1.2
       - git+https://github.com/amorehead/Meeko.git@patch-1
@@ -424,21 +440,22 @@ dependencies:
       - nglview==3.0.8
       - ninja==1.11.1
       - nodeenv==1.9.0
-      - numpy==1.26.4
       - git+https://github.com/amorehead/openfold.git@4ef71646ed031f69716097a9352d21778369136d
       - opt-einsum==3.3.0
       - opt-einsum-fx==0.1.4
       - optuna==2.10.1
       - packaging==21.3
-      - packmol-memgen==1.2.3rc0
+      - packmol-memgen==2023.2.24
       - pandas==1.5.0
       - pandoc==2.3
       - pastel==0.2.1
+      - pathsimanalysis==1.2.0
       - pathtools==0.1.2
       - pbr==5.11.1
       - pdb-tools==2.5.0
       - pdb4amber==22.0
       - pdbeccdutils==0.8.6
+      - pillow==10.4.0
       - plotly==5.17.0
       - plumbum==1.8.3
       - ply==3.11
@@ -457,6 +474,7 @@ dependencies:
       - pydantic==1.10.15
       - pydocstyle==6.3.0
       - pyjwt==2.8.0
+      - pymsmt==22.0
       - pypdb==2.3
       - pyperclip==1.8.2
       - python-dotenv==1.0.0
@@ -466,6 +484,7 @@ dependencies:
       - pytz==2022.4
       - pyzmq==25.1.1
       - regex==2023.10.3
+      - requests==2.32.3
       - requests-cache==1.1.0
       - rich==13.7.1
       - rich-click==1.6.1
@@ -481,6 +500,14 @@ dependencies:
       - setproctitle==1.3.2
       - smmap==5.0.0
       - snowballstemmer==2.2.0
+      - sphinx==7.3.7
+      - sphinx-basic-ng==1.0.0b2
+      - sphinxcontrib-applehelp==2.0.0
+      - sphinxcontrib-devhelp==2.0.0
+      - sphinxcontrib-htmlhelp==2.1.0
+      - sphinxcontrib-jsmath==1.0.1
+      - sphinxcontrib-qthelp==2.0.0
+      - sphinxcontrib-serializinghtml==2.0.0
       - spyrmsd==0.5.2
       - sqlalchemy==2.0.20
       - starlette==0.27.0
@@ -501,6 +528,7 @@ dependencies:
       - uvicorn==0.30.0
       - virtualenv==20.26.2
       - wandb==0.16.2
+      - waterdynamics==1.2.0
       - watermark==2.4.3
       - wget==3.2
       - wrapt==1.15.0
