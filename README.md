@@ -75,6 +75,8 @@ cd PoseBench
 mamba env create -f environments/posebench_environment.yaml
 conda activate PoseBench  # NOTE: one still needs to use `conda` to (de)activate environments
 pip3 install -e .
+pip3 install numpy==1.26.4 --no-dependencies
+pip3 install prody==2.4.1 --no-dependencies
 # - PyMOL environment # (~1 GB)
 mamba env create -f environments/pymol_environment.yaml
 conda activate PyMOL-PoseBench
