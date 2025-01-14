@@ -17,7 +17,7 @@ import pandas as pd
 import requests
 import rootutils
 from beartype import beartype
-from beartype.typing import Any, Dict, List, Optional, Set, Tuple, Union
+from beartype.typing import Any, Dict, List, Literal, Optional, Set, Tuple, Union
 from Bio import PDB
 from Bio.PDB import PDBParser
 from Bio.PDB.Polypeptide import is_aa
@@ -1885,3 +1885,64 @@ def count_pdb_inter_residue_clashes(pdb_filepath: str, clash_cutoff: float = 0.6
                 clashes.append((atom_1, atom_2))
 
     return len(clashes) // 2
+
+
+@beartype
+def parse_fasta(
+    file_path: str,
+    only_mols: List[Literal["protein", "na"]] | None = None,
+    collate_by_pdb_id: bool = False,
+) -> Dict[str, str]:
+    """Parses a FASTA file into a dictionary and optionally filters by molecule type.
+
+    :param file_path: Path to the .txt FASTA file.
+    :param only_mols: List of molecule types to filter (e.g., ['protein', 'na']).
+    :param collate_by_pdb_id: Whether to group sequences by PDB ID.
+    :return: A dictionary where keys are sequence IDs and values are tuples (description,
+        sequence).
+    """
+    fasta_dict = {}
+    current_id = None
+    current_desc = None
+    current_seq = []
+
+    # Read the file line by line
+    with open(file_path) as f:
+        for line in f:
+            line = line.strip()
+            if line.startswith(">"):
+                # Save the previous sequence if applicable
+                if current_id:
+                    fasta_dict[current_id] = (current_desc, "".join(current_seq))
+
+                # Parse the new header
+                header_parts = line[1:].split(maxsplit=1)
+                current_id = header_parts[0]
+                current_desc = header_parts[1] if len(header_parts) > 1 else ""
+                current_seq = []
+            else:
+                # Append sequence lines
+                current_seq.append(line)
+
+        # Save the last sequence
+        if current_id:
+            fasta_dict[current_id] = (current_desc, "".join(current_seq))
+
+    # Filter by molecule type if only_mols is provided
+    if only_mols:
+        only_mols_set = {mol.lower() for mol in only_mols}
+        fasta_dict = {
+            seq_id: (desc, seq)
+            for seq_id, (desc, seq) in fasta_dict.items()
+            if any(f"mol:{mol}" in desc.lower() for mol in only_mols_set)
+        }
+
+    # Group sequences by PDB ID as requested
+    if collate_by_pdb_id:
+        collated_fasta_dict = defaultdict(list)
+        for seq_id, (desc, seq) in fasta_dict.items():
+            pdb_id, chain_id = seq_id.split("_")
+            collated_fasta_dict[pdb_id].append((chain_id, desc, seq))
+        fasta_dict = dict(collated_fasta_dict)
+
+    return fasta_dict

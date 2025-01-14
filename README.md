@@ -242,7 +242,14 @@ tar xfz pdb100_2021Mar03.tar.gz
 cd ../../
 ```
 
-### Downloading the PDB Chemical Components Dictionary (CCD)
+### Downloading PDB metadata
+
+```bash
+# download and extract the PDB's FASTA sequence files
+mkdir -p ./data/pdb_data/
+wget -P ./data/pdb_data/ https://files.rcsb.org/pub/pdb/derived_data/pdb_seqres.txt.gz
+find ./data/pdb_data/ -type f -name "*.gz" -exec gzip -d {} \;
+```
 
 ```bash
 # download and extract the PDB CCD's metadata files
