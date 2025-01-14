@@ -45,7 +45,7 @@ baseline_methods = [
     "neuralplexer",
     "rfaa",
     "chai-lab_ss",
-    "chai-lab",
+    # "chai-lab",
     "alphafold3_ss",
     "alphafold3",
 ]
@@ -541,7 +541,7 @@ for entry in emd_values:
     # NOTE: we normalize the EMD values to the range `[0, 1]`
     # to compute the Wasserstein Matching (WM) metric while
     # ensuring missing predictions are maximally skip-penalized
-    emd = max_emd if np.isnan(entry["EMD"]).item() else entry["EMD"]
+    emd = max_emd if np.isnan(entry["EMD"]).item() else min(10.0, entry["EMD"])
     normalized_score = 1 - (emd - min_emd) / (max_emd - min_emd)
     entry["WM"] = normalized_score
 
