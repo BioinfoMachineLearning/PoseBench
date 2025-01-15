@@ -24,7 +24,7 @@ from Bio.PDB import PDBIO, PDBParser, Select
 from omegaconf import DictConfig, open_dict
 from posecheck import PoseCheck
 from rdkit import Chem
-from scipy.stats import wasserstein_distance
+from scipy.stats import ttest_rel, wasserstein_distance
 from tqdm import tqdm
 
 from posebench import resolve_method_input_csv_path, resolve_method_output_dir
@@ -460,7 +460,10 @@ def bin_interactions(file_path, category):
                 try:
                     interactions[target].extend(
                         [
-                            f"{split_string_at_numeric(row[0])[0]}:{split_string_at_numeric(row[1])[0]}:{row[2]}"
+                            # NOTE: we use the `UNL` prefix to denote "unspecified" ligand types,
+                            # since ProLIF cannot differentiate between ligand types for method predictions
+                            f"UNL:{split_string_at_numeric(row[1])[0]}:{row[2]}"
+                            # f"{split_string_at_numeric(row[0])[0]}:{split_string_at_numeric(row[1])[0]}:{row[2]}"
                             for row in store[key].iloc[row_index].index.values[:-1]
                         ]
                     )
@@ -558,36 +561,183 @@ for method in df["Category"].unique():
                 "Category": method,
                 "Target": target,
                 "EMD": emd,
+                "Method_Histogram": dict(sorted(method_histogram.values[0].items())),
+                "Reference_Histogram": dict(sorted(reference_histogram.values[0].items())),
             }
         )
 
 # plot the EMD and WM values for each method
 all_emd_values = [
-    min(25.0, entry["EMD"]) for entry in emd_values
-]  # clip EMD values to 25.0 when constructing WM values
+    min(50.0, entry["EMD"]) for entry in emd_values
+]  # clip EMD values to 50.0 when constructing WM values
 min_emd = np.nanmin(all_emd_values)
 max_emd = np.nanmax(all_emd_values)
 for entry in emd_values:
     # NOTE: we normalize the EMD values to the range `[0, 1]`
     # to compute the Wasserstein Matching (WM) metric while
     # ensuring missing predictions are maximally skip-penalized
-    emd = max_emd if np.isnan(entry["EMD"]).item() else min(25.0, entry["EMD"])
+    emd = max_emd if np.isnan(entry["EMD"]).item() else min(50.0, entry["EMD"])
     normalized_score = 1 - (emd - min_emd) / (max_emd - min_emd)
     entry["WM"] = normalized_score
 
-emd_values_df = pd.DataFrame(emd_values, columns=["Category", "Target", "EMD", "WM"])
+emd_values_df = pd.DataFrame(
+    emd_values,
+    columns=["Category", "Target", "EMD", "WM", "Method_Histogram", "Reference_Histogram"],
+)
 emd_values_df.to_csv("posebusters_benchmark_plif_metrics.csv")
 
-plt.figure(figsize=(10, 5))
+plt.figure(figsize=(20, 8))
 sns.boxplot(data=emd_values_df, x="Category", y="EMD")
 plt.xlabel("")
 plt.ylabel("PLIF-EMD")
 plt.savefig("posebusters_benchmark_plif_emd_values.png")
 plt.show()
 
-plt.figure(figsize=(10, 5))
+plt.close("all")
+
+plt.figure(figsize=(20, 8))
 sns.boxplot(data=emd_values_df, x="Category", y="WM")
 plt.xlabel("")
 plt.ylabel("PLIF-WM")
 plt.savefig("posebusters_benchmark_plif_wm_values.png")
+plt.show()
+
+plt.close("all")
+
+# %% [markdown]
+# #### Identify which types of interactions are most difficult to reproduce
+
+# %%
+# hypothesis: the most structured types of interactions (e.g., HBAcceptor, HBDonor) are more difficult to reproduce than unstructured types (e.g., VdWContact, Hydrophobic)
+struct_emd_values = []
+for _, row in emd_values_df.iterrows():
+    method = row["Category"]
+    target = row["Target"]
+
+    method_histogram = row["Method_Histogram"]
+    reference_histogram = row["Reference_Histogram"]
+
+    if method_histogram is np.nan or reference_histogram is np.nan:
+        continue
+
+    # NOTE: collecting bins from both histograms allows us to penalize "hallucinated" interactions
+    all_bins = set(method_histogram.keys()) | set(reference_histogram.keys())
+    all_bins = sorted(all_bins)  # keep bins in a fixed order for consistency
+
+    structured_interaction_bins = [
+        bin for bin in all_bins if bin.split(":")[-1] in ("HBAcceptor", "HBDonor")
+    ]
+    unstructured_interaction_bins = [
+        bin for bin in all_bins if bin.split(":")[-1] in ("VdWContact", "Hydrophobic")
+    ]
+
+    if not structured_interaction_bins or not unstructured_interaction_bins:
+        continue
+
+    # convert histograms to aligned vectors
+    structured_method_histogram_vector = np.array(
+        np.array([method_histogram.get(bin, 0) for bin in structured_interaction_bins])
+    )
+    structured_reference_histogram_vector = np.array(
+        np.array([reference_histogram.get(bin, 0) for bin in structured_interaction_bins])
+    )
+
+    unstructured_method_histogram_vector = np.array(
+        np.array([method_histogram.get(bin, 0) for bin in unstructured_interaction_bins])
+    )
+    unstructured_reference_histogram_vector = np.array(
+        np.array([reference_histogram.get(bin, 0) for bin in unstructured_interaction_bins])
+    )
+
+    if (
+        not structured_method_histogram_vector.any()
+        or not structured_reference_histogram_vector.any()
+    ):
+        continue
+
+    # compute the EMD values of each method's PLIF histograms
+    try:
+        structured_emd = wasserstein_distance(
+            structured_method_histogram_vector, structured_reference_histogram_vector
+        )
+    except Exception as e:
+        structured_emd = np.nan
+        print(f"Skipping structured EMD computation for {method} target {target} due to: {e}")
+
+    try:
+        unstructured_emd = wasserstein_distance(
+            unstructured_method_histogram_vector,
+            unstructured_reference_histogram_vector,
+        )
+    except Exception as e:
+        unstructured_emd = np.nan
+        print(f"Skipping unstructured EMD computation for {method} target {target} due to: {e}")
+
+    if structured_emd is np.nan or unstructured_emd is np.nan:
+        continue
+
+    struct_emd_values.append(
+        {
+            "Category": method,
+            "Target": target,
+            "Structured_EMD": structured_emd,
+            "Unstructured_EMD": unstructured_emd,
+            "Method_Histogram": dict(sorted(method_histogram.items())),
+            "Reference_Histogram": dict(sorted(reference_histogram.items())),
+        }
+    )
+
+struct_emd_values_df = pd.DataFrame(
+    struct_emd_values,
+    columns=[
+        "Category",
+        "Target",
+        "Structured_EMD",
+        "Unstructured_EMD",
+        "Method_Histogram",
+        "Reference_Histogram",
+    ],
+)
+struct_emd_values_df.to_csv("posebusters_benchmark_structured_plif_metrics.csv")
+
+# get unique categories
+categories = struct_emd_values_df["Category"].unique()
+
+# define colors and markers for each category
+colors = plt.cm.get_cmap("tab10", len(categories))
+markers = ["o", "s", "D", "^", "v", "<", ">", "p", "*", "h"]
+
+# create a scatter plot with lines connecting the paired values for each category
+plt.figure(figsize=(20, 8))
+
+for i, category in enumerate(categories):
+    category_df = struct_emd_values_df[struct_emd_values_df["Category"] == category]
+
+    # perform a paired t-test
+    t_stat, p_value = ttest_rel(category_df["Structured_EMD"], category_df["Unstructured_EMD"])
+    print(f"Category: {category} - T-statistic: {t_stat}, P-value: {p_value}")
+
+    # plot the values
+    plt.plot(
+        category_df.index,
+        category_df["Structured_EMD"],
+        marker=markers[i % len(markers)],
+        linestyle="-",
+        color=colors(i),
+        label=f"{category} Structured_EMD",
+    )
+    plt.plot(
+        category_df.index,
+        category_df["Unstructured_EMD"],
+        marker=markers[i % len(markers)],
+        linestyle="--",
+        color=colors(i),
+        label=f"{category} Unstructured_EMD",
+    )
+
+plt.xlabel("Index")
+plt.ylabel("EMD Value")
+plt.title("Comparison of Structured_EMD and Unstructured_EMD by Method")
+plt.legend()
+plt.ylim(0, 50)
 plt.show()
