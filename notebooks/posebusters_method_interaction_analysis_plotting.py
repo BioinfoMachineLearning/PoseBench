@@ -739,7 +739,6 @@ plt.xlabel("Index")
 plt.ylabel("EMD Value")
 plt.title("Comparison of Structured_EMD and Unstructured_EMD by Method")
 plt.legend()
-plt.ylim(0, 50)
 plt.savefig("posebusters_benchmark_structured_vs_unstructured_plif_emd_values.png")
 plt.show()
 
