@@ -860,6 +860,29 @@ def main(cfg: DictConfig):
                 f"{resolve_method_title(cfg.method)}{config} bust results for inference directory `{output_dir}` already exist at `{bust_results_filepath}`. Directly analyzing..."
             )
             bust_results = pd.read_csv(bust_results_filepath)
+
+            # if necessary, track the molecule ID of each row after initial scoring
+            if "mol_id" not in bust_results.columns:
+                if cfg.method == "dynamicbind":
+                    output_dir = os.path.join(
+                        Path(output_dir).parent,
+                        Path(output_dir).stem.replace(f"_{cfg.repeat_index}", ""),
+                    )
+                mol_table = create_mol_table(
+                    Path(cfg.input_csv_path),
+                    Path(cfg.input_data_dir),
+                    Path(output_dir),
+                    cfg,
+                    relaxed="relaxed" in config,
+                    add_pdb_ids=True,
+                )
+                bust_results["mol_id"] = mol_table["pdb_id"]
+
+                bust_results.to_csv(bust_results_filepath, index=False)
+                logger.info(
+                    f"{resolve_method_title(cfg.method)}{config} bust results for inference directory `{output_dir}` successfully amended at `{bust_results_filepath}`."
+                )
+
         else:
             if cfg.method == "dynamicbind":
                 output_dir = os.path.join(
@@ -872,6 +895,7 @@ def main(cfg: DictConfig):
                 Path(output_dir),
                 cfg,
                 relaxed="relaxed" in config,
+                add_pdb_ids=True,
             )
 
             # NOTE: we use the `redock` mode here since with each method we implicitly perform cognate (e.g., apo or ab initio) docking,
@@ -879,6 +903,7 @@ def main(cfg: DictConfig):
             buster = PoseBusters(config="redock", top_n=None)
             buster.config["loading"]["mol_true"]["load_all"] = False
             bust_results = buster.bust_table(mol_table, full_report=cfg.full_report)
+            bust_results["mol_id"] = mol_table["pdb_id"]
 
             bust_results.to_csv(bust_results_filepath, index=False)
             logger.info(
