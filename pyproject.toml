@@ -48,7 +48,7 @@ dependencies = [
     # --------- others --------- #
     "beartype",        # runtime type checking
     "biopandas",       # for biological dataframe parsing
-    "biopython==1.79", # for biological data parsing
+    "biopython==1.85", # for biological data parsing
     "ipykernel",       # for running Jupyter notebooks
     "jaxtyping>=0.2.12",  # tensor type checking
     "joblib",          # for parallel processing
