@@ -251,14 +251,6 @@ wget -P ./data/pdb_data/ https://files.rcsb.org/pub/pdb/derived_data/pdb_seqres.
 find ./data/pdb_data/ -type f -name "*.gz" -exec gzip -d {} \;
 ```
 
-```bash
-# download and extract the PDB CCD's metadata files
-mkdir -p ./data/ccd_data/
-wget -P ./data/ccd_data/ https://files.wwpdb.org/pub/pdb/data/monomers/components.cif.gz
-wget -P ./data/ccd_data/ https://files.wwpdb.org/pub/pdb/data/component-models/complete/chem_comp_model.cif.gz
-find ./data/ccd_data/ -type f -name "*.gz" -exec gzip -d {} \;
-```
-
 ### Predicting apo protein structures using ESMFold (optional, preprocessed data available)
 
 First create all the corresponding FASTA files for each protein sequence
