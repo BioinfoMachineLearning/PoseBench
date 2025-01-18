@@ -935,7 +935,7 @@ def main(cfg: DictConfig):
             buster = PoseBusters(config="redock", top_n=None)
             buster.config["loading"]["mol_true"]["load_all"] = False
             bust_results = buster.bust_table(mol_table, full_report=cfg.full_report)
-            bust_results.loc[:, "mol_id"] = mol_ids
+            bust_results["mol_id"] = mol_ids.values
 
             bust_results.to_csv(bust_results_filepath, index=False)
             logger.info(
