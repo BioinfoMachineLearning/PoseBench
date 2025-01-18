@@ -946,9 +946,11 @@ def main(cfg: DictConfig):
         logger.info(
             f"{resolve_method_title(cfg.method)}{config} rmsd_≤_2å: {bust_results['rmsd_≤_2å'].mean()}"
         )
-        tests_table = bust_results[
-            DOCKGEN_BUST_TEST_COLUMNS if cfg.dataset == "dockgen" else BUST_TEST_COLUMNS
-        ]
+        tests_table = copy.deepcopy(
+            bust_results[
+                DOCKGEN_BUST_TEST_COLUMNS if cfg.dataset == "dockgen" else BUST_TEST_COLUMNS
+            ]
+        )
         tests_table.loc[:, "pb_valid"] = tests_table.iloc[:, 1:].all(axis=1)
         logger.info(
             f"{resolve_method_title(cfg.method)}{config} rmsd_≤_2å and pb_valid: {tests_table[tests_table['pb_valid']]['rmsd_≤_2å'].sum() / len(tests_table)}"
