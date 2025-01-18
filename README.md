@@ -1090,13 +1090,30 @@ To benchmark ensemble ranking using the above commands, you must have already ru
 
 <details>
 
+Pre-compute and analyze the protein-ligand interactions of each method
+
+```bash
+cd notebooks/
+python3 astex_method_interaction_analysis_plotting.py
+python3 dockgen_method_interaction_analysis_plotting.py
+python3 posebusters_method_interaction_analysis_plotting.py
+python3 casp15_method_interaction_analysis_plotting.py
+cd ../
+```
+
 Execute (and customize as desired) notebooks to prepare paper-ready result plots
 
 ```bash
-jupyter notebook notebooks/posebusters_astex_inference_results_plotting.ipynb
-jupyter notebook notebooks/posebusters_pocket_only_inference_results_plotting.ipynb
+jupyter notebook notebooks/astex_diverse_inference_results_plotting.ipynb
 jupyter notebook notebooks/dockgen_inference_results_plotting.ipynb
+jupyter notebook notebooks/posebusters_benchmark_inference_results_plotting.ipynb
 jupyter notebook notebooks/casp15_inference_results_plotting.ipynb
+```
+
+Inspect the failure modes of each method
+
+```bash
+jupyter notebook notebooks/failure_modes_analysis_plotting.ipynb
 ```
 
 </details>
