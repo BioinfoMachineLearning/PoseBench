@@ -875,7 +875,9 @@ def main(cfg: DictConfig):
     """
     with open_dict(cfg):
         # NOTE: besides their output directories, single-sequence baselines are treated like their multi-sequence counterparts
+        output_dir = copy.deepcopy(cfg.output_dir)
         cfg.method = cfg.method.removesuffix("_ss")
+        cfg.output_dir = output_dir
 
     for config in ["", "_relaxed"]:
         output_dir = cfg.output_dir + config
