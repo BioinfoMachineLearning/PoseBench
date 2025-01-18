@@ -27,7 +27,9 @@ logger = logging.getLogger(__name__)
 
 pd.options.mode.copy_on_write = True
 
-BUST_TEST_COLUMNS = [
+# NOTE: the DockGen dataset's crystal ligand structures are stored in PDB format, so we cannot
+# evaluate the PoseBusters validity rates of a method using molecular graph or bond assertions
+DOCKGEN_BUST_TEST_COLUMNS = [
     # accuracy #
     "rmsd_≤_2å",
     # chemical validity and consistency #
@@ -35,10 +37,10 @@ BUST_TEST_COLUMNS = [
     "mol_true_loaded",
     "mol_cond_loaded",
     "sanitization",
-    "molecular_formula",
-    "molecular_bonds",
-    "tetrahedral_chirality",
-    "double_bond_stereochemistry",
+    # "molecular_formula",
+    # "molecular_bonds",
+    # "tetrahedral_chirality",
+    # "double_bond_stereochemistry",
     # intramolecular validity #
     "bond_lengths",
     "bond_angles",
@@ -53,6 +55,34 @@ BUST_TEST_COLUMNS = [
     "volume_overlap_with_protein",
     "volume_overlap_with_organic_cofactors",
     "volume_overlap_with_inorganic_cofactors",
+]
+
+BUST_TEST_COLUMNS = DOCKGEN_BUST_TEST_COLUMNS + [
+    # # accuracy #
+    # "rmsd_≤_2å",
+    # # chemical validity and consistency #
+    # "mol_pred_loaded",
+    # "mol_true_loaded",
+    # "mol_cond_loaded",
+    # "sanitization",
+    "molecular_formula",
+    "molecular_bonds",
+    "tetrahedral_chirality",
+    "double_bond_stereochemistry",
+    # # intramolecular validity #
+    # "bond_lengths",
+    # "bond_angles",
+    # "internal_steric_clash",
+    # "aromatic_ring_flatness",
+    # "double_bond_flatness",
+    # "internal_energy",
+    # # intermolecular validity #
+    # "minimum_distance_to_protein",
+    # "minimum_distance_to_organic_cofactors",
+    # "minimum_distance_to_inorganic_cofactors",
+    # "volume_overlap_with_protein",
+    # "volume_overlap_with_organic_cofactors",
+    # "volume_overlap_with_inorganic_cofactors",
 ]
 
 RANKED_METHODS = ["diffdock", "dynamicbind", "neuralplexer", "flowdock"]
@@ -914,7 +944,9 @@ def main(cfg: DictConfig):
         logger.info(
             f"{resolve_method_title(cfg.method)}{config} rmsd_≤_2å: {bust_results['rmsd_≤_2å'].mean()}"
         )
-        tests_table = bust_results[BUST_TEST_COLUMNS]
+        tests_table = bust_results[
+            DOCKGEN_BUST_TEST_COLUMNS if cfg.dataset == "dockgen" else BUST_TEST_COLUMNS
+        ]
         tests_table.loc[:, "pb_valid"] = tests_table.iloc[:, 1:].all(axis=1)
         logger.info(
             f"{resolve_method_title(cfg.method)}{config} rmsd_≤_2å and pb_valid: {tests_table[tests_table['pb_valid']]['rmsd_≤_2å'].sum() / len(tests_table)}"
