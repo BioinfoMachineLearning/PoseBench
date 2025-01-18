@@ -12,3 +12,4 @@ repeat_index: 1 # the repeat index which was used for inference
 pocket_only_baseline: false # whether to analyze the pocket-only baseline
 v1_baseline: false # whether to analyze the v1 baseline
 relax_protein: false # whether to relax the protein - NOTE: currently periodically yields unpredictable protein-ligand separation
+force_rescore: false # whether to force rescoring of the predictions with the PoseBusters software suite

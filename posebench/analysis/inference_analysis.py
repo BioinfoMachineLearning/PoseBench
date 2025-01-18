@@ -855,7 +855,7 @@ def main(cfg: DictConfig):
         os.makedirs(bust_results_filepath.parent, exist_ok=True)
 
         # collect test results
-        if os.path.exists(bust_results_filepath):
+        if os.path.exists(bust_results_filepath) and not cfg.force_rescore:
             logger.info(
                 f"{resolve_method_title(cfg.method)}{config} bust results for inference directory `{output_dir}` already exist at `{bust_results_filepath}`. Directly analyzing..."
             )
