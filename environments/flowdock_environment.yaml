@@ -431,7 +431,7 @@ dependencies:
       - msgpack-numpy==0.4.8
       - numpy==1.23.5
       - git+https://github.com/amorehead/openfold.git@fe1275099639bf7e617e09ef24d6af778647dd64
-      - git+https://github.com/amorehead/posebusters.git@posebench
+      - git+https://github.com/amorehead/posebusters.git@posebench-flowdock
       - git+https://git@github.com/zrqiao/power_spherical.git@290b1630c5f84e3bb0d61711046edcf6e47200d4
       - prody==2.4.1
       - protobuf==4.25.3

@@ -56,7 +56,7 @@ dependencies = [
     "meeko",           # for molecular docking preparation
     "numpy",           # for numerical operations
     "pandas>=1.3.5",   # for data parsing and analysis
-    "posebusters", # for protein-ligand structure scoring
+    "posebusters @ git+https://github.com/amorehead/posebusters.git@posebench-flowdock", # for protein-ligand structure scoring
     "plotly",          # for plotting
     "pre-commit",      # hooks for applying linters on commit
     "prody",           # for protein data parsing
