@@ -13,7 +13,7 @@ import hydra
 import pandas as pd
 import rootutils
 from beartype.typing import List, Tuple
-from omegaconf import DictConfig
+from omegaconf import DictConfig, open_dict
 from posebusters import PoseBusters
 from rdkit import Chem
 from rdkit.Chem import AllChem, DataStructs, rdFingerprintGenerator
@@ -873,6 +873,10 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
+    with open_dict(cfg):
+        # NOTE: besides their output directories, single-sequence baselines are treated like their multi-sequence counterparts
+        cfg.method = cfg.method.removesuffix("_ss")
+
     for config in ["", "_relaxed"]:
         output_dir = cfg.output_dir + config
         bust_results_filepath = Path(output_dir) / "bust_results.csv"
