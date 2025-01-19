@@ -56,6 +56,7 @@ baseline_methods = [
 max_num_repeats_per_method = (
     1  # NOTE: Here, to simplify the analysis, we only consider the first run of each method
 )
+method_max_training_cutoff_date = "2021-09-30"
 
 pb_set_dir = os.path.join(
     "..",
@@ -65,6 +66,26 @@ pb_set_dir = os.path.join(
 assert os.path.exists(
     pb_set_dir
 ), "Please download the PoseBusters Benchmark set from `https://zenodo.org/records/13858866` before proceeding."
+
+# PoseBusters Benchmark deposition dates
+pb_deposition_dates_filepath = "posebusters_benchmark_complex_pdb_deposition_dates.csv"
+assert os.path.exists(
+    pb_deposition_dates_filepath
+), "Please prepare the PoseBusters Benchmark complex PDB deposition dates CSV file via `failure_modes_analysis_plotting.ipynb` before proceeding."
+
+pb_pdb_id_deposition_date_mapping_df = pd.read_csv(pb_deposition_dates_filepath)
+pb_pdb_id_deposition_date_mapping_df["Deposition Date"] = pd.to_datetime(
+    pb_pdb_id_deposition_date_mapping_df["Deposition Date"]
+)
+pb_pdb_id_deposition_date_mapping_df = pb_pdb_id_deposition_date_mapping_df[
+    pb_pdb_id_deposition_date_mapping_df["Deposition Date"] > method_max_training_cutoff_date
+]
+pb_pdb_id_deposition_date_mapping = dict(
+    zip(
+        pb_pdb_id_deposition_date_mapping_df["PDB ID"],
+        pb_pdb_id_deposition_date_mapping_df["Deposition Date"].astype(str),
+    )
+)
 
 # Mappings
 method_mapping = {
@@ -339,6 +360,10 @@ def process_method(file_path, category):
     with pd.HDFStore(file_path) as store:
         for key in store.keys():
             for row_index in range(len(store[key])):
+                target = store[key].iloc[row_index]["target"]
+                if not isinstance(target, str):
+                    target = target.values[0]
+
                 interaction_types = [
                     interaction[2]
                     for interaction in store[key].iloc[row_index].keys().tolist()
@@ -350,6 +375,7 @@ def process_method(file_path, category):
                 num_hydrophobic = interaction_types.count("Hydrophobic")
                 interactions.append(
                     {
+                        "Target": target,
                         "Hydrogen Bond Acceptors": num_hb_acceptors,
                         "Hydrogen Bond Donors": num_hb_donors,
                         "Van der Waals Contacts": num_vdw_contacts,
@@ -358,9 +384,11 @@ def process_method(file_path, category):
                 )
     df_rows = []
     for interaction in interactions:
+        target = interaction.pop("Target")
         for interaction_type, num_interactions in interaction.items():
             df_rows.append(
                 {
+                    "Target": target,
                     "Category": category,
                     "InteractionType": interaction_type,
                     "NumInteractions": num_interactions,
@@ -401,6 +429,9 @@ plot_types = ["box", "box", "violin", "violin"]
 
 for ax, interaction, plot_type in zip(axes.flatten(), interaction_types, plot_types):
     data = df[df["InteractionType"] == interaction]
+
+    data["PDBID"] = data["Target"].map(lambda x: x.lower().split("_")[0])
+    data = data[data["PDBID"].isin(pb_pdb_id_deposition_date_mapping.keys())]
 
     if plot_type == "box":
         sns.boxplot(data=data, x="Category", y="NumInteractions", ax=ax, showfliers=True)
@@ -585,6 +616,11 @@ emd_values_df = pd.DataFrame(
     columns=["Category", "Target", "EMD", "WM", "Method_Histogram", "Reference_Histogram"],
 )
 emd_values_df.to_csv("posebusters_benchmark_plif_metrics.csv")
+
+emd_values_df["PDB_ID"] = emd_values_df["Target"].map(lambda x: x.lower().split("_")[0])
+emd_values_df = emd_values_df[
+    emd_values_df["PDB_ID"].isin(pb_pdb_id_deposition_date_mapping.keys())
+]
 
 plt.figure(figsize=(20, 8))
 sns.boxplot(data=emd_values_df, x="Category", y="EMD")
