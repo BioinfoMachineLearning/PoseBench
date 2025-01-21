@@ -17,7 +17,7 @@
 
 ## Description
 
-Comprehensive benchmarking of protein-ligand structure generation methods
+Comprehensive benchmarking of protein-ligand structure prediction methods
 
 [Documentation](https://bioinfomachinelearning.github.io/PoseBench/)
 

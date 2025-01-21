@@ -1,7 +1,7 @@
 [project]
 name = "posebench"
 version = "0.6.0"
-description = "Comprehensive benchmarking of protein-ligand structure generation methods"
+description = "Comprehensive benchmarking of protein-ligand structure prediction methods"
 authors = [
     { name = "Alex Morehead", email = "acmwhb@umsystem.edu" }
 ]
@@ -11,7 +11,7 @@ license = { file = "LICENSE" }
 keywords = [
     'artificial intelligence',
     'deep learning',
-    'protein-ligand structure generation',
+    'protein-ligand structure prediction',
     'benchmarking',
     'molecular docking',
     'protein-ligand docking',
