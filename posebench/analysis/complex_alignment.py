@@ -2,6 +2,7 @@
 # Following code curated for PoseBench: (https://github.com/BioinfoMachineLearning/PoseBench)
 # -------------------------------------------------------------------------------------------------------------------------------------
 
+import copy
 import logging
 import os
 from pathlib import Path
@@ -11,7 +12,7 @@ import hydra
 import numpy as np
 import rootutils
 from beartype.typing import Literal
-from omegaconf import DictConfig
+from omegaconf import DictConfig, open_dict
 from tqdm import tqdm
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
@@ -297,6 +298,12 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
+    with open_dict(cfg):
+        # NOTE: besides their output directories, single-sequence baselines are treated like their multi-sequence counterparts
+        output_dir = copy.deepcopy(cfg.output_dir)
+        cfg.method = cfg.method.removesuffix("_ss")
+        cfg.output_dir = output_dir
+
     input_data_dir = Path(cfg.input_data_dir)
     for config in ["", "_relaxed"]:
         output_dir = Path(cfg.output_dir + config)
