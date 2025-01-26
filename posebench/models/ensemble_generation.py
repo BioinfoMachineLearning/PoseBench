@@ -3,6 +3,7 @@
 # -------------------------------------------------------------------------------------------------------------------------------------
 
 import ast
+import copy
 import glob
 import logging
 import multiprocessing
@@ -2243,6 +2244,12 @@ def main(cfg: DictConfig):
     """Generate predictions for a protein-ligand target pair using an ensemble of methods."""
     os.makedirs(cfg.temp_protein_dir, exist_ok=True)
 
+    with open_dict(cfg):
+        # NOTE: besides their output directories, single-sequence baselines are treated like their multi-sequence counterparts
+        output_dir = copy.deepcopy(cfg.output_dir)
+        cfg.method = cfg.method.removesuffix("_ss")
+        cfg.output_dir = output_dir
+
     if list(cfg.ensemble_methods) == ["neuralplexer"] and cfg.neuralplexer_no_ilcl:
         with open_dict(cfg):
             cfg.output_dir = cfg.output_dir.replace(
@@ -2360,7 +2367,7 @@ def main(cfg: DictConfig):
             continue
 
         # ensure an input protein structure is available
-        if type(row.protein_input) == str and os.path.exists(row.protein_input):
+        if isinstance(row.protein_input, str) and os.path.exists(row.protein_input):
             temp_protein_filepath = row.protein_input
         else:
             if cfg.ensemble_benchmarking:
@@ -2371,7 +2378,7 @@ def main(cfg: DictConfig):
             # NOTE: a placeholder protein sequence is used when making ligand-only predictions
             row_protein_input = (
                 row.protein_input
-                if type(row.protein_input) == str and len(row.protein_input) > 0
+                if isinstance(row.protein_input, str) and len(row.protein_input) > 0
                 else LIGAND_ONLY_RECEPTOR_PLACEHOLDER_SEQUENCE
             )
             row_name = (
@@ -2443,15 +2450,21 @@ def main(cfg: DictConfig):
             ranked_predictions,
             temp_protein_filepath,
             row.name,
-            None
-            if isinstance(row, np.ndarray) and np.isnan(row.ligand_numbers).any()
-            else row.ligand_numbers,
-            None
-            if isinstance(row, np.ndarray) and np.isnan(row.ligand_names).any()
-            else row.ligand_names,
-            None
-            if isinstance(row, np.ndarray) and np.isnan(row.ligand_tasks).any()
-            else row.ligand_tasks,
+            (
+                None
+                if isinstance(row, np.ndarray) and np.isnan(row.ligand_numbers).any()
+                else row.ligand_numbers
+            ),
+            (
+                None
+                if isinstance(row, np.ndarray) and np.isnan(row.ligand_names).any()
+                else row.ligand_names
+            ),
+            (
+                None
+                if isinstance(row, np.ndarray) and np.isnan(row.ligand_tasks).any()
+                else row.ligand_tasks
+            ),
             cfg,
         )
         logger.info(f"Ensemble generation for target {row.name} has been completed.")
