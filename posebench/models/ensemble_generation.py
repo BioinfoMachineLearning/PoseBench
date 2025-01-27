@@ -2247,7 +2247,7 @@ def main(cfg: DictConfig):
     with open_dict(cfg):
         # NOTE: besides their output directories, single-sequence baselines are treated like their multi-sequence counterparts
         output_dir = copy.deepcopy(cfg.output_dir)
-        cfg.method = cfg.method.removesuffix("_ss")
+        cfg.ensemble_methods = [s.removesuffix("_ss") for s in cfg.ensemble_methods]
         cfg.output_dir = output_dir
 
     if list(cfg.ensemble_methods) == ["neuralplexer"] and cfg.neuralplexer_no_ilcl:
