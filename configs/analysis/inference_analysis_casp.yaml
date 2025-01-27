@@ -9,10 +9,10 @@ predictions_dir: ${oc.env:PROJECT_ROOT}/data/test_cases/${dataset}/top_${method}
 dataset_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set # the input protein-ligand complex directory to recursively parse
 targets: null # the optional list of target names for which to analyze predictions; if `null`, then all targets in the dataset will be analyzed
 fault_tolerant: true # whether to continue processing targets if an error occurs during processing; note that targets H1171v1-2, H1172v1-4, and T1158v4 fail validation (sequence mismatch) and were run with the `fault_tolerant=true` argument during CASP15
-skip_existing: true # whether to skip processing targets for which output already exists
 score_relaxed_structures: true # whether to score relaxed structures in addition to the original (unrelaxed) structures
 repeat_index: 1 # the run index to use for scoring predictions
 no_ilcl: false # whether to score a model trained without an inter-ligand clash loss (ILCL) - NOTE: only applicable to the `neuralplexer` method
 relax_protein: false # whether to relax the protein - NOTE: currently periodically yields unpredictable protein-ligand separation
 v1_baseline: false # whether to score the v1 baseline predictions
 allow_missing_predictions: true # whether to allow missing predictions for a target
+force_rescore: false # whether to force CASP15 and PoseBusters rescoring of the predictions
