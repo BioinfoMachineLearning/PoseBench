@@ -168,7 +168,7 @@ def align_complex_to_protein_only(
     save_ligand: bool = True,
     aligned_filename_suffix: str = "_aligned",
     atom_df_name: str = "ATOM",
-):
+) -> int:
     """Align a predicted protein-ligand structure to a reference protein structure.
 
     :param predicted_protein_pdb: Path to the predicted protein structure in PDB format
@@ -178,6 +178,7 @@ def align_complex_to_protein_only(
     :param save_ligand: Whether to save the aligned ligand structure
     :param aligned_filename_suffix: suffix to append to the aligned files
     :param atom_df_name: Name of the atom dataframe in the PDB file
+    :return: 0 if successful, 1 if unsuccessful
     """
     from biopandas.pdb import PandasPdb
     from rdkit import Chem
@@ -197,14 +198,14 @@ def align_complex_to_protein_only(
         logger.warning(
             f"Unable to parse predicted protein structure {predicted_protein_pdb} due to the error: {e}. Skipping..."
         )
-        return
+        return 1
     try:
         reference_rec = parse_pdb_from_path(reference_protein_pdb)
     except Exception as e:
         logger.warning(
             f"Unable to parse reference protein structure {reference_protein_pdb} due to the error: {e}. Skipping..."
         )
-        return
+        return 1
     if predicted_ligand_sdf is not None:
         predicted_ligand = read_molecule(predicted_ligand_sdf, remove_hs=True, sanitize=True)
     try:
@@ -215,7 +216,7 @@ def align_complex_to_protein_only(
         logger.warning(
             f"Unable to extract predicted protein structure coordinates for input {predicted_protein_pdb} due to the error: {e}. Skipping..."
         )
-        return
+        return 1
     try:
         reference_calpha_coords = extract_receptor_structure(
             reference_rec, None, filter_out_hetero_residues=True
@@ -224,7 +225,7 @@ def align_complex_to_protein_only(
         logger.warning(
             f"Unable to extract reference protein structure coordinates for input {predicted_protein_pdb} due to the error: {e}. Skipping..."
         )
-        return
+        return 1
     if predicted_ligand_sdf is not None:
         try:
             predicted_ligand_conf = predicted_ligand.GetConformer()
@@ -232,7 +233,7 @@ def align_complex_to_protein_only(
             logger.warning(
                 f"Unable to extract predicted ligand conformer for {predicted_ligand_sdf} due to the error: {e}. Skipping..."
             )
-            return
+            return 1
 
     if reference_calpha_coords.shape != predicted_calpha_coords.shape:
         logger.warning(
@@ -240,7 +241,7 @@ def align_complex_to_protein_only(
             reference_calpha_coords.shape,
             predicted_calpha_coords.shape,
         )
-        return
+        return 1
 
     # Perform the alignment
     rotation, reference_calpha_centroid, predicted_calpha_centroid = align_prediction(
@@ -286,6 +287,8 @@ def align_complex_to_protein_only(
             predicted_ligand_sdf.replace(".sdf", f"{aligned_filename_suffix}.sdf")
         ) as f:
             f.write(predicted_ligand)
+
+    return 0
 
 
 @hydra.main(
