@@ -86,7 +86,7 @@ BUST_TEST_COLUMNS = DOCKGEN_BUST_TEST_COLUMNS + [
     # "volume_overlap_with_inorganic_cofactors",
 ]
 
-RANKED_METHODS = ["diffdock", "dynamicbind", "neuralplexer", "flowdock"]
+RANKED_METHODS = ["diffdock", "dynamicbind", "neuralplexer", "neuralplexer3", "flowdock"]
 
 
 def find_most_similar_frag(
@@ -285,7 +285,7 @@ def create_mol_table(
                 else None
             )
         )
-    elif cfg.method in ["neuralplexer", "flowdock"]:
+    elif cfg.method in ["neuralplexer", "neuralplexer3", "flowdock"]:
         mol_table["mol_cond"] = input_table["pdb_id"].apply(
             lambda x: (
                 list(
@@ -590,14 +590,16 @@ def create_mol_table(
                         os.path.join(
                             (
                                 Path(str(inference_dir).replace("_relaxed", ""))
-                                if cfg.method in ["neuralplexer", "flowdock", "rfaa"]
+                                if cfg.method
+                                in ["neuralplexer", "neuralplexer3", "flowdock", "rfaa"]
                                 or relaxed_protein
                                 else inference_dir
                             ),
                             x,
                             (
                                 "lig_rank1*_relaxed_aligned.sdf"
-                                if cfg.method in ["neuralplexer", "flowdock", "rfaa"]
+                                if cfg.method
+                                in ["neuralplexer", "neuralplexer3", "flowdock", "rfaa"]
                                 else f"{x}_relaxed.sdf"
                             ),
                         )
@@ -605,13 +607,15 @@ def create_mol_table(
                         else os.path.join(
                             (
                                 Path(str(inference_dir).replace("_relaxed", ""))
-                                if cfg.method in ["neuralplexer", "flowdock", "rfaa"]
+                                if cfg.method
+                                in ["neuralplexer", "neuralplexer3", "flowdock", "rfaa"]
                                 else inference_dir
                             ),
                             x,
                             (
                                 "lig_rank1*_aligned.sdf"
-                                if cfg.method in ["neuralplexer", "flowdock", "rfaa"]
+                                if cfg.method
+                                in ["neuralplexer", "neuralplexer3", "flowdock", "rfaa"]
                                 else "rank1.sdf"
                             ),
                         )
@@ -621,14 +625,16 @@ def create_mol_table(
                             os.path.join(
                                 (
                                     Path(str(inference_dir).replace("_relaxed", ""))
-                                    if cfg.method in ["neuralplexer", "flowdock", "rfaa"]
+                                    if cfg.method
+                                    in ["neuralplexer", "neuralplexer3", "flowdock", "rfaa"]
                                     or relaxed_protein
                                     else inference_dir
                                 ),
                                 x,
                                 (
                                     "lig_rank1*_relaxed_aligned.sdf"
-                                    if cfg.method in ["neuralplexer", "flowdock", "rfaa"]
+                                    if cfg.method
+                                    in ["neuralplexer", "neuralplexer3", "flowdock", "rfaa"]
                                     else f"{x}_relaxed.sdf"
                                 ),
                             )
@@ -636,13 +642,15 @@ def create_mol_table(
                             else os.path.join(
                                 (
                                     Path(str(inference_dir).replace("_relaxed", ""))
-                                    if cfg.method in ["neuralplexer", "flowdock", "rfaa"]
+                                    if cfg.method
+                                    in ["neuralplexer", "neuralplexer3", "flowdock", "rfaa"]
                                     else inference_dir
                                 ),
                                 x,
                                 (
                                     "lig_rank1*_aligned.sdf"
-                                    if cfg.method in ["neuralplexer", "flowdock", "rfaa"]
+                                    if cfg.method
+                                    in ["neuralplexer", "neuralplexer3", "flowdock", "rfaa"]
                                     else "rank1.sdf"
                                 ),
                             )
@@ -657,14 +665,14 @@ def create_mol_table(
                     glob.glob(
                         os.path.join(
                             inference_dir,
-                            f"{x}_*{'_relaxed' if relaxed else ''}{'_aligned' if cfg.method in ['neuralplexer', 'flowdock', 'rfaa'] else ''}.sdf",
+                            f"{x}_*{'_relaxed' if relaxed else ''}{'_aligned' if cfg.method in ['neuralplexer', 'neuralplexer3', 'flowdock', 'rfaa'] else ''}.sdf",
                         )
                     )[0]
                     if len(
                         glob.glob(
                             os.path.join(
                                 inference_dir,
-                                f"{x}_*{'_relaxed' if relaxed else ''}{'_aligned' if cfg.method in ['neuralplexer', 'flowdock', 'rfaa'] else ''}.sdf",
+                                f"{x}_*{'_relaxed' if relaxed else ''}{'_aligned' if cfg.method in ['neuralplexer', 'neuralplexer3', 'flowdock', 'rfaa'] else ''}.sdf",
                             )
                         )
                     )
@@ -712,7 +720,7 @@ def create_mol_table(
                         else None
                     )
                 )
-            elif cfg.method in ["neuralplexer", "flowdock"]:
+            elif cfg.method in ["neuralplexer", "neuralplexer3", "flowdock"]:
                 mol_table.loc[missing_pred_indices, "mol_pred"] = input_table.loc[
                     missing_pred_indices, "pdb_id"
                 ].apply(
