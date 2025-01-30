@@ -74,7 +74,7 @@ def main(cfg: DictConfig):
         if not msa_file.endswith(".npz"):
             continue
 
-        item = msa_file.split("_protein")[0].split("_lig")[0]
+        item = msa_file.split("_protein")[0]
         input_msa_path = os.path.join(cfg.input_msa_dir, msa_file)
 
         try:
@@ -92,9 +92,11 @@ def main(cfg: DictConfig):
                     {
                         "sequence": "".join(ID_TO_HHBLITS_AA[c] for c in seq),
                         "source_database": "query" if seq_index == 0 else "uniref90",
-                        "pairing_key": f"sequence:{seq_index}"
-                        if input_msa[f"is_paired_{chain_index}"][seq_index].item() is True
-                        else "",
+                        "pairing_key": (
+                            f"sequence:{seq_index}"
+                            if input_msa[f"is_paired_{chain_index}"][seq_index].item() is True
+                            else ""
+                        ),
                         "comment": "",
                     }
                     for seq_index, seq in enumerate(input_msa[f"msa_{chain_index}"])
