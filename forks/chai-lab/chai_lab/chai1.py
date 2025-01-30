@@ -275,7 +275,7 @@ def run_inference(
     num_diffn_timesteps: int = 200,
     seed: int | None = None,
     device: torch.device | None = None,
-    rerun_in_single_seq_mode: bool = True,
+    rerun_in_single_seq_mode: bool = False,
 ) -> StructureCandidates:
     # Prepare inputs
     assert fasta_file.exists(), fasta_file
