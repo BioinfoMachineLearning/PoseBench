@@ -485,6 +485,6 @@ dependencies:
       - shortuuid==1.0.12
       - smmap==5.0.1
       - subprocess32==3.5.4
-      - timeout-decorator==0.5.0
       - wandb==0.12.0
+      - wrapt_timeout_decorator==1.5.1
 prefix: forks/RoseTTAFold-All-Atom/RFAA

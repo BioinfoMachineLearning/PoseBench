@@ -20,7 +20,6 @@ from pathlib import Path
 import hydra
 import numpy as np
 import rootutils
-import timeout_decorator
 from beartype.typing import Any, Dict, Optional
 from Bio.PDB import MMCIFIO, PDBIO, MMCIFParser, PDBParser, Select
 from omegaconf import DictConfig
@@ -44,6 +43,7 @@ from rdkit.Chem.rdmolfiles import MolFromMolFile, MolToMolFile
 from rdkit.Chem.rdmolops import AddHs, RemoveHs
 from scipy.spatial.distance import cdist
 from scipy.spatial.transform import Rotation as R
+from wrapt_timeout_decorator import timeout
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
@@ -859,7 +859,7 @@ def save_with_rdkit(
     MolToMolFile(mol, str(file_path), confId=conformer_index)
 
 
-@timeout_decorator.timeout(OPTIMIZATION_TIMEOUT_IN_SECONDS, use_signals=False)
+@timeout(OPTIMIZATION_TIMEOUT_IN_SECONDS, use_signals=False)
 def optimize_ligand_in_pocket(
     protein_file: Path,
     ligand_file: Path,

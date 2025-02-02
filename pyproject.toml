@@ -69,7 +69,7 @@ dependencies = [
     "seaborn",         # for plotting
     "setuptools",      # for packaging
     "spyrmsd",         # for RMSD calculations
-    "timeout_decorator>=0.5.0", # for preventing certain functions from executing indefinitely
+    "wrapt_timeout_decorator>=1.5.1", # for preventing certain functions from executing indefinitely
     "tqdm",            # progress bars
     "loguru",          # for cleaner logging
 ]

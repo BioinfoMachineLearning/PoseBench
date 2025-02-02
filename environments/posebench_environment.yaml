@@ -516,7 +516,6 @@ dependencies:
       - sympy==1.11.1
       - tenacity==8.2.3
       - threadpoolctl==3.1.0
-      - timeout-decorator==0.5.0
       - tokenizers==0.13.3
       - tomlkit==0.12.5
       - torchmetrics==1.2.0
@@ -532,6 +531,7 @@ dependencies:
       - watermark==2.4.3
       - wget==3.2
       - wrapt==1.15.0
+      - wrapt_timeout_decorator==1.5.1
       - xarray==2023.8.0
       - yarl==1.9.2
       - zope-event==5.0

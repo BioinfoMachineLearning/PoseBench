@@ -24,6 +24,7 @@ from posecheck import PoseCheck
 from rdkit import Chem
 from scipy.stats import ttest_rel, wasserstein_distance
 from tqdm import tqdm
+from wrapt_timeout_decorator import timeout
 
 from posebench.utils.data_utils import count_num_residues_in_pdb_file
 
@@ -189,7 +190,9 @@ if not os.path.exists("casp15_interaction_dataframes.h5"):
             pc.load_ligands_from_mols(
                 Chem.GetMolFrags(ligand_mol, asMols=True, sanitizeFrags=False)
             )
-            casp15_protein_ligand_interaction_df = pc.calculate_interactions(n_jobs=1)
+            casp15_protein_ligand_interaction_df = timeout(dec_timeout=600)(
+                pc.calculate_interactions
+            )(n_jobs=1)
             casp15_protein_ligand_interaction_df["target"] = os.path.basename(
                 protein_ligand_complex_filepath
             ).split("_lig")[0]
@@ -278,7 +281,9 @@ for method in baseline_methods:
                     pc.load_ligands_from_mols(
                         Chem.GetMolFrags(ligand_mol, asMols=True, sanitizeFrags=False)
                     )
-                    casp15_protein_ligand_interaction_df = pc.calculate_interactions(n_jobs=1)
+                    casp15_protein_ligand_interaction_df = timeout(dec_timeout=600)(
+                        pc.calculate_interactions
+                    )(n_jobs=1)
                     casp15_protein_ligand_interaction_df["target"] = os.path.basename(
                         os.path.dirname(protein_filepath)
                     )

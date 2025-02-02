@@ -28,6 +28,6 @@ sphinxext-opengraph
 sphinxcontrib-gtagjs
 sphinxcontrib-jquery
 sphinx_codeautolink
-timeout_decorator
+wrapt_timeout_decorator
 tqdm
 watermark
