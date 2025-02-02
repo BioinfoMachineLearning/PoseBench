@@ -26,6 +26,7 @@ from posecheck import PoseCheck
 from rdkit import Chem
 from scipy.stats import ttest_rel, wasserstein_distance
 from tqdm import tqdm
+from wrapt_timeout_decorator import timeout
 
 from posebench import resolve_method_input_csv_path, resolve_method_output_dir
 from posebench.analysis.inference_analysis import create_mol_table
@@ -211,7 +212,9 @@ if not os.path.exists("posebusters_benchmark_interaction_dataframes.h5"):
             )
             pc.load_protein_from_pdb(temp_protein_filepath)
             pc.load_ligands_from_sdf(ligand_filepath)
-            pb_protein_ligand_interaction_df = pc.calculate_interactions(n_jobs=1)
+            pb_protein_ligand_interaction_df = timeout(dec_timeout=600)(pc.calculate_interactions)(
+                n_jobs=1
+            )
             pb_protein_ligand_interaction_df["target"] = Path(protein_filepath).stem.split(
                 "_protein"
             )[0]
@@ -333,7 +336,9 @@ for method in copy.deepcopy(baseline_methods):
                     pc.load_ligands_from_mols(
                         Chem.GetMolFrags(ligand_mol, asMols=True, sanitizeFrags=False)
                     )
-                    protein_ligand_interaction_df = pc.calculate_interactions(n_jobs=1)
+                    protein_ligand_interaction_df = timeout(dec_timeout=600)(
+                        pc.calculate_interactions
+                    )(n_jobs=1)
                     protein_ligand_interaction_df["target"] = row.pdb_id
                     posebusters_protein_ligand_interaction_dfs.append(
                         protein_ligand_interaction_df
