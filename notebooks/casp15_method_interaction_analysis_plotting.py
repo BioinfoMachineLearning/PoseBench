@@ -260,6 +260,7 @@ for method in baseline_methods:
                 casp15_protein_ligand_complex_filepaths,
                 desc=f"Processing interactions for {method_title}",
             ):
+                print(f"Processing {method_title} target {protein_ligand_complex_filepath}...")
                 try:
                     protein_filepath, ligand_filepath = protein_ligand_complex_filepath
                     temp_protein_filepath = create_temp_pdb_with_only_molecule_type_residues(
