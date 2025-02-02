@@ -266,7 +266,7 @@ for method in baseline_methods:
             ):
                 protein_filepath, ligand_filepath = protein_ligand_complex_filepath
                 casp15_target = os.path.basename(os.path.dirname(protein_filepath))
-                if method_title == "NP3" and method_title in NP3_FREEZING_TARGETS:
+                if method_title == "NP3" and casp15_target in NP3_FREEZING_TARGETS:
                     print(
                         f"Skipping {method_title} target {casp15_target} due to known freezing issues with `MDAnalysis`..."
                     )
