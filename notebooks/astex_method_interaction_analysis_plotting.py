@@ -6,6 +6,7 @@
 
 # %%
 import copy
+import gc
 import os
 import re
 import shutil
@@ -306,11 +307,12 @@ for method in copy.deepcopy(baseline_methods):
                     pc.load_ligands_from_mols(
                         Chem.GetMolFrags(ligand_mol, asMols=True, sanitizeFrags=False)
                     )
-                    protein_ligand_interaction_df = timeout(dec_timeout=600)(
+                    protein_ligand_interaction_df = timeout(dec_timeout=600, use_signals=False)(
                         pc.calculate_interactions
                     )(n_jobs=1)
                     protein_ligand_interaction_df["target"] = row.pdb_id
                     astex_protein_ligand_interaction_dfs.append(protein_ligand_interaction_df)
+                    gc.collect()
                 except Exception as e:
                     print(f"Error processing {method_title} target {row} due to: {e}. Skipping...")
                     continue

@@ -5,6 +5,7 @@
 # #### Import packages
 
 # %%
+import gc
 import glob
 import os
 import re
@@ -85,11 +86,6 @@ CASP15_ANALYSIS_TARGETS_TO_SKIP = [
 MAX_CASP15_ANALYSIS_PROTEIN_SEQUENCE_LENGTH = (
     2000  # Only CASP15 targets with protein sequences below this threshold can be analyzed
 )
-
-NP3_FREEZING_TARGETS = [
-    "T1124",
-    "T1127v2",
-]  # NOTE: these will be skipped since NP3's prediction analysis for these targets freezes
 
 # %% [markdown]
 # #### Define utility functions
@@ -202,6 +198,7 @@ if not os.path.exists("casp15_interaction_dataframes.h5"):
                 protein_ligand_complex_filepath
             ).split("_lig")[0]
             casp15_protein_ligand_interaction_dfs.append(casp15_protein_ligand_interaction_df)
+            gc.collect()
         except Exception as e:
             print(
                 f"Error processing CASP15 target {protein_ligand_complex_filepath} due to: {e}. Skipping..."
@@ -267,11 +264,6 @@ for method in baseline_methods:
             ):
                 protein_filepath, ligand_filepath = protein_ligand_complex_filepath
                 casp15_target = os.path.basename(os.path.dirname(protein_filepath))
-                if method_title == "NP3" and casp15_target in NP3_FREEZING_TARGETS:
-                    print(
-                        f"Skipping {method_title} target {casp15_target} due to known freezing issues with `MDAnalysis`..."
-                    )
-                    continue
                 print(f"Processing {method_title} target {casp15_target}...")
                 try:
                     temp_protein_filepath = create_temp_pdb_with_only_molecule_type_residues(
@@ -293,9 +285,9 @@ for method in baseline_methods:
                     pc.load_ligands_from_mols(
                         Chem.GetMolFrags(ligand_mol, asMols=True, sanitizeFrags=False)
                     )
-                    casp15_protein_ligand_interaction_df = timeout(dec_timeout=600)(
-                        pc.calculate_interactions
-                    )(n_jobs=1)
+                    casp15_protein_ligand_interaction_df = timeout(
+                        dec_timeout=600, use_signals=False
+                    )(pc.calculate_interactions)(n_jobs=1)
                     casp15_protein_ligand_interaction_df["target"] = casp15_target
                     casp15_protein_ligand_interaction_dfs.append(
                         casp15_protein_ligand_interaction_df
