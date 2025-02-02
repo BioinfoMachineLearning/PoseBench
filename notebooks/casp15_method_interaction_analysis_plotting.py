@@ -10,6 +10,7 @@ import glob
 import os
 import re
 import shutil
+import signal
 import subprocess  # nosec
 import tempfile
 from collections import defaultdict
@@ -153,6 +154,17 @@ def create_temp_pdb_with_only_molecule_type_residues(
 
     return temp_pdb_filepath.name
 
+
+def signal_handler(signum, frame):
+    """Raise a runtime error when receiving a signal.
+
+    :param signum: The signal number.
+    :param frame: The frame.
+    """
+    raise RuntimeError("Received external interrupt (SIGUSR1)")
+
+
+signal.signal(signal.SIGUSR1, signal_handler)
 
 # %% [markdown]
 # #### Compute interaction fingerprints
