@@ -87,7 +87,8 @@ MAX_CASP15_ANALYSIS_PROTEIN_SEQUENCE_LENGTH = (
 )
 
 NP3_FREEZING_TARGETS = [
-    "T1124"
+    "T1124",
+    "T1127v2",
 ]  # NOTE: these will be skipped since NP3's prediction analysis for these targets freezes
 
 # %% [markdown]
