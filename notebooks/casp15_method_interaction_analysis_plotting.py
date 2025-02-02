@@ -198,7 +198,6 @@ if not os.path.exists("casp15_interaction_dataframes.h5"):
                 protein_ligand_complex_filepath
             ).split("_lig")[0]
             casp15_protein_ligand_interaction_dfs.append(casp15_protein_ligand_interaction_df)
-            gc.collect()
         except Exception as e:
             print(
                 f"Error processing CASP15 target {protein_ligand_complex_filepath} due to: {e}. Skipping..."
@@ -292,6 +291,7 @@ for method in baseline_methods:
                     casp15_protein_ligand_interaction_dfs.append(
                         casp15_protein_ligand_interaction_df
                     )
+                    gc.collect()
                 except Exception as e:
                     print(
                         f"Error processing {method_title} target {casp15_target} due to: {e}. Skipping..."
