@@ -189,6 +189,10 @@ rm casp15_set.tar.gz
 
 ```bash
 # fetch, extract, and clean-up benchmark method predictions to reproduce paper results (~19 GB) #
+# AutoDock Vina predictions and results
+wget https://zenodo.org/records/13858866/files/vina_benchmark_method_predictions.tar.gz
+tar -xzf vina_benchmark_method_predictions.tar.gz
+rm vina_benchmark_method_predictions.tar.gz
 # DiffDock predictions and results
 wget https://zenodo.org/records/13858866/files/diffdock_benchmark_method_predictions.tar.gz
 tar -xzf diffdock_benchmark_method_predictions.tar.gz
@@ -197,10 +201,6 @@ rm diffdock_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/13858866/files/dynamicbind_benchmark_method_predictions.tar.gz
 tar -xzf dynamicbind_benchmark_method_predictions.tar.gz
 rm dynamicbind_benchmark_method_predictions.tar.gz
-# NeuralPLexer predictions and results
-wget https://zenodo.org/records/13858866/files/neuralplexer_benchmark_method_predictions.tar.gz
-tar -xzf neuralplexer_benchmark_method_predictions.tar.gz
-rm neuralplexer_benchmark_method_predictions.tar.gz
 # RoseTTAFold-All-Atom predictions and results
 wget https://zenodo.org/records/13858866/files/rfaa_benchmark_method_predictions.tar.gz
 tar -xzf rfaa_benchmark_method_predictions.tar.gz
@@ -213,10 +213,10 @@ rm chai_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/13858866/files/af3_benchmark_method_predictions.tar.gz
 tar -xzf af3_benchmark_method_predictions.tar.gz
 rm af3_benchmark_method_predictions.tar.gz
-# AutoDock Vina predictions and results
-wget https://zenodo.org/records/13858866/files/vina_benchmark_method_predictions.tar.gz
-tar -xzf vina_benchmark_method_predictions.tar.gz
-rm vina_benchmark_method_predictions.tar.gz
+# NeuralPLexer3 predictions and results
+wget https://zenodo.org/records/13858866/files/neuralplexer3_benchmark_method_predictions.tar.gz
+tar -xzf neuralplexer3_benchmark_method_predictions.tar.gz
+rm neuralplexer3_benchmark_method_predictions.tar.gz
 ```
 
 ### Downloading sequence databases (required only for RoseTTAFold-All-Atom inference)
