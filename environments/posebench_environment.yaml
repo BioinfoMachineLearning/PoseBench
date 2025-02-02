@@ -423,7 +423,7 @@ dependencies:
       - mako==1.2.4
       - markdown-it-py==3.0.0
       - mdahole2==0.5.0
-      - mdanalysis==2.7.0
+      - mdanalysis==2.8.0
       - mdurl==0.1.2
       - git+https://github.com/amorehead/Meeko.git@patch-1
       - mistune==0.8.4
