@@ -300,6 +300,7 @@ for method in copy.deepcopy(baseline_methods):
                 mol_table.itertuples(index=False),
                 desc=f"Processing interactions for {method_title}",
             ):
+                print(f"Processing {method_title} target {row.pdb_id}...")
                 try:
                     protein_filepath, ligand_filepath = str(row.mol_cond), str(row.mol_pred)
                     num_residues_in_target_protein = count_num_residues_in_pdb_file(
