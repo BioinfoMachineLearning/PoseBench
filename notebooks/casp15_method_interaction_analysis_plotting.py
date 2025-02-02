@@ -263,11 +263,6 @@ for method in baseline_methods:
             ):
                 protein_filepath, ligand_filepath = protein_ligand_complex_filepath
                 casp15_target = os.path.basename(os.path.dirname(protein_filepath))
-                if method_title == "NP3" and casp15_target in ["T1124", "T1127v2", "T1186"]:
-                    print(
-                        f"Skipping {method_title} target {casp15_target} since analyzing these interactions causes ProLIF to freeze..."
-                    )
-                    continue
                 print(f"Processing {method_title} target {casp15_target}...")
                 try:
                     temp_protein_filepath = create_temp_pdb_with_only_molecule_type_residues(
