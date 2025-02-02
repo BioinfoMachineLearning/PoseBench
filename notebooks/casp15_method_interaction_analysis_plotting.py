@@ -255,7 +255,6 @@ for method in baseline_methods:
                             f"Could not find `rank1` protein-ligand complex files for {item}"
                         )
 
-            pc = PoseCheck()
             casp15_protein_ligand_interaction_dfs = []
             for protein_ligand_complex_filepath in tqdm(
                 casp15_protein_ligand_complex_filepaths,
@@ -280,6 +279,7 @@ for method in baseline_methods:
                         )
                         continue
                     ligand_mol = Chem.MolFromMolFile(ligand_filepath)
+                    pc = PoseCheck()
                     pc.load_protein_from_pdb(temp_protein_filepath)
                     pc.load_ligands_from_mols(
                         Chem.GetMolFrags(ligand_mol, asMols=True, sanitizeFrags=False)
