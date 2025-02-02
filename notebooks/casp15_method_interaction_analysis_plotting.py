@@ -86,6 +86,10 @@ MAX_CASP15_ANALYSIS_PROTEIN_SEQUENCE_LENGTH = (
     2000  # Only CASP15 targets with protein sequences below this threshold can be analyzed
 )
 
+NP3_FREEZING_TARGETS = [
+    "T1124"
+]  # NOTE: these will be skipped since NP3's prediction analysis for these targets freezes
+
 # %% [markdown]
 # #### Define utility functions
 
@@ -260,9 +264,15 @@ for method in baseline_methods:
                 casp15_protein_ligand_complex_filepaths,
                 desc=f"Processing interactions for {method_title}",
             ):
-                print(f"Processing {method_title} target {protein_ligand_complex_filepath}...")
+                protein_filepath, ligand_filepath = protein_ligand_complex_filepath
+                casp15_target = os.path.basename(os.path.dirname(protein_filepath))
+                if method_title == "NP3" and method_title in NP3_FREEZING_TARGETS:
+                    print(
+                        f"Skipping {method_title} target {casp15_target} due to known freezing issues with `MDAnalysis`..."
+                    )
+                    continue
+                print(f"Processing {method_title} target {casp15_target}...")
                 try:
-                    protein_filepath, ligand_filepath = protein_ligand_complex_filepath
                     temp_protein_filepath = create_temp_pdb_with_only_molecule_type_residues(
                         protein_filepath, molecule_type="protein", add_element_types=True
                     )
@@ -274,7 +284,7 @@ for method in baseline_methods:
                         > MAX_CASP15_ANALYSIS_PROTEIN_SEQUENCE_LENGTH
                     ):
                         print(
-                            f"{method_title} target {protein_ligand_complex_filepath} has too many protein residues ({num_residues_in_target_protein} > {MAX_CASP15_ANALYSIS_PROTEIN_SEQUENCE_LENGTH}) for `MDAnalysis` to fit into CPU memory. Skipping..."
+                            f"{method_title} target {casp15_target} has too many protein residues ({num_residues_in_target_protein} > {MAX_CASP15_ANALYSIS_PROTEIN_SEQUENCE_LENGTH}) for `MDAnalysis` to fit into CPU memory. Skipping..."
                         )
                         continue
                     ligand_mol = Chem.MolFromMolFile(ligand_filepath)
@@ -285,15 +295,13 @@ for method in baseline_methods:
                     casp15_protein_ligand_interaction_df = timeout(dec_timeout=600)(
                         pc.calculate_interactions
                     )(n_jobs=1)
-                    casp15_protein_ligand_interaction_df["target"] = os.path.basename(
-                        os.path.dirname(protein_filepath)
-                    )
+                    casp15_protein_ligand_interaction_df["target"] = casp15_target
                     casp15_protein_ligand_interaction_dfs.append(
                         casp15_protein_ligand_interaction_df
                     )
                 except Exception as e:
                     print(
-                        f"Error processing {method_title} target {protein_ligand_complex_filepath} due to: {e}. Skipping..."
+                        f"Error processing {method_title} target {casp15_target} due to: {e}. Skipping..."
                     )
                     continue
 
