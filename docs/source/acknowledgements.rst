@@ -2,5 +2,5 @@ Acknowledgements
 ================
 
 .. mdinclude:: ../../README.md
-    :start-line: 982
-    :end-line: 1000
+    :start-line: 1172
+    :end-line: 1192
