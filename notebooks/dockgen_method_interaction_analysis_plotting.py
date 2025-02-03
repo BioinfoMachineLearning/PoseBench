@@ -68,7 +68,7 @@ dg_set_dir = os.path.join(
 )
 assert os.path.exists(
     dg_set_dir
-), "Please download the DockGen set from `https://zenodo.org/records/13858866` before proceeding."
+), "Please download the DockGen set from `https://zenodo.org/records/14629652` before proceeding."
 
 # Mappings
 method_mapping = {

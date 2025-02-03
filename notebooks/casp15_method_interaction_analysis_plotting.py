@@ -65,7 +65,7 @@ casp15_set_dir = os.path.join(
 )
 assert os.path.exists(
     casp15_set_dir
-), "Please download the (public) CASP15 set from `https://zenodo.org/records/13858866` before proceeding."
+), "Please download the (public) CASP15 set from `https://zenodo.org/records/14629652` before proceeding."
 
 # Mappings
 method_mapping = {

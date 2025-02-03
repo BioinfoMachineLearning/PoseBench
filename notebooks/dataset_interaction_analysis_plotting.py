@@ -41,16 +41,16 @@ casp15_set_dir = os.path.join(
 )
 assert os.path.exists(
     ad_set_dir
-), "Please download the Astex Diverse set from `https://zenodo.org/records/13858866` before proceeding."
+), "Please download the Astex Diverse set from `https://zenodo.org/records/14629652` before proceeding."
 assert os.path.exists(
     pb_set_dir
-), "Please download the PoseBusters Benchmark set from `https://zenodo.org/records/13858866` before proceeding."
+), "Please download the PoseBusters Benchmark set from `https://zenodo.org/records/14629652` before proceeding."
 assert os.path.exists(
     dg_set_dir
-), "Please download the DockGen set from `https://zenodo.org/records/13858866` before proceeding."
+), "Please download the DockGen set from `https://zenodo.org/records/14629652` before proceeding."
 assert os.path.exists(
     casp15_set_dir
-), "Please download the (public) CASP15 set from `https://zenodo.org/records/13858866` before proceeding."
+), "Please download the (public) CASP15 set from `https://zenodo.org/records/14629652` before proceeding."
 
 CASP15_ANALYSIS_TARGETS_TO_SKIP = [
     "T1170"
