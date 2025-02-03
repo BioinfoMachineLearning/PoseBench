@@ -331,6 +331,11 @@ for method in copy.deepcopy(baseline_methods):
                 mol_table.itertuples(index=False),
                 desc=f"Processing interactions for {method_title}",
             ):
+                if method_title == "NP3-Single-Seq" and row.pdb_id in ["7E4L_MDN"]:
+                    print(
+                        f"Skipping {method_title} target {row.pdb_id} due to a known freezing issue with `MDAnalysis`."
+                    )
+                    continue
                 print(f"Processing {method_title} target {row.pdb_id}...")
                 try:
                     protein_filepath, ligand_filepath = str(row.mol_cond), str(row.mol_pred)
