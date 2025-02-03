@@ -219,6 +219,16 @@ tar -xzf neuralplexer3_benchmark_method_predictions.tar.gz
 rm neuralplexer3_benchmark_method_predictions.tar.gz
 ```
 
+### Downloading benchmark method interactions
+
+```bash
+# fetch, extract, and clean-up benchmark method interactions to reproduce paper results (~12 GB) #
+# cached ProLIF interactions for notebook plots
+wget https://zenodo.org/records/13858866/files/posebench_notebooks.tar.gz
+tar -xzf posebench_notebooks.tar.gz
+rm posebench_notebooks.tar.gz
+```
+
 ### Downloading sequence databases (required only for RoseTTAFold-All-Atom inference)
 
 ```bash
