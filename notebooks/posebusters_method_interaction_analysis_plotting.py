@@ -49,13 +49,12 @@ baseline_methods = [
     "vina_p2rank",
     "diffdock",
     "dynamicbind",
+    "neuralplexer",
     "rfaa",
     "chai-lab_ss",
     "chai-lab",
     "alphafold3_ss",
     "alphafold3",
-    "neuralplexer3_ss",
-    "neuralplexer3",
 ]
 max_num_repeats_per_method = (
     1  # NOTE: Here, to simplify the analysis, we only consider the first run of each method
@@ -96,13 +95,12 @@ method_mapping = {
     "vina_p2rank": "P2Rank-Vina",
     "diffdock": "DiffDock-L",
     "dynamicbind": "DynamicBind",
+    "neuralplexer": "NeuralPlexer",
     "rfaa": "RoseTTAFold-AA",
     "chai-lab_ss": "Chai-1-Single-Seq",
     "chai-lab": "Chai-1",
     "alphafold3_ss": "AF3-Single-Seq",
     "alphafold3": "AF3",
-    "neuralplexer3_ss": "NP3-Single-Seq",
-    "neuralplexer3": "NP3",
 }
 
 MAX_POSEBUSTERS_BENCHMARK_ANALYSIS_PROTEIN_SEQUENCE_LENGTH = 2000  # Only PoseBusters Benchmark targets with protein sequences below this threshold can be analyzed
@@ -331,11 +329,6 @@ for method in copy.deepcopy(baseline_methods):
                 mol_table.itertuples(index=False),
                 desc=f"Processing interactions for {method_title}",
             ):
-                if method_title == "NP3-Single-Seq" and row.pdb_id in ["7E4L_MDN"]:
-                    print(
-                        f"Skipping {method_title} target {row.pdb_id} due to a known freezing issue with `MDAnalysis`."
-                    )
-                    continue
                 print(f"Processing {method_title} target {row.pdb_id}...")
                 try:
                     protein_filepath, ligand_filepath = str(row.mol_cond), str(row.mol_pred)

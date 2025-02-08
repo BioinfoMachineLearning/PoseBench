@@ -201,6 +201,10 @@ rm diffdock_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/14629652/files/dynamicbind_benchmark_method_predictions.tar.gz
 tar -xzf dynamicbind_benchmark_method_predictions.tar.gz
 rm dynamicbind_benchmark_method_predictions.tar.gz
+# NeuralPLexer predictions and results
+wget https://zenodo.org/records/14629652/files/neuralplexer_benchmark_method_predictions.tar.gz
+tar -xzf neuralplexer_benchmark_method_predictions.tar.gz
+rm neuralplexer_benchmark_method_predictions.tar.gz
 # RoseTTAFold-All-Atom predictions and results
 wget https://zenodo.org/records/14629652/files/rfaa_benchmark_method_predictions.tar.gz
 tar -xzf rfaa_benchmark_method_predictions.tar.gz
@@ -213,10 +217,6 @@ rm chai_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/14629652/files/af3_benchmark_method_predictions.tar.gz
 tar -xzf af3_benchmark_method_predictions.tar.gz
 rm af3_benchmark_method_predictions.tar.gz
-# NeuralPLexer3 predictions and results
-wget https://zenodo.org/records/14629652/files/neuralplexer3_benchmark_method_predictions.tar.gz
-tar -xzf neuralplexer3_benchmark_method_predictions.tar.gz
-rm neuralplexer3_benchmark_method_predictions.tar.gz
 ```
 
 ### Downloading benchmark method interactions

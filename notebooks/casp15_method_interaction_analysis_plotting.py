@@ -45,13 +45,12 @@ baseline_methods = [
     "vina_p2rank",
     "diffdock",
     "dynamicbind",
+    "neuralplexer",
     "rfaa",
     "chai-lab_ss",
     "chai-lab",
     "alphafold3_ss",
     "alphafold3",
-    "neuralplexer3_ss",
-    "neuralplexer3",
 ]
 max_num_repeats_per_method = (
     1  # NOTE: Here, to simplify the analysis, we only consider the first run of each method
@@ -72,13 +71,12 @@ method_mapping = {
     "vina_p2rank": "P2Rank-Vina",
     "diffdock": "DiffDock-L",
     "dynamicbind": "DynamicBind",
+    "neuralplexer": "NeuralPlexer",
     "rfaa": "RoseTTAFold-AA",
     "chai-lab_ss": "Chai-1-Single-Seq",
     "chai-lab": "Chai-1",
     "alphafold3_ss": "AF3-Single-Seq",
     "alphafold3": "AF3",
-    "neuralplexer3_ss": "NP3-Single-Seq",
-    "neuralplexer3": "NP3",
 }
 
 CASP15_ANALYSIS_TARGETS_TO_SKIP = [

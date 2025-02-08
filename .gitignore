@@ -180,7 +180,7 @@ configs/local/default.yaml
 /forks/FlowDock/checkpoints/
 /forks/NeuralPLexer/NeuralPLexer/
 /forks/NeuralPLexer/**/neuralplexermodels*
-/forks/NeuralPLexer3/prediction_inputs/
+/forks/NeuralPLexer*/prediction_inputs/
 /forks/P2Rank/
 /forks/*/*inference*/
 /forks/RoseTTAFold-All-Atom/blast-2.2.26
