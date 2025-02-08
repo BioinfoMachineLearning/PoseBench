@@ -217,6 +217,10 @@ rm chai_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/14629652/files/af3_benchmark_method_predictions.tar.gz
 tar -xzf af3_benchmark_method_predictions.tar.gz
 rm af3_benchmark_method_predictions.tar.gz
+# CASP15 predictions and results for all methods
+wget https://zenodo.org/records/14629652/files/casp15_benchmark_method_predictions.tar.gz
+tar -xzf casp15_benchmark_method_predictions.tar.gz
+rm casp15_benchmark_method_predictions.tar.gz
 ```
 
 ### Downloading benchmark method interactions
