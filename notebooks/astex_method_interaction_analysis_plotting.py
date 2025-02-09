@@ -75,7 +75,7 @@ method_mapping = {
     "diffdock": "DiffDock-L",
     "dynamicbind": "DynamicBind",
     "neuralplexer": "NeuralPlexer",
-    "rfaa": "RoseTTAFold-AA",
+    "rfaa": "RFAA",
     "chai-lab_ss": "Chai-1-Single-Seq",
     "chai-lab": "Chai-1",
     "alphafold3_ss": "AF3-Single-Seq",
