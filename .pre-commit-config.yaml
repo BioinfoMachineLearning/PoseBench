@@ -42,18 +42,20 @@ repos:
         args: [--py38-plus]
 
   # python docstring formatting
-  - repo: https://github.com/myint/docformatter
-    rev: v1.7.5
+  # address runtime issue: https://github.com/PyCQA/docformatter/pull/287
+  - repo: local
     hooks:
       - id: docformatter
+        name: docformatter
+        description: Formats docstrings to follow PEP 257.
+        entry: python -Im docformatter
+        additional_dependencies:
+          - docformatter == 1.7.5
         args:
-          [
-            --in-place,
-            --wrap-summaries=99,
-            --wrap-descriptions=99,
-            --style=sphinx,
-            --black,
-          ]
+          - --in-place
+        language: python
+        types:
+          - python
 
   # python docstring coverage checking
   - repo: https://github.com/econchick/interrogate
