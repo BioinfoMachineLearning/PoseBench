@@ -1,0 +1,21 @@
+defaults:
+  - ema
+  - last_model_checkpoint
+  - learning_rate_monitor
+  - model_checkpoint
+  - model_summary
+  - rich_progress_bar
+  - _self_
+
+last_model_checkpoint:
+  dirpath: ${paths.output_dir}/checkpoints
+  filename: "last"
+  monitor: null
+  verbose: True
+  auto_insert_metric_name: False
+  every_n_epochs: 1
+  save_on_train_epoch_end: True
+  enable_version_counter: False
+
+model_summary:
+  max_depth: -1

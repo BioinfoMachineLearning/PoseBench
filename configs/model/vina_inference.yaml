@@ -1,6 +1,6 @@
 # General inference arguments:
 dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
-method: diffdock # the method from which to derive binding site predictions - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `p2rank`, `ensemble`)
+method: diffdock # the method from which to derive binding site predictions - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `flowdock`, `p2rank`, `ensemble`)
 ensemble_ranking_method: consensus # the method with which to rank-order and select the top ensemble prediction for each target - NOTE: must be one of (`consensus`, `ff`)
 python2_exec_path: ${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/bin/python # the path to the Python 2 executable
 p2rank_exec_path: ${oc.env:PROJECT_ROOT}/forks/P2Rank/p2rank_2.4.2/prank # the path to the P2Rank executable
@@ -12,7 +12,7 @@ cpu: 0 # the number of CPU workers to use with AutoDock Vina for parallel proces
 seed: null # the random seed to use with AutoDock Vina
 exhaustiveness: 32 # the exhaustiveness to use with AutoDock Vina
 ligand_ligand_distance_threshold: 25.0 # the distance threshold (in Angstrom) to use for finding shared binding sites amongst ligands
-protein_ligand_distance_threshold: 4.0 # the heavy-atom distance threshold (in Angstrom) to use for finding protein binding sites amongst grouped ligands
+protein_ligand_distance_threshold: 10.0 # the heavy-atom distance threshold (in Angstrom) to use for finding protein binding sites amongst grouped ligands
 binding_site_size_x: 25.0 # the x-axis size of the binding site box to use with AutoDock Vina
 binding_site_size_y: 25.0 # the y-axis size of the binding site box to use with AutoDock Vina
 binding_site_size_z: 25.0 # the z-axis size of the binding site box to use with AutoDock Vina

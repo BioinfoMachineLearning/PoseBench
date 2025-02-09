@@ -3,6 +3,7 @@
 # -------------------------------------------------------------------------------------------------------------------------------------
 
 import ast
+import copy
 import glob
 import logging
 import multiprocessing
@@ -44,7 +45,13 @@ from posebench.utils.data_utils import (
 )
 from posebench.utils.model_utils import calculate_rmsd
 
-METHODS_PREDICTING_HOLO_PROTEIN_AB_INITIO = {"neuralplexer", "rfaa"}
+METHODS_PREDICTING_HOLO_PROTEIN_AB_INITIO = {
+    "neuralplexer",
+    "flowdock",
+    "rfaa",
+    "chai-lab",
+    "alphafold3",
+}
 
 ENSEMBLE_PREDICTIONS = Dict[str, List[Tuple[str, str]]]
 RANKED_ENSEMBLE_PREDICTIONS = Dict[int, Tuple[str, str, str, float]]
@@ -119,7 +126,7 @@ def insert_hpc_headers(
     method: str,
     gpu_partition: str = "chengji-lab-gpu",
     gpu_account: str = "chengji-lab",
-    gpu_type: Literal["A100", "H100"] = "H100",
+    gpu_type: Literal["A100", "H100", ""] = "",
     cpu_memory_in_gb: int = 59,
     time_limit: str = "7-00:00:00",
 ) -> str:
@@ -136,7 +143,7 @@ def insert_hpc_headers(
 #SBATCH --partition {gpu_partition} # use reserved partition `chengji-lab-gpu`
 #SBATCH --account {gpu_account}  # NOTE: this must be specified to use the reserved partition above
 #SBATCH --nodes=1              # NOTE: this needs to match Lightning's `Trainer(num_nodes=...)`
-#SBATCH --gres gpu:{gpu_type}:1      # request {gpu_type} GPU resource(s)
+#SBATCH --gres gpu:{f'{gpu_type}:' if gpu_type else ''}1      # request {gpu_type} GPU resource(s)
 #SBATCH --ntasks-per-node=1    # NOTE: this needs to be `1` on SLURM clusters when using Lightning's `ddp_spawn` strategy`; otherwise, set to match Lightning's quantity of `Trainer(devices=...)`
 #SBATCH --mem={cpu_memory_in_gb}G              # NOTE: use `--mem=0` to request all memory "available" on the assigned node
 #SBATCH -t {time_limit}          # time limit for the job (up to two days: `2-00:00:00`)
@@ -325,6 +332,83 @@ echo "Calling neuralplexer_inference.py!"
     plddt_ranking_type={cfg.neuralplexer_plddt_ranking_type}
 
 echo "Finished calling neuralplexer_inference.py!"
+    """
+
+    with open(output_filepath, "w") as file:
+        file.write(bash_script_content)
+
+    logger.info(f"Bash script '{output_filepath}' created successfully.")
+
+
+def create_flowdock_bash_script(
+    protein_filepath: str,
+    ligand_smiles: str,
+    input_id: str,
+    output_filepath: str,
+    cfg: DictConfig,
+    generate_hpc_scripts: bool = True,
+):
+    """Create a bash script to run FlowDock protein-ligand complex prediction.
+
+    :param protein_filepath: Path to the input protein structure PDB file.
+    :param ligand_smiles: SMILES string of the input ligand.
+    :param input_id: Input ID.
+    :param output_filepath: Path to the output bash script file.
+    :param cfg: Configuration dictionary for runtime arguments.
+    :param generate_hpc_scripts: Whether to generate HPC scripts for FlowDock.
+    """
+    bash_script_content = f"""#!/bin/bash
+{insert_hpc_headers(method='flowdock') if generate_hpc_scripts else 'source /home/$USER/mambaforge/etc/profile.d/conda.sh'}
+conda activate {"$project_dir/PoseBench/" if generate_hpc_scripts else 'PoseBench'}
+
+# command to run flowdock_input_preparation.py
+python posebench/data/flowdock_input_preparation.py \\
+    output_csv_path={cfg.flowdock_input_csv_path} \\
+    input_receptor='{protein_filepath}' \\
+    input_ligand='"{ligand_smiles}"' \\
+    input_template='{protein_filepath}' \\
+    input_id='{input_id}'
+
+# command to run flowdock_inference.py
+echo "Calling flowdock_inference.py!"
+{cfg.flowdock_python_exec_path} posebench/models/flowdock_inference.py \\
+    python_exec_path={cfg.flowdock_python_exec_path} \\
+    flowdock_exec_dir={cfg.flowdock_exec_dir} \\
+    input_data_dir={cfg.flowdock_input_data_dir} \\
+    input_receptor_structure_dir={cfg.flowdock_input_receptor_structure_dir} \\
+    input_csv_path={cfg.flowdock_input_csv_path} \\
+    skip_existing={cfg.flowdock_skip_existing} \\
+    sampling_task={cfg.flowdock_sampling_task} \\
+    sample_id={cfg.flowdock_sample_id} \\
+    input_receptor={cfg.flowdock_input_receptor} \\
+    input_ligand={cfg.flowdock_input_ligand} \\
+    input_template={cfg.flowdock_input_template} \\
+    model_checkpoint={cfg.flowdock_model_checkpoint} \\
+    out_path={cfg.flowdock_out_path} \\
+    n_samples={min(cfg.flowdock_n_samples, cfg.max_method_predictions)} \\
+    chunk_size={cfg.flowdock_chunk_size} \\
+    num_steps={cfg.flowdock_num_steps} \\
+    latent_model={cfg.flowdock_latent_model} \\
+    sampler={cfg.flowdock_sampler} \\
+    sampler_eta={cfg.flowdock_sampler_eta} \\
+    start_time={cfg.flowdock_start_time} \\
+    max_chain_encoding_k={cfg.flowdock_max_chain_encoding_k} \\
+    exact_prior={cfg.flowdock_exact_prior} \\
+    prior_type={cfg.flowdock_prior_type} \\
+    discard_ligand={cfg.flowdock_discard_ligand} \\
+    discard_sdf_coords={cfg.flowdock_discard_sdf_coords} \\
+    detect_covalent={cfg.flowdock_detect_covalent} \\
+    use_template={cfg.flowdock_use_template} \\
+    separate_pdb={cfg.flowdock_separate_pdb} \\
+    rank_outputs_by_confidence={cfg.flowdock_rank_outputs_by_confidence} \\
+    plddt_ranking_type={cfg.flowdock_plddt_ranking_type} \\
+    visualize_sample_trajectories={cfg.flowdock_visualize_sample_trajectories} \\
+    auxiliary_estimation_only={cfg.flowdock_auxiliary_estimation_only} \\
+    auxiliary_estimation_input_dir={cfg.flowdock_auxiliary_estimation_input_dir} \\
+    csv_path={cfg.flowdock_csv_path} \\
+    esmfold_chunk_size={cfg.flowdock_esmfold_chunk_size}
+
+echo "Finished calling flowdock_inference.py!"
     """
 
     with open(output_filepath, "w") as file:
@@ -524,7 +608,9 @@ echo "Finished calling chai_inference.py!"
 
 
 def create_vina_bash_script(
-    binding_site_method: Literal["diffdock", "fabind", "dynamicbind", "neuralplexer", "rfaa"],
+    binding_site_method: Literal[
+        "diffdock", "fabind", "dynamicbind", "neuralplexer", "flowdock", "rfaa"
+    ],
     protein_filepath: str,
     ligand_filepath: str,
     apo_protein_filepath: str,
@@ -643,8 +729,8 @@ def generate_method_prediction_script(
         create_diffdock_bash_script(
             protein_filepath,
             ligand_smiles.replace(
-                ":", "|"
-            ),  # NOTE: DiffDock supports multi-ligands using the separator "|"
+                ":", "."
+            ),  # NOTE: DiffDock supports multi-ligands using the separator "."
             input_id,
             output_filepath,
             cfg,
@@ -654,8 +740,8 @@ def generate_method_prediction_script(
         create_dynamicbind_bash_script(
             protein_filepath,
             ligand_smiles.replace(
-                ":", "|"
-            ),  # NOTE: DynamicBind supports multi-ligands using the separator "|"
+                ":", "."
+            ),  # NOTE: DynamicBind supports multi-ligands using the separator "."
             output_filepath,
             cfg,
             generate_hpc_scripts=generate_hpc_scripts,
@@ -664,8 +750,19 @@ def generate_method_prediction_script(
         create_neuralplexer_bash_script(
             protein_filepath,
             ligand_smiles.replace(
-                ":", "|"
-            ),  # NOTE: NeuralPLexer supports multi-ligands using the separator "|"
+                ":", "."
+            ),  # NOTE: NeuralPLexer supports multi-ligands using the separator "."
+            input_id,
+            output_filepath,
+            cfg,
+            generate_hpc_scripts=generate_hpc_scripts,
+        )
+    elif method == "flowdock":
+        create_flowdock_bash_script(
+            protein_filepath,
+            ligand_smiles.replace(
+                ":", "."
+            ),  # NOTE: FlowDock supports multi-ligands using the separator "."
             input_id,
             output_filepath,
             cfg,
@@ -691,6 +788,10 @@ def generate_method_prediction_script(
             cfg=cfg,
             output_filepath=output_filepath,
             generate_hpc_scripts=generate_hpc_scripts,
+        )
+    elif method == "alphafold3":
+        logger.info(
+            "AlphaFold-3 ensemble prediction Bash scripts are not supported. Skipping script creation."
         )
     elif method == "vina":
         assert (
@@ -738,6 +839,7 @@ def get_method_predictions(
     cfg: DictConfig,
     binding_site_method: Optional[str] = None,
     input_protein_filepath: Optional[str] = None,
+    is_ss_method: bool = False,
 ) -> List[Tuple[str, str]]:
     """Get the predictions generated by the method.
 
@@ -747,11 +849,13 @@ def get_method_predictions(
     :param binding_site_method: Optional name of the method used to predict AutoDock Vina's binding
         sites.
     :param input_protein_filepath: Optional path to the input protein structure PDB file.
+    :param is_ss_method: Whether the method is a single-sequence method.
     :return: List of method predictions, each as a tuple of the output protein filepath and the
         output ligand filepath.
     """
     pocket_only_suffix = "_pocket_only" if cfg.pocket_only_baseline else ""
     no_ilcl_suffix = "_no_ilcl" if cfg.neuralplexer_no_ilcl else ""
+    single_seq_suffix = "_ss" if is_ss_method else ""
 
     if method == "diffdock":
         ensemble_benchmarking_output_dir = (
@@ -880,9 +984,42 @@ def get_method_predictions(
     elif method == "neuralplexer":
         ensemble_benchmarking_output_dir = (
             Path(cfg.input_dir if cfg.input_dir else cfg.neuralplexer_out_path).parent
-            / f"neuralplexer{pocket_only_suffix}{no_ilcl_suffix}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
+            / f"neuralplexer{single_seq_suffix}{pocket_only_suffix}{no_ilcl_suffix}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
             if cfg.ensemble_benchmarking
             else (cfg.input_dir if cfg.input_dir else cfg.neuralplexer_out_path)
+        )
+        protein_output_files = sorted(
+            [
+                file
+                for file in map(
+                    str,
+                    Path(os.path.join(ensemble_benchmarking_output_dir, target)).rglob("*.pdb"),
+                )
+                if "rank" in os.path.basename(file)
+                and "relaxed" not in os.path.basename(file)
+                and "aligned" not in os.path.basename(file)
+            ],
+            key=rank_key,
+        )[: cfg.method_top_n_to_select]
+        ligand_output_files = sorted(
+            [
+                file
+                for file in map(
+                    str,
+                    Path(os.path.join(ensemble_benchmarking_output_dir, target)).rglob("*.sdf"),
+                )
+                if "rank" in os.path.basename(file)
+                and "relaxed" not in os.path.basename(file)
+                and "aligned" not in os.path.basename(file)
+            ],
+            key=rank_key,
+        )[: cfg.method_top_n_to_select]
+    elif method == "flowdock":
+        ensemble_benchmarking_output_dir = (
+            Path(cfg.input_dir if cfg.input_dir else cfg.flowdock_out_path).parent
+            / f"flowdock_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
+            if cfg.ensemble_benchmarking
+            else (cfg.input_dir if cfg.input_dir else cfg.flowdock_out_path)
         )
         protein_output_files = sorted(
             [
@@ -944,7 +1081,7 @@ def get_method_predictions(
     elif method == "chai-lab":
         ensemble_benchmarking_output_dir = (
             Path(cfg.input_dir if cfg.input_dir else cfg.chai_out_path).parent
-            / f"chai-lab{pocket_only_suffix}{no_ilcl_suffix}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
+            / f"chai-lab{single_seq_suffix}{pocket_only_suffix}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
             if cfg.ensemble_benchmarking
             else (cfg.input_dir if cfg.input_dir else cfg.chai_out_path)
         )
@@ -969,6 +1106,40 @@ def get_method_predictions(
                     Path(os.path.join(ensemble_benchmarking_output_dir, target)).rglob("*.sdf"),
                 )
                 if "model_idx" in os.path.basename(file)
+                and "relaxed" not in os.path.basename(file)
+                and "aligned" not in os.path.basename(file)
+                and "_LIG_" not in os.path.basename(file)
+            ],
+            key=rank_key,
+        )[: cfg.method_top_n_to_select]
+    elif method == "alphafold3":
+        ensemble_benchmarking_output_dir = (
+            Path(cfg.input_dir if cfg.input_dir else cfg.alphafold3_out_path).parent
+            / f"alphafold3{single_seq_suffix}{pocket_only_suffix}_{cfg.ensemble_benchmarking_dataset}_outputs_{cfg.ensemble_benchmarking_repeat_index}"
+            if cfg.ensemble_benchmarking
+            else (cfg.input_dir if cfg.input_dir else cfg.alphafold3_out_path)
+        )
+        protein_output_files = sorted(
+            [
+                file
+                for file in map(
+                    str,
+                    Path(os.path.join(ensemble_benchmarking_output_dir, target)).rglob("*.pdb"),
+                )
+                if "model_protein" in os.path.basename(file)
+                and "relaxed" not in os.path.basename(file)
+                and "aligned" not in os.path.basename(file)
+            ],
+            key=rank_key,
+        )[: cfg.method_top_n_to_select]
+        ligand_output_files = sorted(
+            [
+                file
+                for file in map(
+                    str,
+                    Path(os.path.join(ensemble_benchmarking_output_dir, target)).rglob("*.sdf"),
+                )
+                if "model_ligand" in os.path.basename(file)
                 and "relaxed" not in os.path.basename(file)
                 and "aligned" not in os.path.basename(file)
                 and "_LIG_" not in os.path.basename(file)
@@ -1172,7 +1343,7 @@ def generate_ensemble_predictions(
 
     if cfg.resume:
         ensemble_predictions_dict = {}
-        for method in cfg.ensemble_methods:
+        for method, is_ss_method in zip(cfg.ensemble_methods, cfg.is_ss_ensemble_method):
             if method == "vina":
                 for binding_site_method in cfg.vina_binding_site_methods:
                     method_predictions = get_method_predictions(
@@ -1181,11 +1352,16 @@ def generate_ensemble_predictions(
                         cfg,
                         binding_site_method=binding_site_method,
                         input_protein_filepath=protein_filepath,
+                        is_ss_method=is_ss_method,
                     )
                     ensemble_predictions_dict[f"vina_{binding_site_method}"] = method_predictions
             else:
                 method_predictions = get_method_predictions(
-                    method, input_id, cfg, input_protein_filepath=protein_filepath
+                    method,
+                    input_id,
+                    cfg,
+                    input_protein_filepath=protein_filepath,
+                    is_ss_method=is_ss_method,
                 )
                 ensemble_predictions_dict[method] = method_predictions
 
@@ -1401,11 +1577,21 @@ def rank_ensemble_predictions(
                 method in METHODS_PREDICTING_HOLO_PROTEIN_AB_INITIO
                 and apo_reference_protein_filepath is not None
             ):
-                align_complex_to_protein_only(
-                    protein_filepath, ligand_filepath, apo_reference_protein_filepath
-                )
-                protein_filepath = protein_filepath.replace(".pdb", "_aligned.pdb")
-                ligand_filepath = ligand_filepath.replace(".sdf", "_aligned.sdf")
+                try:
+                    alignment_return_code = align_complex_to_protein_only(
+                        protein_filepath, ligand_filepath, apo_reference_protein_filepath
+                    )
+                    if alignment_return_code == 0:
+                        protein_filepath = protein_filepath.replace(".pdb", "_aligned.pdb")
+                        ligand_filepath = ligand_filepath.replace(".sdf", "_aligned.sdf")
+                    else:
+                        logger.warning(
+                            f"Failed to align predicted complex structure {protein_filepath} and ligand structure {ligand_filepath} to the apo protein structure {apo_reference_protein_filepath} from method {method}. Skipping alignment..."
+                        )
+                except Exception as e:
+                    logger.warning(
+                        f"Failed to align protein-ligand complex {protein_filepath} and {ligand_filepath} to apo protein structure {apo_reference_protein_filepath}. Skipping alignment due to: {e}"
+                    )
             try:
                 ligand = read_molecule(ligand_filepath)
             except Exception as e:
@@ -2071,6 +2257,13 @@ def main(cfg: DictConfig):
     """Generate predictions for a protein-ligand target pair using an ensemble of methods."""
     os.makedirs(cfg.temp_protein_dir, exist_ok=True)
 
+    with open_dict(cfg):
+        # NOTE: besides their output directories, single-sequence baselines are treated like their multi-sequence counterparts
+        output_dir = copy.deepcopy(cfg.output_dir)
+        cfg.is_ss_ensemble_method = [s.endswith("_ss") for s in cfg.ensemble_methods]
+        cfg.ensemble_methods = [s.removesuffix("_ss") for s in cfg.ensemble_methods]
+        cfg.output_dir = output_dir
+
     if list(cfg.ensemble_methods) == ["neuralplexer"] and cfg.neuralplexer_no_ilcl:
         with open_dict(cfg):
             cfg.output_dir = cfg.output_dir.replace(
@@ -2188,7 +2381,7 @@ def main(cfg: DictConfig):
             continue
 
         # ensure an input protein structure is available
-        if type(row.protein_input) == str and os.path.exists(row.protein_input):
+        if isinstance(row.protein_input, str) and os.path.exists(row.protein_input):
             temp_protein_filepath = row.protein_input
         else:
             if cfg.ensemble_benchmarking:
@@ -2199,7 +2392,7 @@ def main(cfg: DictConfig):
             # NOTE: a placeholder protein sequence is used when making ligand-only predictions
             row_protein_input = (
                 row.protein_input
-                if type(row.protein_input) == str and len(row.protein_input) > 0
+                if isinstance(row.protein_input, str) and len(row.protein_input) > 0
                 else LIGAND_ONLY_RECEPTOR_PLACEHOLDER_SEQUENCE
             )
             row_name = (
@@ -2271,15 +2464,21 @@ def main(cfg: DictConfig):
             ranked_predictions,
             temp_protein_filepath,
             row.name,
-            None
-            if isinstance(row, np.ndarray) and np.isnan(row.ligand_numbers).any()
-            else row.ligand_numbers,
-            None
-            if isinstance(row, np.ndarray) and np.isnan(row.ligand_names).any()
-            else row.ligand_names,
-            None
-            if isinstance(row, np.ndarray) and np.isnan(row.ligand_tasks).any()
-            else row.ligand_tasks,
+            (
+                None
+                if isinstance(row, np.ndarray) and np.isnan(row.ligand_numbers).any()
+                else row.ligand_numbers
+            ),
+            (
+                None
+                if isinstance(row, np.ndarray) and np.isnan(row.ligand_names).any()
+                else row.ligand_names
+            ),
+            (
+                None
+                if isinstance(row, np.ndarray) and np.isnan(row.ligand_tasks).any()
+                else row.ligand_tasks
+            ),
             cfg,
         )
         logger.info(f"Ensemble generation for target {row.name} has been completed.")

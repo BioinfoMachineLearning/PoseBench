@@ -1,0 +1,7 @@
+method: dynamicbind # the method to evaluate - NOTE: must be one of (`dynamicbind`, `neuralplexer`, `flowdock`)
+dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`)
+input_protein_structure_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_predicted_structures # the input protein structure directory to parse
+predicted_protein_structure_dir: ${oc.env:PROJECT_ROOT}/forks/${resolve_method_title:${method}}/inference/${method}_${dataset}_outputs_1 # the predicted protein structure directory to parse
+reference_structure_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/ # the reference protein and ligand structure directory to parse
+output_plot_filepath: ${oc.env:PROJECT_ROOT}/scripts/${method}_${dataset}_protein_conformation_changes.png # the output plot file path
+cutoff: 10.0 # the protein-ligand heavy atom Angstrom distance threshold to consider a residue a binding site residue

@@ -36,8 +36,8 @@ def main(cfg: DictConfig):
         else cfg.input_csv_path
     )
 
-    if cfg.no_ilcl:
-        with open_dict(cfg):
+    with open_dict(cfg):
+        if cfg.no_ilcl:
             cfg.frozen_prot = True
             cfg.model_checkpoint = os.path.join(
                 os.path.dirname(cfg.model_checkpoint),
@@ -52,13 +52,20 @@ def main(cfg: DictConfig):
                 cfg.model_checkpoint
             ), f"Model checkpoint trained without an inter-ligand clash loss (ILCL) `{cfg.model_checkpoint}` not found."
 
-    if cfg.pocket_only_baseline:
-        with open_dict(cfg):
+        if cfg.pocket_only_baseline:
             cfg.out_path = os.path.join(
                 os.path.dirname(cfg.out_path),
                 os.path.basename(cfg.out_path).replace("neuralplexer", "neuralplexer_pocket_only"),
             )
-        input_csv_path = cfg.input_csv_path.replace("neuralplexer", "neuralplexer_pocket_only")
+            input_csv_path = cfg.input_csv_path.replace("neuralplexer", "neuralplexer_pocket_only")
+
+        if cfg.max_num_inputs:
+            cfg.out_path = os.path.join(
+                os.path.dirname(cfg.out_path),
+                os.path.basename(cfg.out_path).replace(
+                    "neuralplexer", f"neuralplexer_first_{cfg.max_num_inputs}"
+                ),
+            )
 
     os.makedirs(cfg.out_path, exist_ok=True)
     assert os.path.exists(input_csv_path), f"Input CSV file `{input_csv_path}` not found."

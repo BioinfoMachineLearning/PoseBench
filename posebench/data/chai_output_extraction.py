@@ -6,8 +6,8 @@ import logging
 import os
 
 import hydra
+import numpy as np
 import rootutils
-from biopandas.pdb import PandasPdb
 from omegaconf import DictConfig, open_dict
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
@@ -19,24 +19,6 @@ from posebench.utils.data_utils import (
 
 logging.basicConfig(format="[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
-
-
-def distinguish_ligand_atoms(input_pdb_file: str, output_pdb_file: str):
-    """Mark ligand atoms as heteroatoms.
-
-    :param input_pdb_file: Path to the input PDB file.
-    :param output_pdb_file: Path to the output PDB file.
-    """
-    pdb = PandasPdb().read_pdb(input_pdb_file)
-    ligand_atoms = pdb.df["ATOM"][pdb.df["ATOM"]["residue_name"] == "LIG"]
-
-    ligand_indices = ligand_atoms.index
-    pdb.df["ATOM"] = pdb.df["ATOM"].drop(ligand_indices)
-
-    ligand_atoms.record_name = "HETATM"
-    pdb.df["HETATM"] = ligand_atoms
-
-    pdb.to_pdb(output_pdb_file)
 
 
 @hydra.main(
@@ -93,18 +75,17 @@ def main(cfg: DictConfig):
             cfg.output_dir, cfg.complex_id, os.path.basename(cfg.complex_filepath)
         )
         os.makedirs(os.path.dirname(final_output_filepath), exist_ok=True)
-        distinguish_ligand_atoms(
-            intermediate_output_filepath,
-            final_output_filepath.replace(".pdb", "_fixed.pdb"),
-        )
-        extract_protein_and_ligands_with_prody(
-            final_output_filepath.replace(".pdb", "_fixed.pdb"),
-            final_output_filepath.replace(".pdb", "_protein.pdb"),
-            final_output_filepath.replace(".pdb", "_ligand.sdf"),
-            sanitize=False,
-            add_element_types=True,
-            ligand_smiles=cfg.ligand_smiles,
-        )
+        try:
+            extract_protein_and_ligands_with_prody(
+                intermediate_output_filepath,
+                final_output_filepath.replace(".cif", "_protein.pdb"),
+                final_output_filepath.replace(".cif", "_ligand.sdf"),
+                sanitize=False,
+                add_element_types=True,
+                ligand_smiles=cfg.ligand_smiles,
+            )
+        except Exception as e:
+            logger.error(f"Failed to extract protein and ligands for {cfg.complex_id} due to: {e}")
     else:
         # process all complexes in a dataset
         smiles_and_pdb_id_list = parse_inference_inputs_from_dir(
@@ -115,31 +96,64 @@ def main(cfg: DictConfig):
         for item in os.listdir(cfg.prediction_inputs_dir):
             input_item_path = os.path.join(cfg.prediction_inputs_dir, item)
             output_item_path = os.path.join(cfg.prediction_outputs_dir, item)
+
+            all_scores = dict()
             if os.path.isdir(input_item_path) and os.path.isdir(output_item_path):
                 for file in os.listdir(output_item_path):
-                    if not file.endswith(".pdb"):
+                    if not file.endswith(".cif"):
+                        continue
+                    intermediate_output_filepath = os.path.join(output_item_path, file)
+
+                    scores_filepath = os.path.join(
+                        output_item_path, file.replace("pred.", "scores.").replace(".cif", ".npz")
+                    )
+                    scores = dict(np.load(scores_filepath))
+                    all_scores[intermediate_output_filepath] = scores["aggregate_score"]
+
+            # rank by aggregate score
+            all_ranks = {
+                k: rank
+                for rank, (k, _) in enumerate(
+                    sorted(all_scores.items(), key=lambda x: x[1], reverse=True)
+                )
+            }
+
+            if os.path.isdir(input_item_path) and os.path.isdir(output_item_path):
+                for file in os.listdir(output_item_path):
+                    if not file.endswith(".cif"):
                         continue
                     intermediate_output_filepath = os.path.join(output_item_path, file)
                     final_output_filepath = os.path.join(cfg.inference_outputs_dir, item, file)
                     os.makedirs(os.path.dirname(final_output_filepath), exist_ok=True)
+
                     if cfg.dataset in ["posebusters_benchmark", "astex_diverse", "dockgen"]:
-                        ligand_smiles = pdb_id_to_smiles[item].replace("|", ".")
+                        ligand_smiles = pdb_id_to_smiles[item]
                     else:
                         # NOTE: for the `casp15` dataset, standalone ligand SMILES are not available
                         ligand_smiles = None
-                    distinguish_ligand_atoms(
-                        intermediate_output_filepath,
-                        final_output_filepath.replace(".pdb", "_fixed.pdb"),
-                    )
-                    extract_protein_and_ligands_with_prody(
-                        final_output_filepath.replace(".pdb", "_fixed.pdb"),
-                        final_output_filepath.replace(".pdb", "_protein.pdb"),
-                        final_output_filepath.replace(".pdb", "_ligand.sdf"),
-                        sanitize=False,
-                        add_element_types=True,
-                        ligand_smiles=ligand_smiles,
-                    )
-                    os.remove(final_output_filepath.replace(".pdb", "_fixed.pdb"))
+
+                    rank = all_ranks[intermediate_output_filepath]
+                    model_idx = os.path.splitext(file)[0].split("_")[-1]
+
+                    try:
+                        extract_protein_and_ligands_with_prody(
+                            # NOTE: to simplify this implementation, we repurpose model
+                            # indices as sample ranks past this point in the codebase
+                            intermediate_output_filepath,
+                            final_output_filepath.replace(
+                                f"model_idx_{model_idx}", f"model_idx_{rank}"
+                            ).replace(".cif", "_protein.pdb"),
+                            final_output_filepath.replace(
+                                f"model_idx_{model_idx}", f"model_idx_{rank}"
+                            ).replace(".cif", "_ligand.sdf"),
+                            sanitize=False,
+                            add_element_types=True,
+                            ligand_smiles=ligand_smiles,
+                        )
+                    except Exception as e:
+                        logger.error(
+                            f"Failed to extract protein and ligands for {item} due to: {e}"
+                        )
 
     logger.info(
         f"Finished extracting {cfg.dataset} protein and ligands from all prediction outputs."

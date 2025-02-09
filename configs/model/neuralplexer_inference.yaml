@@ -9,8 +9,8 @@ template_id: 0 # the template ID to use for inference
 cuda_device_index: 0 # the CUDA device to use for inference, or `null` to use CPU
 model_checkpoint: ${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/neuralplexermodels_downstream_datasets_predictions/models/complex_structure_prediction.ckpt # the model checkpoint to use for inference
 out_path: ${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/inference/neuralplexer_${dataset}_outputs_${repeat_index} # the output directory to which to write the predictions
-n_samples: 40 # the number of conformations to generate per complex
-chunk_size: 10 # the number of conformations to generate in parallel per complex
+n_samples: 5 # the number of conformations to generate per complex
+chunk_size: 5 # the number of conformations to generate in parallel per complex
 num_steps: 40 # the number of steps to take in the sampling process
 latent_model: null # which type of latent model to use - NOTE: must be one of (`null`)
 sampler: langevin_simulated_annealing # the sampler to use - NOTE: must be one of (`DDIM`, `VPSDE`, `simulated_annealing_simple`, `langevin_simulated_annealing`)

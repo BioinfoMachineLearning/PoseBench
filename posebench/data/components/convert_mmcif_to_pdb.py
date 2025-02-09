@@ -22,9 +22,12 @@ def convert_mmcif_to_pdb(mmcif_file: str, pdb_file: str):
     parser = PDB.MMCIFParser(QUIET=True)
     structure = parser.get_structure("structure", mmcif_file)
 
-    io = PDB.PDBIO()
-    io.set_structure(structure)
-    io.save(pdb_file)
+    try:
+        io = PDB.PDBIO()
+        io.set_structure(structure)
+        io.save(pdb_file)
+    except Exception as e:
+        logger.error(f"Error converting {mmcif_file} to PDB: {e}")
 
 
 @hydra.main(
@@ -36,11 +39,11 @@ def main(cfg: DictConfig):
     """Convert an input directory of mmCIF files to an output directory of PDB files."""
     os.makedirs(cfg.output_pdb_dir, exist_ok=True)
 
-    for id in tqdm(
-        os.listdir(cfg.input_mmcif_dir),
+    for file in tqdm(
+        [file for file in os.listdir(cfg.input_mmcif_dir) if file.endswith(".cif")],
         desc=f"Converting mmCIF to PDB for {cfg.dataset}",
     ):
-        new_id = id.replace("fold_", "")
+        new_id = os.path.splitext(file)[0].replace("_model", "").replace("_chain", "")
         if cfg.lowercase_id:
             # Support the DockGen dataset's hybrid lowercase-uppercase pdb id-CCD ID format
             new_id_parts = new_id.split("_")
@@ -51,11 +54,11 @@ def main(cfg: DictConfig):
                 + "_"
                 + new_id_parts[-1]
             )
+        elif cfg.dataset == "casp15":
+            new_id = new_id.upper().replace("V", "v")
         else:
             new_id = new_id.upper()
-        mmcif_filepath = os.path.join(
-            cfg.input_mmcif_dir, id, f"{id}_model_{cfg.model_index_to_select}.cif"
-        )
+        mmcif_filepath = os.path.join(cfg.input_mmcif_dir, file)
         pdb_filepath = os.path.join(cfg.output_pdb_dir, f"{new_id}.pdb")
         if os.path.isfile(mmcif_filepath):
             convert_mmcif_to_pdb(mmcif_filepath, pdb_filepath)

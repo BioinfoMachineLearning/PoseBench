@@ -147,6 +147,7 @@ dmypy.json
 # PoseBench
 configs/local/default.yaml
 /*cache_dir/
+/*alignment_viz/
 /casp15_ligand_scoring/
 /data/
 /ensemble_generation_scripts/
@@ -163,6 +164,7 @@ configs/local/default.yaml
 
 # Forks
 /workdir/
+/forks/alphafold3/*prediction_outputs/
 /forks/chai-lab/chai-lab/
 /forks/chai-lab/prediction_inputs/
 /forks/chai-lab/prediction_outputs/
@@ -174,10 +176,13 @@ configs/local/default.yaml
 /forks/DynamicBind/workdir/
 /forks/FABind/ckpt/best_model.bin
 /forks/FABind/FABind/
+/forks/FlowDock/FlowDock/
+/forks/FlowDock/checkpoints/
 /forks/NeuralPLexer/NeuralPLexer/
 /forks/NeuralPLexer/**/neuralplexermodels*
+/forks/NeuralPLexer*/prediction_inputs/
 /forks/P2Rank/
-/forks/*/inference*/
+/forks/*/*inference*/
 /forks/RoseTTAFold-All-Atom/blast-2.2.26
 /forks/RoseTTAFold-All-Atom/rf2aa/config/inference/*_rfaa_inference.yaml
 /forks/RoseTTAFold-All-Atom/csblast-2.2.3

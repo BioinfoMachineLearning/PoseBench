@@ -86,7 +86,7 @@ def write_input_csv(
                 if not os.path.exists(input_receptor):
                     logger.warning(f"Skipping input protein which was not found: {input_receptor}")
                     continue
-                f.write(f"{pdb_id},{input_receptor},{smiles},{input_receptor}\n")
+                f.write(f"{pdb_id},{input_receptor},{smiles.replace('.', '|')},{input_receptor}\n")
 
 
 @hydra.main(
@@ -100,6 +100,7 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
+    # load ID subset if requested
     pdb_ids = None
     if cfg.dataset == "posebusters_benchmark" and cfg.posebusters_ccd_ids_filepath is not None:
         assert os.path.exists(

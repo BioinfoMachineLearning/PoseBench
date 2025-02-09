@@ -15,8 +15,7 @@ from beartype.typing import Any, List, Optional, Tuple, Union
 from Bio.PDB import PDBParser
 from Bio.PDB.Model import Model
 from Bio.PDB.PDBExceptions import PDBConstructionWarning
-from biopandas.pdb import PandasPdb
-from omegaconf import DictConfig
+from omegaconf import DictConfig, open_dict
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from scipy import spatial
@@ -327,6 +326,10 @@ def get_alignment_rotation(
         dataset protein (Optional[np.ndarray]), and centroid of Ca atoms for a prediction
         (Optional[np.ndarray]).
     """
+    raise NotImplementedError(
+        "This function is not implemented in the current version of the codebase."
+    )
+
     try:
         dataset_rec = parse_pdb_from_path(dataset_protein_path)
     except Exception as e:
@@ -398,29 +401,42 @@ def get_alignment_rotation(
 
 
 def align_apo_structure_to_holo_structure(
-    cfg: DictConfig, filename: str, atom_df_name: str = "ATOM"
+    cfg: DictConfig, filename: str, cutoff: float = 10.0, verbose: bool = True
 ):
     """Align a given predicted apo structure to its corresponding holo structure.
 
     :param cfg: Hydra config for the alignment.
     :param filename: Filename of the predicted apo structure.
-    :param atom_df_name: Name of the atom DataFrame derived from the corresponding PDB file input.
+    :param cutoff: Distance cutoff in Å to define the binding site (default 10.0).
+    :param verbose: Whether to print the alignment RMSD and number of aligned atoms (default True).
     """
+    from pymol import cmd
+
     pdb_id = Path(filename).stem
     data_dir = cfg.data_dir
 
-    processed_protein_suffix = "_protein"
+    reference_protein_suffix = "_protein"
+    reference_ligand_suffix = "_ligand.sdf"
     if cfg.dataset == "dockgen":
-        processed_protein_suffix = "_protein_processed"
+        reference_protein_suffix = "_protein_processed"
+        reference_ligand_suffix = "_ligand.pdb"
     elif cfg.dataset == "casp15":
-        processed_protein_suffix = "_lig"
+        reference_protein_suffix = "_lig"
+        reference_ligand_suffix = None
         data_dir = os.path.join(data_dir, "targets")
 
-    processed_protein_name = f"{pdb_id}{processed_protein_suffix}.pdb"
-    processed_protein_filename = (
-        os.path.join(data_dir, processed_protein_name)
+    reference_protein_name = f"{pdb_id}{reference_protein_suffix}.pdb"
+    reference_protein_filename = (
+        os.path.join(data_dir, reference_protein_name)
         if cfg.dataset == "casp15"
-        else os.path.join(data_dir, pdb_id, processed_protein_name)
+        else os.path.join(data_dir, pdb_id, reference_protein_name)
+    )
+
+    reference_ligand_filename = (
+        # NOTE: CASP15 stores reference protein and ligand structures in the same PDB file
+        reference_protein_filename
+        if cfg.dataset == "casp15"
+        else os.path.join(data_dir, pdb_id, f"{pdb_id}{reference_ligand_suffix}")
     )
 
     predicted_protein_filename = os.path.join(cfg.predicted_structures_dir, f"{pdb_id}.pdb")
@@ -428,33 +444,77 @@ def align_apo_structure_to_holo_structure(
         cfg.output_dir, f"{pdb_id}_holo_aligned_predicted_protein.pdb"
     )
 
-    rotation, dataset_calpha_centroid, predicted_calpha_centroid = get_alignment_rotation(
-        pdb_id=pdb_id,
-        dataset_protein_path=processed_protein_filename,
-        predicted_protein_path=predicted_protein_filename,
-        dataset=cfg.dataset,
-        dataset_path=data_dir,
-    )
+    is_casp_target = cfg.dataset == "casp15"
 
-    if any(
-        [item is None for item in [rotation, dataset_calpha_centroid, predicted_calpha_centroid]]
-    ):
-        return
+    # Refresh PyMOL
+    cmd.reinitialize()
 
-    ppdb_predicted = PandasPdb().read_pdb(predicted_protein_filename)
-    ppdb_predicted_pre_rot = (
-        ppdb_predicted.df[atom_df_name][["x_coord", "y_coord", "z_coord"]]
-        .to_numpy()
-        .squeeze()
-        .astype(np.float32)
-    )
-    ppdb_predicted_aligned = (
-        rotation.apply(ppdb_predicted_pre_rot - predicted_calpha_centroid)
-        + dataset_calpha_centroid
-    )
+    # Load structures
+    cmd.load(reference_protein_filename, "ref_protein")
+    cmd.load(predicted_protein_filename, "pred_protein")
 
-    ppdb_predicted.df[atom_df_name][["x_coord", "y_coord", "z_coord"]] = ppdb_predicted_aligned
-    ppdb_predicted.to_pdb(path=predicted_protein_output_filename, records=[atom_df_name], gz=False)
+    if is_casp_target:
+        # Select the ligand chain(s) in the reference protein PDB file
+        cmd.select("ref_ligand", "ref_protein and not polymer")
+    else:
+        cmd.load(reference_ligand_filename, "ref_ligand")
+
+    # Select heavy atoms in the reference protein
+    cmd.select("ref_protein_heavy", "ref_protein and not elem H")
+
+    # Select heavy atoms in the reference ligand(s)
+    cmd.select("ref_ligand_heavy", "ref_ligand and not elem H")
+
+    # Define the reference binding site(s) based on the reference ligand(s)
+    cmd.select("binding_site", f"ref_protein_heavy within {cutoff} of ref_ligand_heavy")
+
+    # Align the predicted protein to the reference binding site(s)
+    align_cmd = cmd.super if cfg.dataset == "dockgen" else cmd.align
+    # NOTE: Since with DockGen we are aligning full predicted bioassemblies
+    # to primary interacting chains, we instead use the `super` command to align
+    # since it is more robust to large quaternary sequence differences
+    alignment_result = align_cmd("pred_protein", "binding_site")
+
+    # Report alignment RMSD and number of aligned atoms
+    if verbose:
+        logger.info(
+            f"Alignment RMSD for {pdb_id} with {alignment_result[1]} aligned atoms: {alignment_result[0]:.3f} Å"
+        )
+
+    # Apply the transformation to the predicted protein object
+    cmd.matrix_copy("pred_protein", "pred_protein")
+
+    # # Maybe prepare to visualize the computed alignments
+    # import shutil
+
+    # reference_target = os.path.splitext(os.path.basename(reference_protein_filename))[0].split(
+    #     "_protein"
+    # )[0].split("_lig")[0]
+    # prediction_target = os.path.splitext(os.path.basename(predicted_protein_filename))[0]
+    # assert (
+    #     reference_target == prediction_target
+    # ), f"Reference target {reference_target} does not match prediction target {prediction_target}"
+
+    # protein_a2h_alignment_viz_dir = os.path.join("protein_apo_to_holo_alignment_viz", prediction_target)
+    # os.makedirs(protein_a2h_alignment_viz_dir, exist_ok=True)
+
+    # Save the aligned protein
+    cmd.save(predicted_protein_output_filename, "pred_protein")
+
+    # # Maybe visualize the computed protein alignments
+    # cmd.save(
+    #     os.path.join(
+    #         protein_a2h_alignment_viz_dir,
+    #         os.path.basename(predicted_protein_output_filename),
+    #     ),
+    #     "pred_protein",
+    # )
+    # shutil.copyfile(
+    #     reference_protein_filename,
+    #     os.path.join(
+    #         protein_a2h_alignment_viz_dir, os.path.basename(reference_protein_filename)
+    #     ),
+    # )
 
 
 @hydra.main(
@@ -469,6 +529,16 @@ def main(cfg: DictConfig):
     """
     if cfg.dataset not in ["posebusters_benchmark", "astex_diverse", "dockgen", "casp15"]:
         raise ValueError(f"Dataset {cfg.dataset} is not supported.")
+
+    if cfg.processing_esmfold_structures:
+        with open_dict(cfg):
+            cfg.predicted_structures_dir = cfg.predicted_structures_dir.replace(
+                "_predicted_structures", "_esmfold_predicted_structures"
+            )
+            cfg.output_dir = cfg.output_dir.replace(
+                "_predicted_structures", "_esmfold_predicted_structures"
+            )
+
     output_dir = cfg.output_dir
     os.makedirs(output_dir, exist_ok=True)
     structure_file_inputs = [
@@ -477,6 +547,7 @@ def main(cfg: DictConfig):
         if not os.path.exists(
             os.path.join(cfg.output_dir, f"{Path(file).stem}_holo_aligned_predicted_protein.pdb")
         )
+        and file.endswith(".pdb")
     ]
     pbar = tqdm(
         structure_file_inputs,

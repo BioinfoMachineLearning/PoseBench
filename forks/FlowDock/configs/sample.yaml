@@ -1,0 +1,75 @@
+# @package _global_
+
+defaults:
+  - data: combined # NOTE: this will not be referenced during sampling
+  - model: flowdock_fm
+  - logger: null
+  - strategy: default
+  - trainer: default
+  - paths: default
+  - extras: default
+  - hydra: default
+  - environment: default
+  - _self_
+
+task_name: "sample"
+
+tags: ["sample", "combined", "flowdock_fm"]
+
+# passing checkpoint path is necessary for sampling
+ckpt_path: ???
+
+# sampling arguments
+sampling_task: batched_structure_sampling # NOTE: must be one of (`batched_structure_sampling`)
+sample_id: null # optional identifier for the sampling run
+input_receptor: null # NOTE: must be either a protein sequence string (with chains separated by `|`) or a path to a PDB file (from which protein chain sequences will be parsed)
+input_ligand: null # NOTE: must be either a ligand SMILES string (with chains/fragments separated by `|`) or a path to a ligand SDF file (from which ligand SMILES will be parsed)
+input_template: null # path to a protein PDB file to use as a starting protein template for sampling (with an ESMFold prior model)
+out_path: ??? # path to which to save the output PDB and SDF files
+n_samples: 5 # number of structures to sample
+chunk_size: 5 # number of structures to concurrently sample within each batch segment - NOTE: `n_samples` should be evenly divisible by `chunk_size` to produce the expected number of outputs
+num_steps: 40 # number of sampling steps to perform
+latent_model: null # if provided, the type of latent model to use
+sampler: VDODE # sampling algorithm to use - NOTE: must be one of (`ODE`, `VDODE`)
+sampler_eta: 1.0 # the variance diminishing factor for the `VDODE` sampler - NOTE: offers a trade-off between exploration (1.0) and exploitation (> 1.0)
+start_time: "1.0" # time at which to start sampling
+max_chain_encoding_k: -1 # maximum number of chains to encode in the chain encoding
+exact_prior: false # whether to use the "ground-truth" binding site for sampling, if available
+prior_type: esmfold # the type of prior to use for sampling - NOTE: must be one of (`gaussian`, `harmonic`, `esmfold`)
+discard_ligand: false # whether to discard a given input ligand during sampling
+discard_sdf_coords: true # whether to discard the input ligand's 3D structure during sampling, if available
+detect_covalent: false # whether to detect covalent bonds between the input receptor and ligand
+use_template: true # whether to use the input protein template for sampling if one is provided
+separate_pdb: true # whether to save separate PDB files for each sampled structure instead of simply a single PDB file
+rank_outputs_by_confidence: true # whether to rank the sampled structures by estimated confidence
+plddt_ranking_type: ligand # the type of plDDT ranking to apply to generated samples - NOTE: must be one of (`protein`, `ligand`, `protein_ligand`)
+visualize_sample_trajectories: false # whether to visualize the generated samples' trajectories
+auxiliary_estimation_only: false # whether to only estimate auxiliary outputs (e.g., confidence, affinity) for the input (generated) samples (potentially derived from external sources)
+csv_path: null # if provided, the CSV file (with columns `id`, `input_receptor`, `input_ligand`, and `input_template`) from which to parse input receptors and ligands for sampling, overriding the `input_receptor` and `input_ligand` arguments in the process and ignoring the `input_template` for now
+esmfold_chunk_size: null # chunks axial attention computation to reduce memory usage from O(L^2) to O(L); equivalent to running a for loop over chunks of of each dimension; lower values will result in lower memory usage at the cost of speed; recommended values: 128, 64, 32
+
+# model arguments
+model:
+  cfg:
+    mol_encoder:
+      from_pretrained: false
+    protein_encoder:
+      from_pretrained: false
+    relational_reasoning:
+      from_pretrained: false
+    contact_predictor:
+      from_pretrained: false
+    score_head:
+      from_pretrained: false
+    confidence:
+      from_pretrained: false
+    affinity:
+      from_pretrained: false
+    task:
+      freeze_mol_encoder: true
+      freeze_protein_encoder: false
+      freeze_relational_reasoning: false
+      freeze_contact_predictor: false
+      freeze_score_head: false
+      freeze_confidence: true
+      freeze_affinity: false

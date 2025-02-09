@@ -68,6 +68,7 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
+    # load ID subset if requested
     pdb_ids = None
     if cfg.dataset == "posebusters_benchmark" and cfg.posebusters_ccd_ids_filepath is not None:
         assert os.path.exists(

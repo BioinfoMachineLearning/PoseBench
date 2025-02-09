@@ -34,6 +34,7 @@ def main(cfg: DictConfig):
     """
     pocket_suffix = "_bs_cropped" if cfg.pocket_only_baseline else ""
     pocket_only_suffix = "_pocket_only" if cfg.pocket_only_baseline else ""
+    max_num_inputs_suffix = f"_first_{cfg.max_num_inputs}" if cfg.max_num_inputs else ""
 
     os.environ["MKL_THREADING_LAYER"] = "GNU"  # address MKL threading issue
     protein_filepaths = find_protein_files(Path(cfg.input_data_dir + pocket_suffix))
@@ -106,7 +107,7 @@ def main(cfg: DictConfig):
                     "inference",
                     "outputs",
                     "results",
-                    f"{cfg.dataset}{pocket_only_suffix}_{ligand_filepath.stem}_{cfg.repeat_index}",
+                    f"{cfg.dataset}{pocket_only_suffix}{max_num_inputs_suffix}_{ligand_filepath.stem}_{cfg.repeat_index}",
                     "index0_idx_0",
                     "rank1_ligand*.sdf",
                 )
@@ -120,7 +121,7 @@ def main(cfg: DictConfig):
         unique_cache_id = uuid.uuid4()
         unique_cache_path = (
             str(cfg.cache_path)
-            + f"_{cfg.dataset}{pocket_only_suffix}_{ligand_filepath.stem}_{cfg.repeat_index}_{unique_cache_id}"
+            + f"_{cfg.dataset}{pocket_only_suffix}{max_num_inputs_suffix}_{ligand_filepath.stem}_{cfg.repeat_index}_{unique_cache_id}"
         )
         try:
             subprocess.run(
@@ -141,7 +142,7 @@ def main(cfg: DictConfig):
                     unique_cache_path,
                     "--header",
                     str(cfg.header)
-                    + f"{pocket_only_suffix}_{ligand_filepath.stem}"
+                    + f"{pocket_only_suffix}{max_num_inputs_suffix}_{ligand_filepath.stem}"
                     + f"_{cfg.repeat_index}",
                     "--device",
                     str(cfg.cuda_device_index),

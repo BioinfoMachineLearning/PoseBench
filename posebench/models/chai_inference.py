@@ -37,6 +37,7 @@ def run_chai_inference(fasta_file: str, cfg: DictConfig):
     try:
         run_inference(
             fasta_file=Path(fasta_file),
+            msa_directory=Path(cfg.msa_dir) if cfg.msa_dir else None,
             output_dir=Path(output_dir),
             # 'default' setup
             num_trunk_recycles=3,
@@ -60,10 +61,15 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
-    if cfg.pocket_only_baseline:
-        with open_dict(cfg):
+    with open_dict(cfg):
+        if cfg.pocket_only_baseline:
             cfg.input_dir = cfg.input_dir.replace(cfg.dataset, f"{cfg.dataset}_pocket_only")
             cfg.output_dir = cfg.output_dir.replace(cfg.dataset, f"{cfg.dataset}_pocket_only")
+
+        if cfg.max_num_inputs:
+            cfg.output_dir = cfg.output_dir.replace(
+                cfg.dataset, f"{cfg.dataset}_first_{cfg.max_num_inputs}"
+            )
 
     num_dir_items_found = 0
     for item in os.listdir(cfg.input_dir):
@@ -77,7 +83,7 @@ def main(cfg: DictConfig):
                 break
             if (
                 cfg.skip_existing
-                and os.path.exists(os.path.join(cfg.output_dir, item, "pred.model_idx_0.pdb"))
+                and os.path.exists(os.path.join(cfg.output_dir, item, "pred.model_idx_0.cif"))
                 and not os.path.exists(os.path.join(cfg.output_dir, item, "error_log.txt"))
             ):
                 logger.info(f"Skipping inference for `{item}` as output directory already exists.")
@@ -102,6 +108,8 @@ def main(cfg: DictConfig):
                 )
                 with open(os.path.join(cfg.output_dir, item, "error_log.txt"), "w") as f:
                     traceback.print_exception(type(e), e, e.__traceback__, file=f)
+
+    logger.info("Chai-1 inference complete.")
 
 
 if __name__ == "__main__":

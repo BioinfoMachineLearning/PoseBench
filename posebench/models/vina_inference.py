@@ -8,7 +8,6 @@ import os
 import shutil
 import tempfile
 from collections import defaultdict
-from pathlib import Path
 
 import hydra
 import numpy as np
@@ -26,6 +25,7 @@ rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
 from posebench import register_custom_omegaconf_resolvers
 from posebench.utils.data_utils import combine_molecules
+from posebench.utils.utils import run_command_with_timeout
 
 logging.basicConfig(format="[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -36,6 +36,8 @@ MEEKO_ATOM_TYPES_TO_ADD = (
     {"smarts": "[#27]", "atype": "Co"},
     {"smarts": "[#48]", "atype": "Cd"},
 )
+
+VINA_TIMEOUT_IN_SECONDS = 3600
 
 
 def scatter_mean(indices: np.ndarray, values: np.ndarray, shape: Tuple[int, ...]) -> np.ndarray:
@@ -355,7 +357,12 @@ def run_vina_inference(
             command.extend(["--seed", str(cfg.seed)])
         if cfg.exhaustiveness is not None:
             command.extend(["--exhaustiveness", str(cfg.exhaustiveness)])
-        os.system(" ".join(command))  # nosec
+        return_code = run_command_with_timeout(" ".join(command), timeout=VINA_TIMEOUT_IN_SECONDS)
+
+        if return_code != 0:
+            raise Exception(
+                f"AutoDock Vina failed for {ligand_filepaths} with return code: {return_code}."
+            )
 
         assert os.path.exists(output_filepath), f"Vina output file not found: {output_filepath}"
         output_filepaths.append(output_filepath)
@@ -426,10 +433,16 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
-    if cfg.pocket_only_baseline:
-        with open_dict(cfg):
+    with open_dict(cfg):
+        if cfg.pocket_only_baseline:
+            cfg.input_protein_structure_dir += "_bs_cropped"
             cfg.output_dir = cfg.output_dir.replace(
                 f"vina_{cfg.method}", f"vina_pocket_only_{cfg.method}"
+            )
+
+        if cfg.max_num_inputs:
+            cfg.output_dir = cfg.output_dir.replace(
+                f"_{cfg.method}", f"_{cfg.method}_first_{cfg.max_num_inputs}"
             )
 
     if cfg.protein_filepath and cfg.ligand_filepaths and cfg.apo_protein_filepath:
@@ -451,19 +464,24 @@ def main(cfg: DictConfig):
                 ligand_smiles_strings=ligand_smiles_strings,
                 cfg=cfg,
             )
+            group_output_filepaths = run_vina_inference(
+                cfg.apo_protein_filepath, ligand_binding_site_mapping, cfg.input_id, cfg
+            )
+            if group_output_filepaths is None:
+                logger.warning(
+                    f"AutoDock Vina inference failed for {cfg.ligand_filepaths}. Skipping..."
+                )
+                return
+            write_vina_outputs(
+                group_output_filepaths,
+                ligand_binding_site_mapping,
+                cfg.input_id,
+                len(ligand_filepaths),
+                cfg,
+            )
         except Exception as e:
             logger.warning(f"AutoDock Vina inference failed for {cfg.input_id} due to: {e}")
             raise e
-        group_output_filepaths = run_vina_inference(
-            cfg.apo_protein_filepath, ligand_binding_site_mapping, cfg.input_id, cfg
-        )
-        write_vina_outputs(
-            group_output_filepaths,
-            ligand_binding_site_mapping,
-            cfg.input_id,
-            len(ligand_filepaths),
-            cfg,
-        )
         logger.info(f"AutoDock Vina inference outputs written to `{cfg.output_dir}`.")
         return
     elif cfg.protein_filepath and not (cfg.ligand_filepaths or cfg.apo_protein_filepath):
@@ -478,10 +496,6 @@ def main(cfg: DictConfig):
         raise ValueError(
             "AutoDock Vina inference requires protein, ligand, and apo protein files as inputs."
         )
-
-    if cfg.pocket_only_baseline:
-        with open_dict(cfg):
-            cfg.input_protein_structure_dir += "_bs_cropped"
 
     assert os.path.exists(
         cfg.input_protein_structure_dir
@@ -528,7 +542,7 @@ def main(cfg: DictConfig):
             apo_protein_filepaths = glob.glob(
                 os.path.join(
                     cfg.input_protein_structure_dir,
-                    f"{item.replace('casp15_', '')}{'' if cfg.dataset == 'casp15' else '*_holo_aligned_predicted_protein'}.pdb",
+                    f"{item.replace('casp15_', '')}*holo_aligned_predicted_protein.pdb",
                 )
             )
             if not apo_protein_filepaths:
@@ -541,7 +555,7 @@ def main(cfg: DictConfig):
                 protein_filepaths = glob.glob(
                     os.path.join(
                         cfg.input_protein_structure_dir,
-                        f"{item}{'' if cfg.dataset == 'casp15' else '*_holo_aligned_predicted_protein'}.pdb",
+                        f"{item}*holo_aligned_predicted_protein.pdb",
                     )
                 )
                 ligand_filepath = os.path.join(item_path, "rank1.sdf")
@@ -603,7 +617,7 @@ def main(cfg: DictConfig):
                 protein_filepaths = glob.glob(
                     os.path.join(
                         cfg.input_protein_structure_dir,
-                        f"{item}{'' if cfg.dataset == 'casp15' else '*_holo_aligned_predicted_protein'}.pdb",
+                        f"{item}*holo_aligned_predicted_protein.pdb",
                     )
                 )
                 ligand_filepath = os.path.join(item_path, "rank1.sdf")
@@ -664,22 +678,22 @@ def main(cfg: DictConfig):
                     ligand_smiles_strings,
                     cfg,
                 )
+                group_output_filepaths = run_vina_inference(
+                    apo_protein_filepath, ligand_binding_site_mapping, item, cfg
+                )
+                if group_output_filepaths is None:
+                    logger.warning(f"AutoDock Vina inference failed for {item}. Skipping...")
+                    continue
+                write_vina_outputs(
+                    group_output_filepaths,
+                    ligand_binding_site_mapping,
+                    item,
+                    len(ligand_filepaths),
+                    cfg,
+                )
             except Exception as e:
                 logger.warning(f"AutoDock Vina inference failed for {item}. Skipping due to: {e}")
                 continue
-            group_output_filepaths = run_vina_inference(
-                apo_protein_filepath, ligand_binding_site_mapping, item, cfg
-            )
-            if group_output_filepaths is None:
-                logger.warning(f"AutoDock Vina inference failed for {item}. Skipping...")
-                continue
-            write_vina_outputs(
-                group_output_filepaths,
-                ligand_binding_site_mapping,
-                item,
-                len(ligand_filepaths),
-                cfg,
-            )
     logger.info(f"AutoDock Vina inference outputs written to `{cfg.output_dir}`.")
 
 

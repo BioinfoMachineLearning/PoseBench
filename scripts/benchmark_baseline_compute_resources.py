@@ -28,9 +28,9 @@ def assemble_baseline_command(cfg: DictConfig) -> List[str]:
     """
     if cfg.method in [
         "diffdock",
-        "fabind",
         "dynamicbind",
         "neuralplexer",
+        "flowdock",
         "rfaa",
         "chai-lab",
         "vina",

@@ -1,0 +1,3 @@
+dataset: pdbbind # the dataset to use - NOTE: must be one of (`pdbbind`, `moad`, `dockgen`, `pdbsidechain`)
+input_fasta_file: ${oc.env:PROJECT_ROOT}/data/${resolve_dataset_path_dirname:${dataset}}/${dataset}_sequences.fasta # the input FASTA file to modify
+output_fasta_file: ${oc.env:PROJECT_ROOT}/data/${resolve_dataset_path_dirname:${dataset}}/${dataset}_esmfold_sequences.fasta # the input FASTA file to modify

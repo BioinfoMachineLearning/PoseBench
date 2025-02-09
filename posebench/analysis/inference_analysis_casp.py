@@ -95,7 +95,6 @@ PUBLIC_CASP15_MULTI_LIGAND_TARGETS = [
 NUM_SCOREABLE_CASP15_TARGETS = len(All_CASP15_SINGLE_LIGAND_TARGETS) + len(
     All_CASP15_MULTI_LIGAND_TARGETS
 )
-TOLERANT_METHODS = ["diffdock", "dynamicbind", "vina", "tulip"]
 
 
 def create_casp_input_dirs(cfg: DictConfig, config: str) -> Tuple[str, List[str]]:
@@ -229,7 +228,7 @@ def main(cfg: DictConfig):
         os.makedirs(scoring_results_filepath.parent, exist_ok=True)
 
         # collect analysis results
-        if os.path.exists(scoring_results_filepath) and cfg.skip_existing:
+        if os.path.exists(scoring_results_filepath) and not cfg.force_rescore:
             logger.info(
                 f"{resolve_method_title(cfg.method)}{config} analysis results for inference directory `{output_dir}` already exist at `{scoring_results_filepath}`. Directly analyzing..."
             )
@@ -250,7 +249,7 @@ def main(cfg: DictConfig):
                 "DEBUG",
             ]
             targets_to_score = cfg.targets
-            if cfg.method in TOLERANT_METHODS:
+            if cfg.allow_missing_predictions:
                 # NOTE: Since e.g., DiffDock-L is notably unstable for the CASP15 multi-ligand
                 # targets, we only score the targets for which such a method was able to generate
                 # predictions after five retries of its respective inference script.
@@ -280,7 +279,7 @@ def main(cfg: DictConfig):
             )
 
         # collect bust results
-        if os.path.exists(bust_results_filepath) and cfg.skip_existing:
+        if os.path.exists(bust_results_filepath) and not cfg.force_rescore:
             logger.info(
                 f"{resolve_method_title(cfg.method)}{config} bust results for inference directory `{output_dir}` already exist at `{bust_results_filepath}`. Directly analyzing..."
             )

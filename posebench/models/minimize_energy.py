@@ -16,12 +16,11 @@ import os
 import shutil
 import sys
 from pathlib import Path
-from typing import Any
 
 import hydra
 import numpy as np
 import rootutils
-import timeout_decorator
+from beartype.typing import Any, Dict, Optional
 from Bio.PDB import MMCIFIO, PDBIO, MMCIFParser, PDBParser, Select
 from omegaconf import DictConfig
 from openff.toolkit.topology import Molecule
@@ -44,6 +43,7 @@ from rdkit.Chem.rdmolfiles import MolFromMolFile, MolToMolFile
 from rdkit.Chem.rdmolops import AddHs, RemoveHs
 from scipy.spatial.distance import cdist
 from scipy.spatial.transform import Rotation as R
+from wrapt_timeout_decorator import timeout
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
@@ -859,7 +859,7 @@ def save_with_rdkit(
     MolToMolFile(mol, str(file_path), confId=conformer_index)
 
 
-@timeout_decorator.timeout(OPTIMIZATION_TIMEOUT_IN_SECONDS, use_signals=False)
+@timeout(OPTIMIZATION_TIMEOUT_IN_SECONDS, use_signals=False)
 def optimize_ligand_in_pocket(
     protein_file: Path,
     ligand_file: Path,
@@ -879,7 +879,7 @@ def optimize_ligand_in_pocket(
     relax_protein: bool = False,
     remove_initial_protein_hydrogens: bool = False,
     assign_each_ligand_unique_force: bool = False,
-    model_ions: bool = False,
+    model_ions: bool = True,
     cache_files: bool = True,
     assign_partial_charges_manually: bool = False,
     report_initial_energy_only: bool = False,
@@ -1208,7 +1208,7 @@ def optimize_ligand_in_pocket(
     config_path="../../configs/model",
     config_name="minimize_energy.yaml",
 )
-def minimize_energy(cfg: DictConfig):
+def minimize_energy(cfg: DictConfig) -> Optional[Dict[str, Any]]:
     """Minimize the energy of a ligand in a protein pocket using OpenMM."""
     logger.setLevel(cfg.log_level)
 
@@ -1236,28 +1236,68 @@ def minimize_energy(cfg: DictConfig):
         shutil.copyfile(ligand_file_path, temp_ligand_file_path)
         logger.info("Performing iteration 0 of complex relaxation")
 
-    num_attempts = 0
-    results_dict = optimize_ligand_in_pocket(
-        protein_file=temp_protein_file_path,
-        ligand_file=temp_ligand_file_path,
-        output_file=output_file_path,
-        protein_output_file=protein_output_file_path,
-        complex_output_file=complex_output_file_path,
-        temp_dir=temp_directory,
-        prep_only=prep_only,
-        name=cfg.name,
-        platform_name=cfg.platform,
-        cuda_device_index=cfg.cuda_device_index,
-        add_solvent=cfg.add_solvent,
-        relax_protein=cfg.relax_protein,
-        remove_initial_protein_hydrogens=cfg.remove_initial_protein_hydrogens,
-        assign_each_ligand_unique_force=cfg.assign_each_ligand_unique_force,
-        report_initial_energy_only=cfg.report_initial_energy_only,
-        model_ions=cfg.model_ions,
-        cache_files=cfg.cache_files,
-        assign_partial_charges_manually=cfg.assign_partial_charges_manually,
-        tolerance=2.39 if cfg.relax_protein else 0.01,
-    )
+    try:
+        num_attempts = 0
+        results_dict = optimize_ligand_in_pocket(
+            protein_file=temp_protein_file_path,
+            ligand_file=temp_ligand_file_path,
+            output_file=output_file_path,
+            protein_output_file=protein_output_file_path,
+            complex_output_file=complex_output_file_path,
+            temp_dir=temp_directory,
+            prep_only=prep_only,
+            name=cfg.name,
+            platform_name=cfg.platform,
+            cuda_device_index=cfg.cuda_device_index,
+            add_solvent=cfg.add_solvent,
+            relax_protein=cfg.relax_protein,
+            remove_initial_protein_hydrogens=cfg.remove_initial_protein_hydrogens,
+            assign_each_ligand_unique_force=cfg.assign_each_ligand_unique_force,
+            report_initial_energy_only=cfg.report_initial_energy_only,
+            model_ions=cfg.model_ions,
+            cache_files=cfg.cache_files,
+            assign_partial_charges_manually=cfg.assign_partial_charges_manually,
+            tolerance=2.39 if cfg.relax_protein else 0.01,
+        )
+    except Exception as e:
+        logger.error(
+            f"Complex relaxation was not fully successful due to: {e}. Copying the input files as the relaxed output files."
+        )
+        # organize output files
+        shutil.copyfile(ligand_file_path, output_file_path)
+        try:
+            if complex_output_file_path is not None:
+                os.remove(complex_output_file_path)
+        except OSError:
+            pass
+
+        logger.info(f"Finalizing complex relaxation with relax_protein={cfg.relax_protein}")
+
+        if cfg.relax_protein:
+            # organize output files
+            shutil.copyfile(protein_file_path, protein_output_file_path)
+            # clean up temporary files
+            try:
+                os.remove(temp_protein_file_path)
+            except OSError:
+                pass
+            try:
+                os.remove(temp_ligand_file_path)
+            except OSError:
+                pass
+
+            temp_name = temp_protein_file_path.stem if cfg.name is None else cfg.name
+            try:
+                os.remove(temp_directory / f"{temp_name}_prepped_protein.pdb")
+            except OSError:
+                pass
+            try:
+                os.remove(temp_directory / f"{temp_name}_prepped_ligand.sdf")
+            except OSError:
+                pass
+
+        return None
+
     if prep_only:
         sys.exit(0)
 

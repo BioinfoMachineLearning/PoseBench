@@ -1,3 +1,29 @@
+### 0.6.0 - 02/09/2025
+
+**Additions**:
+
+- Added new baseline methods (AlphaFold 3, Chai-1 with multiple sequence alignments (MSAs))
+- Added new binding site-focused implementation of `complex_alignment.py` based on PyMOL's `align` command, which in many cases yields 3x better docking evaluation scores for baseline methods
+- Added new script for analyzing baseline methods' protein conformational changes w.r.t. input (e.g., AlphaFold) protein structures and the corresponding reference (crystal) protein structures
+- Added the new centroid RMSD and **PLIF-EMD/WM** metrics (n.b., see new arXiv preprint for more details)
+- Added a failure mode analysis notebook (n.b., see new arXiv preprint for more details)
+
+**Changes**:
+
+- Introducing **DockGen-E**, a new version of the DockGen benchmark dataset featuring enhanced biomolecular context for docking and co-folding predictions - namely, now all DockGen complexes represent the first (biologically relevant) bioassembly of the corresponding PDB structure
+- For the single-ligand datasets (i.e., Astex Diverse, PoseBusters Benchmark, and DockGen), now providing each baseline method with primary *and cofactor* ligand SMILES strings for prediction, to enhance the biomolecular context of these methods' predicted structures - as a result, for these single-ligand datasets, now the predicted ligand *most similar* to the primary ligand (in terms of both Tanimoto and structural similarity) is selected for scoring (which adds an additional layer of challenges for baseline methods)
+- Updated Chai-1's inference code to commit `44375d5d4ea44c0b5b7204519e63f40b063e4a7c`, and ran it also with standardized (paired) MSAs
+- Replaced all AlphaFold 3 server predictions of each dataset's protein structures with predictions from AlphaFold 3's local inference code
+
+**Deprecations**:
+
+- Pocket-only benchmarking has been deprecated
+
+**Results**:
+
+- With all the above changed in place, simplified, re-ran, and re-analyzed all baseline methods for each benchmark dataset, and updated the baseline predictions and datasets (now containing standardized MSAs) hosted on Zenodo
+- **NOTE**: The updated arXiv preprint should be publicly available by 02/12/2025
+
 ### 0.5.0 - 09/30/2024
 
 - Added results with AlphaFold 3 predicted structures (now the default)

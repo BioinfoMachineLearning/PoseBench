@@ -126,7 +126,7 @@ def rename_files_by_confidence(directory_path):
 def filename_sort_key(filepath):
     """Rank-by-rank, combines multi-ligand predictions into one SDF file each."""
     parts = filepath.split('/')
-    ligand_number = int(parts[-2].split('_')[1])
+    ligand_number = int(parts[-2].split('_')[-1])
     rank_number = int(os.path.splitext(parts[-1].split('_')[0].split("rank")[1])[0])
     return ligand_number, rank_number
 
@@ -192,10 +192,10 @@ else:
 # organize multi-ligand inputs by grouping complexes with multiple ligands together, predicting the ligand conformations separately, and then re-ranking and combining the ligands thereafter
 ligand_description_groups = [
     {
-        "ligand_descriptions": (ligand_description.split('|') if ligand_description is not None and '|' in ligand_description else [ligand_description]),
-        "complex_names": ([complex_names[i] + f'_{lig_idx}' for lig_idx in range(len(ligand_description.split('|')))] if ligand_description is not None and '|' in ligand_description else [complex_names[i]]),
-        "protein_paths": ([protein_paths[i] for _ in range(len(ligand_description.split('|')))] if ligand_description is not None and '|' in ligand_description else [protein_paths[i]]),
-        "protein_sequences": ([protein_sequences[i] for _ in range(len(ligand_description.split('|')))] if ligand_description is not None and '|' in ligand_description else [protein_sequences[i]]),
+        "ligand_descriptions": (ligand_description.split('.') if ligand_description is not None and '.' in ligand_description else [ligand_description]),
+        "complex_names": ([complex_names[i] + f'_{lig_idx}' for lig_idx in range(len(ligand_description.split('.')))] if ligand_description is not None and '.' in ligand_description else [complex_names[i]]),
+        "protein_paths": ([protein_paths[i] for _ in range(len(ligand_description.split('.')))] if ligand_description is not None and '.' in ligand_description else [protein_paths[i]]),
+        "protein_sequences": ([protein_sequences[i] for _ in range(len(ligand_description.split('.')))] if ligand_description is not None and '.' in ligand_description else [protein_sequences[i]]),
     } for i, ligand_description in enumerate(ligand_descriptions)
 ]
 for ligand_description_group in ligand_description_groups:
@@ -369,7 +369,11 @@ for ligand_description_group in ligand_description_groups:
             for filename in filenames:
                 first_valid_rank_filenames.append(None)
                 for current_rank in range(N):
-                    current_rank_filename = glob.glob(f'{args.out_dir}/{filename}/rank{current_rank+1}_*.sdf')[0]
+                    current_rank_filenames = glob.glob(f'{args.out_dir}/{filename}/rank{current_rank+1}_*.sdf')
+                    if not current_rank_filenames:
+                        print(f"Warning: Failed to find any valid rank {current_rank} SDF files for {filename} in `inference.py`. Skipping this rank...")
+                        continue
+                    current_rank_filename = current_rank_filenames[0]
                     sdf = Chem.SDMolSupplier(current_rank_filename)
                     assert len(sdf) == 1, "Each valid ranked SDF file must contain exactly one molecule."
                     mol = sdf[0]
@@ -378,7 +382,13 @@ for ligand_description_group in ligand_description_groups:
                         break
             # report the average confidence value across the group members
             for rank in range(N):
-                rank_filenames = sorted([glob.glob(f'{args.out_dir}/{filename}/rank{rank+1}_*.sdf')[0] for filename in filenames], key=filename_sort_key)
+                rank_filenames = []
+                for filename in filenames:
+                    rank_fns = glob.glob(f'{args.out_dir}/{filename}/rank{rank+1}_*.sdf')
+                    if not rank_fns:
+                        raise ValueError(f"Failed to find any rank {rank} SDF files for {filename} in `inference.py`. Skipping this complex...")
+                    rank_filenames.append(rank_fns[0])
+                rank_filenames = sorted(rank_filenames, key=filename_sort_key)
                 # ensure that all group members have a valid molecule at this rank
                 valid_rank_filenames = []
                 for filename_index, rank_filename in enumerate(rank_filenames):
@@ -401,7 +411,13 @@ for ligand_description_group in ligand_description_groups:
                 else:
                     shutil.move(rank_filenames[0], f'{write_dir}/rank{rank+1}_confidence{avg_confidence:.2f}.sdf')
                 if rank == 0:
-                    rank_filenames = sorted([f'{args.out_dir}/{filename}/rank{rank+1}.sdf' for filename in filenames], key=filename_sort_key)
+                    rank_filenames = []
+                    for filename in filenames:
+                        rank_fns = glob.glob(f'{args.out_dir}/{filename}/rank{rank+1}.sdf')
+                        if not rank_fns:
+                            raise ValueError(f"Failed to find a rank {rank} SDF file for {filename} in `inference.py`. Skipping this complex...")
+                        rank_filenames.append(rank_fns[0])
+                    rank_filenames = sorted(rank_filenames, key=filename_sort_key)
                     valid_rank_filenames = []
                     for filename_index, rank_filename in enumerate(rank_filenames):
                         sdf = Chem.SDMolSupplier(rank_filename)
@@ -428,5 +444,19 @@ for ligand_description_group in ligand_description_groups:
             for filename in filenames:
                 if os.path.exists(f'{args.out_dir}/{filename}') and os.path.isdir(f'{args.out_dir}/{filename}'):
                     shutil.rmtree(f'{args.out_dir}/{filename}', ignore_errors=True)
+
     except Exception as e:
         print(f"Failed on complex {complex_name_list[idx]} due to: {e}. Skipping...")
+
+        # clean up the individual output directories if the inference failed
+        group_member_names = defaultdict(list)
+        for idx in range(len(test_dataset)):
+            group_idx = complex_name_list[idx].split('_')[-1]
+            if is_int(group_idx):
+                group_name = complex_name_list[idx].rpartition("_")[0]
+                group_member_names[group_name].append(complex_name_list[idx])
+        for group_name, filenames in group_member_names.items():
+            # remove the individual (now-unused) file directories
+            for filename in filenames:
+                if os.path.exists(f'{args.out_dir}/{filename}') and os.path.isdir(f'{args.out_dir}/{filename}'):
+                    shutil.rmtree(f'{args.out_dir}/{filename}', ignore_errors=True)

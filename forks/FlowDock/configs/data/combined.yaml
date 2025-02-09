@@ -1,0 +1,100 @@
+_target_: flowdock.data.combined_datamodule.CombinedDataModule
+data_dir: ${paths.data_dir}
+train_datasets: ["pdbbind", "moad"] # NOTE: must be any non-empty combination of `("pdbbind", "moad", "pdbsidechain")`
+test_datasets: ["pdbbind", "moad"] # NOTE: must be any non-empty combination of `("pdbbind", "moad")`
+batch_size: 16 # Needs to be divisible by the number of devices (e.g., if in a distributed setup)
+num_workers: 4
+pin_memory: True
+# overfitting arguments
+overfitting_example_name: null # NOTE: if specified, only this example will be used during model overfitting
+# model arguments
+n_protein_patches: 96
+n_lig_patches: 32
+epoch_frac: 1.0
+edge_crop_size: 400000
+# split arguments
+split_train: ${paths.data_dir}/splits/timesplit_no_lig_overlap_train
+split_val: ${paths.data_dir}/splits/timesplit_no_lig_overlap_val
+split_test: ${paths.data_dir}/splits/timesplit_test
+split_time: ${paths.data_dir}/splits/pdbids_2019
+double_val: false
+# general dataset arguments
+cache_path: ${paths.data_dir}/cache
+limit_complexes: 0
+all_atoms: false
+max_lig_size: null
+min_multi_lig_distance: 0.5 # NOTE: measured in Angstrom
+remove_hs: true
+esm_embeddings_model: null
+include_miscellaneous_atoms: false
+train_multiplicity: 1
+val_multiplicity: 1
+max_receptor_size: null
+remove_promiscuous_targets: null
+min_ligand_size: 0
+unroll_clusters: false # NOTE: this value affects MOAD training and validation splits, but the MOAD test split is always unrolled to support DockGen
+enforce_timesplit: true
+merge_clusters: 1
+crop_beyond: 20
+protein_file: protein_processed
+ligand_file: ligand
+min_protein_length: 50
+max_protein_length: 750
+# PDBBind dataset arguments
+pdbbind_dir: ${paths.data_dir}/pdbbind/PDBBind_processed
+pdbbind_esm_embeddings_path: ${paths.data_dir}/pdbbind/embeddings_output
+pdbbind_apo_protein_structure_dir: ${paths.data_dir}/pdbbind/pdbbind_holo_aligned_esmfold_structures
+pdbbind_split_train: ${paths.data_dir}/splits/timesplit_no_lig_overlap_train
+pdbbind_split_val: ${paths.data_dir}/splits/timesplit_no_lig_overlap_val
+pdbbind_a2h_assessment_csv_filepath: ${paths.data_dir}/pdbbind/pdbbind_apo_to_holo_assessment.csv
+pdbbind_filter_using_a2h_assessment: true # if `pdbbind_a2h_assessment_csv_filepath` is provided, filter the dataset using the assessment
+pdbbind_a2h_min_tmscore: 0.7
+pdbbind_a2h_max_rmsd: 5.0
+pdbbind_a2h_min_protein_length: 50
+pdbbind_a2h_max_protein_length: 750
+pdbbind_a2h_min_ligand_length: 1
+pdbbind_a2h_max_ligand_length: 300
+pdbbind_binding_affinity_values_path: ${paths.data_dir}/pdbbind/pdbbind_binding_affinity_data/binding_affinity_values.txt # path to the text file containing PDBBind's binding affinity values
+# Binding MOAD dataset arguments
+moad_dir: ${paths.data_dir}/moad/BindingMOAD_2020_processed
+moad_dockgen_dir: ${paths.data_dir}/DockGen/processed_files
+moad_esm_embeddings_path: ${paths.data_dir}/moad/embeddings_output
+moad_dockgen_esm_embeddings_path: ${paths.data_dir}/DockGen/embeddings_output
+moad_esm_embeddings_sequences_path: ${paths.data_dir}/moad/moad_sequences.fasta
+moad_dockgen_esm_embeddings_sequences_path: ${paths.data_dir}/DockGen/dockgen_sequences.fasta
+moad_apo_protein_structure_dir: ${paths.data_dir}/moad/moad_holo_aligned_esmfold_structures
+moad_dockgen_apo_protein_structure_dir: ${paths.data_dir}/DockGen/dockgen_holo_aligned_esmfold_structures
+moad_clusters_filepath: ${paths.data_dir}/splits/MOAD_generalisation_splits.pkl
+moad_a2h_assessment_csv_filepath: ${paths.data_dir}/moad/moad_apo_to_holo_assessment.csv
+moad_dockgen_a2h_assessment_csv_filepath: ${paths.data_dir}/DockGen/dockgen_apo_to_holo_assessment.csv
+moad_filter_using_a2h_assessment: true # if `moad_a2h_assessment_csv_filepath` is provided, filter the dataset using the assessment
+moad_a2h_min_tmscore: 0.7
+moad_a2h_max_rmsd: 5.0
+moad_a2h_min_protein_length: 50
+moad_a2h_max_protein_length: 750
+moad_a2h_min_ligand_length: 1
+moad_a2h_max_ligand_length: 300
+remove_pdbbind: false
+moad_binding_affinity_values_path: ${paths.data_dir}/moad/moad_binding_affinity_data/binding_affinity_values.txt # path to the text file containing Binding MOAD's binding affinity values
+moad_map_binding_affinities_to_superligands: false # if `true`, map experimental binding affinities to the preprocessed Binding MOAD superligands in a potentially-noisy manner (i.e., this mapping may not always be correct)
+# van der Mers dataset arguments
+pdbsidechain_dir: ${paths.data_dir}/pdbsidechain/pdb_2021aug02
+pdbsidechain_esm_embeddings_path: ${paths.data_dir}/pdbsidechain/embeddings_output
+pdbsidechain_esm_embeddings_sequences_path: ${paths.data_dir}/pdbsidechain/pdbsidechain_sequences.fasta
+pdbsidechain_apo_protein_structure_dir: ${paths.data_dir}/pdbsidechain/pdbsidechain_holo_aligned_esmfold_structures
+pdbsidechain_metadata_dir: ${paths.data_dir}/pdbsidechain
+pdbsidechain_a2h_assessment_csv_filepath: ${paths.data_dir}/pdbsidechain/pdbsidechain_apo_to_holo_assessment.csv
+pdbsidechain_filter_using_a2h_assessment: true # if `pdbsidechain_a2h_assessment_csv_filepath` is provided, filter the dataset using the assessment
+pdbsidechain_a2h_min_tmscore: 0.8
+pdbsidechain_a2h_max_rmsd: 4.0
+pdbsidechain_a2h_min_protein_length: 50
+pdbsidechain_a2h_max_protein_length: 750
+pdbsidechain_postprocess_min_protein_length: 100
+pdbsidechain_postprocess_max_protein_length: 400
+vandermers_max_dist: 5.0
+vandermers_buffer_residue_num: 7
+vandermers_min_contacts: 5
+vandermers_max_surrogate_binding_affinity: 15.0
+vandermers_second_ligand_max_closeness: 10.0
+vandermers_extract_second_ligand: false
+vandermers_use_prob_as_surrogate_binding_affinity: false

@@ -1,0 +1,38 @@
+python_exec_path: ${oc.env:PROJECT_ROOT}/forks/FlowDock/FlowDock/bin/python3 # the Python executable to use
+flowdock_exec_dir: ${oc.env:PROJECT_ROOT}/forks/FlowDock # the FlowDock directory in which to execute the inference scripts
+dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
+input_csv_path: ${oc.env:PROJECT_ROOT}/forks/FlowDock/inference/flowdock_${dataset}_inputs.csv # the input CSV filepath to which parsed input data has been written
+skip_existing: true # whether to skip existing predictions
+sampling_task: batched_structure_sampling # the task to run - NOTE: must be one of (`batched_structure_sampling`)
+sample_id: 0 # the sample ID to use for inference
+input_receptor: null # NOTE: must be either a protein sequence string (with chains separated by `|`) or a path to a PDB file (from which protein chain sequences will be parsed)
+input_ligand: null # NOTE: must be either a ligand SMILES string (with chains/fragments separated by `|`) or a path to a ligand SDF file (from which ligand SMILES will be parsed)
+input_template: null # path to a protein PDB file to use as a starting protein template for sampling (with an ESMFold prior model)
+cuda_device_index: 0 # the CUDA device to use for inference, or `null` to use CPU
+model_checkpoint: ${oc.env:PROJECT_ROOT}/forks/FlowDock/checkpoints/esmfold_prior_paper_weights.ckpt # the model checkpoint to use for inference
+out_path: ${oc.env:PROJECT_ROOT}/forks/FlowDock/inference/flowdock_${dataset}_outputs_${repeat_index} # the output directory to which to write the predictions
+n_samples: 5 # the number of conformations to generate per complex
+chunk_size: 5 # the number of conformations to generate in parallel per complex
+num_steps: 40 # the number of steps to take in the sampling process
+latent_model: null # which type of latent model to use - NOTE: must be one of (`null`)
+sampler: VDODE # sampling algorithm to use - NOTE: must be one of (`ODE`, `VDODE`)
+sampler_eta: 1.0 # the variance diminishing factor for the `VDODE` sampler - NOTE: offers a trade-off between exploration (1.0) and exploitation (> 1.0)
+start_time: "1.0" # the start time at which to start sampling - NOTE: must be a string representation of a float
+max_chain_encoding_k: -1 # the maximum chain encoding `k` to use
+exact_prior: false # whether to use the exact prior
+prior_type: esmfold # the type of prior to use for sampling - NOTE: must be one of (`gaussian`, `harmonic`, `esmfold`)
+discard_ligand: false # whether to discard the ligand
+discard_sdf_coords: true # whether to discard the SDF coordinates
+detect_covalent: false # whether to detect covalent bonds
+use_template: true # whether to use the input template protein structure
+separate_pdb: true # whether to separate the predicted protein structures into dedicated PDB files
+rank_outputs_by_confidence: true # whether to rank the output conformations, by default, by ligand confidence (if available) and by protein confidence otherwise
+plddt_ranking_type: ligand # the type of plDDT ranking to apply to generated samples - NOTE: must be one of (`protein`, `ligand`, `protein_ligand`)
+visualize_sample_trajectories: false # whether to visualize the generated samples' trajectories
+auxiliary_estimation_only: false # whether to only estimate auxiliary outputs (e.g., confidence, affinity) for the input (generated) samples (potentially derived from external sources)
+auxiliary_estimation_input_dir: null # if provided, an input directory of PDB-SDF file pairs (potentially derived from external sources) for which to estimate auxiliary outputs (e.g., confidence, affinity) and represent the outputs as a rank-ordered CSV file within the same directory
+csv_path: null # the CSV filepath from which to parse benchmarking input data
+esmfold_chunk_size: null # chunks axial attention computation to reduce memory usage from O(L^2) to O(L); equivalent to running a for loop over chunks of of each dimension; lower values will result in lower memory usage at the cost of speed; recommended values: 128, 64, 32
+repeat_index: 1 # the repeat index to use for inference
+pocket_only_baseline: false # whether to run the pocket-only baseline
+max_num_inputs: null # if provided, the number of (dataset subset) inputs over which to run inference

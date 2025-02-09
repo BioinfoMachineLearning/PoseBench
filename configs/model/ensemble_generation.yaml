@@ -1,5 +1,5 @@
 # General inference arguments:
-ensemble_methods: [diffdock, dynamicbind, neuralplexer, rfaa] # the methods from which to gather predictions for ensembling - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `rfaa`, `chai-lab`, `vina`, `tulip`)
+ensemble_methods: [diffdock, dynamicbind, neuralplexer, rfaa] # the methods from which to gather predictions for ensembling - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `flowdock`, `rfaa`, `chai-lab`, `alphafold3`, `vina`, `tulip`)
 generate_vina_scripts: false # whether to generate Vina scripts using other methods' binding site predictions - NOTE: `resume` must also be `true` when this is `true`, meaning other methods' predictions must have already been generated locally
 rank_single_method_intrinsically: true # whether to rank single-method predictions using either `consensus` or `vina` ranking (false) or instead using their intrinsic (explicit) rank assignment (true)
 output_bash_file_dir: ensemble_generation_scripts # the directory in which to save the generated Bash scripts
@@ -10,7 +10,7 @@ structure_prediction_script_path: ${oc.env:PROJECT_ROOT}/posebench/data/componen
 structure_prediction_chunk_size: null # optional chunk size to use during ESMFold structure prediction to reduce memory requirements
 structure_prediction_cpu_only: false # whether to only use CPU for structure prediction
 structure_prediction_cpu_offload: false # whether to offload structure prediction to CPU
-max_method_predictions: 40 # maximum number of predictions to make with each method
+max_method_predictions: 5 # maximum number of predictions to make with each method
 method_top_n_to_select: 3 # number of top-ranked predictions to select from each method for subsequent ranking
 skip_existing: false # whether to skip existing ensemble predictions
 relax_method_ligands_pre_ranking: false # whether to relax the predicted ligands (method-specifically) before ranking
@@ -30,7 +30,7 @@ relax_max_num_attempts: 5 # when relaxing the protein, maximum number of relaxat
 relax_num_processes: 1 # number of processes to use for relaxation
 relax_skip_existing: false # whether to skip existing relaxation results
 resume: false # whether to resume from a previous run after generating and manually running each method's prediction script
-input_dir: null # optional path to the directory from which to load the ensemble predictions to rank - NOTE: currently, only `neuralplexer` makes use of this for inference output parsing
+input_dir: null # optional path to the directory from which to load the ensemble predictions to rank - NOTE: currently, only `neuralplexer` and `flowdock` make use of this for inference output parsing
 output_dir: ${oc.env:PROJECT_ROOT}/data/test_cases/5S8I_2LY/top_${ensemble_ranking_method}_ensemble_predictions # path to the directory to save the top-ranked ensemble predictions
 export_file_format: casp15 # the (optional) format (i.e., `casp15`) in which to export top-ranked predictions
 export_top_n: 5 # number of top-ranked predictions to export in CASP format
@@ -54,7 +54,7 @@ diffdock_model_dir: ${oc.env:PROJECT_ROOT}/forks/DiffDock/workdir/v1.1/score_mod
 diffdock_confidence_model_dir: ${oc.env:PROJECT_ROOT}/forks/DiffDock/workdir/v1.1/confidence_model # the directory in which the trained confidence model is saved
 diffdock_inference_steps: 20 # the maximum number of inference (reverse diffusion) steps to run
 diffdock_samples_per_complex: ${max_method_predictions} # the number of samples to generate per complex
-diffdock_batch_size: 10 # the batch size to use for inference
+diffdock_batch_size: 5 # the batch size to use for inference
 diffdock_actual_steps: 19 # the actual number of inference steps to run (i.e., after how many steps to halt the reverse diffusion process)
 diffdock_no_final_step_noise: true # whether to disable the final inference step's noise from being added
 diffdock_skip_existing: true # whether to skip existing predictions
@@ -65,7 +65,7 @@ dynamicbind_exec_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind # the DynamicBind
 dynamicbind_dataset: ensemble # the dataset to use for inference - NOTE: must be one of (`ensemble`)
 dynamicbind_input_protein_data_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind/inference/ensemble_predicted_structures # the input protein-ligand complex directory to recursively parse for protein inputs
 dynamicbind_input_ligand_csv_dir: ${oc.env:PROJECT_ROOT}/forks/DynamicBind/inference/dynamicbind_ensemble_inputs # the input CSV directory with which to run inference
-dynamicbind_samples_per_complex: 40 # the number of samples to generate per complex
+dynamicbind_samples_per_complex: ${max_method_predictions} # the number of samples to generate per complex
 dynamicbind_savings_per_complex: 1 # the (top-N) number of sample visualizations to save per complex
 dynamicbind_inference_steps: 20 # the number of inference steps to run for each complex
 dynamicbind_batch_size: 5 # the batch size to use for inference
@@ -84,8 +84,8 @@ neuralplexer_sample_id: 0 # the sample ID to use for inference
 neuralplexer_template_id: 0 # the template ID to use for inference
 neuralplexer_model_checkpoint: ${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/neuralplexermodels_downstream_datasets_predictions/models/complex_structure_prediction.ckpt # the model checkpoint to use for inference
 neuralplexer_out_path: ${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/inference/neuralplexer_ensemble_outputs # the output directory to which to write the predictions
-neuralplexer_n_samples: 40 # the number of conformations to generate per complex
-neuralplexer_chunk_size: 10 # the number of conformations to generate in parallel per complex
+neuralplexer_n_samples: ${max_method_predictions} # the number of conformations to generate per complex
+neuralplexer_chunk_size: 5 # the number of conformations to generate in parallel per complex
 neuralplexer_num_steps: 40 # the number of steps to take in the sampling process
 neuralplexer_sampler: langevin_simulated_annealing # the sampler to use - NOTE: must be one of (`DDIM`, `VPSDE`, `simulated_annealing_simple`, `langevin_simulated_annealing`)
 neuralplexer_start_time: "1.0" # the start time at which to start sampling - NOTE: must be a string representation of a float
@@ -99,6 +99,42 @@ neuralplexer_separate_pdb: true # whether to separate the predicted protein stru
 neuralplexer_rank_outputs_by_confidence: true # whether to rank the output conformations, by default, by ligand confidence (if available) and by protein confidence otherwise
 neuralplexer_plddt_ranking_type: ligand # the type of plDDT ranking to apply to generated samples - NOTE: must be one of (`protein`, `ligand`, `protein_ligand`)
 neuralplexer_no_ilcl: false # whether to score the NeuralPLexer weights trained without an inter-ligand clash loss (ILCL)
+# FlowDock inference arguments:
+flowdock_python_exec_path: ${oc.env:PROJECT_ROOT}/forks/FlowDock/FlowDock/bin/python3 # the Python executable to use
+flowdock_exec_dir: ${oc.env:PROJECT_ROOT}/forks/FlowDock # the FlowDock directory in which to execute the inference scripts
+flowdock_input_data_dir: null # the input protein-ligand complex directory to recursively parse
+flowdock_input_receptor_structure_dir: null # if not `null`, the input template protein structure directory to parse
+flowdock_input_csv_path: ${oc.env:PROJECT_ROOT}/forks/FlowDock/inference/flowdock_ensemble_inputs.csv # the input CSV filepath to which parsed input data has been written
+flowdock_skip_existing: true # whether to skip existing predictions
+flowdock_sampling_task: batched_structure_sampling # the task to run - NOTE: must be one of (`batched_structure_sampling`)
+flowdock_sample_id: 0 # the sample ID to use for inference
+flowdock_input_receptor: null # NOTE: must be either a protein sequence string (with chains separated by `|`) or a path to a PDB file (from which protein chain sequences will be parsed)
+flowdock_input_ligand: null # NOTE: must be either a ligand SMILES string (with chains/fragments separated by `|`) or a path to a ligand SDF file (from which ligand SMILES will be parsed)
+flowdock_input_template: null # path to a protein PDB file to use as a starting protein template for sampling (with an ESMFold prior model)
+flowdock_model_checkpoint: ${oc.env:PROJECT_ROOT}/forks/FlowDock/checkpoints/esmfold_prior_paper_weights.ckpt # the model checkpoint to use for inference
+flowdock_out_path: ${oc.env:PROJECT_ROOT}/forks/FlowDock/inference/flowdock_ensemble_outputs # the output directory to which to write the predictions
+flowdock_n_samples: 5 # the number of conformations to generate per complex
+flowdock_chunk_size: 5 # the number of conformations to generate in parallel per complex
+flowdock_num_steps: 40 # the number of steps to take in the sampling process
+flowdock_latent_model: null # which type of latent model to use - NOTE: must be one of (`null`)
+flowdock_sampler: VDODE # sampling algorithm to use - NOTE: must be one of (`ODE`, `VDODE`)
+flowdock_sampler_eta: 1.0 # the variance diminishing factor for the `VDODE` sampler - NOTE: offers a trade-off between exploration (1.0) and exploitation (> 1.0)
+flowdock_start_time: "1.0" # the start time at which to start sampling - NOTE: must be a string representation of a float
+flowdock_max_chain_encoding_k: -1 # the maximum chain encoding `k` to use
+flowdock_exact_prior: false # whether to use the exact prior
+flowdock_prior_type: esmfold # the type of prior to use for sampling - NOTE: must be one of (`gaussian`, `harmonic`, `esmfold`)
+flowdock_discard_ligand: false # whether to discard the ligand
+flowdock_discard_sdf_coords: true # whether to discard the SDF coordinates
+flowdock_detect_covalent: false # whether to detect covalent bonds
+flowdock_use_template: true # whether to use the input template protein structure
+flowdock_separate_pdb: true # whether to separate the predicted protein structures into dedicated PDB files
+flowdock_rank_outputs_by_confidence: true # whether to rank the output conformations, by default, by ligand confidence (if available) and by protein confidence otherwise
+flowdock_plddt_ranking_type: ligand # the type of plDDT ranking to apply to generated samples - NOTE: must be one of (`protein`, `ligand`, `protein_ligand`)
+flowdock_visualize_sample_trajectories: false # whether to visualize the generated samples' trajectories
+flowdock_auxiliary_estimation_only: false # whether to only estimate auxiliary outputs (e.g., confidence, affinity) for the input (generated) samples (potentially derived from external sources)
+flowdock_auxiliary_estimation_input_dir: null # if provided, an input directory of PDB-SDF file pairs (potentially derived from external sources) for which to estimate auxiliary outputs (e.g., confidence, affinity) and represent the outputs as a rank-ordered CSV file within the same directory
+flowdock_csv_path: null # the CSV filepath from which to parse benchmarking input data
+flowdock_esmfold_chunk_size: null # chunks axial attention computation to reduce memory usage from O(L^2) to O(L); equivalent to running a for loop over chunks of of each dimension; lower values will result in lower memory usage at the cost of speed; recommended values: 128, 64, 32
 # RoseTTAFold-All-Atom inference arguments:
 rfaa_python_exec_path: ${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/RFAA/bin/python3 # the Python executable to use
 rfaa_exec_dir: ${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom # the RoseTTAFold-All-Atom directory in which to execute the inference scripts
@@ -110,8 +146,10 @@ rfaa_inference_dir_name: null # the name of the inference output directory to us
 # Chai-1 inference arguments:
 chai_out_path: ${oc.env:PROJECT_ROOT}/forks/chai-lab/inference/chai-lab_ensemble_outputs # the output directory to which to write the predictions
 chai_skip_existing: true # whether to skip running inference if the prediction for a target already exists
+# AlphaFold 3 inference arguments:
+alphafold3_out_path: ${oc.env:PROJECT_ROOT}/forks/alphafold3/inference/alphafold3_ensemble_outputs # the output directory to which to write the predictions
 # Vina inference arguments:
-vina_binding_site_methods: [diffdock, p2rank] # the methods to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `p2rank`)
+vina_binding_site_methods: [p2rank] # the methods to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `flowdock`, `p2rank`)
 vina_python2_exec_path: ${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/bin/python # the path to the Python 2 executable
 vina_prepare_receptor_script_path: ${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/CCSBpckgs/AutoDockTools/Utilities24/prepare_receptor4.py # the path to the prepare_receptor.py script
 vina_output_dir: ${oc.env:PROJECT_ROOT}/forks/Vina/inference/vina_ensemble_outputs # the output directory to which to save the inference results

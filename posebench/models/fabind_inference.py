@@ -34,8 +34,8 @@ def main(cfg: DictConfig):
         else cfg.input_csv_path
     )
 
-    if cfg.pocket_only_baseline:
-        with open_dict(cfg):
+    with open_dict(cfg):
+        if cfg.pocket_only_baseline:
             cfg.save_mols_dir = cfg.save_mols_dir.replace(
                 f"fabind_{cfg.dataset}", f"fabind_pocket_only_{cfg.dataset}"
             )
@@ -44,6 +44,11 @@ def main(cfg: DictConfig):
             )
             cfg.output_dir = cfg.output_dir.replace(
                 f"fabind_{cfg.dataset}", f"fabind_pocket_only_{cfg.dataset}"
+            )
+
+        if cfg.max_num_inputs:
+            cfg.output_dir = cfg.output_dir.replace(
+                f"_{cfg.dataset}", f"_first_{cfg.max_num_inputs}_{cfg.dataset}"
             )
 
     assert os.path.exists(input_csv_path), f"Input CSV file `{input_csv_path}` not found."

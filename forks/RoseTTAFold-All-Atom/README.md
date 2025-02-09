@@ -74,7 +74,7 @@ tar xfz bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt.tar.gz -C ./bfd
 wget https://files.ipd.uw.edu/pub/RoseTTAFold/pdb100_2021Mar03.tar.gz
 tar xfz pdb100_2021Mar03.tar.gz
 ```
-**NOTE:** Make sure to update `DB_UR30` and `DB_BFD` (on Lines 19 and 20 of `make_msa.sh`) as well as `database_params.hhdb` (on Line 6 of `rf2aa/config/inference/base.yaml`) to list the absolute (base) paths to these respective local databases. For example, one may set these values to `DB_UR30="/bmlfast/rfaa_databases/uniref30/UniRef30_2020_06"`, `DB_BFD="/bmlfast/rfaa_databases/bfd/bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt"`, and `hhdb: "/bmlfast/rfaa_databases/pdb100_2021Mar03/pdb100_2021Mar03"`.
+**NOTE:** Make sure to update `DB_UR30` and `DB_BFD` (on Lines 19 and 20 of `make_msa.sh`) as well as `database_params.hhdb` (on Line 6 of `rf2aa/config/inference/base.yaml`) to list the absolute (base) paths to these respective local databases. For example, one may set these values to `DB_UR30="/cluster/pixstor/chengji-lab/bml_casp16/tools/rfaa_databases_multicom3/uniref30/UniRef30_2020_06"`, `DB_BFD="/cluster/pixstor/chengji-lab/bml_casp16/tools/rfaa_databases_multicom3/bfd/bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt"`, and `hhdb: "/cluster/pixstor/chengji-lab/bml_casp16/tools/rfaa_databases_multicom3/pdb100_2021Mar03/pdb100_2021Mar03"`.
 
 8. Download `BLAST` [39M]
 ```

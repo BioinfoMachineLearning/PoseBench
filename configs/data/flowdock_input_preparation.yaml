@@ -1,0 +1,11 @@
+dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
+input_data_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set # the input protein-ligand complex directory to recursively parse
+input_receptor_structure_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_predicted_structures # if not `null`, the input template protein structure directory to parse
+output_csv_path: ${oc.env:PROJECT_ROOT}/forks/FlowDock/inference/flowdock_${dataset}_inputs.csv # the output CSV filepath to which to write the parsed input data
+posebusters_ccd_ids_filepath: ${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt # the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts
+dockgen_test_ids_filepath: ${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt # the path to the DockGen test set IDs file
+input_receptor: null # the input protein sequence
+input_ligand: null # the input ligand SMILES
+input_template: null # the input template protein structure to optionally use
+input_id: null # the input ID to use for inference
+pocket_only_baseline: false # whether to prepare the pocket-only baseline

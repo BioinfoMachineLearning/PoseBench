@@ -1,0 +1,6 @@
+dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
+posebusters_ccd_ids_filepath: ${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt # the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts
+dockgen_test_ids_filepath: ${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt # the path to the DockGen test set IDs file
+data_dir: ${oc.env:PROJECT_ROOT}/data/${dataset}_set # where the processed datasets (e.g., PoseBusters Benchmark) are placed
+out_file: ${oc.env:PROJECT_ROOT}/data/${dataset}_set/reference_${dataset}_sequences.fasta # the output FASTA file to produce
+include_all_biomolecules: false # instead of just protein chains, whether to include FASTA entries for each type of biomolecule chain (e.g., protein, ligand) in the PDB file

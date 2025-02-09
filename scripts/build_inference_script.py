@@ -35,8 +35,8 @@ COMMANDS = {
             "python3 posebench/analysis/inference_analysis.py method=diffdock dataset={dataset} pocket_only_baseline={pocket_only_baseline} v1_baseline={v1_baseline} relax_protein={relax_protein} repeat_index={repeat_index}",
         ],
         "assemble_casp15": [
-            "python3 posebench/models/ensemble_generation.py ensemble_methods=[diffdock] ensemble_ranking_method={ensemble_ranking_method} diffdock_v1_baseline={v1_baseline} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_diffdock_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
-            "python3 posebench/models/ensemble_generation.py ensemble_methods=[diffdock] ensemble_ranking_method={ensemble_ranking_method} diffdock_v1_baseline={v1_baseline} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_diffdock_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[diffdock] ensemble_ranking_method={ensemble_ranking_method} diffdock_v1_baseline={v1_baseline} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_diffdock_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[diffdock] ensemble_ranking_method={ensemble_ranking_method} diffdock_v1_baseline={v1_baseline} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_diffdock_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
         ],
         "analyze_casp15": [
             "python3 posebench/analysis/inference_analysis_casp.py method=diffdock dataset=casp15 relax_protein={relax_protein} v1_baseline={v1_baseline} repeat_index={repeat_index}",
@@ -70,8 +70,8 @@ COMMANDS = {
             "python3 posebench/analysis/inference_analysis.py method=dynamicbind dataset={dataset} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} repeat_index={repeat_index}",
         ],
         "assemble_casp15": [
-            "python3 posebench/models/ensemble_generation.py ensemble_methods=[dynamicbind] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_dynamicbind_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
-            "python3 posebench/models/ensemble_generation.py ensemble_methods=[dynamicbind] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_dynamicbind_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[dynamicbind] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_dynamicbind_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[dynamicbind] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_dynamicbind_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
         ],
         "analyze_casp15": [
             "python3 posebench/analysis/inference_analysis_casp.py method=dynamicbind dataset=casp15 relax_protein={relax_protein} repeat_index={repeat_index}",
@@ -88,17 +88,45 @@ COMMANDS = {
             "python3 posebench/models/inference_relaxation.py method=neuralplexer dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
         ],
         "align_complexes": [
+            "conda activate PyMOL-PoseBench",
             "python3 posebench/analysis/complex_alignment.py method=neuralplexer dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+            "conda deactivate",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=neuralplexer dataset={dataset} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} repeat_index={repeat_index}",
         ],
         "assemble_casp15": [
-            "python3 posebench/models/ensemble_generation.py ensemble_methods=[neuralplexer] ensemble_ranking_method={ensemble_ranking_method} neuralplexer_no_ilcl={no_ilcl} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_neuralplexer_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
-            "python3 posebench/models/ensemble_generation.py ensemble_methods=[neuralplexer] ensemble_ranking_method={ensemble_ranking_method} neuralplexer_no_ilcl={no_ilcl} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_neuralplexer_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[neuralplexer] ensemble_ranking_method={ensemble_ranking_method} neuralplexer_no_ilcl={no_ilcl} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_neuralplexer_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[neuralplexer] ensemble_ranking_method={ensemble_ranking_method} neuralplexer_no_ilcl={no_ilcl} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_neuralplexer_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
         ],
         "analyze_casp15": [
             "python3 posebench/analysis/inference_analysis_casp.py method=neuralplexer dataset=casp15 no_ilcl={no_ilcl} relax_protein={relax_protein} repeat_index={repeat_index}",
+        ],
+    },
+    "flowdock": {
+        "prepare_input": [
+            "python3 posebench/data/flowdock_input_preparation.py dataset={dataset} pocket_only_baseline={pocket_only_baseline}",
+        ],
+        "run_inference": [
+            "python3 posebench/models/flowdock_inference.py dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+        ],
+        "relax": [
+            "python3 posebench/models/inference_relaxation.py method=flowdock dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
+        ],
+        "align_complexes": [
+            "conda activate PyMOL-PoseBench",
+            "python3 posebench/analysis/complex_alignment.py method=flowdock dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+            "conda deactivate",
+        ],
+        "analyze_results": [
+            "python3 posebench/analysis/inference_analysis.py method=flowdock dataset={dataset} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} repeat_index={repeat_index}",
+        ],
+        "assemble_casp15": [
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[flowdock] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_flowdock_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[flowdock] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_flowdock_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+        ],
+        "analyze_casp15": [
+            "python3 posebench/analysis/inference_analysis_casp.py method=flowdock dataset=casp15 relax_protein={relax_protein} repeat_index={repeat_index}",
         ],
     },
     "rfaa": {
@@ -117,17 +145,19 @@ COMMANDS = {
             "python3 posebench/models/inference_relaxation.py method=rfaa dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true",
         ],
         "align_complexes": [
+            "conda activate PyMOL-PoseBench",
             "python3 posebench/analysis/complex_alignment.py method=rfaa dataset={dataset} pocket_only_baseline={pocket_only_baseline}",
+            "conda deactivate",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=rfaa dataset={dataset} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein}",
         ],
         "assemble_casp15": [
-            "python3 posebench/models/ensemble_generation.py ensemble_methods=[rfaa] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_rfaa_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
-            "python3 posebench/models/ensemble_generation.py ensemble_methods=[rfaa] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_rfaa_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[rfaa] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_rfaa_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[rfaa] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_rfaa_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
         ],
         "analyze_casp15": [
-            "python3 posebench/analysis/inference_analysis_casp.py method=rfaa dataset=casp15 repeat_index={repeat_index} relax_protein={relax_protein} targets='[T1124, T1127v2, T1146, T1152, T1158v1, T1158v2, T1158v3, T1158v4, T1186, T1187, T1188]'",
+            "python3 posebench/analysis/inference_analysis_casp.py method=rfaa dataset=casp15 repeat_index={repeat_index} relax_protein={relax_protein}",
         ],
     },
     "chai-lab": {
@@ -146,17 +176,42 @@ COMMANDS = {
             "python3 posebench/models/inference_relaxation.py method=chai-lab dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true repeat_index={repeat_index}",
         ],
         "align_complexes": [
+            "conda activate PyMOL-PoseBench",
             "python3 posebench/analysis/complex_alignment.py method=chai-lab dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+            "conda deactivate",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=chai-lab dataset={dataset} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} repeat_index={repeat_index}",
         ],
         "assemble_casp15": [
-            "python3 posebench/models/ensemble_generation.py ensemble_methods=[chai-lab] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_chai-lab_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
-            "python3 posebench/models/ensemble_generation.py ensemble_methods=[chai-lab] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_chai-lab_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[chai-lab] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_chai-lab_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[chai-lab] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_chai-lab_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
         ],
         "analyze_casp15": [
-            "python3 posebench/analysis/inference_analysis_casp.py method=chai-lab dataset=casp15 repeat_index={repeat_index} relax_protein={relax_protein} targets='[H1135, T1127v2, T1146, T1152, T1158v1, T1158v2, T1158v3, T1158v4, T1186, T1187, T1188]'",
+            "python3 posebench/analysis/inference_analysis_casp.py method=chai-lab dataset=casp15 repeat_index={repeat_index} relax_protein={relax_protein}",
+        ],
+    },
+    "alphafold3": {
+        "extract_outputs": [
+            "python3 posebench/data/af3_output_extraction.py dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+        ],
+        "relax": [
+            "python3 posebench/models/inference_relaxation.py method=alphafold3 dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true repeat_index={repeat_index}",
+        ],
+        "align_complexes": [
+            "conda activate PyMOL-PoseBench",
+            "python3 posebench/analysis/complex_alignment.py method=alphafold3 dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+            "conda deactivate",
+        ],
+        "analyze_results": [
+            "python3 posebench/analysis/inference_analysis.py method=alphafold3 dataset={dataset} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} repeat_index={repeat_index}",
+        ],
+        "assemble_casp15": [
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[alphafold3] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_alphafold3_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[alphafold3] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_alphafold3_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+        ],
+        "analyze_casp15": [
+            "python3 posebench/analysis/inference_analysis_casp.py method=alphafold3 dataset=casp15 repeat_index={repeat_index} relax_protein={relax_protein}",
         ],
     },
     "vina": {
@@ -176,8 +231,8 @@ COMMANDS = {
             "python3 posebench/analysis/inference_analysis.py method=vina vina_binding_site_method={vina_binding_site_method} dataset={dataset} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} repeat_index={repeat_index}",
         ],
         "assemble_casp15": [
-            "python3 posebench/models/ensemble_generation.py ensemble_methods=[vina] ensemble_ranking_method={ensemble_ranking_method} vina_binding_site_methods=[{vina_binding_site_method}] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_vina_{vina_binding_site_method}_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
-            "python3 posebench/models/ensemble_generation.py ensemble_methods=[vina] ensemble_ranking_method={ensemble_ranking_method} vina_binding_site_methods=[{vina_binding_site_method}] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_vina_{vina_binding_site_method}_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[vina] ensemble_ranking_method={ensemble_ranking_method} vina_binding_site_methods=[{vina_binding_site_method}] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_vina_{vina_binding_site_method}_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[vina] ensemble_ranking_method={ensemble_ranking_method} vina_binding_site_methods=[{vina_binding_site_method}] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_vina_{vina_binding_site_method}_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
         ],
         "analyze_casp15": [
             "python3 posebench/analysis/inference_analysis_casp.py method=vina vina_binding_site_method={vina_binding_site_method} dataset=casp15 relax_protein={relax_protein} repeat_index={repeat_index}",
@@ -194,17 +249,17 @@ COMMANDS = {
             "python3 posebench/analysis/inference_analysis.py method=tulip dataset={dataset} relax_protein={relax_protein} repeat_index={repeat_index}",
         ],
         "assemble_casp15": [
-            "python3 posebench/models/ensemble_generation.py ensemble_methods=[tulip] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_tulip_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
-            "python3 posebench/models/ensemble_generation.py ensemble_methods=[tulip] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_tulip_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=40 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[tulip] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_tulip_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py ensemble_methods=[tulip] ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_tulip_ensemble_predictions_{repeat_index} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} cuda_device_index={cuda_device_index} ensemble_benchmarking_repeat_index={repeat_index}",
         ],
         "analyze_casp15": [
-            "python3 posebench/analysis/inference_analysis_casp.py method=tulip dataset=casp15 repeat_index={repeat_index} relax_protein={relax_protein} targets='[H1171v1, H1171v2, H1172v1, H1172v2, H1172v3, H1172v4, T1124, T1127v2, T1152, T1158v1, T1158v2, T1158v3, T1181, T1186, T1187, T1188]'",
+            "python3 posebench/analysis/inference_analysis_casp.py method=tulip dataset=casp15 repeat_index={repeat_index} relax_protein={relax_protein}",
         ],
     },
     "ensemble": {
         "run_inference": [
-            "python3 posebench/models/ensemble_generation.py pocket_only_baseline={pocket_only_baseline} ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/{dataset}/ensemble_inputs.csv output_dir=data/test_cases/{dataset}/top_consensus_ensemble_predictions_{repeat_index} max_method_predictions=40 method_top_n_to_select=3 export_top_n={export_top_n} export_file_format={dataset} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} resume=true cuda_device_index={cuda_device_index} ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa]' vina_binding_site_methods=[{vina_binding_site_method}] ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index={repeat_index}",
-            "python3 posebench/models/ensemble_generation.py pocket_only_baseline={pocket_only_baseline} ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/{dataset}/ensemble_inputs.csv output_dir=data/test_cases/{dataset}/top_consensus_ensemble_predictions_{repeat_index} max_method_predictions=40 method_top_n_to_select=3 export_top_n={export_top_n} export_file_format={dataset} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} resume=true cuda_device_index={cuda_device_index} ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa]' vina_binding_site_methods=[{vina_binding_site_method}] ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py pocket_only_baseline={pocket_only_baseline} ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/{dataset}/ensemble_inputs.csv output_dir=data/test_cases/{dataset}/top_consensus_ensemble_predictions_{repeat_index} max_method_predictions=5 method_top_n_to_select=3 export_top_n={export_top_n} export_file_format={dataset} skip_existing=true relax_method_ligands_post_ranking=false relax_protein={relax_protein} resume=true cuda_device_index={cuda_device_index} ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa]' vina_binding_site_methods=[{vina_binding_site_method}] ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index={repeat_index}",
+            "python3 posebench/models/ensemble_generation.py pocket_only_baseline={pocket_only_baseline} ensemble_ranking_method={ensemble_ranking_method} input_csv_filepath=data/test_cases/{dataset}/ensemble_inputs.csv output_dir=data/test_cases/{dataset}/top_consensus_ensemble_predictions_{repeat_index} max_method_predictions=5 method_top_n_to_select=3 export_top_n={export_top_n} export_file_format={dataset} skip_existing=true relax_method_ligands_post_ranking=true relax_protein={relax_protein} resume=true cuda_device_index={cuda_device_index} ensemble_methods='[diffdock, dynamicbind, neuralplexer, rfaa]' vina_binding_site_methods=[{vina_binding_site_method}] ensemble_benchmarking=true ensemble_benchmarking_dataset={dataset} ensemble_ranking_method=consensus ensemble_benchmarking_repeat_index={repeat_index}",
         ],
         "analyze_results": [
             "python3 posebench/analysis/inference_analysis.py method=ensemble dataset={dataset} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} repeat_index={repeat_index}",
@@ -220,8 +275,10 @@ INFERENCE_METHODS = Literal[
     "fabind",
     "dynamicbind",
     "neuralplexer",
+    "flowdock",
     "rfaa",
     "chai-lab",
+    "alphafold3",
     "vina",
     "tulip",
     "ensemble",
@@ -236,8 +293,10 @@ POCKET_ONLY_COMPATIBLE_METHODS = {
     "fabind",
     "dynamicbind",
     "neuralplexer",
+    "flowdock",
     "rfaa",
     "chai-lab",
+    "alphafold3",
     "vina",
     "ensemble",
 }
@@ -263,7 +322,7 @@ def build_inference_script(
     verbose: bool = False,
     gpu_partition: str = "chengji-lab-gpu",
     gpu_account: str = "chengji-lab",
-    gpu_type: Literal["A100", "H100"] = "A100",
+    gpu_type: Literal["A100", "H100", ""] = "",
     cpu_memory_in_gb: int = 59,
     time_limit: str = "2-00:00:00",
 ):
@@ -393,9 +452,9 @@ def build_inference_script(
                 if method == "dynamicbind" and dataset == "casp15"
                 else ""
             )
-            neuralplexer_casp15_input_suffix = (
+            neuralplexer_and_flowdock_casp15_input_suffix = (
                 " input_data_dir=data/casp15_set/targets input_receptor_structure_dir=data/casp15_set/casp15_holo_aligned_predicted_structures"
-                if method == "neuralplexer" and dataset == "casp15"
+                if method in ["neuralplexer", "flowdock"] and dataset == "casp15"
                 else ""
             )
             rfaa_casp15_input_suffix = (
@@ -408,15 +467,21 @@ def build_inference_script(
                 if method == "chai-lab" and dataset == "casp15"
                 else ""
             )
+            alphafold3_casp15_input_suffix = (
+                " input_data_dir=data/casp15_set/targets"
+                if method == "alphafold3" and dataset == "casp15"
+                else ""
+            )
             f.write("# Prepare input files\n")
             for cmd in commands.get("prepare_input", []):
                 prepare_input_string = (
                     cmd.format(dataset=dataset, pocket_only_baseline=pocket_only_baseline)
                     + diffdock_casp15_input_suffix
                     + dynamicbind_casp15_input_suffix
-                    + neuralplexer_casp15_input_suffix
+                    + neuralplexer_and_flowdock_casp15_input_suffix
                     + rfaa_casp15_input_suffix
                     + chai_casp15_input_suffix
+                    + alphafold3_casp15_input_suffix
                     + "\n"
                 )
                 if method == "vina" and pocket_only_baseline:
@@ -440,8 +505,10 @@ def build_inference_script(
                 if method == "dynamicbind" and dataset == "casp15"
                 else ""
             )
-            neuralplexer_casp15_inference_suffix = (
-                " chunk_size=4" if method == "neuralplexer" and dataset == "casp15" else ""
+            neuralplexer_and_flowdock_casp15_inference_suffix = (
+                " chunk_size=5"
+                if method in ["neuralplexer", "flowdock"] and dataset == "casp15"
+                else ""
             )
             ensemble_casp15_inference_suffix = (
                 " combine_casp_output_files=true"
@@ -465,7 +532,7 @@ def build_inference_script(
                     )
                     + diffdock_casp15_inference_suffix
                     + dynamicbind_casp15_inference_suffix
-                    + neuralplexer_casp15_inference_suffix
+                    + neuralplexer_and_flowdock_casp15_inference_suffix
                     + ensemble_casp15_inference_suffix
                     + "\n"
                 )

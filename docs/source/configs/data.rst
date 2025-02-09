@@ -15,11 +15,11 @@ Protein apo-to-holo alignment
     :language: yaml
     :caption: :file:`data/components/protein_apo_to_holo_alignment.yaml`
 
-Protein FASTA preparation
+FASTA preparation
 ^^^^^^^^^^^^^^^^^^^^^^^^
-.. literalinclude:: ../../../configs/data/components/protein_fasta_preparation.yaml
+.. literalinclude:: ../../../configs/data/components/fasta_preparation.yaml
     :language: yaml
-    :caption: :file:`data/components/protein_fasta_preparation.yaml`
+    :caption: :file:`data/components/fasta_preparation.yaml`
 
 ESMFold sequence preparation
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -63,6 +63,12 @@ NeuralPLexer input preparation
     :language: yaml
     :caption: :file:`data/neuralplexer_input_preparation.yaml`
 
+FlowDock input preparation
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/data/flowdock_input_preparation.yaml
+    :language: yaml
+    :caption: :file:`data/flowdock_input_preparation.yaml`
+
 RoseTTAFold-All-Atom input preparation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 .. literalinclude:: ../../../configs/data/rfaa_input_preparation.yaml
@@ -86,6 +92,12 @@ Chai-1 output extraction
 .. literalinclude:: ../../../configs/data/chai_output_extraction.yaml
     :language: yaml
     :caption: :file:`data/chai_output_extraction.yaml`
+
+AlphaFold 3 output extraction
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/data/af3_output_extraction.yaml
+    :language: yaml
+    :caption: :file:`data/af3_output_extraction.yaml`
 
 TULIP output extraction
 ^^^^^^^^^^^^^^^^^^^^^^^^

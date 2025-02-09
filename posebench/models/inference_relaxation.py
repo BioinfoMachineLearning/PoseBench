@@ -75,6 +75,12 @@ def relax_inference_results(
                 if "model_idx_0_protein.pdb" in filepath.name
                 and "relaxed" not in filepath.parent.stem
             ]
+        elif cfg.method == "alphafold3":
+            protein_filepaths = [
+                filepath
+                for filepath in protein_filepaths
+                if "_model_protein.pdb" in filepath.name and "relaxed" not in filepath.parent.stem
+            ]
     if not ligand_file_dir.exists() or cfg.method == "dynamicbind":
         ligand_filepaths = [
             file
@@ -113,12 +119,39 @@ def relax_inference_results(
                 if "model_idx_0_ligand.sdf" in filepath.name
                 and "relaxed" not in filepath.parent.stem
             ]
+        elif cfg.method == "alphafold3":
+            ligand_filepaths = [
+                filepath
+                for filepath in ligand_filepaths
+                if "_model_ligand.sdf" in filepath.name and "relaxed" not in filepath.parent.stem
+            ]
         elif cfg.method == "vina":
             ligand_filepaths = [
                 filepath for filepath in ligand_filepaths if "relaxed" not in filepath.stem
             ]
-    protein_filepaths = sorted(protein_filepaths)
-    ligand_filepaths = sorted(ligand_filepaths)
+    protein_filepaths = sorted(
+        [
+            fp
+            for fp in protein_filepaths
+            if not any(s in fp.stem for s in ("relaxed", "aligned")) or "holo_aligned" in fp.stem
+        ]
+    )
+    ligand_filepaths = sorted(
+        [fp for fp in ligand_filepaths if not any(s in fp.stem for s in ("relaxed", "aligned"))]
+    )
+    id_slice = slice(0, 4) if cfg.dataset == "dockgen" else slice(2)
+    if len(protein_filepaths) < len(ligand_filepaths):
+        if cfg.method == "dynamicbind":
+            # NOTE: sometimes, DynamicBind mysteriously omits the protein output for a given complex
+            ligand_filepaths = [
+                ligand_filepath
+                for ligand_filepath in ligand_filepaths
+                if any(
+                    "_".join(protein_filepath.parent.parent.stem.split("_")[-3:])
+                    in ligand_filepath.parent.parent.stem
+                    for protein_filepath in protein_filepaths
+                )
+            ]
     if len(ligand_filepaths) < len(protein_filepaths):
         # NOTE: the performance of these loops could likely be improved
         if cfg.method == "diffdock":
@@ -126,11 +159,12 @@ def relax_inference_results(
                 protein_filepath
                 for protein_filepath in protein_filepaths
                 if any(
-                    "_".join(protein_filepath.stem.split("_")[:2]) in ligand_filepath.stem
+                    "_".join(protein_filepath.stem.split("_")[id_slice]) in ligand_filepath.stem
                     for ligand_filepath in ligand_filepaths
                 )
                 or any(
-                    "_".join(protein_filepath.stem.split("_")[:2]) in ligand_filepath.parent.stem
+                    "_".join(protein_filepath.stem.split("_")[id_slice])
+                    in ligand_filepath.parent.stem
                     for ligand_filepath in ligand_filepaths
                 )
             ]
@@ -144,32 +178,22 @@ def relax_inference_results(
                     for ligand_filepath in ligand_filepaths
                 )
             ]
-        elif cfg.method == "chai-lab":
-            raise NotImplementedError("Cannot subset `chai-lab` protein predictions at this time.")
+        elif cfg.method == "chai-lab" or cfg.method == "alphafold3":
+            raise NotImplementedError(
+                "Cannot subset `chai-lab` or `alphafold3` protein predictions at this time."
+            )
         else:
             protein_filepaths = [
                 protein_filepath
                 for protein_filepath in protein_filepaths
                 if (
-                    cfg.dataset == "dockgen"
-                    and any(
-                        "_".join(protein_filepath.stem.split("_")[:4]) in ligand_filepath.stem
+                    any(
+                        "_".join(protein_filepath.stem.split("_")[id_slice])
+                        in ligand_filepath.stem
                         for ligand_filepath in ligand_filepaths
                     )
                     or any(
-                        "_".join(protein_filepath.stem.split("_")[:4])
-                        in ligand_filepath.parent.stem
-                        for ligand_filepath in ligand_filepaths
-                    )
-                )
-                or (
-                    cfg.dataset != "dockgen"
-                    and any(
-                        "_".join(protein_filepath.stem.split("_")[:2]) in ligand_filepath.stem
-                        for ligand_filepath in ligand_filepaths
-                    )
-                    or any(
-                        "_".join(protein_filepath.stem.split("_")[:2])
+                        "_".join(protein_filepath.stem.split("_")[id_slice])
                         in ligand_filepath.parent.stem
                         for ligand_filepath in ligand_filepaths
                     )
@@ -194,8 +218,9 @@ def relax_inference_results(
                 ligand_filepath
                 for ligand_filepath in ligand_filepaths
                 if any(
-                    ligand_filepath.stem.split("_")[0] in protein_filepath.stem
-                    or ligand_filepath.parent.stem.split("_")[0] in protein_filepath.stem
+                    "_".join(ligand_filepath.stem.split("_")[id_slice]) in protein_filepath.stem
+                    or "_".join(ligand_filepath.parent.stem.split("_")[id_slice])
+                    in protein_filepath.stem
                     for protein_filepath in protein_filepaths
                 )
             ]
@@ -273,7 +298,7 @@ def relax_single_filepair(
             )
             os.makedirs(output_filepath.parent, exist_ok=True)
             os.makedirs(protein_output_filepath.parent, exist_ok=True)
-        elif cfg.method == "neuralplexer":
+        elif cfg.method in ["neuralplexer", "flowdock"]:
             output_filepath = Path(
                 output_file_dir,
                 ligand_filepath.parent.stem,
@@ -306,6 +331,17 @@ def relax_single_filepair(
                 f"{protein_filepath.stem}_relaxed.pdb",
             )
         elif cfg.method == "chai-lab":
+            output_filepath = Path(
+                output_file_dir,
+                ligand_filepath.parent.stem,
+                f"{ligand_filepath.stem}_relaxed.sdf",
+            )
+            protein_output_filepath = Path(
+                output_file_dir,
+                protein_filepath.parent.stem,
+                f"{protein_filepath.stem}_relaxed.pdb",
+            )
+        elif cfg.method == "alphafold3":
             output_filepath = Path(
                 output_file_dir,
                 ligand_filepath.parent.stem,
