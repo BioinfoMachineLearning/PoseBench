@@ -95,7 +95,7 @@ method_mapping = {
     "vina_p2rank": "P2Rank-Vina",
     "diffdock": "DiffDock-L",
     "dynamicbind": "DynamicBind",
-    "neuralplexer": "NeuralPlexer",
+    "neuralplexer": "NeuralPLexer",
     "rfaa": "RFAA",
     "chai-lab_ss": "Chai-1-Single-Seq",
     "chai-lab": "Chai-1",
