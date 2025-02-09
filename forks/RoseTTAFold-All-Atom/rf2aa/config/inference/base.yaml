@@ -10,7 +10,7 @@ database_params:
 protein_inputs: null
 na_inputs: null
 sm_inputs: null
-covale_inputs:  null
+covale_inputs: null
 residue_replacement: null
 
 chem_params:
@@ -24,7 +24,6 @@ loader_params:
   MAXCYCLE: 4
   BLACK_HOLE_INIT: False
   seqid: 150.0
-
 
 legacy_model_param:
   n_extra_block: 4
@@ -46,7 +45,7 @@ legacy_model_param:
   recycling_type: "all"
   use_same_chain: True
   lj_lin: 0.75
-  SE3_param: 
+  SE3_param:
     num_layers: 1
     num_channels: 32
     num_degrees: 2

@@ -31,9 +31,11 @@ def write_input_csv(
 ):
     """Write a DynamicBind inference CSV file.
 
-    :param smiles_and_pdb_id_list: A list of tuples each containing a SMILES string and a PDB ID.
+    :param smiles_and_pdb_id_list: A list of tuples each containing a
+        SMILES string and a PDB ID.
     :param output_csv_dir: Path to the output CSV directory.
-    :param protein_filepath: Optional path to the protein structure file.
+    :param protein_filepath: Optional path to the protein structure
+        file.
     :param ligand_smiles: Optional SMILES string of the ligand.
     """
     if protein_filepath is not None and ligand_smiles is not None:
@@ -63,8 +65,9 @@ def write_input_csv(
     config_name="dynamicbind_input_preparation.yaml",
 )
 def main(cfg: DictConfig):
-    """Parse a data directory containing subdirectories of protein-ligand complexes and prepare
-    corresponding inference CSV files for the DynamicBind model.
+    """Parse a data directory containing subdirectories of protein-ligand
+    complexes and prepare corresponding inference CSV files for the DynamicBind
+    model.
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """

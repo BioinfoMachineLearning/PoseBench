@@ -52,8 +52,10 @@ def read_fasta(filename: str) -> Dict[str, str]:
 def combine_sequences(sequences: Dict[str, str]) -> Dict[str, str]:
     """Combine sequences of the same protein complex by their PDB codes.
 
-    :param sequences: Dictionary containing sequences with identifiers as keys.
-    :return: Dictionary containing combined sequences with PDB codes as keys.
+    :param sequences: Dictionary containing sequences with identifiers
+        as keys.
+    :return: Dictionary containing combined sequences with PDB codes as
+        keys.
     """
     combined_sequences = {}
     for identifier, sequence in sequences.items():
@@ -68,7 +70,8 @@ def combine_sequences(sequences: Dict[str, str]) -> Dict[str, str]:
 def write_combined_fasta(combined_sequences: Dict[str, str], output_filename: str) -> None:
     """Write combined sequences to an output FASTA file.
 
-    :param combined_sequences: Dictionary containing combined sequences with PDB codes as keys.
+    :param combined_sequences: Dictionary containing combined sequences
+        with PDB codes as keys.
     :param output_filename: Path to the output FASTA file.
     """
     with open(output_filename, "w") as file:
@@ -82,8 +85,9 @@ def write_combined_fasta(combined_sequences: Dict[str, str], output_filename: st
     config_name="esmfold_sequence_preparation.yaml",
 )
 def main(cfg: DictConfig):
-    """Read protein chain sequences from a FASTA file, combine sequences of the same protein
-    complex, and write the combined sequences to an output FASTA file.
+    """Read protein chain sequences from a FASTA file, combine sequences of the
+    same protein complex, and write the combined sequences to an output FASTA
+    file.
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """

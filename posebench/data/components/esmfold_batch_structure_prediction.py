@@ -81,7 +81,8 @@ def init_model_on_gpu_with_cpu_offloading(
 def create_batched_sequence_datasest(
     sequences: T.List[T.Tuple[str, str]], max_tokens_per_batch: int = 1024
 ) -> T.Generator[T.Tuple[T.List[str], T.List[str]], None, None]:
-    """Create a dataset of batched sequences for increased computational throughput.
+    """Create a dataset of batched sequences for increased computational
+    throughput.
 
     :param sequences: A list of `(header, seq)` tuples.
     :param max_tokens_per_batch: The maximum number of tokens (i.e., residues) per batch.

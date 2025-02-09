@@ -178,5 +178,4 @@ dependencies:
       - wcwidth==0.2.13
       - wrapt==1.16.0
       - yarl==1.12.1
-prefix:
-  forks/chai-lab/chai-lab
+prefix: forks/chai-lab/chai-lab

@@ -1,10 +1,12 @@
 Here we provide the extra materials associated with the paper
-["Language models generalize beyond natural proteins" (2022)](https://doi.org/10.1101/2022.12.21.521521) by 
+["Language models generalize beyond natural proteins" (2022)](https://doi.org/10.1101/2022.12.21.521521) by
 Robert Verkuil\*, Ori Kabeli\*, Yilun Du, Basile I. M. Wicky, Lukas F. Milles, Justas Dauparas, David Baker, Sergey Ovchinnikov, Tom Sercu, and Alexander Rives.
 
 ## `data.csv`, [data.hdf5](https://dl.fbaipublicfiles.com/fair-esm/design_lm_data_2022_v1.hdf5)
+
 Load scalar data in `data.csv` with `pd.read_csv`.
 For long-form data, download `data.hdf5` from [this link](https://dl.fbaipublicfiles.com/fair-esm/design_lm_data_2022_v1.hdf5) and load with `pd.read_hdf`.
+
 ```
 # Design information
 Design ID - {F,G}{0-267} unique identifier for each (LM or AlphaFold) design evaluated. 8 Nan values correspond to 8 ground truth sequences tested.
@@ -41,15 +43,17 @@ max Jackhmmer TM-score (top-10 hits only) - Maximum TM-score of the ≈top-10 (b
 ```
 
 ## `artificial_sequence_purge_ids.txt`
+
 ID's of sequences removed due to being annotateed "artificial sequence" by the UniProt website when `2021_04` was the latest release.
 
 ## `uniref90_jackhmmer_purge_ids.txt`
-ID's of sequences removed by Jackhmmer search (`-n 1 --seed 0`) of UniRef90 when given the de novo target set as queries.
 
+ID's of sequences removed by Jackhmmer search (`-n 1 --seed 0`) of UniRef90 when given the de novo target set as queries.
 
 ## Reference
 
 If using this work, please cite:
+
 ```bibtex
 @article{verkuil2022language,
   author={Robert Verkuil\*, Ori Kabeli\*, Yilun Du, Basile I. M. Wicky, Lukas F. Milles, Justas Dauparas, David Baker, Sergey Ovchinnikov, Tom Sercu, and Alexander Rives},

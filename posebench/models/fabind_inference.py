@@ -76,9 +76,11 @@ def main(cfg: DictConfig):
                 cfg.python_exec_path,
                 os.path.join(cfg.fabind_exec_dir, "inference_preprocess_protein.py"),
                 "--pdb_file_dir",
-                f"{cfg.input_data_dir}_bs_cropped"
-                if cfg.pocket_only_baseline
-                else cfg.input_data_dir,
+                (
+                    f"{cfg.input_data_dir}_bs_cropped"
+                    if cfg.pocket_only_baseline
+                    else cfg.input_data_dir
+                ),
                 "--save_pt_dir",
                 cfg.save_pt_dir,
                 "--cuda_device_index",

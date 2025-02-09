@@ -32,9 +32,9 @@ class lDDTBSScorer:
         self.mdl = model
 
     def get_binding_sites(self, ligand, radius=4.0, lddt_radius=10.0):
-        """Computes binding site lDDT score given *ligand*. Best possible binding site
-        representation is selected by lDDT but other scores such as CA based RMSD and GDT are
-        computed too and returned.
+        """Computes binding site lDDT score given *ligand*. Best possible
+        binding site representation is selected by lDDT but other scores such
+        as CA based RMSD and GDT are computed too and returned.
 
         :param ligand: Defines the scored binding site, i.e. provides positions
                        to perform proximity search

@@ -68,10 +68,12 @@ class ProteinSelect(Select):
     """A class to select only protein residues from a PDB file."""
 
     def accept_residue(self, residue: Any):
-        """Only accept residues that are part of a protein (e.g., standard amino acids).
+        """Only accept residues that are part of a protein (e.g., standard
+        amino acids).
 
         :param residue: The residue to check.
-        :return: True if the residue is part of a protein, False otherwise.
+        :return: True if the residue is part of a protein, False
+            otherwise.
         """
         return residue.id[0] == " "  # NOTE: `HETATM` flag must be a blank for protein residues
 
@@ -83,7 +85,8 @@ class LigandSelect(Select):
         """Only accept residues that are part of a ligand.
 
         :param residue: The residue to check.
-        :return: True if the residue is part of a ligand, False otherwise.
+        :return: True if the residue is part of a ligand, False
+            otherwise.
         """
         return residue.id[0] != " "  # NOTE: `HETATM` flag must be a filled for ligand residues
 
@@ -92,10 +95,12 @@ class LigandSelect(Select):
 def create_temp_pdb_with_only_molecule_type_residues(
     input_pdb_filepath: str, molecule_type: Literal["protein", "ligand"]
 ) -> str:
-    """Create a temporary PDB file with only residues of a chosen molecule type.
+    """Create a temporary PDB file with only residues of a chosen molecule
+    type.
 
     :param input_pdb_filepath: The input PDB file path.
-    :param molecule_type: The molecule type to keep in the temporary PDB file.
+    :param molecule_type: The molecule type to keep in the temporary PDB
+        file.
     :return: The temporary PDB file path.
     """
     parser = PDBParser(QUIET=True)

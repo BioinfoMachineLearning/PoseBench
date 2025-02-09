@@ -68,8 +68,8 @@ def extract_binding_sites(
     :param ligand_filepaths: Ligand SDF filepaths.
     :param ligand_smiles_strings: Optional ligand SMILES strings.
     :param cfg: Configuration dictionary from the hydra YAML file.
-    :return: Dictionary mapping ligand filepaths to a dictionary of binding site coordinate
-        metadata.
+    :return: Dictionary mapping ligand filepaths to a dictionary of
+        binding site coordinate metadata.
     """
     binding_site_mapping = {}
     ligand_coords_list = []
@@ -207,8 +207,8 @@ def run_vina_inference(
 
     :param protein_filepath: Protein PDB filepath.
     :param ligand_filepaths: Ligand SDF filepaths.
-    :param ligand_binding_site_mapping: Dictionary mapping ligand filepaths to a dictionary of
-        binding site coordinate metadata.
+    :param ligand_binding_site_mapping: Dictionary mapping ligand
+        filepaths to a dictionary of binding site coordinate metadata.
     :param item: Name of the item.
     :param cfg: Configuration dictionary from the hydra YAML file.
     :return: Optional list of output filepaths.
@@ -381,12 +381,13 @@ def write_vina_outputs(
     """Write AutoDock Vina inference outputs to the output directory.
 
     :param output_filepaths: List of output filepaths.
-    :param ligand_binding_site_mapping: Dictionary mapping ligand filepaths to a dictionary of
-        binding site coordinate metadata.
+    :param ligand_binding_site_mapping: Dictionary mapping ligand
+        filepaths to a dictionary of binding site coordinate metadata.
     :param item: Name of the item.
     :param num_ligands: Number of ligands.
     :param cfg: Configuration dictionary from the hydra YAML file.
-    :param remove_hs: Whether to remove hydrogens from the combined ligand.
+    :param remove_hs: Whether to remove hydrogens from the combined
+        ligand.
     """
     group_ligands_list = [None for _ in range(num_ligands)]
     for output_filepath, group_filepaths in zip(output_filepaths, ligand_binding_site_mapping):
@@ -429,7 +430,8 @@ def write_vina_outputs(
     config_name="vina_inference.yaml",
 )
 def main(cfg: DictConfig):
-    """Run inference using AutoDock Vina on predicted protein structures and binding sites.
+    """Run inference using AutoDock Vina on predicted protein structures and
+    binding sites.
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """

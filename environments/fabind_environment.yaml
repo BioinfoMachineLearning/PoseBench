@@ -160,5 +160,4 @@ dependencies:
       - tzdata==2023.4
       - werkzeug==3.0.1
       - zipp==3.17.0
-prefix:
-  forks/FABind/FABind
+prefix: forks/FABind/FABind

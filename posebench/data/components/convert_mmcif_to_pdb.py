@@ -36,7 +36,8 @@ def convert_mmcif_to_pdb(mmcif_file: str, pdb_file: str):
     config_name="convert_mmcif_to_pdb.yaml",
 )
 def main(cfg: DictConfig):
-    """Convert an input directory of mmCIF files to an output directory of PDB files."""
+    """Convert an input directory of mmCIF files to an output directory of PDB
+    files."""
     os.makedirs(cfg.output_pdb_dir, exist_ok=True)
 
     for file in tqdm(

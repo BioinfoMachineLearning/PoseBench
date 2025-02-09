@@ -92,11 +92,13 @@ RANKED_METHODS = ["diffdock", "dynamicbind", "neuralplexer", "flowdock"]
 def find_most_similar_frag(
     mol_true_frag: Chem.Mol, mol_pred_frags: List[Chem.Mol]
 ) -> Tuple[Chem.Mol, float, float]:
-    """Find the most similar fragment to the true fragment among the predicted fragments.
+    """Find the most similar fragment to the true fragment among the predicted
+    fragments.
 
     :param mol_true_frag: True fragment molecule.
     :param mol_pred_frags: List of predicted fragment molecules.
-    :return: Tuple of the most similar fragment molecule, the Tanimoto similarity, and the RMSD.
+    :return: Tuple of the most similar fragment molecule, the Tanimoto
+        similarity, and the RMSD.
     """
     mfpgen = rdFingerprintGenerator.GetMorganGenerator(radius=2, fpSize=2048)
 
@@ -137,7 +139,8 @@ def find_most_similar_frag(
 def select_primary_ligands_in_df(
     mol_table: pd.DataFrame, select_most_similar_pred_frag: bool = True
 ) -> pd.DataFrame:
-    """Select the primary ligands predictions from the molecule table DataFrame.
+    """Select the primary ligands predictions from the molecule table
+    DataFrame.
 
     NOTE: This function is used for single-primary-ligand datasets such as Astex Diverse, PoseBusters Benchmark, and DockGen
     to identify a method's (most likely) prediction for a specific primary ligand crystal structure when the method is tasked
@@ -232,7 +235,8 @@ def create_mol_table(
     :param mol_table_filepath: Molecule table DataFrame.
     :param cfg: Hydra configuration dictionary.
     :param relaxed: Whether to use the relaxed poses.
-    :param add_pdb_ids: Whether to add the PDB IDs to the molecule table DataFrame.
+    :param add_pdb_ids: Whether to add the PDB IDs to the molecule table
+        DataFrame.
     :return: Molecule table DataFrame.
     """
     pdb_ids = None

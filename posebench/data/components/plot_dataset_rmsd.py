@@ -44,14 +44,17 @@ def calculate_usalign_metrics(
     usalign_exec_path: str,
     flags: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
-    """Calculates US-align structural metrics between predicted and reference macromolecular
-    structures.
+    """Calculates US-align structural metrics between predicted and reference
+    macromolecular structures.
 
-    :param pred_pdb_filepath: Filepath to predicted macromolecular structure in PDB format.
-    :param reference_pdb_filepath: Filepath to reference macromolecular structure in PDB format.
+    :param pred_pdb_filepath: Filepath to predicted macromolecular
+        structure in PDB format.
+    :param reference_pdb_filepath: Filepath to reference macromolecular
+        structure in PDB format.
     :param usalign_exec_path: Path to US-align executable.
     :param flags: Command-line flags to pass to US-align, optional.
-    :return: Dictionary containing macromolecular US-align structural metrics and metadata.
+    :return: Dictionary containing macromolecular US-align structural
+        metrics and metadata.
     """
     # run US-align with subprocess and capture output
     cmd = [usalign_exec_path, pred_pdb_filepath, reference_pdb_filepath]
@@ -110,21 +113,28 @@ def plot_dataset_rmsd(
     accurate_rmsd_threshold: float = 4.0,
     accurate_tm_score_threshold: float = 0.7,
 ):
-    """Plot the RMSD between predicted and reference protein structures in a given dataset.
+    """Plot the RMSD between predicted and reference protein structures in a
+    given dataset.
 
     :param dataset: Informal name of the dataset.
     :param dataset_name: Formal name of the dataset.
-    :param pred_pdb_dir: Directory containing predicted protein structures in PDB format.
-    :param ref_pdb_dir: Directory containing reference protein structures in PDB format.
+    :param pred_pdb_dir: Directory containing predicted protein
+        structures in PDB format.
+    :param ref_pdb_dir: Directory containing reference protein
+        structures in PDB format.
     :param output_dir: Directory to save the plots.
     :param usalign_exec_path: Path to the US-align executable.
     :param usalign_flags: Command-line flags to pass to US-align.
-    :param filtered_ids_to_keep_file: File containing IDs of sequences to keep.
+    :param filtered_ids_to_keep_file: File containing IDs of sequences
+        to keep.
     :param filtered_ids_to_skip: Set of IDs of sequences to skip.
     :param is_casp_dataset: Whether the dataset is a CASP dataset.
-    :param public_plots: Whether to save the public versions of the plots.
-    :param accurate_rmsd_threshold: RMSD threshold for accurate predictions.
-    :param accurate_tm_score_threshold: TM-score threshold for accurate predictions.
+    :param public_plots: Whether to save the public versions of the
+        plots.
+    :param accurate_rmsd_threshold: RMSD threshold for accurate
+        predictions.
+    :param accurate_tm_score_threshold: TM-score threshold for accurate
+        predictions.
     """
 
     # Filter out sequences that are not in the filtered_ids_file
@@ -225,7 +235,8 @@ def plot_dataset_rmsd(
     config_name="plot_dataset_rmsd.yaml",
 )
 def main(cfg: DictConfig):
-    """Main function to plot RMSD values for predicted protein structures of different datasets."""
+    """Main function to plot RMSD values for predicted protein structures of
+    different datasets."""
 
     # NOTE: If USalign is not already available locally, follow the following steps to install it:
     # Install US-align to align macromolecular structures

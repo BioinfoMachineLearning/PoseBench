@@ -82,7 +82,8 @@ def run_rfaa_inference_directly(cfg: DictConfig):
     config_name="rfaa_inference.yaml",
 )
 def main(cfg: DictConfig):
-    """Create SLURM job submission scripts for inference with RoseTTAFold-All-Atom.
+    """Create SLURM job submission scripts for inference with RoseTTAFold-All-
+    Atom.
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """

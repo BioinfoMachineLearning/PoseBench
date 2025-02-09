@@ -11,4 +11,3 @@ Complex 6gdy:
 
 Complex 6ckl:
 ![Alt Text](example_6ckl_symmetric.gif)
-

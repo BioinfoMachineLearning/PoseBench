@@ -98,8 +98,8 @@ NUM_SCOREABLE_CASP15_TARGETS = len(All_CASP15_SINGLE_LIGAND_TARGETS) + len(
 
 
 def create_casp_input_dirs(cfg: DictConfig, config: str) -> Tuple[str, List[str]]:
-    """Create the input directories for the CASP ligand scoring pipeline and return the resulting
-    (temporary) parent directory as a `Path`.
+    """Create the input directories for the CASP ligand scoring pipeline and
+    return the resulting (temporary) parent directory as a `Path`.
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     :param config: The configuration suffix to append to the output directory.

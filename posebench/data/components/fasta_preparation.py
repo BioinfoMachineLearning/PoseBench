@@ -49,7 +49,8 @@ logger = logging.getLogger(__name__)
     config_name="fasta_preparation.yaml",
 )
 def main(cfg: DictConfig):
-    """Prepare reference FASTA sequence file for protein chains in the dataset."""
+    """Prepare reference FASTA sequence file for protein chains in the
+    dataset."""
     if cfg.dataset not in ["posebusters_benchmark", "astex_diverse", "dockgen", "casp15"]:
         raise ValueError(f"Dataset {cfg.dataset} is not supported.")
 

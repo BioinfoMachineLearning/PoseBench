@@ -35,20 +35,27 @@ def align_to_binding_site(
     save_ligand: bool = True,
     verbose: bool = True,
 ):
-    """Align the predicted protein-ligand complex to the reference complex using the reference
-    protein's heavy atom ligand binding site residues.
+    """Align the predicted protein-ligand complex to the reference complex
+    using the reference protein's heavy atom ligand binding site residues.
 
     :param predicted_protein: File path to the predicted protein (PDB).
-    :param predicted_ligand: File path to the optional predicted ligand (SDF).
+    :param predicted_ligand: File path to the optional predicted ligand
+        (SDF).
     :param reference_protein: File path to the reference protein (PDB).
-    :param reference_ligand: File path to the optional reference ligand (SDF).
-    :param dataset: Dataset name (e.g., "dockgen", "casp15", "posebusters_benchmark", or
-        "astex_diverse").
-    :param aligned_filename_suffix: Suffix to append to the aligned files (default "_aligned").
-    :param cutoff: Distance cutoff in Å to define the binding site (default 10.0).
-    :param save_protein: Whether to save the aligned protein structure (default True).
-    :param save_ligand: Whether to save the aligned ligand structure (default True).
-    :param verbose: Whether to print the alignment RMSD and number of aligned atoms (default True).
+    :param reference_ligand: File path to the optional reference ligand
+        (SDF).
+    :param dataset: Dataset name (e.g., "dockgen", "casp15",
+        "posebusters_benchmark", or "astex_diverse").
+    :param aligned_filename_suffix: Suffix to append to the aligned
+        files (default "_aligned").
+    :param cutoff: Distance cutoff in Å to define the binding site
+        (default 10.0).
+    :param save_protein: Whether to save the aligned protein structure
+        (default True).
+    :param save_ligand: Whether to save the aligned ligand structure
+        (default True).
+    :param verbose: Whether to print the alignment RMSD and number of
+        aligned atoms (default True).
     """
     from pymol import cmd
 
@@ -169,14 +176,19 @@ def align_complex_to_protein_only(
     aligned_filename_suffix: str = "_aligned",
     atom_df_name: str = "ATOM",
 ) -> int:
-    """Align a predicted protein-ligand structure to a reference protein structure.
+    """Align a predicted protein-ligand structure to a reference protein
+    structure.
 
-    :param predicted_protein_pdb: Path to the predicted protein structure in PDB format
-    :param predicted_ligand_sdf: Optional path to the predicted ligand structure in SDF format
-    :param reference_protein_pdb: Path to the reference protein structure in PDB format
+    :param predicted_protein_pdb: Path to the predicted protein
+        structure in PDB format
+    :param predicted_ligand_sdf: Optional path to the predicted ligand
+        structure in SDF format
+    :param reference_protein_pdb: Path to the reference protein
+        structure in PDB format
     :param save_protein: Whether to save the aligned protein structure
     :param save_ligand: Whether to save the aligned ligand structure
-    :param aligned_filename_suffix: suffix to append to the aligned files
+    :param aligned_filename_suffix: suffix to append to the aligned
+        files
     :param atom_df_name: Name of the atom dataframe in the PDB file
     :return: 0 if successful, 1 if unsuccessful
     """
@@ -297,7 +309,8 @@ def align_complex_to_protein_only(
     config_name="complex_alignment.yaml",
 )
 def main(cfg: DictConfig):
-    """Align the predicted protein-ligand structures to the reference protein-ligand structures.
+    """Align the predicted protein-ligand structures to the reference protein-
+    ligand structures.
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """

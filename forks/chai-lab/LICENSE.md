@@ -28,7 +28,6 @@ not a Commercial Entity (as defined below). No rights are granted under
 this License to a Commercial Entity. Use of the AI Model is expressly
 conditioned upon Your assent to all terms of this License.
 
-
 ## **1. Definitions.**
 
 In addition to other terms defined elsewhere in this License, the terms
@@ -105,7 +104,6 @@ below have the following meanings.
     License or the organization or entity on whose behalf such
     individual is entering into this License.
 
-
 ## **2. Grant of License.**
 
 1.  **Copyright License**. Subject to the terms and conditions of this
@@ -139,7 +137,6 @@ below have the following meanings.
         and may be reinstituted only by a separate grant of a patent
         license in writing from the Contributor.
 
-
 ## **3. Use Restrictions and AUP.**
 
 1.  **No Commercial Use**. You may use the AI Model, Contributions,
@@ -168,8 +165,8 @@ below have the following meanings.
 
 4.  **Acceptable Use Policy**. Your use of the AI Model, Derivative
     Works, Outputs and Output Derivatives is further subject to the Chai
-    Discovery Acceptable Use Policy available at 
-    <https://www.chaidiscovery.com/acceptable-use-policy> and any additional 
+    Discovery Acceptable Use Policy available at
+    <https://www.chaidiscovery.com/acceptable-use-policy> and any additional
     use restrictions that may be communicated to You through the AI Model,
     as may be updated and amended from time to time (the “**AUP**”), the
     terms of which are incorporated herein by reference. In the event of
@@ -184,7 +181,6 @@ below have the following meanings.
     platform and/or artificial intelligence or machine learning models
     with more than 10,000 trainable parameters; or (ii) technology for
     protein structure prediction or protein, drug, or enzyme design.
-
 
 ## **4. Sharing and Distribution.**
 
@@ -240,7 +236,6 @@ reproduction, and distribution of the AI Model, Derivative Works, and
 Your Services otherwise complies with the conditions stated in this
 License.
 
-
 ## **5. Submission of Contributions.**
 
 Unless You explicitly state otherwise, any Contribution intentionally
@@ -250,14 +245,12 @@ or conditions. Notwithstanding the above, nothing herein shall supersede
 or modify the terms of any separate license agreement you may have
 executed with Chai regarding such Contributions.
 
-
 ## **6. Trademarks.**
 
 This License does not grant permission to use the trade names,
 trademarks, service marks, or product names of Chai, except for
 reasonable and customary use in describing the origin of the AI Model
 and reproducing the content of the NOTICE file.
-
 
 ## **7. Term and Termination.**
 
@@ -279,7 +272,6 @@ rights under this License terminate automatically.
     Warranty,” Limitation of Liability,” and “General” survive
     termination of this License.
 
-
 ## **8. Disclaimer of Warranty.**
 
 CHAI PROVIDES THE AI MODEL AND ITS OUTPUTS (AND EACH CONTRIBUTOR
@@ -297,7 +289,6 @@ FOR DETERMINING THE APPROPRIATENESS OF USING THE AI MODEL, DERIVATIVE
 WORKS, OUTPUTS, AND/OR OUTPUT DERIVATIVES AND ASSUME ANY RISKS
 ASSOCIATED WITH YOUR EXERCISE OF PERMISSIONS UNDER THIS AGREEMENT.
 
-
 ## **9. Limitation of Liability.**
 
 TO THE MAXIMUM EXTENT PERMITTED BY LAW, NEITHER CHAI NOR ANY
@@ -314,7 +305,6 @@ SUCH DAMAGE, EVEN IF A LIMITED REMEDY SET FORTH HEREIN IS FOUND TO HAVE
 FAILED OF ITS ESSENTIAL PURPOSE. THE EXCLUSIONS AND LIMITATIONS OF
 DAMAGES SET FORTH ABOVE ARE FUNDAMENTAL ELEMENTS OF THE BASIS OF THE
 BARGAIN BETWEEN Chai, THE CONTRIBUTORS, AND YOU.
-
 
 ## **10. General.**
 
@@ -375,7 +365,6 @@ BARGAIN BETWEEN Chai, THE CONTRIBUTORS, AND YOU.
     shall be limited or eliminated to the minimum extent necessary so
     that this License otherwise remains in full force and effect and
     enforceable.
-
 
 ## **11. Additional License Rights.**
 

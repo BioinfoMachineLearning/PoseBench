@@ -24,7 +24,8 @@ logger = logging.getLogger(__name__)
 def write_input_csv(smiles_and_pdb_id_list: List[Tuple[str, str]], output_csv_path: str):
     """Write a FABind inference CSV file.
 
-    :param smiles_and_pdb_id_list: A list of tuples each containing a SMILES string and a PDB ID.
+    :param smiles_and_pdb_id_list: A list of tuples each containing a
+        SMILES string and a PDB ID.
     :param output_csv_path: Path to the output CSV file.
     """
     with open(output_csv_path, "w") as f:
@@ -39,8 +40,9 @@ def write_input_csv(smiles_and_pdb_id_list: List[Tuple[str, str]], output_csv_pa
     config_name="fabind_input_preparation.yaml",
 )
 def main(cfg: DictConfig):
-    """Parse a data directory containing subdirectories of protein-ligand complexes and prepare a
-    corresponding inference CSV file for the FABind model.
+    """Parse a data directory containing subdirectories of protein-ligand
+    complexes and prepare a corresponding inference CSV file for the FABind
+    model.
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """

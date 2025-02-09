@@ -39,13 +39,17 @@ def write_scripts(
 ):
     """Write a RoseTTAFold-All-Atom inference CSV file.
 
-    :param smiles_and_pdb_id_list: A list of tuples each containing a SMILES string and a PDB ID.
-    :param input_data_dir: Path to directory of input protein-ligand complex subdirectories.
-    :param output_scripts_path: Path to directory of output FASTA sequence and ligand SDF files.
+    :param smiles_and_pdb_id_list: A list of tuples each containing a
+        SMILES string and a PDB ID.
+    :param input_data_dir: Path to directory of input protein-ligand
+        complex subdirectories.
+    :param output_scripts_path: Path to directory of output FASTA
+        sequence and ligand SDF files.
     :param dataset: Dataset name.
-    :param pocket_only_baseline: Whether to provide only the protein pocket as a baseline
-        experiment.
-    :param protein_filepath: Optional path to the protein structure file.
+    :param pocket_only_baseline: Whether to provide only the protein
+        pocket as a baseline experiment.
+    :param protein_filepath: Optional path to the protein structure
+        file.
     :param ligand_smiles: Optional SMILES string of the ligand.
     :param input_id: Optional input ID.
     """
@@ -149,8 +153,9 @@ def write_scripts(
     config_name="rfaa_input_preparation.yaml",
 )
 def main(cfg: DictConfig):
-    """Parse a data directory containing subdirectories of protein-ligand complexes and prepare
-    corresponding inference CSV file for the RoseTTAFold-All-Atom model.
+    """Parse a data directory containing subdirectories of protein-ligand
+    complexes and prepare corresponding inference CSV file for the RoseTTAFold-
+    All-Atom model.
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """

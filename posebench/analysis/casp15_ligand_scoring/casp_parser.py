@@ -119,14 +119,15 @@ class TargetLigand(TargetSmiles):
 
     @cached_property
     def struct_obmol_from_ost(self):
-        """Return the structure ligand as an openbabel molecule, passing through OST."""
+        """Return the structure ligand as an openbabel molecule, passing
+        through OST."""
         pdb_str = ost.io.EntityToPDBStr(self.struct_ost_ent)
         return openbabel_helper.read_ligands_from_string(pdb_str, ["pdb"])[0]
 
     @cached_property
     def struct_spyrmsd_mol(self):
-        """Return the structure ligand as a syprmsd.molecule.Molecule, passing through OST, and
-        stripped of hydrogens.
+        """Return the structure ligand as a syprmsd.molecule.Molecule, passing
+        through OST, and stripped of hydrogens.
 
         :rtype: :class:`spyrmsd.molecule.Molecule`
         """
@@ -177,7 +178,8 @@ class TargetLigand(TargetSmiles):
 
     @cached_property
     def simplified_formula(self):
-        """Get a simplified chemical formula of this ligand, with hydrogens and charge removed."""
+        """Get a simplified chemical formula of this ligand, with hydrogens and
+        charge removed."""
         formula = self.formula
         formula = re.sub(r"H\d*", "", formula)
         formula = re.sub(r"(\+|-)+$", "", formula)
@@ -324,7 +326,8 @@ class Target:
     def save_images(self, skip_large=200):
         """Save a PNG representation of the target.
 
-        :param skip_large: skip saving images of ligands with more than this many atoms.
+        :param skip_large: skip saving images of ligands with more than
+            this many atoms.
         """
         for ligand in self.target_smiles:
             if ligand.smiles_obmol.NumAtoms() <= skip_large:
@@ -338,7 +341,8 @@ class Target:
     def save_images(self, skip_large=200):
         """Save a PNG representation of the target.
 
-        :param skip_large: skip saving images of ligands with more than this many atoms.
+        :param skip_large: skip saving images of ligands with more than
+            this many atoms.
         """
         for ligand in self.target_ligands:
             # SMILES
@@ -378,8 +382,9 @@ class ModelLigand:
 
     @property
     def obmol_fresh(self):
-        """A "fresh", not cached obMol object for operations with a side effect, such as saving the
-        molecule to SVG which flattens the coordinates."""
+        """A "fresh", not cached obMol object for operations with a side
+        effect, such as saving the molecule to SVG which flattens the
+        coordinates."""
         return openbabel_helper.read_ligands_from_string(self.data, ["sdf"])[0]
 
     @cached_property
@@ -433,7 +438,8 @@ class ModelLigand:
 
     @cached_property
     def simplified_formula(self):
-        """Get a simplified chemical formula of this ligand, with hydrogens and charge removed."""
+        """Get a simplified chemical formula of this ligand, with hydrogens and
+        charge removed."""
         formula = self.formula
         formula = re.sub(r"H\d*", "", formula)
         formula = re.sub(r"(\+|-)+$", "", formula)
@@ -735,8 +741,8 @@ class CaspParser:
     def _process_END(self, content, line):
         """We reached an END.
 
-        This can be either the end of a model, or can be an extra END after ligands, which should
-        have been processed already.
+        This can be either the end of a model, or can be an extra END
+        after ligands, which should have been processed already.
         """
         if self._model_accumulator != "":
             # We got a model!
@@ -779,7 +785,8 @@ class CaspParser:
                 self._model_accumulator = ""
 
     def _process_end_ligand(self, content):
-        """We reached the end of the ligand part (M END or $$$$ depending on the format).
+        """We reached the end of the ligand part (M END or $$$$ depending on
+        the format).
 
         Attempt to read it with OpenBabel.
         """
@@ -830,13 +837,14 @@ class CaspParser:
         self._ligand_accumulator += line + os.linesep
 
     def _reset_ligand_accumulator(self):
-        """This resets the ligand accumulator, processing the content again with
-        self._accumulating_ligand = False if the accumulator is not empty. This ensures we process
-        all the tags.
+        """This resets the ligand accumulator, processing the content again
+        with self._accumulating_ligand = False if the accumulator is not empty.
+        This ensures we process all the tags.
 
-        Typically, this happens when there was content between the LIGAND and POSE tags, or if
-        those tags were misspelled. It enables a cleaner error message than the "OpenBabel failed
-        to read the counts line" that we would get otherwise.
+        Typically, this happens when there was content between the
+        LIGAND and POSE tags, or if those tags were misspelled. It
+        enables a cleaner error message than the "OpenBabel failed to
+        read the counts line" that we would get otherwise.
         """
         # Skip if accumulator contains only blank
         if self._ligand_accumulator.strip() == "":
@@ -876,7 +884,8 @@ class CaspParser:
     def save_images(self, dest_prefix, skip_large=200):
         """Save a PNG representation of the ligands in the prediction.
 
-        :param skip_large: skip saving images of ligands with more than this many atoms.
+        :param skip_large: skip saving images of ligands with more than
+            this many atoms.
         """
         for model_num, poses in self.ligands.items():
             for pose_num, pose in poses.items():

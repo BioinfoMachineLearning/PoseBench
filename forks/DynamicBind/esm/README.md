@@ -6,7 +6,6 @@
 ["Language models generalize beyond natural proteins" (Verkuil, Kabeli, et al., 2022)](https://doi.org/10.1101/2022.12.21.521521) uses ESM2 to design de novo proteins. The data associated with the preprint can be found in [scripts/design_lm/](scripts/design_lm/).
 ["A high-level programming language for generative protein design" (Hie, Candido, et al., 2022)](https://doi.org/10.1101/2022.12.21.521521) uses ESMFold to design proteins according to a high-level programming language.
 
-
 **Nov 2022**: Check out [ESM Metagenomic Atlas](https://esmatlas.com) of 600M metagenomic structures, with bulk download available [here](#atlas).
 
 This repository contains code and pre-trained weights for **Transformer protein language models** from the Meta Fundamental AI Research Protein Team (FAIR), including our state-of-the-art [**ESM-2** and **ESMFold**](#esmfold), as well as [**MSA Transformer**](https://www.biorxiv.org/content/10.1101/2021.02.12.430858v1), [**ESM-1v**](#zs_variant) for predicting variant effects and [**ESM-IF1**](#invf) for inverse folding.
@@ -29,6 +28,7 @@ For ESM2, ESMFold and ESM Atlas:
 ```
 
 For transformer protein language models:
+
 ```bibtex
 @article{rives2021biological,
   title={Biological structure and function emerge from scaling unsupervised learning to 250 million protein sequences},
@@ -44,6 +44,7 @@ For transformer protein language models:
   url={https://www.pnas.org/doi/full/10.1073/pnas.2016239118},
 }
 ```
+
 </details>
 
 <details open><summary><b>Table of contents</b></summary>
@@ -71,7 +72,7 @@ For transformer protein language models:
 <details><summary><b>What's New</b></summary>
 
 - December 2022: The Meta Fundamental AI Research Protein Team (FAIR) released two simultaneous preprints on protein design:
-["Language models generalize beyond natural proteins" (Verkuil, Kabeli, et al., 2022)](https://doi.org/10.1101/2022.12.21.521521), and ["A high-level programming language for generative protein design" (Hie, Candido, et al., 2022)](https://doi.org/10.1101/2022.12.21.521521).
+  ["Language models generalize beyond natural proteins" (Verkuil, Kabeli, et al., 2022)](https://doi.org/10.1101/2022.12.21.521521), and ["A high-level programming language for generative protein design" (Hie, Candido, et al., 2022)](https://doi.org/10.1101/2022.12.21.521521).
 - November 2022: ESM Metagenomic Atlas, a repository of 600M+ metagenomics structures released, see [website](https://esmatlas.com/) and [bulk download details](#atlas)
 - November 2022: ESMFold - new end-to-end structure prediction model released (see [Lin et al. 2022](https://doi.org/10.1101/2022.07.20.500902))
 - August 2022: ESM-2 - new SOTA Language Models released (see [Lin et al. 2022](https://doi.org/10.1101/2022.07.20.500902))
@@ -88,16 +89,15 @@ For transformer protein language models:
 
 ## Main models you should use <a name="main-models"></a>
 
-| Shorthand | `esm.pretrained.`           | Dataset | Description  |
-|-----------|-----------------------------|---------|--------------|
-| ESM-2    | `esm2_t36_3B_UR50D()` `esm2_t48_15B_UR50D()`       | UR50 (sample UR90)  | SOTA general-purpose protein language model. Can be used to predict structure, function and other protein properties directly from individual sequences. Released with [Lin et al. 2022](https://doi.org/10.1101/2022.07.20.500902) (Aug 2022 update). |
-| ESMFold   | `esmfold_v1()`         | PDB + UR50 | End-to-end single sequence 3D structure predictor (Nov 2022 update). |
-| ESM-MSA-1b| `esm_msa1b_t12_100M_UR50S()` |  UR50 + MSA  | MSA Transformer language model. Can be used to extract embeddings from an MSA. Enables SOTA inference of structure. Released with [Rao et al. 2021](https://www.biorxiv.org/content/10.1101/2021.02.12.430858v2) (ICML'21 version, June 2021).  |
-| ESM-1v    | `esm1v_t33_650M_UR90S_1()` ... `esm1v_t33_650M_UR90S_5()`| UR90  | Language model specialized for prediction of variant effects. Enables SOTA zero-shot prediction of the functional effects of sequence variations. Same architecture as ESM-1b, but trained on UniRef90. Released with [Meier et al. 2021](https://doi.org/10.1101/2021.07.09.450648). |
-| ESM-IF1  | `esm_if1_gvp4_t16_142M_UR50()` | CATH + UR50 | Inverse folding model. Can be used to design sequences for given structures, or to predict functional effects of sequence variation for given structures. Enables SOTA fixed backbone sequence design. Released with [Hsu et al. 2022](https://doi.org/10.1101/2022.04.10.487779). |
+| Shorthand  | `esm.pretrained.`                                         | Dataset            | Description                                                                                                                                                                                                                                                                           |
+| ---------- | --------------------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ESM-2      | `esm2_t36_3B_UR50D()` `esm2_t48_15B_UR50D()`              | UR50 (sample UR90) | SOTA general-purpose protein language model. Can be used to predict structure, function and other protein properties directly from individual sequences. Released with [Lin et al. 2022](https://doi.org/10.1101/2022.07.20.500902) (Aug 2022 update).                                |
+| ESMFold    | `esmfold_v1()`                                            | PDB + UR50         | End-to-end single sequence 3D structure predictor (Nov 2022 update).                                                                                                                                                                                                                  |
+| ESM-MSA-1b | `esm_msa1b_t12_100M_UR50S()`                              | UR50 + MSA         | MSA Transformer language model. Can be used to extract embeddings from an MSA. Enables SOTA inference of structure. Released with [Rao et al. 2021](https://www.biorxiv.org/content/10.1101/2021.02.12.430858v2) (ICML'21 version, June 2021).                                        |
+| ESM-1v     | `esm1v_t33_650M_UR90S_1()` ... `esm1v_t33_650M_UR90S_5()` | UR90               | Language model specialized for prediction of variant effects. Enables SOTA zero-shot prediction of the functional effects of sequence variations. Same architecture as ESM-1b, but trained on UniRef90. Released with [Meier et al. 2021](https://doi.org/10.1101/2021.07.09.450648). |
+| ESM-IF1    | `esm_if1_gvp4_t16_142M_UR50()`                            | CATH + UR50        | Inverse folding model. Can be used to design sequences for given structures, or to predict functional effects of sequence variation for given structures. Enables SOTA fixed backbone sequence design. Released with [Hsu et al. 2022](https://doi.org/10.1101/2022.04.10.487779).    |
 
 For a complete list of available models, with details and release notes, see [Pre-trained Models](#available-models).
-
 
 ## Usage <a name="usage"></a>
 
@@ -106,10 +106,11 @@ For a complete list of available models, with details and release notes, see [Pr
 An easy way to get started is to load ESM or ESMFold through the [HuggingFace transformers library](https://huggingface.co/docs/transformers/model_doc/esm),
 which has simplified the ESMFold dependencies and provides a standardized API and tools to work with state-of-the-art pretrained models.
 
-Alternatively, [ColabFold](https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/ESMFold.ipynb) has integrated ESMFold so that you can 
+Alternatively, [ColabFold](https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/ESMFold.ipynb) has integrated ESMFold so that you can
 easily run it directly in the browser on a Google Colab instance.
 
 We also provide an API which you can access through curl or on [the ESM Metagenomic Atlas web page](https://esmatlas.com/resources?action=fold).
+
 ```
 curl -X POST --data "KVFGRCELAAAMKRHGLDNYRGYSLGNWVCAAKFESNFNTQATNRNTDGSTDYGILQINSRWWCNDGRTPGSRNLCNIPCSALLSSDITASVNCAKKIVSDGNGMNAWVAWRNRCKGTDVQAWIRGCRL" https://api.esmatlas.com/foldSequence/v1/pdb/
 ```
@@ -189,7 +190,6 @@ for (_, seq), tokens_len, attention_contacts in zip(data, batch_lens, results["c
     plt.show()
 ```
 
-
 ### ESMFold Structure Prediction <a name="esmfold"></a>
 
 After installing with the `[esmfold]` option, you can use the ESMFold structure prediction model as follows:
@@ -220,7 +220,6 @@ print(struct.b_factor.mean())  # this will be the pLDDT
 # 88.3
 ```
 
-
 Besides `esm.pretrained.esmfold_v1()` which is the best performing model we recommend using, we
 also provide `esm.pretrained.esmfold_v0()` which was used for the experiments in
 [Lin et al. 2022](https://doi.org/10.1101/2022.07.20.500902).
@@ -243,7 +242,6 @@ By default, predictions will be batched together so that shorter sequences are p
 
 The `--cpu-offload` flag can be useful for making predictions on longer sequences. It will attempt to offload some parameters to the CPU RAM, rather than storing on GPU.
 
-
 ### Compute embeddings in bulk from FASTA <a name="bulk_fasta"></a>
 
 We provide a script that efficiently extracts embeddings in bulk from a FASTA file.
@@ -257,15 +255,16 @@ python scripts/extract.py esm2_t33_650M_UR50D examples/data/some_proteins.fasta 
 
 Directory `some_proteins_emb_esm2/` now contains one `.pt` file per FASTA sequence; use `torch.load()` to load them.
 `scripts/extract.py` has flags that determine what's included in the `.pt` file:
-* `--repr-layers` (default: final only) selects which layers to include embeddings from.
-* `--include` specifies what embeddings to save. You can use the following:
-  * `per_tok` includes the full sequence, with an embedding per amino acid (seq_len x hidden_dim).
-  * `mean` includes the embeddings averaged over the full sequence, per layer.
-  * `bos` includes the embeddings from the beginning-of-sequence token.
-  (NOTE: Don't use with the pre-trained models - we trained without bos-token supervision)
 
+- `--repr-layers` (default: final only) selects which layers to include embeddings from.
+- `--include` specifies what embeddings to save. You can use the following:
+  - `per_tok` includes the full sequence, with an embedding per amino acid (seq_len x hidden_dim).
+  - `mean` includes the embeddings averaged over the full sequence, per layer.
+  - `bos` includes the embeddings from the beginning-of-sequence token.
+    (NOTE: Don't use with the pre-trained models - we trained without bos-token supervision)
 
 ### CPU offloading for inference with large models <a name="fsdp"></a>
+
 If you want to load very large models like 15B and/or do inference on long sequences on your machine, regular GPU inference may lead to OOM errors.
 We show how to load the model with Fairscale's [Fully Sharded Data Parallel (FSDP)](https://fairscale.readthedocs.io/en/stable/api/nn/fsdp.html) and
 use its CPU offloading feature.
@@ -273,12 +272,14 @@ This allows to do inference of large models on a single GPU.
 Please check out `examples/esm2_infer_fairscale_fsdp_cpu_offloading.py` for more details.
 
 ### Zero-shot variant prediction <a name="zs_variant"></a>
+
 See "[examples/variant-prediction/](examples/variant-prediction/)" for code and pre-trained weights for the ESM-1v models described in
 [Language models enable zero-shot prediction of the effects of mutations on protein function. (Meier et al. 2021)](https://doi.org/10.1101/2021.07.09.450648).
 
 Note that ESM-2 could be used for variant prediction as well, and is expected to have similar performance to ESM-1v.
 
 ### Inverse folding <a name="invf"></a>
+
 See "[examples/inverse_folding/](examples/inverse_folding/)" for detailed user guide. The ESM-IF1 model is described as `GVPTransformer` in [Learning inverse folding from millions of predicted structures. (Hsu et al. 2022)](https://doi.org/10.1101/2022.04.10.487779).
 
 We also provide a colab notebook for the sequence design and sequence scoring functionalities.
@@ -297,6 +298,7 @@ The model is also trained with span masking to tolerate missing backbone
 coordinates and therefore can predict sequences for partially masked structures.
 
 #### Sample sequence designs for a given structure
+
 The environment setup is described in [this subsection of examples/inverse_folding](examples/inverse_folding#recommended-environment).
 
 To sample sequences for a given structure in PDB or mmCIF format, use the
@@ -307,6 +309,7 @@ For example, to sample 3 sequence designs for the golgi casein kinase structure
 (PDB [5YH2](https://www.rcsb.org/structure/5yh2); [PDB Molecule of the Month
 from January 2022](https://pdb101.rcsb.org/motm/265)), we can run the following
 command from the esm root directory:
+
 ```
 python examples/inverse_folding/sample_sequences.py examples/inverse_folding/data/5YH2.pdb \
   --chain C --temperature 1 --num-samples 3 --outpath examples/inverse_folding/output/sampled_sequences.fasta
@@ -321,12 +324,14 @@ The default sampling temperature is 1. To optimize for native sequence
 recovery, we recommend sampling with low temperature such as 1e-6.
 
 #### Scoring sequences
+
 To score the conditional log-likelihoods for sequences conditioned on a given
 structure, use the `score_log_likelihoods.py` script.
 
 For example, to score the sequences in `examples/inverse_folding/data/5YH2_mutated_seqs.fasta`
 according to the structure in `examples/inverse_folding/data/5YH2.pdb`, we can run
 the following command from the esm root directory:
+
 ```
 python examples/inverse_folding/score_log_likelihoods.py examples/inverse_folding/data/5YH2.pdb \
   examples/inverse_folding/data/5YH2_mutated_seqs.fasta --chain C \
@@ -346,7 +351,6 @@ Bulk download instructions available at a seperate README [here](scripts/atlas/R
 
 Searching a high quality subset of the ESM Atlas available [here](https://esmatlas.com/resources?action=search_structure), and Foldseek provides an API with no length limitations [here](https://search.foldseek.com/search)
 
-
 ## Notebooks <a name="notebooks"></a>
 
 ### Inverse folding - predicting or scoring sequences based on backbone structures
@@ -360,10 +364,9 @@ This notetook guide you through examples of sampling sequences, calculating cond
 
 [<img src="https://colab.research.google.com/assets/colab-badge.svg">](https://colab.research.google.com/github/facebookresearch/esm/blob/main/examples/sup_variant_prediction.ipynb)
 
-
 To help you get started with using the embeddings, this [jupyter notebook tutorial](examples/sup_variant_prediction.ipynb) shows how to train a supervised variant predictor using embeddings from ESM-1.
 You can adopt a similar protocol to train a model for any downstream task, even with limited data.
-First you can obtain the embeddings for ``examples/data/P62593.fasta`` either by [downloading the precomputed](https://dl.fbaipublicfiles.com/fair-esm/examples/P62593_reprs.tar.gz) embeddings
+First you can obtain the embeddings for `examples/data/P62593.fasta` either by [downloading the precomputed](https://dl.fbaipublicfiles.com/fair-esm/examples/P62593_reprs.tar.gz) embeddings
 as instructed in the notebook or by running the following:
 
 ```bash
@@ -377,8 +380,8 @@ Then, follow the remaining instructions in the tutorial. You can also run the tu
 **Note, alternatively use [the newer instructions for zero-shot variant prediction](examples/variant-prediction/),
 which predicts mutational effects without any supervised training.**
 
-
 ### Unsupervised contact prediction
+
 [<img src="https://colab.research.google.com/assets/colab-badge.svg">](https://colab.research.google.com/github/facebookresearch/esm/blob/main/examples/contact_prediction.ipynb)
 
 This [jupyter notebook tutorial](examples/contact_prediction.ipynb) demonstrates contact prediction with both the ESM-2 and MSA Transformer (ESM-MSA-1) models.
@@ -390,53 +393,52 @@ See [MSA Transformer. (Rao et al. 2021)](https://www.biorxiv.org/content/10.1101
 
 To get unsupervised attention-based contacts, call `model.predict_contacts(tokens)` or `model(tokens, return_contacts=True)`.
 
-
 ### ESMStructuralSplitDataset and self-attention contact prediction
+
 [<img src="https://colab.research.google.com/assets/colab-badge.svg">](https://colab.research.google.com/github/facebookresearch/esm/blob/main/examples/esm_structural_dataset.ipynb)
 
 And this [jupyter notebook tutorial](examples/esm_structural_dataset.ipynb) shows how to load and index the `ESMStructuralSplitDataset`,
 and computes the self-attention map unsupervised contact predictions using ESM-2.
 
-
 ## Available Models and Datasets <a name="available"></a>
 
 ### Pre-trained Models <a name="available-models"></a>
 
-| Shorthand | `esm.pretrained.`           | #layers | #params | Dataset | Embedding Dim |  Model URL (automatically downloaded to `~/.cache/torch/hub/checkpoints`) |
-|-----------|---------------------|---------|---------|---------|---------------|-----------------------------------------------------------------------|
-| ESM-2     | `esm2_t48_15B_UR50D`         | 48       | 15B         | UR50/D 2021_04                           | 5120 |  https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t48_15B_UR50D.pt          |
-|           | `esm2_t36_3B_UR50D`          | 36       | 3B          | UR50/D 2021_04                           | 2560 |  https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t36_3B_UR50D.pt           |
-|           | `esm2_t33_650M_UR50D`        | 33       | 650M        | UR50/D 2021_04                           | 1280 |  https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t33_650M_UR50D.pt         |
-|           | `esm2_t30_150M_UR50D`        | 30       | 150M        | UR50/D 2021_04                           | 640  |  https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t30_150M_UR50D.pt         |
-|           | `esm2_t12_35M_UR50D`         | 12       | 35M         | UR50/D 2021_04                           | 480  |  https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t12_35M_UR50D.pt          |
-|           | `esm2_t6_8M_UR50D`           | 6        | 8M          | UR50/D 2021_04                           | 320  |  https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t6_8M_UR50D.pt            |
-| ESMFold   | `esmfold_v1`                 | 48 (+36) | 690M (+3B)  | UR50/D 2021_04                           | -    |  https://dl.fbaipublicfiles.com/fair-esm/models/esmfold_3B_v1.pt               |
-|           | `esmfold_v0`                 | 48 (+36) | 690M (+3B)  | UR50/D 2021_04                           | -    |  https://dl.fbaipublicfiles.com/fair-esm/models/esmfold_3B_v0.pt               |
-| ESM-IF1   | `esm_if1_gvp4_t16_142M_UR50` | 20       | 124M        | CATH 4.3 + predicted structures for UR50 | 512  | https://dl.fbaipublicfiles.com/fair-esm/models/esm_if1_gvp4_t16_142M_UR50.pt   |
-| ESM-1v    | `esm1v_t33_650M_UR90S_[1-5]` | 33       | 650M        | UR90/S 2020_03                           | 1280 | https://dl.fbaipublicfiles.com/fair-esm/models/esm1v_t33_650M_UR90S_1.pt       |
-| ESM-MSA-1b| `esm_msa1b_t12_100M_UR50S`   | 12       | 100M        | UR50/S + MSA 2018_03                     | 768  | https://dl.fbaipublicfiles.com/fair-esm/models/esm_msa1b_t12_100M_UR50S.pt     |
-| ESM-MSA-1 | `esm_msa1_t12_100M_UR50S`    | 12       | 100M        | UR50/S + MSA 2018_03                     | 768  | https://dl.fbaipublicfiles.com/fair-esm/models/esm_msa1_t12_100M_UR50S.pt      |
-| ESM-1b    | `esm1b_t33_650M_UR50S`       | 33       | 650M        | UR50/S 2018_03                           | 1280 | https://dl.fbaipublicfiles.com/fair-esm/models/esm1b_t33_650M_UR50S.pt         |
-| ESM-1     | `esm1_t34_670M_UR50S`        | 34       | 670M        | UR50/S 2018_03                           | 1280 |  https://dl.fbaipublicfiles.com/fair-esm/models/esm1_t34_670M_UR50S.pt         |
-|           | `esm1_t34_670M_UR50D`        | 34       | 670M        | UR50/D 2018_03                           | 1280 |  https://dl.fbaipublicfiles.com/fair-esm/models/esm1_t34_670M_UR50D.pt         |
-|           | `esm1_t34_670M_UR100`        | 34       | 670M        | UR100 2018_03                            | 1280 |  https://dl.fbaipublicfiles.com/fair-esm/models/esm1_t34_670M_UR100.pt         |
-|           | `esm1_t12_85M_UR50S`         | 12       | 85M         | UR50/S 2018_03                           | 768  |  https://dl.fbaipublicfiles.com/fair-esm/models/esm1_t12_85M_UR50S.pt          |
-|           | `esm1_t6_43M_UR50S`          | 6        | 43M         | UR50/S 2018_03                           | 768  |  https://dl.fbaipublicfiles.com/fair-esm/models/esm1_t6_43M_UR50S.pt           |
-
+| Shorthand  | `esm.pretrained.`            | #layers  | #params    | Dataset                                  | Embedding Dim | Model URL (automatically downloaded to `~/.cache/torch/hub/checkpoints`)     |
+| ---------- | ---------------------------- | -------- | ---------- | ---------------------------------------- | ------------- | ---------------------------------------------------------------------------- |
+| ESM-2      | `esm2_t48_15B_UR50D`         | 48       | 15B        | UR50/D 2021_04                           | 5120          | https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t48_15B_UR50D.pt         |
+|            | `esm2_t36_3B_UR50D`          | 36       | 3B         | UR50/D 2021_04                           | 2560          | https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t36_3B_UR50D.pt          |
+|            | `esm2_t33_650M_UR50D`        | 33       | 650M       | UR50/D 2021_04                           | 1280          | https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t33_650M_UR50D.pt        |
+|            | `esm2_t30_150M_UR50D`        | 30       | 150M       | UR50/D 2021_04                           | 640           | https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t30_150M_UR50D.pt        |
+|            | `esm2_t12_35M_UR50D`         | 12       | 35M        | UR50/D 2021_04                           | 480           | https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t12_35M_UR50D.pt         |
+|            | `esm2_t6_8M_UR50D`           | 6        | 8M         | UR50/D 2021_04                           | 320           | https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t6_8M_UR50D.pt           |
+| ESMFold    | `esmfold_v1`                 | 48 (+36) | 690M (+3B) | UR50/D 2021_04                           | -             | https://dl.fbaipublicfiles.com/fair-esm/models/esmfold_3B_v1.pt              |
+|            | `esmfold_v0`                 | 48 (+36) | 690M (+3B) | UR50/D 2021_04                           | -             | https://dl.fbaipublicfiles.com/fair-esm/models/esmfold_3B_v0.pt              |
+| ESM-IF1    | `esm_if1_gvp4_t16_142M_UR50` | 20       | 124M       | CATH 4.3 + predicted structures for UR50 | 512           | https://dl.fbaipublicfiles.com/fair-esm/models/esm_if1_gvp4_t16_142M_UR50.pt |
+| ESM-1v     | `esm1v_t33_650M_UR90S_[1-5]` | 33       | 650M       | UR90/S 2020_03                           | 1280          | https://dl.fbaipublicfiles.com/fair-esm/models/esm1v_t33_650M_UR90S_1.pt     |
+| ESM-MSA-1b | `esm_msa1b_t12_100M_UR50S`   | 12       | 100M       | UR50/S + MSA 2018_03                     | 768           | https://dl.fbaipublicfiles.com/fair-esm/models/esm_msa1b_t12_100M_UR50S.pt   |
+| ESM-MSA-1  | `esm_msa1_t12_100M_UR50S`    | 12       | 100M       | UR50/S + MSA 2018_03                     | 768           | https://dl.fbaipublicfiles.com/fair-esm/models/esm_msa1_t12_100M_UR50S.pt    |
+| ESM-1b     | `esm1b_t33_650M_UR50S`       | 33       | 650M       | UR50/S 2018_03                           | 1280          | https://dl.fbaipublicfiles.com/fair-esm/models/esm1b_t33_650M_UR50S.pt       |
+| ESM-1      | `esm1_t34_670M_UR50S`        | 34       | 670M       | UR50/S 2018_03                           | 1280          | https://dl.fbaipublicfiles.com/fair-esm/models/esm1_t34_670M_UR50S.pt        |
+|            | `esm1_t34_670M_UR50D`        | 34       | 670M       | UR50/D 2018_03                           | 1280          | https://dl.fbaipublicfiles.com/fair-esm/models/esm1_t34_670M_UR50D.pt        |
+|            | `esm1_t34_670M_UR100`        | 34       | 670M       | UR100 2018_03                            | 1280          | https://dl.fbaipublicfiles.com/fair-esm/models/esm1_t34_670M_UR100.pt        |
+|            | `esm1_t12_85M_UR50S`         | 12       | 85M        | UR50/S 2018_03                           | 768           | https://dl.fbaipublicfiles.com/fair-esm/models/esm1_t12_85M_UR50S.pt         |
+|            | `esm1_t6_43M_UR50S`          | 6        | 43M        | UR50/S 2018_03                           | 768           | https://dl.fbaipublicfiles.com/fair-esm/models/esm1_t6_43M_UR50S.pt          |
 
 Here is a chronological list of the released models and the paper they were introduced in:
 
-| Shorthand  | Release Notes |
-|------------|---------------|
-| ESM-1      | Released with Rives et al. 2019 (Aug 2020 update). |
+| Shorthand  | Release Notes                                                      |
+| ---------- | ------------------------------------------------------------------ |
+| ESM-1      | Released with Rives et al. 2019 (Aug 2020 update).                 |
 | ESM-1b     | Released with Rives et al. 2019 (Dec 2020 update). See Appendix B. |
-| ESM-MSA-1  | Released with Rao et al. 2021 (Preprint v1). |
-| ESM-MSA-1b | Released with Rao et al. 2021 (ICML'21 version, June 2021). |
-| ESM-1v     | Released with Meier et al. 2021. |
-| ESM-IF1    | Released with Hsu et al. 2022. |
-| ESM-2      | Released with Lin et al. 2022. |
+| ESM-MSA-1  | Released with Rao et al. 2021 (Preprint v1).                       |
+| ESM-MSA-1b | Released with Rao et al. 2021 (ICML'21 version, June 2021).        |
+| ESM-1v     | Released with Meier et al. 2021.                                   |
+| ESM-IF1    | Released with Hsu et al. 2022.                                     |
+| ESM-2      | Released with Lin et al. 2022.                                     |
 
 ### ESM Structural Split Dataset <a name="available-esmssd"></a>
+
 This is a five-fold cross validation dataset of protein domain structures that can be used to measure generalization of representations
 across different levels of structural dissimilarity.
 The dataset implements structural holdouts at the family, superfamily, and fold
@@ -456,22 +458,24 @@ This [jupyter notebook tutorial](examples/esm_structural_dataset.ipynb) shows ho
 We also provide `msas` for each of the domains. The data can be directly downloaded below.
 
 | Name   | Description                                                                   | URL                                                                   |
-|--------|-------------------------------------------------------------------------------|-----------------------------------------------------------------------|
+| ------ | ----------------------------------------------------------------------------- | --------------------------------------------------------------------- |
 | splits | train/valid splits                                                            | https://dl.fbaipublicfiles.com/fair-esm/structural-data/splits.tar.gz |
 | pkl    | pkl objects containing sequence, SSP labels, distance map, and 3d coordinates | https://dl.fbaipublicfiles.com/fair-esm/structural-data/pkl.tar.gz    |
 | msas   | a3m files containing MSA for each domain                                      | https://dl.fbaipublicfiles.com/fair-esm/structural-data/msas.tar.gz   |
 
-### Pre-training Dataset Split  <a name="available-pretraining-split"></a>
+### Pre-training Dataset Split <a name="available-pretraining-split"></a>
+
 The split files establishing which UniRef50 clusters were used as held-out evaluation set for pre-training
 in [Rives et al. 2019](https://doi.org/10.1101/622803) and [Rao et al. 2021](https://doi.org/10.1101/2021.02.12.430858) can be found here:
-* [UniRef50 IDs of evaluation set](https://dl.fbaipublicfiles.com/fair-esm/pretraining-data/uniref201803_ur50_valid_headers.txt.gz): 3.016 M clusters
-* [UniRef100 IDs of evaluation set](https://dl.fbaipublicfiles.com/fair-esm/pretraining-data/uniref201803_ur100_valid_headers.txt.gz): 13.745 M proteins, expanding the same UniRef50 clusters.
+
+- [UniRef50 IDs of evaluation set](https://dl.fbaipublicfiles.com/fair-esm/pretraining-data/uniref201803_ur50_valid_headers.txt.gz): 3.016 M clusters
+- [UniRef100 IDs of evaluation set](https://dl.fbaipublicfiles.com/fair-esm/pretraining-data/uniref201803_ur100_valid_headers.txt.gz): 13.745 M proteins, expanding the same UniRef50 clusters.
 
 These files only contain only the UniRef50 IDs and UniRef100 IDs corresponding to the [UniRef database, 2018-03 release](https://ftp.uniprot.org/pub/databases/uniprot/previous_releases/release-2018_03/uniref/)
 which is released by the UniProt Consortium under a [Creative Commons Attribution (CC BY 4.0) License](https://www.uniprot.org/help/license).
 
-
 ### Comparison to related works <a name="perf_related"></a>
+
 <!--
 DO NOT EDIT THIS TABLE! This is the source of truth:
 https://docs.google.com/spreadsheets/d/1RPvWF47rIMEr-Jg-SRCoGElHcwCl5d7RyEeSyPgp59A/edit#gid=0
@@ -620,14 +624,13 @@ exported via https://www.tablesgenerator.com/html_tables
 
 Comparison to related protein language models on structure prediction tasks.
 
-* All contact numbers are the top-L,LR precision metric, where long range means sequence separation of at least 24 residues
-* For unsupervised contact prediction, a sparse linear combination of the attention heads is used to directly predict protein contacts,
-fitted with logistic regression on 20 structures.
-For more details on the method, see [Rao et al. 2020](https://doi.org/10.1101/2020.12.15.422761).
-* For structure prediction, an AlphaFold2 structure module is trained directly from the frozen language model embeddings.
-For more details on the method, see [Lin et al. 2022](https://doi.org/10.1101/2022.07.20.500902).
-* Direct coupling analysis methods (Gremlin, mfDCA, Psicov) and ESM-MSA-1 use the [trRosetta MSAs](https://yanglab.nankai.edu.cn/trRosetta/benchmark/), while other methods predict from single sequence.
-
+- All contact numbers are the top-L,LR precision metric, where long range means sequence separation of at least 24 residues
+- For unsupervised contact prediction, a sparse linear combination of the attention heads is used to directly predict protein contacts,
+  fitted with logistic regression on 20 structures.
+  For more details on the method, see [Rao et al. 2020](https://doi.org/10.1101/2020.12.15.422761).
+- For structure prediction, an AlphaFold2 structure module is trained directly from the frozen language model embeddings.
+  For more details on the method, see [Lin et al. 2022](https://doi.org/10.1101/2022.07.20.500902).
+- Direct coupling analysis methods (Gremlin, mfDCA, Psicov) and ESM-MSA-1 use the [trRosetta MSAs](https://yanglab.nankai.edu.cn/trRosetta/benchmark/), while other methods predict from single sequence.
 
 ## Citations <a name="citations"></a>
 

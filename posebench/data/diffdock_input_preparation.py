@@ -31,11 +31,13 @@ def write_input_csv(
 ):
     """Write a DiffDock inference CSV file.
 
-    :param smiles_and_pdb_id_list: A list of tuples each containing a SMILES string and a PDB ID.
+    :param smiles_and_pdb_id_list: A list of tuples each containing a
+        SMILES string and a PDB ID.
     :param output_csv_path: Path to the output CSV file.
-    :param input_protein_structure_dir: Path to the directory containing the protein structure
-        input files.
-    :param protein_filepath: Optional path to the protein structure file.
+    :param input_protein_structure_dir: Path to the directory containing
+        the protein structure input files.
+    :param protein_filepath: Optional path to the protein structure
+        file.
     :param ligand_smiles: Optional SMILES string of the ligand.
     :param input_id: Optional input ID.
     """
@@ -86,8 +88,9 @@ def write_input_csv(
     config_name="diffdock_input_preparation.yaml",
 )
 def main(cfg: DictConfig):
-    """Parse a data directory containing subdirectories of protein-ligand complexes and prepare
-    corresponding inference CSV file for the DiffDock model.
+    """Parse a data directory containing subdirectories of protein-ligand
+    complexes and prepare corresponding inference CSV file for the DiffDock
+    model.
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """

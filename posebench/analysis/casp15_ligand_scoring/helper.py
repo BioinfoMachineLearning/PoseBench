@@ -15,7 +15,8 @@ logger = logging.getLogger("helper." + __name__)
 
 
 class OSTLogSink(ost.LogSink):
-    """An OST log sink that redirects all OST log messages to the CAMEO logger."""
+    """An OST log sink that redirects all OST log messages to the CAMEO
+    logger."""
 
     def __init__(self):
         ost.LogSink.__init__(self)
@@ -94,7 +95,8 @@ def set_verbosity(level):
 
 @contextlib.contextmanager
 def temporary_file(yield_name=False, **kwargs):
-    """Context manager to create temporary file and close and delete it after use.
+    """Context manager to create temporary file and close and delete it after
+    use.
 
     :param yield_name: whether to yield the file object (False) or the file
       name (True).
@@ -165,8 +167,8 @@ def add_ligand_to_entity(entity, ligand, resnum=None, compound_id=None):
 def flat_mapping(mdl_residues, ref_residues):
     """LDDT requires a flat mapping with mdl_ch as key and ref_ch as value.
 
-    This function takes the residues in the model and reference (must have the same length) and
-    generates this map.
+    This function takes the residues in the model and reference (must
+    have the same length) and generates this map.
     """
     flat_mapping = dict()
     for mdl_residue, ref_residue in zip(mdl_residues, ref_residues):

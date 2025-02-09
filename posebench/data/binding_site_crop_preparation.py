@@ -24,7 +24,8 @@ logger = logging.getLogger(__name__)
 
 
 class BindingSiteSelect(Select):
-    """Custom Select class to filter residues based on binding site residue indices."""
+    """Custom Select class to filter residues based on binding site residue
+    indices."""
 
     def __init__(self, structure_residues: List[Any], binding_site_residue_indices: List[int]):
         """Initialize the BindingSiteSelect class."""
@@ -32,10 +33,12 @@ class BindingSiteSelect(Select):
         self.binding_site_residue_indices = set(binding_site_residue_indices)
 
     def accept_residue(self, residue: Any) -> bool:
-        """Accept residues based on whether they are part of the binding site or not.
+        """Accept residues based on whether they are part of the binding site
+        or not.
 
         :param residue: Residue object from the Bio.PDB module.
-        :return: Boolean indicating whether the residue is part of the binding site.
+        :return: Boolean indicating whether the residue is part of the
+            binding site.
         """
         return self.structure_residues.index(residue) in self.binding_site_residue_indices
 
@@ -47,16 +50,18 @@ def get_binding_site_residue_indices(
     protein_ligand_distance_threshold: float = 10.0,
     num_buffer_residues: int = 7,
 ) -> List[int]:
-    """Get the zero-based residue indices of the protein binding site based on native protein-
-    ligand interactions.
+    """Get the zero-based residue indices of the protein binding site based on
+    native protein- ligand interactions.
 
     :param protein_filepath: Path to the protein structure PDB file.
     :param ligand_filepath: Path to the ligand structure SDF file.
-    :param protein_ligand_distance_threshold: Heavy-atom distance threshold (in Angstrom) to use
-        for finding protein binding site residues in interaction with ligand heavy atoms.
-    :param num_buffer_residues: Number of residues to include as a buffer around each binding site
-        residue.
-    :return: List of zero-based residue indices that define the binding site.
+    :param protein_ligand_distance_threshold: Heavy-atom distance
+        threshold (in Angstrom) to use for finding protein binding site
+        residues in interaction with ligand heavy atoms.
+    :param num_buffer_residues: Number of residues to include as a
+        buffer around each binding site residue.
+    :return: List of zero-based residue indices that define the binding
+        site.
     """
     assert os.path.exists(
         protein_filepath
@@ -129,13 +134,14 @@ def crop_protein_binding_site(
     """Crop the protein binding site and save it to a separate file.
 
     :param protein_filepath: Path to the input protein structure file.
-    :param binding_site_residue_indices: List of zero-based residue indices that define the binding
-        site.
+    :param binding_site_residue_indices: List of zero-based residue
+        indices that define the binding site.
     :param output_dir: Path to the output directory.
     :param pdb_id: PDB ID of the protein-ligand complex.
-    :param filename_midfix: Optional "midfix" to insert into the cropped protein structure
-        filename.
-    :param filename_suffix: Optional suffix to append to the cropped protein structure filename.
+    :param filename_midfix: Optional "midfix" to insert into the cropped
+        protein structure filename.
+    :param filename_suffix: Optional suffix to append to the cropped
+        protein structure filename.
     """
     assert os.path.exists(
         protein_filepath
@@ -171,17 +177,21 @@ def save_cropped_protein_binding_site(
     protein_ligand_distance_threshold: float = 10.0,
     num_buffer_residues: int = 7,
 ):
-    """Save the cropped protein binding site to a separate file for each protein-ligand complex.
+    """Save the cropped protein binding site to a separate file for each
+    protein-ligand complex.
 
-    :param smiles_and_pdb_id_list: A list of tuples each containing a SMILES string and a PDB ID.
+    :param smiles_and_pdb_id_list: A list of tuples each containing a
+        SMILES string and a PDB ID.
     :param dataset: Dataset name.
-    :param input_data_dir: Path to directory of input protein-ligand complex subdirectories.
-    :param input_protein_structure_dir: Path to the directory containing the protein structure
-        input files.
-    :param protein_ligand_distance_threshold: Heavy-atom distance threshold (in Angstrom) to use
-        for finding protein binding site residues in interaction with ligand heavy atoms.
-    :param num_buffer_residues: Number of residues to include as a buffer around each binding site
-        residue.
+    :param input_data_dir: Path to directory of input protein-ligand
+        complex subdirectories.
+    :param input_protein_structure_dir: Path to the directory containing
+        the protein structure input files.
+    :param protein_ligand_distance_threshold: Heavy-atom distance
+        threshold (in Angstrom) to use for finding protein binding site
+        residues in interaction with ligand heavy atoms.
+    :param num_buffer_residues: Number of residues to include as a
+        buffer around each binding site residue.
     """
     output_protein_structure_dir = input_protein_structure_dir + "_bs_cropped"
     os.makedirs(output_protein_structure_dir, exist_ok=True)
@@ -231,8 +241,9 @@ def save_cropped_protein_binding_site(
     config_name="binding_site_crop_preparation.yaml",
 )
 def main(cfg: DictConfig):
-    """Parse a data directory containing subdirectories of protein-ligand complexes and prepare
-    corresponding inference CSV file for the DiffDock model.
+    """Parse a data directory containing subdirectories of protein-ligand
+    complexes and prepare corresponding inference CSV file for the DiffDock
+    model.
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """

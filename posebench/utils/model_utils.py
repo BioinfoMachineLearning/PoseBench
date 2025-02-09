@@ -6,7 +6,8 @@ import numpy as np
 
 
 def calculate_rmsd(positions1: np.array, positions2: np.array) -> float:
-    """Calculate the root-mean-square deviation (RMSD) between two sets of positions.
+    """Calculate the root-mean-square deviation (RMSD) between two sets of
+    positions.
 
     :param positions1: Array of positions for the first set of atoms.
     :param positions2: Array of positions for the second set of atoms.

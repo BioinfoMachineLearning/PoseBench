@@ -1170,7 +1170,8 @@ def extract_remarks_from_pdb(pdb_file: str, remark_number: Optional[int] = None)
     """Extract REMARK statements from a PDB file.
 
     :param pdb_file: Path to the PDB file.
-    :param remark_number: Specific REMARK number to filter. If None, extracts all REMARKs.
+    :param remark_number: Specific REMARK number to filter. If None,
+        extracts all REMARKs.
     :return list: List of REMARK statements.
     """
     remarks = []
@@ -1189,12 +1190,13 @@ def extract_remarks_from_pdb(pdb_file: str, remark_number: Optional[int] = None)
 def parse_inference_inputs_from_dir(
     input_data_dir: Union[str, Path], pdb_ids: Optional[Set[Any]] = None
 ) -> List[Tuple[str, str]]:
-    """Parse a data directory containing subdirectories of protein-ligand complexes and return
-    corresponding SMILES strings and PDB IDs.
+    """Parse a data directory containing subdirectories of protein-ligand
+    complexes and return corresponding SMILES strings and PDB IDs.
 
     :param input_data_dir: Path to the input data directory.
     :param pdb_ids: Optional set of IDs by which to filter processing.
-    :return: A list of tuples each containing a SMILES string and a PDB ID.
+    :return: A list of tuples each containing a SMILES string and a PDB
+        ID.
     """
     smiles_and_pdb_id_list = []
     casp_dataset_requested = os.path.basename(input_data_dir) == "targets"
@@ -1378,8 +1380,10 @@ def extract_sequences_from_protein_structure_file(
     """Extract the protein chain sequences from a protein structure file.
 
     :param protein_filepath: Path to the protein structure file.
-    :param structure: Optional BioPython structure object to use instead.
-    :param exclude_hetero: Whether to exclude hetero (e.g., water) residues.
+    :param structure: Optional BioPython structure object to use
+        instead.
+    :param exclude_hetero: Whether to exclude hetero (e.g., water)
+        residues.
     :return: A list of protein sequences.
     """
     if structure is None:
@@ -1456,11 +1460,13 @@ def renumber_pdb_df_residues(input_pdb_file: str, output_pdb_file: str):
 def renumber_biopython_structure_residues(
     structure: Structure, gap_insertion_point: Optional[str] = None
 ) -> Structure:
-    """Renumber residues in a PDB file using BioPython starting from 1 for each chain.
+    """Renumber residues in a PDB file using BioPython starting from 1 for each
+    chain.
 
     :param structure: BioPython structure object.
-    :param gap_insertion_point: Optional `:`-separated string representing the chain-residue pair
-        index of the residue at which to insert a single index gap.
+    :param gap_insertion_point: Optional `:`-separated string
+        representing the chain-residue pair index of the residue at
+        which to insert a single index gap.
     :return: BioPython structure object with renumbered residues.
     """
     # Iterate through each model in the structure
@@ -1502,11 +1508,12 @@ def renumber_biopython_structure_residues(
 def get_pdb_components_with_prody(
     input_pdb_file: str, load_hetatms_as_ligands: bool = False
 ) -> tuple:
-    """Split a protein-ligand pdb into protein and ligand components using ProDy.
+    """Split a protein-ligand pdb into protein and ligand components using
+    ProDy.
 
     :param input_pdb_file: Path to the input PDB file.
-    :param load_hetatms_as_ligands: Whether to load HETATM records as ligands if no ligands are
-        initially found.
+    :param load_hetatms_as_ligands: Whether to load HETATM records as
+        ligands if no ligands are initially found.
     :return: Tuple of protein and ligand components.
     """
     pdb = parsePDB(input_pdb_file)
@@ -1523,8 +1530,9 @@ def read_ligand_expo(
     ligand_expo_url: str = "http://ligand-expo.rcsb.org/dictionaries",
     ligand_expo_filename: str = "Components-smiles-stereo-oe.smi",
 ) -> Dict[str, Any]:
-    """Read Ligand Expo data, first trying to find a file called `Components-smiles-stereo-oe.smi`
-    in the current directory. If the file can't be found, grab it from the RCSB.
+    """Read Ligand Expo data, first trying to find a file called `Components-
+    smiles-stereo-oe.smi` in the current directory. If the file can't be found,
+    grab it from the RCSB.
 
     :param ligand_expo_url: URL to Ligand Expo.
     :param ligand_expo_filename: Name of the Ligand Expo file.
@@ -1560,7 +1568,8 @@ def write_pdb_with_prody(atoms, pdb_name, add_element_types=False):
 
     :param atoms: atoms object from prody
     :param pdb_name: base name for the pdb file
-    :param add_element_types: whether to add element types to the pdb file
+    :param add_element_types: whether to add element types to the pdb
+        file
     """
     writePDB(pdb_name, atoms)
     if add_element_types:
@@ -1675,21 +1684,24 @@ def extract_protein_and_ligands_with_prody(
     ligand_expo_mapping: Optional[Dict[str, Any]] = None,
     permute_ligand_smiles: bool = False,
 ) -> Optional[Chem.Mol]:
-    """Using ProDy, extract protein atoms and ligand molecules from a PDB file and write them to
-    separate files.
+    """Using ProDy, extract protein atoms and ligand molecules from a PDB file
+    and write them to separate files.
 
     :param input_pdb_file: The input PDB file.
-    :param protein_output_pdb_file: The output PDB file for the protein atoms.
-    :param ligands_output_sdf_file: The output SDF file for the ligand molecules.
+    :param protein_output_pdb_file: The output PDB file for the protein
+        atoms.
+    :param ligands_output_sdf_file: The output SDF file for the ligand
+        molecules.
     :param sanitize: Whether to sanitize the ligand molecules.
-    :param add_element_types: Whether to add element types to the protein atoms.
+    :param add_element_types: Whether to add element types to the
+        protein atoms.
     :param write_output_files: Whether to write the output files.
-    :param load_hetatms_as_ligands: Whether to load HETATM records as ligands if no ligands are
-        initially found.
+    :param load_hetatms_as_ligands: Whether to load HETATM records as
+        ligands if no ligands are initially found.
     :param ligand_smiles: The SMILES string of the ligand molecule.
     :param ligand_expo_mapping: The Ligand Expo mapping.
-    :param permute_ligand_smiles: Whether to permute the ligand SMILES string's fragment components
-        if necessary.
+    :param permute_ligand_smiles: Whether to permute the ligand SMILES
+        string's fragment components if necessary.
     :return: The combined final ligand molecule(s) as an RDKit molecule.
     """
     protein, ligand = get_pdb_components_with_prody(
@@ -1893,13 +1905,15 @@ def parse_fasta(
     only_mols: List[Literal["protein", "na"]] | None = None,
     collate_by_pdb_id: bool = False,
 ) -> Dict[str, str]:
-    """Parses a FASTA file into a dictionary and optionally filters by molecule type.
+    """Parses a FASTA file into a dictionary and optionally filters by molecule
+    type.
 
     :param file_path: Path to the .txt FASTA file.
-    :param only_mols: List of molecule types to filter (e.g., ['protein', 'na']).
+    :param only_mols: List of molecule types to filter (e.g.,
+        ['protein', 'na']).
     :param collate_by_pdb_id: Whether to group sequences by PDB ID.
-    :return: A dictionary where keys are sequence IDs and values are tuples (description,
-        sequence).
+    :return: A dictionary where keys are sequence IDs and values are
+        tuples (description, sequence).
     """
     fasta_dict = {}
     current_id = None

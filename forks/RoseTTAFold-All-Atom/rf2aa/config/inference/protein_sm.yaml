@@ -4,7 +4,7 @@ defaults:
 job_name: 7qxr
 
 protein_inputs:
-  A: 
+  A:
     fasta_file: examples/protein/7qxr.fasta
 
 sm_inputs:

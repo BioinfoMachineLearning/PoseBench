@@ -335,14 +335,16 @@ def build_inference_script(
     :param repeat_index: Index of the repeat.
     :param cuda_device_index: Index of the CUDA device to use.
     :param output_script_dir: Output script directory.
-    :param pocket_only_baseline: Whether to perform a pocket-only baseline for the PoseBusters
-        Benchmark set.
+    :param pocket_only_baseline: Whether to perform a pocket-only
+        baseline for the PoseBusters Benchmark set.
     :param v1_baseline: Whether to perform a V1 baseline for DiffDock.
-    :param no_ilcl: Whether to use model weights trained with an inter-ligand clash loss (ILCL) for
-        the CASP15 set.
-    :param relax_protein: Whether to relax the protein structure before scoring.
+    :param no_ilcl: Whether to use model weights trained with an inter-
+        ligand clash loss (ILCL) for the CASP15 set.
+    :param relax_protein: Whether to relax the protein structure before
+        scoring.
     :param export_hpc_headers: Whether to export HPC headers.
-    :param verbose: Whether to print verbose (i.e., invalid configuration) output.
+    :param verbose: Whether to print verbose (i.e., invalid
+        configuration) output.
     :param gpu_partition: GPU partition to use.
     :param gpu_account: GPU account to use.
     :param gpu_type: GPU type to use.
@@ -715,20 +717,24 @@ def build_inference_scripts(
     """Build inference scripts according to user sweep arguments.
 
     :param methods_to_sweep: Inference methods to sweep.
-    :param vina_binding_site_methods_to_sweep: Vina binding site methods to sweep.
-    :param ensemble_ranking_methods_to_sweep: Ensemble ranking methods to sweep.
+    :param vina_binding_site_methods_to_sweep: Vina binding site methods
+        to sweep.
+    :param ensemble_ranking_methods_to_sweep: Ensemble ranking methods
+        to sweep.
     :param datasets_to_sweep: Datasets to sweep.
     :param num_sweep_repeats: Number of repeats in the sweep.
     :param cuda_device_index: Index of the CUDA device to use.
     :param output_script: Output script file.
-    :param pocket_only_baseline: Whether to perform a pocket-only baseline for the PoseBusters
-        Benchmark set.
+    :param pocket_only_baseline: Whether to perform a pocket-only
+        baseline for the PoseBusters Benchmark set.
     :param v1_baseline: Whether to perform a V1 baseline for DiffDock.
-    :param no_ilcl: Whether to use model weights trained with an inter-ligand clash loss (ILCL) for
-        the CASP15 set.
-    :param relax_protein: Whether to relax the protein structure before scoring.
+    :param no_ilcl: Whether to use model weights trained with an inter-
+        ligand clash loss (ILCL) for the CASP15 set.
+    :param relax_protein: Whether to relax the protein structure before
+        scoring.
     :param export_hpc_headers: Whether to export HPC headers.
-    :param verbose: Whether to print verbose (i.e., invalid configuration) output.
+    :param verbose: Whether to print verbose (i.e., invalid
+        configuration) output.
     """
     for method in methods_to_sweep:
         for vina_binding_site_method in vina_binding_site_methods_to_sweep:

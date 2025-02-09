@@ -94,13 +94,9 @@ def get_parser():
 
 def main(args):
     # Counts
-    num_targets = (
-        num_target_ligands
-    ) = (
-        num_prediction_files
-    ) = (
-        num_parsable_prediction_files
-    ) = num_valid_prediction_files = num_models = num_poses = num_ligands = 0
+    num_targets = num_target_ligands = num_prediction_files = num_parsable_prediction_files = (
+        num_valid_prediction_files
+    ) = num_models = num_poses = num_ligands = 0
     participant_groups = set()
     predictions = set()
     prediction_filename_re = re.compile(r"([TRH]\d+(v\d)?(LG\d+))_\d")

@@ -11,7 +11,7 @@
 **Changes**:
 
 - Introducing **DockGen-E**, a new version of the DockGen benchmark dataset featuring enhanced biomolecular context for docking and co-folding predictions - namely, now all DockGen complexes represent the first (biologically relevant) bioassembly of the corresponding PDB structure
-- For the single-ligand datasets (i.e., Astex Diverse, PoseBusters Benchmark, and DockGen), now providing each baseline method with primary *and cofactor* ligand SMILES strings for prediction, to enhance the biomolecular context of these methods' predicted structures - as a result, for these single-ligand datasets, now the predicted ligand *most similar* to the primary ligand (in terms of both Tanimoto and structural similarity) is selected for scoring (which adds an additional layer of challenges for baseline methods)
+- For the single-ligand datasets (i.e., Astex Diverse, PoseBusters Benchmark, and DockGen), now providing each baseline method with primary _and cofactor_ ligand SMILES strings for prediction, to enhance the biomolecular context of these methods' predicted structures - as a result, for these single-ligand datasets, now the predicted ligand _most similar_ to the primary ligand (in terms of both Tanimoto and structural similarity) is selected for scoring (which adds an additional layer of challenges for baseline methods)
 - Updated Chai-1's inference code to commit `44375d5d4ea44c0b5b7204519e63f40b063e4a7c`, and ran it also with standardized (paired) MSAs
 - Replaced all AlphaFold 3 server predictions of each dataset's protein structures with predictions from AlphaFold 3's local inference code
 

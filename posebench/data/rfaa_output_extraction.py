@@ -25,7 +25,8 @@ logger = logging.getLogger(__name__)
 
 
 def insert_unique_ligand_atom_name(input_pdb_file: str, output_pdb_file: str):
-    """Add unique identifier to ligand atoms with the same residue ID and chain ID.
+    """Add unique identifier to ligand atoms with the same residue ID and chain
+    ID.
 
     :param input_pdb_file: Path to the input PDB file.
     :param output_pdb_file: Path to the output PDB file.

@@ -24,7 +24,8 @@ def assemble_baseline_command(cfg: DictConfig) -> List[str]:
     """Assemble the baseline command.
 
     :param cfg: The configuration object.
-    :return: The baseline command as a list of strings (i.e., command segments).
+    :return: The baseline command as a list of strings (i.e., command
+        segments).
     """
     if cfg.method in [
         "diffdock",
@@ -94,8 +95,8 @@ def query_gpu_memory():
     config_name="benchmark_baseline_compute_resources.yaml",
 )
 def main(cfg: DictConfig):
-    """Benchmark the baseline compute resources (CPU and GPU memory usage) required by an external
-    script."""
+    """Benchmark the baseline compute resources (CPU and GPU memory usage)
+    required by an external script."""
     start_time = time.time()
 
     # Run the baseline command

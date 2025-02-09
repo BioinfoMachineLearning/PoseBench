@@ -21,8 +21,8 @@ class OpenBabelReadError(ValueError):
 def read_ligands_from_file(file, formats=["sdf", "mol2"]):
     """Read one or more ligands from file. Return them as a list.
 
-    This function either returns a list with at least one molecule, or raises and
-    OpenBabelReadError.
+    This function either returns a list with at least one molecule, or
+    raises and OpenBabelReadError.
     """
 
     # Read in the file.
@@ -36,8 +36,8 @@ def read_ligands_from_file(file, formats=["sdf", "mol2"]):
 def read_ligands_from_string(string, formats=["sdf", "mol2"]):
     """Read one or more ligands from string. Return them as a list.
 
-    This function either returns a list with at least one molecule, or raises and
-    OpenBabelReadError.
+    This function either returns a list with at least one molecule, or
+    raises and OpenBabelReadError.
     """
     ligands = []
     obConversion = openbabel.OBConversion()
@@ -76,7 +76,8 @@ def write_mol(mol, dest, format):
 
 
 def mol_to_string(mol, format):
-    """Return a string representation of the OpenBabel molecule `mol` in `format`."""
+    """Return a string representation of the OpenBabel molecule `mol` in
+    `format`."""
     obConversion = openbabel.OBConversion()
     obConversion.SetOutFormat(format)
     return obConversion.WriteString(mol)
@@ -121,7 +122,8 @@ class OutputGrabber:
         os.dup2(self.pipe_in, self.origstreamfd)
 
     def stop(self):
-        """Stop capturing the stream data and save the text in `capturedtext`."""
+        """Stop capturing the stream data and save the text in
+        `capturedtext`."""
         # Print the escape character to make the readOutput method stop:
         self.origstream.write(self.escape_char)
         # Flush the stream to make sure all our data goes in before
@@ -137,7 +139,8 @@ class OutputGrabber:
         os.close(self.streamfd)
 
     def readOutput(self):
-        """Read the stream data (one byte at a time) and save the text in `capturedtext`."""
+        """Read the stream data (one byte at a time) and save the text in
+        `capturedtext`."""
         while True:
             char = os.read(self.pipe_out, 1).decode(self.origstream.encoding)
             if not char or self.escape_char in char:

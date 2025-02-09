@@ -5,7 +5,7 @@ job_name: "3fap"
 protein_inputs:
   A:
     fasta_file: examples/protein/3fap_A.fasta
-  B: 
+  B:
     fasta_file: examples/protein/3fap_B.fasta
 
 sm_inputs:

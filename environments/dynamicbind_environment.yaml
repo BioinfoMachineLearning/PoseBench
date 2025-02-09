@@ -261,5 +261,4 @@ dependencies:
       - unicodedata2==15.0.0
       - urllib3==1.26.15
       - wheel==0.38.4
-prefix:
-  forks/DynamicBind/DynamicBind
+prefix: forks/DynamicBind/DynamicBind

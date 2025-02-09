@@ -7,10 +7,10 @@ best_model_save_frequency: 5
 c_alpha_max_neighbors: 24
 cache_creation_id: 1
 cache_ids_to_combine:
-- '1'
-- '2'
-- '3'
-- '4'
+  - "1"
+  - "2"
+  - "3"
+  - "4"
 cache_path: data/cache
 ckpt: best_model.pt
 confidence_dropout: 0.0
@@ -55,7 +55,7 @@ receptor_radius: 15.0
 remove_hs: true
 restart_dir: null
 rmsd_classification_cutoff:
-- 2.0
+  - 2.0
 rmsd_prediction: false
 rot_sigma_max: 1.55
 rot_sigma_min: 0.03

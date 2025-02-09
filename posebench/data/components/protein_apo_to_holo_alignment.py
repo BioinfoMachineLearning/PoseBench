@@ -259,8 +259,8 @@ def align_prediction(
     dataset_ligand_coords: Optional[np.ndarray],
     return_rotation: bool = False,
 ) -> Union[Tuple[Rotation, np.ndarray, np.ndarray], float]:
-    """Perform an alignment of apo and holo protein structures and ligand coordinates using an
-    optimized smoothing factor.
+    """Perform an alignment of apo and holo protein structures and ligand
+    coordinates using an optimized smoothing factor.
 
     :param smoothing_factor: Smoothing factor controlling the alignment.
     :param dataset_calpha_coords: Array of Ca atom coordinates for a dataset's protein structure.
@@ -313,18 +313,21 @@ def get_alignment_rotation(
     dataset: str,
     dataset_path: str,
 ) -> Tuple[Optional[Rotation], Optional[np.ndarray], Optional[np.ndarray]]:
-    """Calculate the alignment rotation between apo and holo protein structures and their ligand
-    coordinates.
+    """Calculate the alignment rotation between apo and holo protein structures
+    and their ligand coordinates.
 
     :param pdb_id: PDB ID of the protein-ligand complex.
-    :param dataset_protein_path: Filepath to the PDB file of the protein structure from a dataset.
-    :param predicted_protein_path: Filepath to the PDB file of the protein structure from a
-        structure predictor.
+    :param dataset_protein_path: Filepath to the PDB file of the protein
+        structure from a dataset.
+    :param predicted_protein_path: Filepath to the PDB file of the
+        protein structure from a structure predictor.
     :param dataset: Name of the dataset.
-    :param dataset_path: Filepath to the PDB file containing ligand coordinates.
-    :return: A tuple containing rotation matrix (Optional[Rotation]), centroid of Ca atoms for a
-        dataset protein (Optional[np.ndarray]), and centroid of Ca atoms for a prediction
-        (Optional[np.ndarray]).
+    :param dataset_path: Filepath to the PDB file containing ligand
+        coordinates.
+    :return: A tuple containing rotation matrix (Optional[Rotation]),
+        centroid of Ca atoms for a dataset protein
+        (Optional[np.ndarray]), and centroid of Ca atoms for a
+        prediction (Optional[np.ndarray]).
     """
     raise NotImplementedError(
         "This function is not implemented in the current version of the codebase."
@@ -403,12 +406,15 @@ def get_alignment_rotation(
 def align_apo_structure_to_holo_structure(
     cfg: DictConfig, filename: str, cutoff: float = 10.0, verbose: bool = True
 ):
-    """Align a given predicted apo structure to its corresponding holo structure.
+    """Align a given predicted apo structure to its corresponding holo
+    structure.
 
     :param cfg: Hydra config for the alignment.
     :param filename: Filename of the predicted apo structure.
-    :param cutoff: Distance cutoff in Å to define the binding site (default 10.0).
-    :param verbose: Whether to print the alignment RMSD and number of aligned atoms (default True).
+    :param cutoff: Distance cutoff in Å to define the binding site
+        (default 10.0).
+    :param verbose: Whether to print the alignment RMSD and number of
+        aligned atoms (default True).
     """
     from pymol import cmd
 
@@ -523,7 +529,8 @@ def align_apo_structure_to_holo_structure(
     config_name="protein_apo_to_holo_alignment.yaml",
 )
 def main(cfg: DictConfig):
-    """Align all predicted apo structures to their corresponding holo structures.
+    """Align all predicted apo structures to their corresponding holo
+    structures.
 
     :param cfg: Hydra config for the alignments.
     """

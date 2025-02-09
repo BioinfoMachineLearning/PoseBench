@@ -1,5 +1,4 @@
-name:
-  DiffDock
+name: DiffDock
 channels:
   - pyg
   - pytorch
@@ -342,5 +341,4 @@ dependencies:
       - yarl==1.9.2
       - zope-event==5.0
       - zope-interface==6.0
-prefix:
-  forks/DiffDock/DiffDock
+prefix: forks/DiffDock/DiffDock

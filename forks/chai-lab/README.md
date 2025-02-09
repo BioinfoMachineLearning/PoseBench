@@ -39,8 +39,9 @@ By default, weights are automatically downloaded and stored in <package_root>/do
 In cases where you want to control the download location (e.g. on a mounted drive in Docker), you can use the CHAI_DOWNLOADS_DIR envvar to control the download location. For example:
 
 ```bash
-CHAI_DOWNLOADS_DIR=/tmp/downloads python ./examples/predict_structure.py 
+CHAI_DOWNLOADS_DIR=/tmp/downloads python ./examples/predict_structure.py
 ```
+
 </p>
 </details>
 
@@ -62,6 +63,7 @@ We provide a [web server](https://lab.chaidiscovery.com) so you can test the Cha
 </p>
 
 ## Using experimental restraints
+
 Chai-1 uniquely offers the ability to fold complexes with user-specified "restraints" as inputs. These restraints specify inter-chain contacts at various resolutions that are used to guide Chai-1 in folding the complex. See [restraints documentation](examples/restraints/README.md) for details.
 
 <p align="center">
@@ -106,7 +108,7 @@ If you find Chai-1 useful in your research or use any structures produced by the
 }
 ```
 
-## Licence 
+## Licence
 
 See [LICENSE.md](LICENSE.md).
 

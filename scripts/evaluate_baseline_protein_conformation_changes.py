@@ -27,7 +27,8 @@ logger = logging.getLogger(__name__)
     config_name="evaluate_baseline_protein_conformation_changes.yaml",
 )
 def main(cfg: DictConfig):
-    """Main function for evaluating protein conformation changes of the baseline methods."""
+    """Main function for evaluating protein conformation changes of the
+    baseline methods."""
     from pymol import cmd
 
     alignment_results = []

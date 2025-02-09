@@ -8,7 +8,7 @@ All structures in the ESM Metagenomic Atlas were predicted with the ESMFold mode
 We find that protein structures with predicted LDDT > 0.7 and predict TM > 0.7 to be both reasonably well structured and interesting.
 Therefore, we provide both the small set of "high quality" metagenomic structures, as well as the full set.
 The small set of structures is built from taking a 30% sequence identity clustering of MGnify90, and using the best structure from each cluster.
-The best structure is selected using the score pTM * pLDDT.
+The best structure is selected using the score pTM \* pLDDT.
 
 The high quality structures are around 1TB in size.
 
@@ -18,6 +18,7 @@ We also provide a metadata dataframe: <https://dl.fbaipublicfiles.com/esmatlas/v
 You can load the file with pandas: `df = pd.read_parquet('stats.parquet')`.
 The dataframe has length `617051007`, the file size is 6.0GB and has md5 hash `3948a44562b6bd4c184167465eec17de`.
 This dataframe has 4 columns:
+
 - `id` is the MGnify ID
 - `ptm` is the predicted TM score
 - `plddt` is the predicted average lddt
@@ -30,6 +31,7 @@ The fasta file has `617051007` records matching the stats file, has file size 11
 We recommend using `s5cmd` or `aria2c` to download files (installable via anaconda).
 
 **To download any of the structures provided, please use this `aria2c` command**
+
 ```
 aria2c --dir=/path/to/download/to --input-file=url-file-provided.txt
 ```
@@ -39,10 +41,10 @@ NOTE: Predicted Aligned errors will be uploaded at a later date, stay tuned!
 # High quality MGnify30 structures
 
 The high quality MGnify30 structures are built using this procedure:
+
 1. MGnify90 is clustered down to 30% sequence similarity with `mmseqs easy-linclust --kmer-per-seq 100 -cluster-mode 2 --cov-mode 1 -c 0.8`.
 1. Structures are filtered to >0.7 pTM and pLDDT
 1. Structures are sorted by `pTM * pLDDT` and the best from each cluster is chosen as the representative.
-
 
 The high quality structures can be downloaded from the s3 paths below:
 
