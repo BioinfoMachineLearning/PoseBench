@@ -16,7 +16,7 @@ jobs:
       - name: Setup miniconda
         uses: conda-incubator/setup-miniconda@v3
         with:
-          miniforge-variant: Mambaforge
+          miniforge-variant: Miniforge3
           python-version: ${{ matrix.python-version }}
           auto-update-conda: true
           use-mamba: true
