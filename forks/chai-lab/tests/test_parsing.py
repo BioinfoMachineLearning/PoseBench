@@ -1,6 +1,6 @@
 # Copyright (c) 2024 Chai Discovery, Inc.
-# This source code is licensed under the Chai Discovery Community License
-# Agreement (LICENSE.md) found in the root directory of this source tree.
+# Licensed under the Apache License, Version 2.0.
+# See the LICENSE file for details.
 
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -68,3 +68,12 @@ def test_fasta_parsing():
     assert records[0].sequence == "RKDES"
     assert records[1].header == "bar"
     assert records[1].sequence == "KEDESRRR"
+
+
+def test_smiles_parsing():
+    smiles = ">smiles\nCc1cc2nc3c(=O)[nH]c(=O)nc-3n(C[C@H](O)[C@H](O)[C@H](O)CO)c2cc1C"
+    with TemporaryDirectory() as tmpdir:
+        fa_file = Path(tmpdir) / "test.fasta"
+        fa_file.write_text(smiles)
+        records = read_fasta(fa_file)
+    assert len(records) == 1
