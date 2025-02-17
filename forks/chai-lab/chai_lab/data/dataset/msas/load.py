@@ -51,9 +51,8 @@ def get_msa_contexts(
         path = msa_directory / expected_basename(seq)
         # If the MSA is missing, or the query is not a protein, return an empty MSA
         if not path.is_file() or etype != EntityType.PROTEIN:
-            if etype == EntityType.PROTEIN:
-                # Try parsing custom chain MSA file
-                path = msa_directory / f"{pdb_id}_chain_{chain_index}.aligned.pqt"
+            # Try parsing custom chain MSA file
+            path = msa_directory / f"{pdb_id}_chain_{chain_index}.aligned.pqt"
             if not path.is_file():
                 # Warn for molecules that have missing MSAs
                 logger.warning(f"No MSA at {path} found for {pdb_id} sequence: {seq}")
