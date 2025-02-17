@@ -56,7 +56,7 @@ def get_msa_contexts(
                 path = msa_directory / f"{pdb_id}_chain_{chain_index}.aligned.pqt"
             if not path.is_file():
                 # Warn for molecules that have missing MSAs
-                logger.warning(f"No MSA found for {pdb_id} sequence: {seq}")
+                logger.warning(f"No MSA at {path} found for {pdb_id} sequence: {seq}")
             [tokenized_seq], _ = tokenize_sequences_to_arrays([seq])
             return MSAContext.create_single_seq(
                 MSADataSource.QUERY, tokens=torch.from_numpy(tokenized_seq)
