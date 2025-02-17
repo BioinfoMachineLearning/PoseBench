@@ -139,7 +139,7 @@ COMMANDS = {
             "conda deactivate",
         ],
         "extract_outputs": [
-            "python3 posebench/data/rfaa_output_extraction.py dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+            "python3 posebench/data/rfaa_output_extraction.py dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index} input_data_dir=data/casp15_set/targets",
         ],
         "relax": [
             "python3 posebench/models/inference_relaxation.py method=rfaa dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true",
@@ -170,7 +170,7 @@ COMMANDS = {
             "conda deactivate",
         ],
         "extract_outputs": [
-            "python3 posebench/data/chai_output_extraction.py dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+            "python3 posebench/data/chai_output_extraction.py dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index} input_data_dir=data/casp15_set/targets",
         ],
         "relax": [
             "python3 posebench/models/inference_relaxation.py method=chai-lab dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true repeat_index={repeat_index}",
@@ -193,7 +193,7 @@ COMMANDS = {
     },
     "alphafold3": {
         "extract_outputs": [
-            "python3 posebench/data/af3_output_extraction.py dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index}",
+            "python3 posebench/data/af3_output_extraction.py dataset={dataset} pocket_only_baseline={pocket_only_baseline} repeat_index={repeat_index} input_data_dir=data/casp15_set/targets",
         ],
         "relax": [
             "python3 posebench/models/inference_relaxation.py method=alphafold3 dataset={dataset} cuda_device_index={cuda_device_index} pocket_only_baseline={pocket_only_baseline} relax_protein={relax_protein} remove_initial_protein_hydrogens=true repeat_index={repeat_index}",
@@ -240,7 +240,7 @@ COMMANDS = {
     },
     "tulip": {
         "prepare_input": [
-            "python3 posebench/data/tulip_output_extraction.py dataset={dataset}",
+            "python3 posebench/data/tulip_output_extraction.py dataset={dataset} input_data_dir=data/casp15_set/targets",
         ],
         "relax": [
             "python3 posebench/models/inference_relaxation.py method=tulip dataset={dataset} cuda_device_index={cuda_device_index} relax_protein={relax_protein} remove_initial_protein_hydrogens=true assign_partial_charges_manually=true repeat_index={repeat_index}",
