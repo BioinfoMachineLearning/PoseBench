@@ -3,6 +3,7 @@
 # See the LICENSE file for details.
 
 
+import ihm
 import math
 from collections import Counter
 from dataclasses import dataclass
@@ -449,7 +450,10 @@ def run_inference(
     seed: int | None = None,
     device: str | None = None,
     low_memory: bool = True,
+    cif_line_wrap: int = 1000,
 ) -> StructureCandidates:
+    ihm.dumper.set_line_wrap(cif_line_wrap)
+
     if output_dir.exists():
         assert not any(
             output_dir.iterdir()
