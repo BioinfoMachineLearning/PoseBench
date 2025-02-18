@@ -99,6 +99,8 @@ from chai_lab.utils.plot import plot_msa
 from chai_lab.utils.tensor_utils import move_data_to_device, set_seed, und_self
 from chai_lab.utils.typing import Float, typecheck
 
+ihm.dumper.set_line_wrap(1000)
+
 
 class UnsupportedInputError(RuntimeError):
     pass
@@ -450,10 +452,7 @@ def run_inference(
     seed: int | None = None,
     device: str | None = None,
     low_memory: bool = True,
-    cif_line_wrap: int = 1000,
 ) -> StructureCandidates:
-    ihm.dumper.set_line_wrap(cif_line_wrap)
-
     if output_dir.exists():
         assert not any(
             output_dir.iterdir()
