@@ -84,7 +84,8 @@ pip install -e . --no-deps
 # - casp15_ligand_scoring environment (~3 GB)
 mamba env create -f environments/casp15_ligand_scoring_environment.yaml
 conda activate casp15_ligand_scoring  # NOTE: one still needs to use `conda` to (de)activate environments
-pip3 install -e .  # NOTE: must comment out `posecheck` requirement in `pyproject.toml` beforehand and restore it thereafter
+# NOTE: must comment out the `posecheck` requirement in `pyproject.toml` beforehand and restore it thereafter
+pip3 install -e .
 # - DiffDock environment (~13 GB)
 mamba env create -f environments/diffdock_environment.yaml --prefix forks/DiffDock/DiffDock/
 conda activate forks/DiffDock/DiffDock/  # NOTE: one still needs to use `conda` to (de)activate environments
