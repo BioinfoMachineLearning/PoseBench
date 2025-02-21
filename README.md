@@ -88,6 +88,7 @@ pip3 install -e .  # NOTE: must comment out `posecheck` requirement in `pyprojec
 # - DiffDock environment (~13 GB)
 mamba env create -f environments/diffdock_environment.yaml --prefix forks/DiffDock/DiffDock/
 conda activate forks/DiffDock/DiffDock/  # NOTE: one still needs to use `conda` to (de)activate environments
+pip3 install pyg-lib -f https://data.pyg.org/whl/torch-2.1.0+cu118.html
 # - FABind environment (~6 GB)
 mamba env create -f environments/fabind_environment.yaml --prefix forks/FABind/FABind/
 conda activate forks/FABind/FABind/  # NOTE: one still needs to use `conda` to (de)activate environments
