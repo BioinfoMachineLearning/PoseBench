@@ -104,5 +104,5 @@ dependencies:
       - scipy==1.7.3
       - six==1.16.0
       - spyrmsd==0.6.0
-      - tqdm-4.67.1
+      - tqdm==4.67.1
       - zipp==3.15.0

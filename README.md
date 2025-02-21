@@ -55,9 +55,9 @@ To reproduce, customize, or extend the `PoseBench` benchmark, we recommend fully
 First, install `mamba` for dependency management (as a fast alternative to Anaconda)
 
 ```bash
-wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh"
-bash Mambaforge-$(uname)-$(uname -m).sh  # accept all terms and install to the default location
-rm Mambaforge-$(uname)-$(uname -m).sh  # (optionally) remove installer after using it
+wget "https://github.com/conda-forge/miniforge/releases/download/24.11.3-0/Miniforge3-$(uname)-$(uname -m).sh"
+bash Miniforge3-$(uname)-$(uname -m).sh  # accept all terms and install to the default location
+rm Miniforge3-$(uname)-$(uname -m).sh  # (optionally) remove installer after using it
 source ~/.bashrc  # alternatively, one can restart their shell session to achieve the same result
 ```
 
@@ -84,7 +84,7 @@ pip install -e . --no-deps
 # - casp15_ligand_scoring environment (~3 GB)
 mamba env create -f environments/casp15_ligand_scoring_environment.yaml
 conda activate casp15_ligand_scoring  # NOTE: one still needs to use `conda` to (de)activate environments
-pip3 install -e .
+pip3 install -e .  # NOTE: must comment out `posecheck` requirement in `pyproject.toml` beforehand and restore it thereafter
 # - DiffDock environment (~13 GB)
 mamba env create -f environments/diffdock_environment.yaml --prefix forks/DiffDock/DiffDock/
 conda activate forks/DiffDock/DiffDock/  # NOTE: one still needs to use `conda` to (de)activate environments
