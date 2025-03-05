@@ -239,7 +239,6 @@ dependencies:
       - platformdirs==2.5.2
       - prompt-toolkit==3.0.36
       - psutil==5.9.8
-      - https://data.pyg.org/whl/torch-2.1.0%2Bcu118/pyg_lib-0.4.0%2Bpt21cu118-cp39-cp39-linux_x86_64.whl
       - pygments==2.15.1
       - pyopenssl==23.0.0
       - python-dotenv==1.0.1
