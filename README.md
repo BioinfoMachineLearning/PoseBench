@@ -95,7 +95,7 @@ mamba env create -f environments/fabind_environment.yaml --prefix forks/FABind/F
 conda activate forks/FABind/FABind/  # NOTE: one still needs to use `conda` to (de)activate environments
 # - DynamicBind environment (~13 GB)
 mamba env create -f environments/dynamicbind_environment.yaml --prefix forks/DynamicBind/DynamicBind/
-conda activate forks/DynamicBind/DynamicBind/  # NOTE: one still needs to use `conda` to (de)activate environments
+conda activate forks/DynamicBind/DynamicBind/ && pip3 install pyg-lib -f https://data.pyg.org/whl/torch-2.1.0+cu118.html  # NOTE: one still needs to use 
 # - NeuralPLexer environment (~14 GB)
 mamba env create -f environments/neuralplexer_environment.yaml --prefix forks/NeuralPLexer/NeuralPLexer/
 conda activate forks/NeuralPLexer/NeuralPLexer/  # NOTE: one still needs to use `conda` to (de)activate environments
