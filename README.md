@@ -1203,7 +1203,7 @@ If you use the code or benchmark method predictions associated with this reposit
 ```bibtex
 @inproceedings{morehead2024posebench,
   title={Deep Learning for Protein-Ligand Docking: Are We There Yet?},
-  author={Morehead, Alex and Giri, Nabin and Liu, Jian and Cheng, Jianlin},
+  author={Morehead, Alex and Giri, Nabin and Liu, Jian and Neupane, Pawan and Cheng, Jianlin},
   booktitle={ICML AI4Science Workshop},
   year={2024},
   note={selected as a spotlight presentation},
