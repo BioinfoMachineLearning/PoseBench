@@ -469,7 +469,7 @@ dependencies:
       - pandas==2.2.2
       - pathtools==0.1.2
       - pdb4amber==22.0
-      - git+https://github.com/amorehead/posebusters.git@posebench
+      - git+https://github.com/amorehead/posebusters.git@posebench-0.7.0
       - prody==2.4.1
       - promise==2.3
       - pynvml==11.0.0
