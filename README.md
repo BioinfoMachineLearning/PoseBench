@@ -113,6 +113,10 @@ cd forks/RoseTTAFold-All-Atom/rf2aa/SE3Transformer/ && pip3 install --no-cache-d
 mamba env create -f environments/chai_lab_environment.yaml --prefix forks/chai-lab/chai-lab/
 conda activate forks/chai-lab/chai-lab/  # NOTE: one still needs to use `conda` to (de)activate environments
 pip3 install forks/chai-lab/
+# - Boltz-2 environment (~5 GB)
+mamba env create -f environments/boltz_environment.yaml --prefix forks/boltz/boltz/
+conda activate forks/boltz/boltz/  # NOTE: one still needs to use `conda` to (de)activate environments
+cd forks/boltz/ && pip3 install -e .[cuda]
 # - AutoDock Vina Tools environment (~1 GB)
 mamba env create -f environments/adfr_environment.yaml --prefix forks/Vina/ADFR/
 conda activate forks/Vina/ADFR/  # NOTE: one still needs to use `conda` to (de)activate environments
@@ -216,6 +220,10 @@ rm rfaa_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/14629652/files/chai_benchmark_method_predictions.tar.gz
 tar -xzf chai_benchmark_method_predictions.tar.gz
 rm chai_benchmark_method_predictions.tar.gz
+# Boltz-2 predictions and results
+wget https://zenodo.org/records/14629652/files/boltz_benchmark_method_predictions.tar.gz
+tar -xzf boltz_benchmark_method_predictions.tar.gz
+rm boltz_benchmark_method_predictions.tar.gz
 # AlphaFold 3 predictions and results
 wget https://zenodo.org/records/14629652/files/af3_benchmark_method_predictions.tar.gz
 tar -xzf af3_benchmark_method_predictions.tar.gz
@@ -346,6 +354,7 @@ conda deactivate
 | `FlowDock`             | [Morehead et al.](https://arxiv.org/abs/2412.10966)                           | ✓                 | ✓                       | ✓                   | ✓                |
 | `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528)         | ✓                 | ✓                       | ✓                   | ✓                |
 | `Chai-1`               | [Chai Discovery](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf) | ✓                 | ✓                       | ✓                   | ✓                |
+| `Boltz-2`              | [Passaro et al.](https://www.biorxiv.org/content/10.1101/2025.06.14.659707v1) | ✓                 | ✓                       | ✓                   | ✓                |
 | `AlphaFold 3`          | [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w)         | ✓                 | ✓                       | ✓                   | ✓                |
 
 ### Methods available for ensembling
@@ -367,6 +376,7 @@ conda deactivate
 | `FlowDock`             | [Morehead et al.](https://arxiv.org/abs/2412.10966)                           | ✓                 | ✓                       | ✓                   | ✓                |
 | `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528)         | ✓                 | ✓                       | ✓                   | ✓                |
 | `Chai-1`               | [Chai Discovery](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf) | ✓                 | ✓                       | ✓                   | ✓                |
+| `Boltz-2`              | [Passaro et al.](https://www.biorxiv.org/content/10.1101/2025.06.14.659707v1) | ✓                 | ✓                       | ✓                   | ✓                |
 | `AlphaFold 3`          | [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w)         | ✓                 | ✓                       | ✓                   | ✓                |
 
 **NOTE**: Have a new method to add? Please let us know by creating a pull request. We would be happy to work with you to integrate new methodology into this benchmark!
@@ -859,6 +869,93 @@ python3 posebench/analysis/inference_analysis_casp.py method=chai-lab dataset=ca
 ...
 ```
 
+### How to run inference with `Boltz-2`
+
+Prepare CSV input files
+
+```bash
+python3 posebench/data/boltz_input_preparation.py dataset=posebusters_benchmark
+python3 posebench/data/boltz_input_preparation.py dataset=astex_diverse
+python3 posebench/data/boltz_input_preparation.py dataset=dockgen
+python3 posebench/data/boltz_input_preparation.py dataset=casp15 input_data_dir=data/casp15_set/targets
+```
+
+Run inference on each dataset
+
+```bash
+conda activate forks/boltz/boltz/
+python3 posebench/models/boltz_inference.py dataset=posebusters_benchmark repeat_index=1
+...
+python3 posebench/models/boltz_inference.py dataset=astex_diverse repeat_index=1
+...
+python3 posebench/models/boltz_inference.py dataset=dockgen repeat_index=1
+...
+python3 posebench/models/boltz_inference.py dataset=casp15 repeat_index=1
+...
+conda deactivate
+```
+
+Extract predictions into separate files for proteins and ligands
+
+```bash
+python3 posebench/data/boltz_output_extraction.py dataset=posebusters_benchmark repeat_index=1
+...
+python3 posebench/data/boltz_output_extraction.py dataset=astex_diverse repeat_index=1
+...
+python3 posebench/data/boltz_output_extraction.py dataset=dockgen repeat_index=1
+...
+python3 posebench/data/boltz_output_extraction.py dataset=casp15 repeat_index=1
+...
+```
+
+Relax the generated ligand structures inside of their respective protein pockets
+
+```bash
+python3 posebench/models/inference_relaxation.py method=boltz dataset=posebusters_benchmark remove_initial_protein_hydrogens=true repeat_index=1
+...
+python3 posebench/models/inference_relaxation.py method=boltz dataset=astex_diverse remove_initial_protein_hydrogens=true repeat_index=1
+...
+python3 posebench/models/inference_relaxation.py method=boltz dataset=dockgen remove_initial_protein_hydrogens=true repeat_index=1
+...
+```
+
+Align predicted protein-ligand structures to ground-truth complex structures
+
+```bash
+conda activate PyMOL-PoseBench
+python3 posebench/analysis/complex_alignment.py method=boltz dataset=posebusters_benchmark repeat_index=1
+...
+python3 posebench/analysis/complex_alignment.py method=boltz dataset=astex_diverse repeat_index=1
+...
+python3 posebench/analysis/complex_alignment.py method=boltz dataset=dockgen repeat_index=1
+conda deactivate
+...
+```
+
+Analyze inference results for each dataset
+
+```bash
+python3 posebench/analysis/inference_analysis.py method=boltz dataset=posebusters_benchmark repeat_index=1
+...
+python3 posebench/analysis/inference_analysis.py method=boltz dataset=astex_diverse repeat_index=1
+...
+python3 posebench/analysis/inference_analysis.py method=boltz dataset=dockgen repeat_index=1
+...
+```
+
+Analyze inference results for the CASP15 dataset
+
+```bash
+# first assemble (unrelaxed and post ranking-relaxed) CASP15-compliant prediction submission files for scoring
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[boltz\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_boltz_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[boltz\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_boltz_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+# NOTE: the suffixes for both `output_dir` and `ensemble_benchmarking_repeat_index` should be modified to e.g., 2, 3, ...
+...
+# now score the CASP15-compliant submissions using the official CASP scoring pipeline
+python3 posebench/analysis/inference_analysis_casp.py method=boltz dataset=casp15 repeat_index=1
+...
+```
+
 ### How to run inference with `AlphaFold 3`
 
 Run inference (3x) using the academically-available inference code released on [GitHub](https://github.com/google-deepmind/alphafold3), saving each run's structures to a unique output directory located at `forks/alphafold3/prediction_outputs/{dataset=posebusters_benchmark,astex_diverse,dockgen,casp15}_{repeat_index=1,2,3}`
@@ -1181,6 +1278,7 @@ rm -rf docs/build/ && sphinx-build docs/source/ docs/build/ # NOTE: errors can s
 
 - [AutoDock-Vina](https://github.com/ccsb-scripps/AutoDock-Vina)
 - [alphafold3](https://github.com/google-deepmind/alphafold3)
+- [boltz](https://github.com/jwohlwend/boltz)
 - [casp15_ligand](https://git.scicore.unibas.ch/schwede/casp15_ligand)
 - [chai-lab](https://github.com/chaidiscovery/chai-lab)
 - [DiffDock](https://github.com/gcorso/DiffDock)
