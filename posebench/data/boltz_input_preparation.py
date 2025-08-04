@@ -129,7 +129,7 @@ def write_scripts(
             for chain_index, sequence in enumerate(protein_sequence_list, start=1):
                 chain_id = chr(ord("A") + chain_index - 1)
                 msa_path = (
-                    os.path.join(msa_dir, f"{input_id}_chain_{chain_index - 1}.csv")
+                    os.path.join(msa_dir, f"{pdb_id}_chain_{chain_index - 1}.csv")
                     if msa_dir is not None
                     else None
                 )

@@ -166,8 +166,8 @@ configs/local/default.yaml
 /workdir/
 /forks/alphafold3/*prediction_outputs/
 /forks/boltz/boltz/
-/forks/boltz/boltz/prediction_inputs/
-/forks/boltz/boltz/prediction_outputs/
+/forks/boltz/prediction_inputs/
+/forks/boltz/prediction_outputs/
 /forks/chai-lab-orig/
 /forks/chai-lab*/chai-lab/
 /forks/chai-lab*/prediction_inputs/
