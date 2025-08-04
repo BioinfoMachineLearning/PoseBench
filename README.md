@@ -116,7 +116,7 @@ pip3 install forks/chai-lab/
 # - Boltz-2 environment (~5 GB)
 mamba env create -f environments/boltz_environment.yaml --prefix forks/boltz/boltz/
 conda activate forks/boltz/boltz/  # NOTE: one still needs to use `conda` to (de)activate environments
-cd forks/boltz/ && pip3 install -e .[cuda]
+cd forks/boltz/ && pip3 install -e .[cuda] && cd ../../
 # - AutoDock Vina Tools environment (~1 GB)
 mamba env create -f environments/adfr_environment.yaml --prefix forks/Vina/ADFR/
 conda activate forks/Vina/ADFR/  # NOTE: one still needs to use `conda` to (de)activate environments
