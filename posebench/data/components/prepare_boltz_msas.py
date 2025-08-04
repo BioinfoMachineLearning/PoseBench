@@ -92,7 +92,7 @@ def main(cfg: DictConfig):
                     {
                         "sequence": "".join(ID_TO_HHBLITS_AA[c] for c in seq),
                         "key": (
-                            f"sequence:{seq_index}"
+                            seq_index
                             if input_msa[f"is_paired_{chain_index}"][seq_index].item() is True
                             else ""
                         ),

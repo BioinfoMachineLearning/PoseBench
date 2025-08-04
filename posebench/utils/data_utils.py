@@ -1590,6 +1590,7 @@ def process_ligand_with_prody(
     chain,
     resnum,
     sanitize: bool = True,
+    generify_resnames: bool = False,
     sub_smiles: Optional[str] = None,
     ligand_expo_mapping: Optional[Dict[str, Any]] = None,
 ) -> Chem.Mol:
@@ -1607,6 +1608,7 @@ def process_ligand_with_prody(
     :param chain: chain of ligand to extract
     :param resnum: residue number of ligand to extract
     :param sanitize: whether to sanitize the molecule
+    :param generify_resnames: whether to generify the residue names
     :param sub_smiles: optional SMILES string of the ligand molecule
     :param ligand_expo_mapping: optional Ligand Expo mapping
     :return: molecule with bond orders assigned
@@ -1626,6 +1628,9 @@ def process_ligand_with_prody(
         template = AllChem.MolFromSmiles(sub_smiles)
     else:
         template = None
+
+    if generify_resnames:
+        sub_mol.setResnames("LIG")
 
     output = StringIO()
     writePDBStream(output, sub_mol)
@@ -1678,6 +1683,8 @@ def extract_protein_and_ligands_with_prody(
     ligands_output_sdf_file: Optional[str],
     sanitize: bool = True,
     add_element_types: bool = False,
+    generify_resnames: bool = False,
+    clear_ligand_segnames: bool = False,
     write_output_files: bool = True,
     load_hetatms_as_ligands: bool = False,
     ligand_smiles: Optional[str] = None,
@@ -1695,6 +1702,10 @@ def extract_protein_and_ligands_with_prody(
     :param sanitize: Whether to sanitize the ligand molecules.
     :param add_element_types: Whether to add element types to the
         protein atoms.
+    :param generify_resnames: Whether to generify the residue names of
+        the ligand molecules (e.g., for Boltz-2).
+    :param clear_ligand_segnames: Whether to clear the segment names of
+        the ligand atoms (e.g., for Boltz-2).
     :param write_output_files: Whether to write the output files.
     :param load_hetatms_as_ligands: Whether to load HETATM records as
         ligands if no ligands are initially found.
@@ -1711,6 +1722,9 @@ def extract_protein_and_ligands_with_prody(
     if ligand is None:
         logger.info(f"No ligand found in {input_pdb_file}. Returning None.")
         return None
+
+    if clear_ligand_segnames:
+        ligand.setSegnames("")
 
     if write_output_files:
         assert protein_output_pdb_file is not None, "Protein output PDB file must be provided."
@@ -1762,6 +1776,7 @@ def extract_protein_and_ligands_with_prody(
             chain,
             resnum,
             sanitize=sanitize,
+            generify_resnames=generify_resnames,
             sub_smiles=sub_smiles,
             ligand_expo_mapping=ligand_expo_mapping,
         )

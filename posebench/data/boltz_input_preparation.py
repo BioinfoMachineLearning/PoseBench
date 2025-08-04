@@ -89,7 +89,7 @@ def write_scripts(
         for chain_index, smiles in enumerate(ligand_smiles.split(":"), start=1):
             chain_id = chr(ord("A") + chain_index - 1)
             with open(fasta_filepath, "a") as f:
-                f.write(f">{chain_id}|ligand\n{smiles}\n")
+                f.write(f">{chain_id}|smiles\n{smiles}\n")
     else:
         for smiles_string, pdb_id in smiles_and_pdb_id_list:
             output_dir = os.path.join(output_scripts_path, pdb_id)
@@ -126,10 +126,14 @@ def write_scripts(
                     f"FASTA file already exists for PDB ID {pdb_id}. Skipping writing to file..."
                 )
                 continue
+            same_seq_chain_mapping = {}
             for chain_index, sequence in enumerate(protein_sequence_list, start=1):
+                if sequence not in same_seq_chain_mapping:
+                    same_seq_chain_mapping[sequence] = chain_index - 1
                 chain_id = chr(ord("A") + chain_index - 1)
                 msa_path = (
-                    os.path.join(msa_dir, f"{pdb_id}_chain_{chain_index - 1}.csv")
+                    # NOTE: for Boltz-2, identical protein sequences are mapped to the same (first) MSA chain ID of the same sequence
+                    os.path.join(msa_dir, f"{pdb_id}_chain_{same_seq_chain_mapping[sequence]}.csv")
                     if msa_dir is not None
                     else None
                 )
@@ -141,7 +145,7 @@ def write_scripts(
             ):
                 chain_id = chr(ord("A") + chain_index - 1)
                 with open(fasta_filepath, "a") as f:
-                    f.write(f">{chain_id}|ligand\n{sequence}\n")
+                    f.write(f">{chain_id}|smiles\n{sequence}\n")
 
 
 @hydra.main(
