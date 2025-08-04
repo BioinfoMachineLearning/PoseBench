@@ -1,6 +1,6 @@
 # run arguments:
-method: diffdock # the method for which to score predictions - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `flowdock`, `rfaa`, `chai-lab`, `vina`, `ensemble`)
-vina_binding_site_method: p2rank # the method to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `flowdock`, `rfaa`, `chai-lab`, `p2rank`)
+method: diffdock # the method for which to score predictions - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `flowdock`, `rfaa`, `chai-lab`, `boltz`, `vina`, `ensemble`)
+vina_binding_site_method: p2rank # the method to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `flowdock`, `rfaa`, `chai-lab`, `boltz`, `p2rank`)
 ensemble_ranking_method: consensus # the method to use for ensemble ranking - NOTE: must be one of (`consensus`, `ff`)
 dataset: astex_diverse # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
 repeat_index: 1 # the repeat index which was used for inference
@@ -22,6 +22,7 @@ methods_to_sweep: [
     "flowdock",
     "rfaa",
     "chai-lab",
+    "boltz",
     "vina",
     "ensemble",
   ] # the methods to sweep
