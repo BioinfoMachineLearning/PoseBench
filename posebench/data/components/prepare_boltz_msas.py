@@ -30,6 +30,8 @@ rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 # more info: https://github.com/ashleve/rootutils
 # ------------------------------------------------------------------------------------ #
 
+from posebench.utils.data_utils import extract_sequences_from_protein_structure_file
+
 logging.basicConfig(format="[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
@@ -77,8 +79,38 @@ def main(cfg: DictConfig):
         item = msa_file.split("_protein")[0]
         input_msa_path = os.path.join(cfg.input_msa_dir, msa_file)
 
+        casp_dataset_requested = os.path.basename(cfg.input_data_dir) == "targets"
+        if casp_dataset_requested:
+            protein_filepath = os.path.join(cfg.input_data_dir, f"{item}_lig.pdb")
+        else:
+            if cfg.pocket_only_baseline:
+                protein_filepath = os.path.join(
+                    cfg.input_data_dir,
+                    f"{cfg.dataset}_holo_aligned_predicted_structures_bs_cropped",
+                    f"{item}_holo_aligned_predicted_protein.pdb",
+                )
+                if not os.path.exists(protein_filepath):
+                    logger.warning(
+                        f"Protein structure file not found for PDB ID {item}. Skipping..."
+                    )
+                    continue
+            else:
+                dockgen_suffix = "_processed" if cfg.dataset == "dockgen" else ""
+                protein_filepath = os.path.join(
+                    cfg.input_data_dir, item, f"{item}_protein{dockgen_suffix}.pdb"
+                )
+        protein_sequence_list = [
+            seq
+            for seq in extract_sequences_from_protein_structure_file(protein_filepath)
+            if len(seq) > 0
+        ]
+
         try:
             input_msa = dict(np.load(input_msa_path))
+
+            assert input_msa["n"] == len(
+                protein_sequence_list
+            ), f"Number of MSA chains ({input_msa['n']}) does not match number of protein sequences ({len(protein_sequence_list)}) for PDB ID {item}."
 
             for chain_index in range(input_msa["n"]):
                 output_msa_path = os.path.join(
@@ -88,9 +120,28 @@ def main(cfg: DictConfig):
                     logger.info(f"MSA already exists: {output_msa_path}. Skipping...")
                     continue
 
+                protein_sequence = protein_sequence_list[chain_index]
+                msa_sequence = "".join(
+                    ID_TO_HHBLITS_AA[c] for c in input_msa[f"msa_{chain_index}"][0]
+                )
+
+                if protein_sequence != msa_sequence and len(protein_sequence) == len(msa_sequence):
+                    logger.warning(
+                        f"Input protein sequence {protein_sequence} does not match first MSA sequence {msa_sequence} for chain {chain_index} in {item}. Using input protein sequence instead..."
+                    )
+                    msa_sequence = protein_sequence
+                elif protein_sequence != msa_sequence:
+                    logger.warning(
+                        f"Input protein sequence {protein_sequence} does not match first MSA sequence length of {msa_sequence} for chain {chain_index} in {item}. Using MSA sequence instead..."
+                    )
+
                 output_msas = [
                     {
-                        "sequence": "".join(ID_TO_HHBLITS_AA[c] for c in seq),
+                        "sequence": (
+                            msa_sequence
+                            if seq_index == 0
+                            else "".join(ID_TO_HHBLITS_AA[c] for c in seq)
+                        ),
                         "key": (
                             seq_index
                             if input_msa[f"is_paired_{chain_index}"][seq_index].item() is True
