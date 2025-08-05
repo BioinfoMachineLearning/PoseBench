@@ -95,9 +95,10 @@ def main(cfg: DictConfig):
                     )
                     continue
             else:
-                dockgen_suffix = "_processed" if cfg.dataset == "dockgen" else ""
+                protein_item = item.split("_")[0] if cfg.dataset == "dockgen" else item
+                protein_file_suffix = "_processed" if cfg.dataset == "dockgen" else "_protein"
                 protein_filepath = os.path.join(
-                    cfg.input_data_dir, item, f"{item}_protein{dockgen_suffix}.pdb"
+                    cfg.input_data_dir, item, f"{protein_item}{protein_file_suffix}.pdb"
                 )
         protein_sequence_list = [
             seq
@@ -107,6 +108,10 @@ def main(cfg: DictConfig):
 
         try:
             input_msa = dict(np.load(input_msa_path))
+
+            assert (
+                len(protein_sequence_list) == input_msa["n"]
+            ), f"Number of chains in protein structure file ({len(protein_sequence_list)}) does not match number of MSA chains ({input_msa['n']}) for {item}. Skipping..."
 
             for chain_index in range(input_msa["n"]):
                 output_msa_path = os.path.join(
