@@ -108,10 +108,6 @@ def main(cfg: DictConfig):
         try:
             input_msa = dict(np.load(input_msa_path))
 
-            assert input_msa["n"] == len(
-                protein_sequence_list
-            ), f"Number of MSA chains ({input_msa['n']}) does not match number of protein sequences ({len(protein_sequence_list)}) for PDB ID {item}."
-
             for chain_index in range(input_msa["n"]):
                 output_msa_path = os.path.join(
                     cfg.output_msa_dir, item + f"_chain_{chain_index}.csv"
