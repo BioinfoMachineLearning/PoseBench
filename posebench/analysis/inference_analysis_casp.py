@@ -228,7 +228,7 @@ def main(cfg: DictConfig):
         os.makedirs(scoring_results_filepath.parent, exist_ok=True)
 
         # collect analysis results
-        if os.path.exists(scoring_results_filepath) and not cfg.force_rescore:
+        if os.path.exists(scoring_results_filepath) and not cfg.force_casp15_rescore:
             logger.info(
                 f"{resolve_method_title(cfg.method)}{config} analysis results for inference directory `{output_dir}` already exist at `{scoring_results_filepath}`. Directly analyzing..."
             )
@@ -279,7 +279,7 @@ def main(cfg: DictConfig):
             )
 
         # collect bust results
-        if os.path.exists(bust_results_filepath) and not cfg.force_rescore:
+        if os.path.exists(bust_results_filepath) and not cfg.force_pb_rescore:
             logger.info(
                 f"{resolve_method_title(cfg.method)}{config} bust results for inference directory `{output_dir}` already exist at `{bust_results_filepath}`. Directly analyzing..."
             )

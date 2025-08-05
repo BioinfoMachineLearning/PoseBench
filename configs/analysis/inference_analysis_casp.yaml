@@ -15,4 +15,5 @@ no_ilcl: false # whether to score a model trained without an inter-ligand clash 
 relax_protein: false # whether to relax the protein - NOTE: currently periodically yields unpredictable protein-ligand separation
 v1_baseline: false # whether to score the v1 baseline predictions
 allow_missing_predictions: true # whether to allow missing predictions for a target
-force_rescore: false # whether to force CASP15 and PoseBusters rescoring of the predictions
+force_casp15_rescore: false # whether to force CASP15 rescoring of the predictions
+force_pb_rescore: false # whether to force PoseBusters rescoring of the predictions
