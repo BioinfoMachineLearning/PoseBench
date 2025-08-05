@@ -110,9 +110,10 @@ def write_scripts(
                         )
                         continue
                 else:
-                    dockgen_suffix = "_processed" if dataset == "dockgen" else ""
+                    protein_id = pdb_id.split("_")[0] if dataset == "dockgen" else pdb_id
+                    protein_file_suffix = "_processed" if dataset == "dockgen" else "_protein"
                     protein_filepath = os.path.join(
-                        input_data_dir, pdb_id, f"{pdb_id}_protein{dockgen_suffix}.pdb"
+                        input_data_dir, pdb_id, f"{protein_id}{protein_file_suffix}.pdb"
                     )
                 if dataset == "dockgen":
                     ligand_filepaths = [
