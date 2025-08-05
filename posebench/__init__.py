@@ -14,7 +14,7 @@ METHOD_TITLE_MAPPING = {
     "dynamicbind": "DynamicBind",
     "neuralplexer": "NeuralPLexer",
     "flowdock": "FlowDock",
-    "rfaa": "RFAA",
+    "rfaa": "RoseTTAFold-All-Atom",
     "chai-lab": "chai-lab",
     "boltz": "boltz",
     "alphafold3": "alphafold3",
