@@ -125,6 +125,8 @@ def main(cfg: DictConfig):
                     ID_TO_HHBLITS_AA[c] for c in input_msa[f"msa_{chain_index}"][0]
                 )
 
+                max_sequence_len = max(len(protein_sequence), len(msa_sequence))
+
                 if protein_sequence != msa_sequence and len(protein_sequence) == len(msa_sequence):
                     logger.warning(
                         f"Input protein sequence {protein_sequence} does not match first MSA sequence {msa_sequence} for chain {chain_index} in {item}. Using input protein sequence instead..."
@@ -132,15 +134,18 @@ def main(cfg: DictConfig):
                     msa_sequence = protein_sequence
                 elif protein_sequence != msa_sequence:
                     logger.warning(
-                        f"Input protein sequence {protein_sequence} does not match first MSA sequence length of {msa_sequence} for chain {chain_index} in {item}. Using MSA sequence instead..."
+                        f"Input protein sequence {protein_sequence} does not match first MSA sequence length of {msa_sequence} for chain {chain_index} in {item}. Using input protein sequence instead and right-padding rest of MSA..."
                     )
+                    msa_sequence = protein_sequence
 
                 output_msas = [
                     {
                         "sequence": (
                             msa_sequence
                             if seq_index == 0
-                            else "".join(ID_TO_HHBLITS_AA[c] for c in seq)
+                            else "".join(ID_TO_HHBLITS_AA[c] for c in seq).rjust(
+                                max_sequence_len, "-"
+                            )
                         ),
                         "key": (
                             seq_index
