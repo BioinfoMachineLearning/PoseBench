@@ -85,7 +85,9 @@ def main(cfg: DictConfig):
                         f"{item}_model_0.cif",
                     )
                 )
-                and not os.path.exists(os.path.join(cfg.output_dir, "error_log.txt"))
+                and not os.path.exists(
+                    os.path.join(cfg.output_dir, f"boltz_results_{item}", "error_log.txt")
+                )
             ):
                 logger.info(f"Skipping inference for `{item}` as output directory already exists.")
                 continue
@@ -99,13 +101,21 @@ def main(cfg: DictConfig):
                     fasta_file=fasta_filepath,
                     cfg=cfg,
                 )
-                if os.path.isfile(os.path.join(cfg.output_dir, item, "error_log.txt")):
-                    os.remove(os.path.join(cfg.output_dir, item, "error_log.txt"))
+                if os.path.isfile(
+                    os.path.join(cfg.output_dir, f"boltz_results_{item}", item, "error_log.txt")
+                ):
+                    os.remove(
+                        os.path.join(
+                            cfg.output_dir, f"boltz_results_{item}", item, "error_log.txt"
+                        )
+                    )
             except Exception as e:
                 logger.error(
                     f"Failed to run Boltz-2 inference for item `{item}` due to: {e}. Skipping..."
                 )
-                with open(os.path.join(cfg.output_dir, item, "error_log.txt"), "w") as f:
+                with open(
+                    os.path.join(cfg.output_dir, f"boltz_results_{item}", "error_log.txt"), "w"
+                ) as f:
                     traceback.print_exception(type(e), e, e.__traceback__, file=f)
 
     logger.info("Boltz-2 inference complete.")
