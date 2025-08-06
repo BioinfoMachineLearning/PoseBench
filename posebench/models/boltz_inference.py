@@ -35,6 +35,8 @@ def run_boltz_inference(fasta_file: str, cfg: DictConfig):
             fasta_file,
             "--out_dir",
             cfg.output_dir,
+            "--model",
+            cfg.model,
         ]
         if cfg.use_potentials:
             cmd.append("--use_potentials")
@@ -54,6 +56,11 @@ def main(cfg: DictConfig):
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
+    assert cfg.model in [
+        "boltz1",
+        "boltz2",
+    ], f"Invalid model `{cfg.model}` specified. Must be one of (`boltz1`, `boltz2`)."
+
     with open_dict(cfg):
         if cfg.pocket_only_baseline:
             cfg.input_dir = cfg.input_dir.replace(cfg.dataset, f"{cfg.dataset}_pocket_only")

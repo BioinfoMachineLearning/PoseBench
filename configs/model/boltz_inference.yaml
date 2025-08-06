@@ -1,3 +1,4 @@
+model: boltz1 # the model to use for inference - NOTE: must be one of (`boltz1`, `boltz2`)
 dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
 input_dir: ${oc.env:PROJECT_ROOT}/forks/boltz/prediction_inputs/${dataset} # the input directory with which to run inference
 output_dir: ${oc.env:PROJECT_ROOT}/forks/boltz/prediction_outputs/${dataset}_${repeat_index} # the output directory to which to save the inference results
