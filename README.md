@@ -159,10 +159,15 @@ cd ../../
 (Optional) Download PLINDER for method generalization analysis (~200 GB total)
 
 ```bash
+# download fixed version of PLINDER
 export PLINDER_RELEASE=2024-06
 export PLINDER_ITERATION=v2
 mkdir -p ./data/plinder/${PLINDER_RELEASE}/${PLINDER_ITERATION}/
 gsutil -m cp -r "gs://plinder/${PLINDER_RELEASE}/${PLINDER_ITERATION}/*" ./data/plinder/${PLINDER_RELEASE}/${PLINDER_ITERATION}/
+
+# unpack system files of fixed version of PLINDER
+cd ./data/plinder/${PLINDER_RELEASE}/${PLINDER_ITERATION}/systems; for i in `ls *zip`; do unzip $i; touch ${i//.zip/}_done; done
+cd ../../../../../
 ```
 
 </details>
