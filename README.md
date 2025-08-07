@@ -156,6 +156,15 @@ wget http://files.ipd.uw.edu/pub/RF-All-Atom/weights/RFAA_paper_weights.pt
 cd ../../
 ```
 
+(Optional) Download PLINDER for method generalization analysis (~200 GB total)
+
+```bash
+export PLINDER_RELEASE=2024-06
+export PLINDER_ITERATION=v2
+mkdir -p ./data/plinder/${PLINDER_RELEASE}/${PLINDER_ITERATION}/
+gsutil -m cp -r "gs://plinder/${PLINDER_RELEASE}/${PLINDER_ITERATION}/*" ./data/plinder/${PLINDER_RELEASE}/${PLINDER_ITERATION}/
+```
+
 </details>
 
 ## Tutorials
