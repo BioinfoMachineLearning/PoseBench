@@ -1703,9 +1703,9 @@ def extract_protein_and_ligands_with_prody(
     :param add_element_types: Whether to add element types to the
         protein atoms.
     :param generify_resnames: Whether to generify the residue names of
-        the ligand molecules (e.g., for Boltz-2).
+        the ligand molecules (e.g., for Boltz).
     :param clear_ligand_segnames: Whether to clear the segment names of
-        the ligand atoms (e.g., for Boltz-2).
+        the ligand atoms (e.g., for Boltz).
     :param write_output_files: Whether to write the output files.
     :param load_hetatms_as_ligands: Whether to load HETATM records as
         ligands if no ligands are initially found.

@@ -113,7 +113,7 @@ cd forks/RoseTTAFold-All-Atom/rf2aa/SE3Transformer/ && pip3 install --no-cache-d
 mamba env create -f environments/chai_lab_environment.yaml --prefix forks/chai-lab/chai-lab/
 conda activate forks/chai-lab/chai-lab/  # NOTE: one still needs to use `conda` to (de)activate environments
 pip3 install forks/chai-lab/
-# - Boltz-2 environment (~5 GB)
+# - Boltz environment (~5 GB)
 mamba env create -f environments/boltz_environment.yaml --prefix forks/boltz/boltz/
 conda activate forks/boltz/boltz/  # NOTE: one still needs to use `conda` to (de)activate environments
 cd forks/boltz/ && pip3 install -e .[cuda] && cd ../../
@@ -220,7 +220,7 @@ rm rfaa_benchmark_method_predictions.tar.gz
 wget https://zenodo.org/records/14629652/files/chai_benchmark_method_predictions.tar.gz
 tar -xzf chai_benchmark_method_predictions.tar.gz
 rm chai_benchmark_method_predictions.tar.gz
-# Boltz-2 predictions and results
+# Boltz-1 predictions and results
 wget https://zenodo.org/records/14629652/files/boltz_benchmark_method_predictions.tar.gz
 tar -xzf boltz_benchmark_method_predictions.tar.gz
 rm boltz_benchmark_method_predictions.tar.gz
@@ -347,15 +347,15 @@ conda deactivate
 
 #### Flexible Protein Methods
 
-| Name                   | Source                                                                        | Astex Benchmarked | PoseBusters Benchmarked | DockGen Benchmarked | CASP Benchmarked |
-| ---------------------- | ----------------------------------------------------------------------------- | ----------------- | ----------------------- | ------------------- | ---------------- |
-| `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)               | ✓                 | ✓                       | ✓                   | ✓                |
-| `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)             | ✓                 | ✓                       | ✓                   | ✓                |
-| `FlowDock`             | [Morehead et al.](https://arxiv.org/abs/2412.10966)                           | ✓                 | ✓                       | ✓                   | ✓                |
-| `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528)         | ✓                 | ✓                       | ✓                   | ✓                |
-| `Chai-1`               | [Chai Discovery](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf) | ✓                 | ✓                       | ✓                   | ✓                |
-| `Boltz-2`              | [Passaro et al.](https://www.biorxiv.org/content/10.1101/2025.06.14.659707v1) | ✓                 | ✓                       | ✓                   | ✓                |
-| `AlphaFold 3`          | [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w)         | ✓                 | ✓                       | ✓                   | ✓                |
+| Name                   | Source                                                                         | Astex Benchmarked | PoseBusters Benchmarked | DockGen Benchmarked | CASP Benchmarked |
+| ---------------------- | ------------------------------------------------------------------------------ | ----------------- | ----------------------- | ------------------- | ---------------- |
+| `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)                | ✓                 | ✓                       | ✓                   | ✓                |
+| `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)              | ✓                 | ✓                       | ✓                   | ✓                |
+| `FlowDock`             | [Morehead et al.](https://arxiv.org/abs/2412.10966)                            | ✓                 | ✓                       | ✓                   | ✓                |
+| `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528)          | ✓                 | ✓                       | ✓                   | ✓                |
+| `Chai-1`               | [Chai Discovery](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf)  | ✓                 | ✓                       | ✓                   | ✓                |
+| `Boltz`                | [Wohlwend et al.](https://www.biorxiv.org/content/10.1101/2024.11.19.624167v4) | ✓                 | ✓                       | ✓                   | ✓                |
+| `AlphaFold 3`          | [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w)          | ✓                 | ✓                       | ✓                   | ✓                |
 
 ### Methods available for ensembling
 
@@ -369,15 +369,15 @@ conda deactivate
 
 #### Flexible Protein Methods
 
-| Name                   | Source                                                                        | Astex Benchmarked | PoseBusters Benchmarked | DockGen Benchmarked | CASP Benchmarked |
-| ---------------------- | ----------------------------------------------------------------------------- | ----------------- | ----------------------- | ------------------- | ---------------- |
-| `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)               | ✓                 | ✓                       | ✓                   | ✓                |
-| `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)             | ✓                 | ✓                       | ✓                   | ✓                |
-| `FlowDock`             | [Morehead et al.](https://arxiv.org/abs/2412.10966)                           | ✓                 | ✓                       | ✓                   | ✓                |
-| `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528)         | ✓                 | ✓                       | ✓                   | ✓                |
-| `Chai-1`               | [Chai Discovery](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf) | ✓                 | ✓                       | ✓                   | ✓                |
-| `Boltz-2`              | [Passaro et al.](https://www.biorxiv.org/content/10.1101/2025.06.14.659707v1) | ✓                 | ✓                       | ✓                   | ✓                |
-| `AlphaFold 3`          | [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w)         | ✓                 | ✓                       | ✓                   | ✓                |
+| Name                   | Source                                                                         | Astex Benchmarked | PoseBusters Benchmarked | DockGen Benchmarked | CASP Benchmarked |
+| ---------------------- | ------------------------------------------------------------------------------ | ----------------- | ----------------------- | ------------------- | ---------------- |
+| `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)                | ✓                 | ✓                       | ✓                   | ✓                |
+| `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)              | ✓                 | ✓                       | ✓                   | ✓                |
+| `FlowDock`             | [Morehead et al.](https://arxiv.org/abs/2412.10966)                            | ✓                 | ✓                       | ✓                   | ✓                |
+| `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528)          | ✓                 | ✓                       | ✓                   | ✓                |
+| `Chai-1`               | [Chai Discovery](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf)  | ✓                 | ✓                       | ✓                   | ✓                |
+| `Boltz`                | [Wohlwend et al.](https://www.biorxiv.org/content/10.1101/2024.11.19.624167v4) | ✓                 | ✓                       | ✓                   | ✓                |
+| `AlphaFold 3`          | [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w)          | ✓                 | ✓                       | ✓                   | ✓                |
 
 **NOTE**: Have a new method to add? Please let us know by creating a pull request. We would be happy to work with you to integrate new methodology into this benchmark!
 
@@ -869,7 +869,7 @@ python3 posebench/analysis/inference_analysis_casp.py method=chai-lab dataset=ca
 ...
 ```
 
-### How to run inference with `Boltz-2`
+### How to run inference with `Boltz`
 
 Prepare CSV input files
 

@@ -146,7 +146,7 @@ rfaa_inference_dir_name: null # the name of the inference output directory to us
 # Chai-1 inference arguments:
 chai_out_path: ${oc.env:PROJECT_ROOT}/forks/chai-lab/inference/chai-lab_ensemble_outputs # the output directory to which to write the predictions
 chai_skip_existing: true # whether to skip running inference if the prediction for a target already exists
-# Boltz-2 inference arguments:
+# Boltz inference arguments:
 boltz_out_path: ${oc.env:PROJECT_ROOT}/forks/boltz/inference/boltz_ensemble_outputs # the output directory to which to write the predictions
 boltz_skip_existing: true # whether to skip running inference if the prediction for a target already exists
 # AlphaFold 3 inference arguments:

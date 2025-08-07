@@ -35,7 +35,7 @@ def write_scripts(
     ligand_smiles: Optional[Any] = None,
     input_id: Optional[str] = None,
 ):
-    """Write a Boltz-2 inference CSV file.
+    """Write a Boltz inference CSV file.
 
     :param smiles_and_pdb_id_list: A list of tuples each containing a
         SMILES string and a PDB ID.
@@ -133,7 +133,7 @@ def write_scripts(
                     same_seq_chain_mapping[sequence] = chain_index - 1
                 chain_id = chr(ord("A") + chain_index - 1)
                 msa_path = (
-                    # NOTE: for Boltz-2, identical protein sequences are mapped to the same (first) MSA chain ID of the same sequence
+                    # NOTE: for Boltz, identical protein sequences are mapped to the same (first) MSA chain ID of the same sequence
                     os.path.join(msa_dir, f"{pdb_id}_chain_{same_seq_chain_mapping[sequence]}.csv")
                     if msa_dir is not None
                     else None
@@ -156,8 +156,7 @@ def write_scripts(
 )
 def main(cfg: DictConfig):
     """Parse a data directory containing subdirectories of protein-ligand
-    complexes and prepare corresponding inference CSV file for the Boltz-2
-    model.
+    complexes and prepare corresponding inference CSV file for the Boltz model.
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
@@ -207,9 +206,7 @@ def main(cfg: DictConfig):
             input_id=cfg.input_id,
         )
 
-    logger.info(
-        f"Boltz-2 input files for dataset `{cfg.dataset}` are fully prepared for inference."
-    )
+    logger.info(f"Boltz input files for dataset `{cfg.dataset}` are fully prepared for inference.")
 
 
 if __name__ == "__main__":

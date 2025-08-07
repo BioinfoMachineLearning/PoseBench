@@ -98,7 +98,7 @@ def main(cfg: DictConfig):
         for item in os.listdir(cfg.prediction_inputs_dir):
             input_item_path = os.path.join(cfg.prediction_inputs_dir, item)
             output_item_path = os.path.join(
-                # NOTE: Boltz-2 pre-rank orders its outputs by their aggregate score
+                # NOTE: Boltz pre-rank orders its outputs by their aggregate score
                 cfg.prediction_outputs_dir,
                 f"boltz_results_{item}",
                 "predictions",

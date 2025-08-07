@@ -638,7 +638,7 @@ def create_boltz_bash_script(
     output_filepath: Optional[str] = None,
     generate_hpc_scripts: bool = True,
 ):
-    """Create a bash script to run Boltz-2 protein-ligand complex prediction.
+    """Create a bash script to run Boltz protein-ligand complex prediction.
 
     :param protein_filepath: Path to the input protein structure PDB
         file.
@@ -658,7 +658,7 @@ def create_boltz_bash_script(
     bash_script_content = f"""#!/bin/bash -l
 {insert_hpc_headers(method='boltz', time_limit='0-24:00:00') if generate_hpc_scripts else 'source /home/$USER/mambaforge/etc/profile.d/conda.sh'}
 conda activate {"$project_dir/forks/boltz/boltz/" if generate_hpc_scripts else 'forks/boltz/boltz/'}
-echo "Beginning Boltz-2 inference for input '{input_id}'!"
+echo "Beginning Boltz inference for input '{input_id}'!"
 
 # command to run boltz_input_preparation.py
 python posebench/data/boltz_input_preparation.py \\

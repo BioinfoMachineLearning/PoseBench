@@ -77,8 +77,8 @@ method_mapping = {
     "rfaa": "RFAA",
     "chai-lab_ss": "Chai-1-Single-Seq",
     "chai-lab": "Chai-1",
-    "boltz_ss": "Boltz-2-Single-Seq",
-    "boltz": "Boltz-2",
+    "boltz_ss": "Boltz-1-Single-Seq",
+    "boltz": "Boltz-1",
     "alphafold3_ss": "AF3-Single-Seq",
     "alphafold3": "AF3",
 }

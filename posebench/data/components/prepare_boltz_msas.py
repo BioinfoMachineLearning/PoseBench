@@ -68,11 +68,11 @@ ID_TO_HHBLITS_AA = {
     config_name="prepare_boltz_msas.yaml",
 )
 def main(cfg: DictConfig):
-    """Prepare Boltz-2 MSAs for PoseBench."""
+    """Prepare Boltz MSAs for PoseBench."""
     assert os.path.exists(cfg.input_msa_dir), f"Input MSA directory not found: {cfg.input_msa_dir}"
     os.makedirs(cfg.output_msa_dir, exist_ok=True)
 
-    for msa_file in tqdm(os.listdir(cfg.input_msa_dir), desc="Preparing Boltz-2 MSAs"):
+    for msa_file in tqdm(os.listdir(cfg.input_msa_dir), desc="Preparing Boltz MSAs"):
         if not msa_file.endswith(".npz"):
             continue
 

@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 def run_boltz_inference(fasta_file: str, cfg: DictConfig):
-    """Run inference using a trained Boltz-2 model checkpoint.
+    """Run inference using a trained Boltz model checkpoint.
 
     :param fasta_filepath: Path to the input FASTA file.
     :param cfg: Configuration dictionary from the hydra YAML file.
@@ -43,7 +43,7 @@ def run_boltz_inference(fasta_file: str, cfg: DictConfig):
         subprocess.run(cmd, check=True)  # nosec
     except Exception as e:
         raise e
-    logger.info(f"Boltz-2 inference for FASTA file `{fasta_file}` complete.")
+    logger.info(f"Boltz inference for FASTA file `{fasta_file}` complete.")
 
 
 @hydra.main(
@@ -52,7 +52,7 @@ def run_boltz_inference(fasta_file: str, cfg: DictConfig):
     config_name="boltz_inference.yaml",
 )
 def main(cfg: DictConfig):
-    """Create SLURM job submission scripts for inference with Boltz-2.
+    """Create SLURM job submission scripts for inference with Boltz.
 
     :param cfg: Configuration dictionary from the hydra YAML file.
     """
@@ -118,14 +118,14 @@ def main(cfg: DictConfig):
                     )
             except Exception as e:
                 logger.error(
-                    f"Failed to run Boltz-2 inference for item `{item}` due to: {e}. Skipping..."
+                    f"Failed to run Boltz inference for item `{item}` due to: {e}. Skipping..."
                 )
                 with open(
                     os.path.join(cfg.output_dir, f"boltz_results_{item}", "error_log.txt"), "w"
                 ) as f:
                     traceback.print_exception(type(e), e, e.__traceback__, file=f)
 
-    logger.info("Boltz-2 inference complete.")
+    logger.info("Boltz inference complete.")
 
 
 if __name__ == "__main__":
