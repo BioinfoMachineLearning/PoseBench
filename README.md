@@ -156,7 +156,15 @@ wget http://files.ipd.uw.edu/pub/RF-All-Atom/weights/RFAA_paper_weights.pt
 cd ../../
 ```
 
-(Optional) Download PLINDER for method generalization analysis (~200 GB total)
+(Optional) Download PLINDER-based similarity metrics for method generalization analysis (~0.5 GB total)
+
+```bash
+mkdir -p ./data/plinder/
+wget -P ./data/plinder/ https://zenodo.org/records/16754298/files/annotations.csv
+wget -P ./data/plinder/ https://zenodo.org/records/16754298/files/all_similarity_scores.parquet
+```
+
+(Optional) Alternatively, download PLINDER to perform a method generalization analysis for custom (new) datasets (~500 GB total)
 
 ```bash
 # download fixed version of PLINDER
@@ -168,6 +176,15 @@ gsutil -m cp -r "gs://plinder/${PLINDER_RELEASE}/${PLINDER_ITERATION}/*" ./data/
 # unpack system files of fixed version of PLINDER
 cd ./data/plinder/${PLINDER_RELEASE}/${PLINDER_ITERATION}/systems; for i in `ls *zip`; do unzip $i; touch ${i//.zip/}_done; done
 cd ../../../../../
+
+# customize `similarity_scoring.py` to similarity-match a (bespoke) subset of new PDB complex IDs for (blind) benchmarking
+python3 posebench/analysis/similarity_scoring.py $PDB_ID_FROM_NEW_SUBSET # e.g., in a for-loop or in parallel
+
+# combine each score of the new subset into a singular (new) `all_similarity_scores.parquet` file
+python3 -c "import os, pandas as pd; from glob import glob; files = glob(os.path.join('scoring', 'scores', 'scores', 'all_scores', '*.parquet')); pd.concat([pd.read_parquet(f) for f in files], ignore_index=True).to_parquet('data', 'plinder', 'all_similarity_scores.parquet')"
+
+# update annotations
+python3 -c "import re; pdb_ids_pattern = '|'.join(map(re.escape, $PDB_IDS_IN_NEW_SUBSET)); similarity_df_custom = all_similarity_scores[~all_similarity_scores["target_system"].str.contains(pdb_ids_pattern, na=False)].sort_values(by='sucos_shape_pocket_qcov', ascending=False).groupby('group_key').head(1).reset_index(drop=True); similarity_custom = dict(zip(similarity_df_custom['group_key'], similarity_df_custom['sucos_shape_pocket_qcov'])); annotated_df['sucos_shape_pocket_qcov_custom'] = annotated_df['group_key'].map(similarity_custom); annotated_df.to_csv(os.path.join('data', 'plinder', 'annotations.csv'))"
 ```
 
 </details>
@@ -1241,6 +1258,8 @@ jupyter notebook notebooks/casp15_inference_results_plotting.ipynb
 Inspect the failure modes of each method
 
 ```bash
+jupyter notebook notebooks/failure_modes_analysis_plotting_plinder.ipynb
+# or
 jupyter notebook notebooks/failure_modes_analysis_plotting.ipynb
 ```
 
@@ -1301,10 +1320,12 @@ rm -rf docs/build/ && sphinx-build docs/source/ docs/build/ # NOTE: errors can s
 - [FlowDock](https://github.com/BioinfoMachineLearning/FlowDock)
 - [lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template)
 - [NeuralPLexer](https://github.com/zrqiao/NeuralPLexer)
+- [plinder](https://github.com/plinder-org/plinder)
 - [ProteinWorkshop](https://github.com/a-r-j/ProteinWorkshop)
 - [posebusters](https://github.com/maabuu/posebusters)
 - [posebusters_em](https://github.com/maabuu/posebusters_em)
 - [RoseTTAFold-All-Atom](https://github.com/baker-laboratory/RoseTTAFold-All-Atom)
+- [runs-n-poses](https://github.com/plinder-org/runs-n-poses)
 - [tulip](https://github.com/BioinfoMachineLearning/tulip)
 
 We thank all their contributors and maintainers!
