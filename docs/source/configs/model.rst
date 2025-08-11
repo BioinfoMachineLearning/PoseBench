@@ -51,6 +51,12 @@ Chai-1 inference
     :language: yaml
     :caption: :file:`model/chai_inference.yaml`
 
+Boltz-1 inference
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/model/boltz_inference.yaml
+    :language: yaml
+    :caption: :file:`model/boltz_inference.yaml`
+
 Vina inference
 ^^^^^^^^^^^^^^^^^^^^^^^^
 .. literalinclude:: ../../../configs/model/vina_inference.yaml

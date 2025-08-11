@@ -7,19 +7,13 @@ This section describes the configurations for various data-related scripts.
 Input data components
 ------------------------
 
-These data component configurations are used to modify how the input (apo) protein structures are predicted or aligned.
+These data component configurations are used to modify how the input (apo) protein structures are predicted, aligned, or analyzed or how one data format is converted to another.
 
-Protein apo-to-holo alignment
+Convert mmCIF to PDB
 ^^^^^^^^^^^^^^^^^^^^^^^^
-.. literalinclude:: ../../../configs/data/components/protein_apo_to_holo_alignment.yaml
+.. literalinclude:: ../../../configs/data/components/convert_mmcif_to_pdb.yaml
     :language: yaml
-    :caption: :file:`data/components/protein_apo_to_holo_alignment.yaml`
-
-FASTA preparation
-^^^^^^^^^^^^^^^^^^^^^^^^
-.. literalinclude:: ../../../configs/data/components/fasta_preparation.yaml
-    :language: yaml
-    :caption: :file:`data/components/fasta_preparation.yaml`
+    :caption: :file:`data/components/convert_mmcif_to_pdb.yaml`
 
 ESMFold sequence preparation
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -27,6 +21,35 @@ ESMFold sequence preparation
     :language: yaml
     :caption: :file:`data/components/esmfold_sequence_preparation.yaml`
 
+FASTA preparation
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/data/components/fasta_preparation.yaml
+    :language: yaml
+    :caption: :file:`data/components/fasta_preparation.yaml`
+
+Plot dataset RMSD
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/data/components/plot_dataset_rmsd.yaml
+    :language: yaml
+    :caption: :file:`data/components/plot_dataset_rmsd.yaml`
+
+Prepare Boltz-1 MSAs
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/data/components/prepare_boltz_msas.yaml
+    :language: yaml
+    :caption: :file:`data/components/prepare_boltz_msas.yaml`
+
+Prepare Chai-1 MSAs
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/data/components/prepare_chai_msas.yaml
+    :language: yaml
+    :caption: :file:`data/components/prepare_chai_msas.yaml`
+
+Protein apo-to-holo alignment
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/data/components/protein_apo_to_holo_alignment.yaml
+    :language: yaml
+    :caption: :file:`data/components/protein_apo_to_holo_alignment.yaml`
 
 Method data parsers
 ------------------------
@@ -92,6 +115,18 @@ Chai-1 output extraction
 .. literalinclude:: ../../../configs/data/chai_output_extraction.yaml
     :language: yaml
     :caption: :file:`data/chai_output_extraction.yaml`
+
+Boltz-1 input preparation
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/data/boltz_input_preparation.yaml
+    :language: yaml
+    :caption: :file:`data/boltz_input_preparation.yaml`
+
+Boltz-1 output extraction
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../../../configs/data/boltz_output_extraction.yaml
+    :language: yaml
+    :caption: :file:`data/boltz_output_extraction.yaml`
 
 AlphaFold 3 output extraction
 ^^^^^^^^^^^^^^^^^^^^^^^^

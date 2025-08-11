@@ -9,7 +9,7 @@ Welcome to PoseBench's documentation!
 
 .. mdinclude:: ../../README.md
     :start-line: 4
-    :end-line: 13
+    :end-line: 14
 
 .. image:: ./_static/PoseBench.png
   :alt: Overview of PoseBench
@@ -17,8 +17,8 @@ Welcome to PoseBench's documentation!
   :width: 600
 
 .. mdinclude:: ../../README.md
-    :start-line: 19
-    :end-line: 21
+    :start-line: 20
+    :end-line: 22
 
 
 .. toctree::
