@@ -328,6 +328,7 @@ def main(cfg: DictConfig):
             "flowdock",
             "rfaa",
             "chai-lab",
+            "boltz",
             "alphafold3",
         ]:
             output_dir = Path(str(output_dir).replace("_relaxed", ""))
@@ -372,6 +373,20 @@ def main(cfg: DictConfig):
                     or (config == "" and "_relaxed" not in file.stem)
                     and "_aligned" not in file.stem
                     and "_LIG_" not in file.stem
+                ]
+            )
+        elif cfg.method == "boltz":
+            output_ligand_files = list(
+                output_dir.rglob(f"*_model_{cfg.rank_to_align - 1}_ligand*{config}.sdf")
+            )
+            output_ligand_files = sorted(
+                [
+                    file
+                    for file in output_ligand_files
+                    if config == "_relaxed"
+                    or (config == "" and "_relaxed" not in file.stem)
+                    and "_aligned" not in file.stem
+                    and "_LIG" not in file.stem
                 ]
             )
         elif cfg.method == "alphafold3":
@@ -431,6 +446,18 @@ def main(cfg: DictConfig):
                     and "_aligned" not in file.stem
                 ]
             )
+        elif cfg.method == "boltz":
+            output_protein_files = list(
+                output_dir.rglob(f"*_model_{cfg.rank_to_align - 1}_protein*.pdb")
+            )
+            output_protein_files = sorted(
+                [
+                    file
+                    for file in output_protein_files
+                    if (config == "_relaxed" or (config == "" and "_relaxed" not in file.stem))
+                    and "_aligned" not in file.stem
+                ]
+            )
         elif cfg.method == "alphafold3":
             output_protein_files = list(output_dir.rglob("*_model_protein.pdb"))
             output_protein_files = sorted(
@@ -462,6 +489,19 @@ def main(cfg: DictConfig):
                         item
                         for item in output_dir.rglob(
                             f"pred.model_idx_{cfg.rank_to_align - 1}_protein*.pdb"
+                        )
+                        if "_aligned" not in item.stem
+                        and any(
+                            [item.parent.stem in file.parent.stem for file in output_ligand_files]
+                        )
+                    ]
+                )
+            elif cfg.method == "boltz":
+                output_protein_files = sorted(
+                    [
+                        item
+                        for item in output_dir.rglob(
+                            f"*_model_{cfg.rank_to_align - 1}_protein*.pdb"
                         )
                         if "_aligned" not in item.stem
                         and any(

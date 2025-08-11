@@ -1,6 +1,6 @@
 full_report: true # whether to generate a full PoseBusters report (i.e. with all metrics) or a summary report (i.e. with only the most important metrics)
-method: diffdock # the method for which to score predictions - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `flowdock`, `rfaa`, `chai-lab`, `alphafold3`, `vina`, `ensemble`)
-vina_binding_site_method: p2rank # the method to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `flowdock`, `rfaa`, `chai-lab`, `alphafold3`, `p2rank`)
+method: diffdock # the method for which to score predictions - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `flowdock`, `rfaa`, `chai-lab`, `boltz`, `alphafold3`, `vina`, `ensemble`)
+vina_binding_site_method: p2rank # the method to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `flowdock`, `rfaa`, `chai-lab`, `boltz`, `alphafold3`, `p2rank`)
 dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
 ensemble_ranking_method: consensus # the method with which to rank-order and select the top ensemble prediction for each target - NOTE: must be one of (`consensus`, `ff`)
 input_csv_path: ${resolve_method_input_csv_path:${method},${dataset},${pocket_only_baseline}} # the input CSV filepath with which to run inference

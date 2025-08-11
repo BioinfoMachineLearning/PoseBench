@@ -165,6 +165,9 @@ configs/local/default.yaml
 # Forks
 /workdir/
 /forks/alphafold3/*prediction_outputs/
+/forks/boltz/boltz/
+/forks/boltz/prediction_inputs/
+/forks/boltz/prediction_outputs/
 /forks/chai-lab-orig/
 /forks/chai-lab*/chai-lab/
 /forks/chai-lab*/prediction_inputs/
@@ -199,3 +202,4 @@ configs/local/default.yaml
 /forks/TULIP/outputs/
 /forks/Vina/ADFR/
 scripts/*inference*/
+scoring/

@@ -53,6 +53,8 @@ baseline_methods = [
     "rfaa",
     "chai-lab_ss",
     "chai-lab",
+    "boltz_ss",
+    "boltz",
     "alphafold3_ss",
     "alphafold3",
 ]
@@ -67,7 +69,7 @@ dg_set_dir = os.path.join(
 )
 assert os.path.exists(
     dg_set_dir
-), "Please download the DockGen set from `https://zenodo.org/records/14629652` before proceeding."
+), "Please download the DockGen set from `https://zenodo.org/records/16791095` before proceeding."
 
 # Mappings
 method_mapping = {
@@ -78,6 +80,8 @@ method_mapping = {
     "rfaa": "RFAA",
     "chai-lab_ss": "Chai-1-Single-Seq",
     "chai-lab": "Chai-1",
+    "boltz_ss": "Boltz-1-Single-Seq",
+    "boltz": "Boltz-1",
     "alphafold3_ss": "AF3-Single-Seq",
     "alphafold3": "AF3",
 }

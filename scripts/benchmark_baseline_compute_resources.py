@@ -34,9 +34,10 @@ def assemble_baseline_command(cfg: DictConfig) -> List[str]:
         "flowdock",
         "rfaa",
         "chai-lab",
+        "boltz",
         "vina",
     ]:
-        # NOTE: When running RoseTTAFold-All-Atom (or Chai-1), the `RFAA` (`chai-lab`) Conda environment must be activated instead of the `PoseBench` environment
+        # NOTE: When running RoseTTAFold-All-Atom (or Chai-1/Boltz), the `RFAA` (`chai-lab`/`boltz`) Conda environment must be activated instead of the `PoseBench` environment
         vina_suffix = f" method={cfg.vina_binding_site_method}" if cfg.method == "vina" else ""
         cuda_device_suffix = (
             "" if cfg.method == "vina" else f" cuda_device_index={cfg.cuda_device_index}"

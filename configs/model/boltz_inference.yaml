@@ -1,0 +1,10 @@
+model: boltz1 # the model to use for inference - NOTE: must be one of (`boltz1`, `boltz2`)
+dataset: posebusters_benchmark # the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)
+input_dir: ${oc.env:PROJECT_ROOT}/forks/boltz/prediction_inputs/${dataset} # the input directory with which to run inference
+output_dir: ${oc.env:PROJECT_ROOT}/forks/boltz/prediction_outputs/${dataset}_${repeat_index} # the output directory to which to save the inference results
+cuda_device_index: 0 # the CUDA device to use for inference, or `null` to use CPU
+repeat_index: 1 # the repeat index to use for inference
+use_potentials: true # whether to use inference-time potentials to potentially improve pose plausibility
+skip_existing: true # whether to skip running inference if the prediction for a target already exists
+pocket_only_baseline: false # whether to run the pocket-only baseline
+max_num_inputs: null # if provided, the number of (dataset subset) inputs over which to run inference

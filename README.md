@@ -3,7 +3,7 @@
 # PoseBench
 
 [![Paper](http://img.shields.io/badge/arXiv-2405.14108-B31B1B.svg)](https://arxiv.org/abs/2405.14108)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14629652.svg)](https://doi.org/10.5281/zenodo.14629652)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16791095.svg)](https://doi.org/10.5281/zenodo.16791095)
 [![PyPI version](https://badge.fury.io/py/posebench.svg)](https://badge.fury.io/py/posebench)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Docs](https://assets.readthedocs.org/static/projects/badges/passing-flat.svg)](https://bioinfomachinelearning.github.io/PoseBench/)
@@ -113,6 +113,10 @@ cd forks/RoseTTAFold-All-Atom/rf2aa/SE3Transformer/ && pip3 install --no-cache-d
 mamba env create -f environments/chai_lab_environment.yaml --prefix forks/chai-lab/chai-lab/
 conda activate forks/chai-lab/chai-lab/  # NOTE: one still needs to use `conda` to (de)activate environments
 pip3 install forks/chai-lab/
+# - Boltz environment (~5 GB)
+mamba env create -f environments/boltz_environment.yaml --prefix forks/boltz/boltz/
+conda activate forks/boltz/boltz/  # NOTE: one still needs to use `conda` to (de)activate environments
+cd forks/boltz/ && pip3 install -e .[cuda] && cd ../../
 # - AutoDock Vina Tools environment (~1 GB)
 mamba env create -f environments/adfr_environment.yaml --prefix forks/Vina/ADFR/
 conda activate forks/Vina/ADFR/  # NOTE: one still needs to use `conda` to (de)activate environments
@@ -152,6 +156,37 @@ wget http://files.ipd.uw.edu/pub/RF-All-Atom/weights/RFAA_paper_weights.pt
 cd ../../
 ```
 
+(Optional) Download PLINDER-based similarity metrics for method generalization analysis (~0.5 GB total)
+
+```bash
+mkdir -p ./data/plinder/
+wget -P ./data/plinder/ https://zenodo.org/records/16754298/files/annotations.csv
+wget -P ./data/plinder/ https://zenodo.org/records/16754298/files/all_similarity_scores.parquet
+```
+
+(Optional) Alternatively, download PLINDER to perform a method generalization analysis for custom (new) datasets (~500 GB total)
+
+```bash
+# download fixed version of PLINDER
+export PLINDER_RELEASE=2024-06
+export PLINDER_ITERATION=v2
+mkdir -p ./data/plinder/${PLINDER_RELEASE}/${PLINDER_ITERATION}/
+gsutil -m cp -r "gs://plinder/${PLINDER_RELEASE}/${PLINDER_ITERATION}/*" ./data/plinder/${PLINDER_RELEASE}/${PLINDER_ITERATION}/
+
+# unpack system files of fixed version of PLINDER
+cd ./data/plinder/${PLINDER_RELEASE}/${PLINDER_ITERATION}/systems; for i in `ls *zip`; do unzip $i; touch ${i//.zip/}_done; done
+cd ../../../../../
+
+# customize `similarity_scoring.py` to similarity-match a (bespoke) subset of new PDB complex IDs for (blind) benchmarking
+python3 posebench/analysis/similarity_scoring.py $PDB_ID_FROM_NEW_SUBSET # e.g., in a for-loop or in parallel
+
+# combine each score of the new subset into a singular (new) `all_similarity_scores.parquet` file
+python3 -c "import os, pandas as pd; from glob import glob; files = glob(os.path.join('scoring', 'scores', 'scores', 'all_scores', '*.parquet')); pd.concat([pd.read_parquet(f) for f in files], ignore_index=True).to_parquet('data', 'plinder', 'all_similarity_scores.parquet')"
+
+# update annotations
+python3 -c "import re; pdb_ids_pattern = '|'.join(map(re.escape, $PDB_IDS_IN_NEW_SUBSET)); similarity_df_custom = all_similarity_scores[~all_similarity_scores["target_system"].str.contains(pdb_ids_pattern, na=False)].sort_values(by='sucos_shape_pocket_qcov', ascending=False).groupby('group_key').head(1).reset_index(drop=True); similarity_custom = dict(zip(similarity_df_custom['group_key'], similarity_df_custom['sucos_shape_pocket_qcov'])); annotated_df['sucos_shape_pocket_qcov_custom'] = annotated_df['group_key'].map(similarity_custom); annotated_df.to_csv(os.path.join('data', 'plinder', 'annotations.csv'))"
+```
+
 </details>
 
 ## Tutorials
@@ -174,10 +209,10 @@ of how to extend `PoseBench`, as outlined below.
 
 ```bash
 # fetch, extract, and clean-up preprocessed Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 data (~3 GB) #
-wget https://zenodo.org/records/14629652/files/astex_diverse_set.tar.gz
-wget https://zenodo.org/records/14629652/files/posebusters_benchmark_set.tar.gz
-wget https://zenodo.org/records/14629652/files/dockgen_set.tar.gz
-wget https://zenodo.org/records/14629652/files/casp15_set.tar.gz
+wget https://zenodo.org/records/16791095/files/astex_diverse_set.tar.gz
+wget https://zenodo.org/records/16791095/files/posebusters_benchmark_set.tar.gz
+wget https://zenodo.org/records/16791095/files/dockgen_set.tar.gz
+wget https://zenodo.org/records/16791095/files/casp15_set.tar.gz
 tar -xzf astex_diverse_set.tar.gz
 tar -xzf posebusters_benchmark_set.tar.gz
 tar -xzf dockgen_set.tar.gz
@@ -193,35 +228,39 @@ rm casp15_set.tar.gz
 ```bash
 # fetch, extract, and clean-up benchmark method predictions to reproduce paper results (~19 GB) #
 # AutoDock Vina predictions and results
-wget https://zenodo.org/records/14629652/files/vina_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/vina_benchmark_method_predictions.tar.gz
 tar -xzf vina_benchmark_method_predictions.tar.gz
 rm vina_benchmark_method_predictions.tar.gz
 # DiffDock predictions and results
-wget https://zenodo.org/records/14629652/files/diffdock_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/diffdock_benchmark_method_predictions.tar.gz
 tar -xzf diffdock_benchmark_method_predictions.tar.gz
 rm diffdock_benchmark_method_predictions.tar.gz
 # DynamicBind predictions and results
-wget https://zenodo.org/records/14629652/files/dynamicbind_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/dynamicbind_benchmark_method_predictions.tar.gz
 tar -xzf dynamicbind_benchmark_method_predictions.tar.gz
 rm dynamicbind_benchmark_method_predictions.tar.gz
 # NeuralPLexer predictions and results
-wget https://zenodo.org/records/14629652/files/neuralplexer_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/neuralplexer_benchmark_method_predictions.tar.gz
 tar -xzf neuralplexer_benchmark_method_predictions.tar.gz
 rm neuralplexer_benchmark_method_predictions.tar.gz
 # RoseTTAFold-All-Atom predictions and results
-wget https://zenodo.org/records/14629652/files/rfaa_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/rfaa_benchmark_method_predictions.tar.gz
 tar -xzf rfaa_benchmark_method_predictions.tar.gz
 rm rfaa_benchmark_method_predictions.tar.gz
 # Chai-1 predictions and results
-wget https://zenodo.org/records/14629652/files/chai_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/chai_benchmark_method_predictions.tar.gz
 tar -xzf chai_benchmark_method_predictions.tar.gz
 rm chai_benchmark_method_predictions.tar.gz
+# Boltz-1 predictions and results
+wget https://zenodo.org/records/16791095/files/boltz_benchmark_method_predictions.tar.gz
+tar -xzf boltz_benchmark_method_predictions.tar.gz
+rm boltz_benchmark_method_predictions.tar.gz
 # AlphaFold 3 predictions and results
-wget https://zenodo.org/records/14629652/files/af3_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/af3_benchmark_method_predictions.tar.gz
 tar -xzf af3_benchmark_method_predictions.tar.gz
 rm af3_benchmark_method_predictions.tar.gz
 # CASP15 predictions and results for all methods
-wget https://zenodo.org/records/14629652/files/casp15_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/casp15_benchmark_method_predictions.tar.gz
 tar -xzf casp15_benchmark_method_predictions.tar.gz
 rm casp15_benchmark_method_predictions.tar.gz
 ```
@@ -231,7 +270,7 @@ rm casp15_benchmark_method_predictions.tar.gz
 ```bash
 # fetch, extract, and clean-up benchmark method interactions to reproduce paper results (~12 GB) #
 # cached ProLIF interactions for notebook plots
-wget https://zenodo.org/records/14629652/files/posebench_notebooks.tar.gz
+wget https://zenodo.org/records/16791095/files/posebench_notebooks.tar.gz
 tar -xzf posebench_notebooks.tar.gz
 rm posebench_notebooks.tar.gz
 ```
@@ -318,7 +357,7 @@ python3 posebench/data/components/protein_apo_to_holo_alignment.py dataset=casp1
 conda deactivate
 ```
 
-**NOTE:** The preprocessed Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 data available via [Zenodo](https://doi.org/10.5281/zenodo.14629652) provide pre-holo-aligned protein structures predicted by AlphaFold 3 (and alternatively MIT-licensed ESMFold) for these respective datasets. Accordingly, users must ensure their usage of such predicted protein structures from AlphaFold 3 aligns with AlphaFold 3's [Terms of Use](https://github.com/google-deepmind/alphafold3/blob/main/WEIGHTS_TERMS_OF_USE.md).
+**NOTE:** The preprocessed Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 data available via [Zenodo](https://doi.org/10.5281/zenodo.16791095) provide pre-holo-aligned protein structures predicted by AlphaFold 3 (and alternatively MIT-licensed ESMFold) for these respective datasets. Accordingly, users must ensure their usage of such predicted protein structures from AlphaFold 3 aligns with AlphaFold 3's [Terms of Use](https://github.com/google-deepmind/alphafold3/blob/main/WEIGHTS_TERMS_OF_USE.md).
 
 </details>
 
@@ -339,14 +378,15 @@ conda deactivate
 
 #### Flexible Protein Methods
 
-| Name                   | Source                                                                        | Astex Benchmarked | PoseBusters Benchmarked | DockGen Benchmarked | CASP Benchmarked |
-| ---------------------- | ----------------------------------------------------------------------------- | ----------------- | ----------------------- | ------------------- | ---------------- |
-| `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)               | ✓                 | ✓                       | ✓                   | ✓                |
-| `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)             | ✓                 | ✓                       | ✓                   | ✓                |
-| `FlowDock`             | [Morehead et al.](https://arxiv.org/abs/2412.10966)                           | ✓                 | ✓                       | ✓                   | ✓                |
-| `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528)         | ✓                 | ✓                       | ✓                   | ✓                |
-| `Chai-1`               | [Chai Discovery](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf) | ✓                 | ✓                       | ✓                   | ✓                |
-| `AlphaFold 3`          | [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w)         | ✓                 | ✓                       | ✓                   | ✓                |
+| Name                   | Source                                                                         | Astex Benchmarked | PoseBusters Benchmarked | DockGen Benchmarked | CASP Benchmarked |
+| ---------------------- | ------------------------------------------------------------------------------ | ----------------- | ----------------------- | ------------------- | ---------------- |
+| `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)                | ✓                 | ✓                       | ✓                   | ✓                |
+| `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)              | ✓                 | ✓                       | ✓                   | ✓                |
+| `FlowDock`             | [Morehead et al.](https://arxiv.org/abs/2412.10966)                            | ✓                 | ✓                       | ✓                   | ✓                |
+| `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528)          | ✓                 | ✓                       | ✓                   | ✓                |
+| `Chai-1`               | [Chai Discovery](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf)  | ✓                 | ✓                       | ✓                   | ✓                |
+| `Boltz`                | [Wohlwend et al.](https://www.biorxiv.org/content/10.1101/2024.11.19.624167v4) | ✓                 | ✓                       | ✓                   | ✓                |
+| `AlphaFold 3`          | [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w)          | ✓                 | ✓                       | ✓                   | ✓                |
 
 ### Methods available for ensembling
 
@@ -360,14 +400,15 @@ conda deactivate
 
 #### Flexible Protein Methods
 
-| Name                   | Source                                                                        | Astex Benchmarked | PoseBusters Benchmarked | DockGen Benchmarked | CASP Benchmarked |
-| ---------------------- | ----------------------------------------------------------------------------- | ----------------- | ----------------------- | ------------------- | ---------------- |
-| `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)               | ✓                 | ✓                       | ✓                   | ✓                |
-| `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)             | ✓                 | ✓                       | ✓                   | ✓                |
-| `FlowDock`             | [Morehead et al.](https://arxiv.org/abs/2412.10966)                           | ✓                 | ✓                       | ✓                   | ✓                |
-| `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528)         | ✓                 | ✓                       | ✓                   | ✓                |
-| `Chai-1`               | [Chai Discovery](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf) | ✓                 | ✓                       | ✓                   | ✓                |
-| `AlphaFold 3`          | [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w)         | ✓                 | ✓                       | ✓                   | ✓                |
+| Name                   | Source                                                                         | Astex Benchmarked | PoseBusters Benchmarked | DockGen Benchmarked | CASP Benchmarked |
+| ---------------------- | ------------------------------------------------------------------------------ | ----------------- | ----------------------- | ------------------- | ---------------- |
+| `DynamicBind`          | [Lu et al.](https://www.nature.com/articles/s41467-024-45461-2)                | ✓                 | ✓                       | ✓                   | ✓                |
+| `NeuralPLexer`         | [Qiao et al.](https://www.nature.com/articles/s42256-024-00792-z)              | ✓                 | ✓                       | ✓                   | ✓                |
+| `FlowDock`             | [Morehead et al.](https://arxiv.org/abs/2412.10966)                            | ✓                 | ✓                       | ✓                   | ✓                |
+| `RoseTTAFold-All-Atom` | [Krishna et al.](https://www.science.org/doi/10.1126/science.adl2528)          | ✓                 | ✓                       | ✓                   | ✓                |
+| `Chai-1`               | [Chai Discovery](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf)  | ✓                 | ✓                       | ✓                   | ✓                |
+| `Boltz`                | [Wohlwend et al.](https://www.biorxiv.org/content/10.1101/2024.11.19.624167v4) | ✓                 | ✓                       | ✓                   | ✓                |
+| `AlphaFold 3`          | [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w)          | ✓                 | ✓                       | ✓                   | ✓                |
 
 **NOTE**: Have a new method to add? Please let us know by creating a pull request. We would be happy to work with you to integrate new methodology into this benchmark!
 
@@ -859,6 +900,93 @@ python3 posebench/analysis/inference_analysis_casp.py method=chai-lab dataset=ca
 ...
 ```
 
+### How to run inference with `Boltz`
+
+Prepare CSV input files
+
+```bash
+python3 posebench/data/boltz_input_preparation.py dataset=posebusters_benchmark
+python3 posebench/data/boltz_input_preparation.py dataset=astex_diverse
+python3 posebench/data/boltz_input_preparation.py dataset=dockgen
+python3 posebench/data/boltz_input_preparation.py dataset=casp15 input_data_dir=data/casp15_set/targets
+```
+
+Run inference on each dataset
+
+```bash
+conda activate forks/boltz/boltz/
+python3 posebench/models/boltz_inference.py dataset=posebusters_benchmark repeat_index=1
+...
+python3 posebench/models/boltz_inference.py dataset=astex_diverse repeat_index=1
+...
+python3 posebench/models/boltz_inference.py dataset=dockgen repeat_index=1
+...
+python3 posebench/models/boltz_inference.py dataset=casp15 repeat_index=1
+...
+conda deactivate
+```
+
+Extract predictions into separate files for proteins and ligands
+
+```bash
+python3 posebench/data/boltz_output_extraction.py dataset=posebusters_benchmark repeat_index=1
+...
+python3 posebench/data/boltz_output_extraction.py dataset=astex_diverse repeat_index=1
+...
+python3 posebench/data/boltz_output_extraction.py dataset=dockgen repeat_index=1
+...
+python3 posebench/data/boltz_output_extraction.py dataset=casp15 repeat_index=1
+...
+```
+
+Relax the generated ligand structures inside of their respective protein pockets
+
+```bash
+python3 posebench/models/inference_relaxation.py method=boltz dataset=posebusters_benchmark remove_initial_protein_hydrogens=true repeat_index=1
+...
+python3 posebench/models/inference_relaxation.py method=boltz dataset=astex_diverse remove_initial_protein_hydrogens=true repeat_index=1
+...
+python3 posebench/models/inference_relaxation.py method=boltz dataset=dockgen remove_initial_protein_hydrogens=true repeat_index=1
+...
+```
+
+Align predicted protein-ligand structures to ground-truth complex structures
+
+```bash
+conda activate PyMOL-PoseBench
+python3 posebench/analysis/complex_alignment.py method=boltz dataset=posebusters_benchmark repeat_index=1
+...
+python3 posebench/analysis/complex_alignment.py method=boltz dataset=astex_diverse repeat_index=1
+...
+python3 posebench/analysis/complex_alignment.py method=boltz dataset=dockgen repeat_index=1
+conda deactivate
+...
+```
+
+Analyze inference results for each dataset
+
+```bash
+python3 posebench/analysis/inference_analysis.py method=boltz dataset=posebusters_benchmark repeat_index=1
+...
+python3 posebench/analysis/inference_analysis.py method=boltz dataset=astex_diverse repeat_index=1
+...
+python3 posebench/analysis/inference_analysis.py method=boltz dataset=dockgen repeat_index=1
+...
+```
+
+Analyze inference results for the CASP15 dataset
+
+```bash
+# first assemble (unrelaxed and post ranking-relaxed) CASP15-compliant prediction submission files for scoring
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[boltz\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_boltz_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=false export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+python3 posebench/models/ensemble_generation.py ensemble_methods=\[boltz\] input_csv_filepath=data/test_cases/casp15/ensemble_inputs.csv output_dir=data/test_cases/casp15/top_boltz_ensemble_predictions_1 skip_existing=true relax_method_ligands_post_ranking=true export_file_format=casp15 export_top_n=5 combine_casp_output_files=true max_method_predictions=5 method_top_n_to_select=5 resume=true ensemble_benchmarking=true ensemble_benchmarking_dataset=casp15 cuda_device_index=0 ensemble_benchmarking_repeat_index=1
+# NOTE: the suffixes for both `output_dir` and `ensemble_benchmarking_repeat_index` should be modified to e.g., 2, 3, ...
+...
+# now score the CASP15-compliant submissions using the official CASP scoring pipeline
+python3 posebench/analysis/inference_analysis_casp.py method=boltz dataset=casp15 repeat_index=1
+...
+```
+
 ### How to run inference with `AlphaFold 3`
 
 Run inference (3x) using the academically-available inference code released on [GitHub](https://github.com/google-deepmind/alphafold3), saving each run's structures to a unique output directory located at `forks/alphafold3/prediction_outputs/{dataset=posebusters_benchmark,astex_diverse,dockgen,casp15}_{repeat_index=1,2,3}`
@@ -1130,6 +1258,8 @@ jupyter notebook notebooks/casp15_inference_results_plotting.ipynb
 Inspect the failure modes of each method
 
 ```bash
+jupyter notebook notebooks/failure_modes_analysis_plotting_plinder.ipynb
+# or
 jupyter notebook notebooks/failure_modes_analysis_plotting.ipynb
 ```
 
@@ -1181,6 +1311,7 @@ rm -rf docs/build/ && sphinx-build docs/source/ docs/build/ # NOTE: errors can s
 
 - [AutoDock-Vina](https://github.com/ccsb-scripps/AutoDock-Vina)
 - [alphafold3](https://github.com/google-deepmind/alphafold3)
+- [boltz](https://github.com/jwohlwend/boltz)
 - [casp15_ligand](https://git.scicore.unibas.ch/schwede/casp15_ligand)
 - [chai-lab](https://github.com/chaidiscovery/chai-lab)
 - [DiffDock](https://github.com/gcorso/DiffDock)
@@ -1189,10 +1320,12 @@ rm -rf docs/build/ && sphinx-build docs/source/ docs/build/ # NOTE: errors can s
 - [FlowDock](https://github.com/BioinfoMachineLearning/FlowDock)
 - [lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template)
 - [NeuralPLexer](https://github.com/zrqiao/NeuralPLexer)
+- [plinder](https://github.com/plinder-org/plinder)
 - [ProteinWorkshop](https://github.com/a-r-j/ProteinWorkshop)
 - [posebusters](https://github.com/maabuu/posebusters)
 - [posebusters_em](https://github.com/maabuu/posebusters_em)
 - [RoseTTAFold-All-Atom](https://github.com/baker-laboratory/RoseTTAFold-All-Atom)
+- [runs-n-poses](https://github.com/plinder-org/runs-n-poses)
 - [tulip](https://github.com/BioinfoMachineLearning/tulip)
 
 We thank all their contributors and maintainers!
