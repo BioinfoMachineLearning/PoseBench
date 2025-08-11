@@ -1,3 +1,24 @@
+### 0.7.0 - 08/11/2025
+
+**Additions**:
+
+- Added new baseline methods (Boltz-1/2 w/ and w/o with multiple sequence alignments (MSAs)).
+- Added a new failure mode analysis notebook incorporating PLINDER for robust method generalization analysis(n.b., see new arXiv preprint for more details).
+- Added a script for performing custom method generalization analyses (e.g., when new methods are released which were trained on more recent splits of the PDB compared to AlphaFold 3's cutoff date of September 30, 2021).
+
+**Changes**:
+
+- Updated the `posebusters` package version to (at the time of writing) the latest version `0.4.5` to integrate new (stricter) pose checks (e.g., regarding flat aliphatic rings). Overall, each method's PoseBusters validity scores have decreased slightly on average (as expected).
+
+**Bug Fixes**:
+
+- Fixed a bug related to the number of DockGen-E protein chains provided to Chai-1 for inference on this dataset. Chai-1's DockGen-E results accordingly have been updated.
+
+**Results**:
+
+- With all the above changes in place, re-analyzed all baseline methods for each benchmark dataset, and updated the baseline predictions hosted on Zenodo
+- **NOTE**: The updated arXiv preprint should be publicly available by 08/15/2025
+
 ### 0.6.0 - 02/09/2025
 
 **Additions**:
@@ -21,7 +42,7 @@
 
 **Results**:
 
-- With all the above changed in place, simplified, re-ran, and re-analyzed all baseline methods for each benchmark dataset, and updated the baseline predictions and datasets (now containing standardized MSAs) hosted on Zenodo
+- With all the above changes in place, simplified, re-ran, and re-analyzed all baseline methods for each benchmark dataset, and updated the baseline predictions and datasets (now containing standardized MSAs) hosted on Zenodo
 - **NOTE**: The updated arXiv preprint should be publicly available by 02/12/2025
 
 ### 0.5.0 - 09/30/2024
