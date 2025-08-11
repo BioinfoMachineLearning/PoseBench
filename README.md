@@ -3,7 +3,7 @@
 # PoseBench
 
 [![Paper](http://img.shields.io/badge/arXiv-2405.14108-B31B1B.svg)](https://arxiv.org/abs/2405.14108)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14629652.svg)](https://doi.org/10.5281/zenodo.14629652)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16791095.svg)](https://doi.org/10.5281/zenodo.16791095)
 [![PyPI version](https://badge.fury.io/py/posebench.svg)](https://badge.fury.io/py/posebench)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Docs](https://assets.readthedocs.org/static/projects/badges/passing-flat.svg)](https://bioinfomachinelearning.github.io/PoseBench/)
@@ -209,10 +209,10 @@ of how to extend `PoseBench`, as outlined below.
 
 ```bash
 # fetch, extract, and clean-up preprocessed Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 data (~3 GB) #
-wget https://zenodo.org/records/14629652/files/astex_diverse_set.tar.gz
-wget https://zenodo.org/records/14629652/files/posebusters_benchmark_set.tar.gz
-wget https://zenodo.org/records/14629652/files/dockgen_set.tar.gz
-wget https://zenodo.org/records/14629652/files/casp15_set.tar.gz
+wget https://zenodo.org/records/16791095/files/astex_diverse_set.tar.gz
+wget https://zenodo.org/records/16791095/files/posebusters_benchmark_set.tar.gz
+wget https://zenodo.org/records/16791095/files/dockgen_set.tar.gz
+wget https://zenodo.org/records/16791095/files/casp15_set.tar.gz
 tar -xzf astex_diverse_set.tar.gz
 tar -xzf posebusters_benchmark_set.tar.gz
 tar -xzf dockgen_set.tar.gz
@@ -228,39 +228,39 @@ rm casp15_set.tar.gz
 ```bash
 # fetch, extract, and clean-up benchmark method predictions to reproduce paper results (~19 GB) #
 # AutoDock Vina predictions and results
-wget https://zenodo.org/records/14629652/files/vina_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/vina_benchmark_method_predictions.tar.gz
 tar -xzf vina_benchmark_method_predictions.tar.gz
 rm vina_benchmark_method_predictions.tar.gz
 # DiffDock predictions and results
-wget https://zenodo.org/records/14629652/files/diffdock_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/diffdock_benchmark_method_predictions.tar.gz
 tar -xzf diffdock_benchmark_method_predictions.tar.gz
 rm diffdock_benchmark_method_predictions.tar.gz
 # DynamicBind predictions and results
-wget https://zenodo.org/records/14629652/files/dynamicbind_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/dynamicbind_benchmark_method_predictions.tar.gz
 tar -xzf dynamicbind_benchmark_method_predictions.tar.gz
 rm dynamicbind_benchmark_method_predictions.tar.gz
 # NeuralPLexer predictions and results
-wget https://zenodo.org/records/14629652/files/neuralplexer_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/neuralplexer_benchmark_method_predictions.tar.gz
 tar -xzf neuralplexer_benchmark_method_predictions.tar.gz
 rm neuralplexer_benchmark_method_predictions.tar.gz
 # RoseTTAFold-All-Atom predictions and results
-wget https://zenodo.org/records/14629652/files/rfaa_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/rfaa_benchmark_method_predictions.tar.gz
 tar -xzf rfaa_benchmark_method_predictions.tar.gz
 rm rfaa_benchmark_method_predictions.tar.gz
 # Chai-1 predictions and results
-wget https://zenodo.org/records/14629652/files/chai_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/chai_benchmark_method_predictions.tar.gz
 tar -xzf chai_benchmark_method_predictions.tar.gz
 rm chai_benchmark_method_predictions.tar.gz
 # Boltz-1 predictions and results
-wget https://zenodo.org/records/14629652/files/boltz_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/boltz_benchmark_method_predictions.tar.gz
 tar -xzf boltz_benchmark_method_predictions.tar.gz
 rm boltz_benchmark_method_predictions.tar.gz
 # AlphaFold 3 predictions and results
-wget https://zenodo.org/records/14629652/files/af3_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/af3_benchmark_method_predictions.tar.gz
 tar -xzf af3_benchmark_method_predictions.tar.gz
 rm af3_benchmark_method_predictions.tar.gz
 # CASP15 predictions and results for all methods
-wget https://zenodo.org/records/14629652/files/casp15_benchmark_method_predictions.tar.gz
+wget https://zenodo.org/records/16791095/files/casp15_benchmark_method_predictions.tar.gz
 tar -xzf casp15_benchmark_method_predictions.tar.gz
 rm casp15_benchmark_method_predictions.tar.gz
 ```
@@ -270,7 +270,7 @@ rm casp15_benchmark_method_predictions.tar.gz
 ```bash
 # fetch, extract, and clean-up benchmark method interactions to reproduce paper results (~12 GB) #
 # cached ProLIF interactions for notebook plots
-wget https://zenodo.org/records/14629652/files/posebench_notebooks.tar.gz
+wget https://zenodo.org/records/16791095/files/posebench_notebooks.tar.gz
 tar -xzf posebench_notebooks.tar.gz
 rm posebench_notebooks.tar.gz
 ```
@@ -357,7 +357,7 @@ python3 posebench/data/components/protein_apo_to_holo_alignment.py dataset=casp1
 conda deactivate
 ```
 
-**NOTE:** The preprocessed Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 data available via [Zenodo](https://doi.org/10.5281/zenodo.14629652) provide pre-holo-aligned protein structures predicted by AlphaFold 3 (and alternatively MIT-licensed ESMFold) for these respective datasets. Accordingly, users must ensure their usage of such predicted protein structures from AlphaFold 3 aligns with AlphaFold 3's [Terms of Use](https://github.com/google-deepmind/alphafold3/blob/main/WEIGHTS_TERMS_OF_USE.md).
+**NOTE:** The preprocessed Astex Diverse, PoseBusters Benchmark, DockGen, and CASP15 data available via [Zenodo](https://doi.org/10.5281/zenodo.16791095) provide pre-holo-aligned protein structures predicted by AlphaFold 3 (and alternatively MIT-licensed ESMFold) for these respective datasets. Accordingly, users must ensure their usage of such predicted protein structures from AlphaFold 3 aligns with AlphaFold 3's [Terms of Use](https://github.com/google-deepmind/alphafold3/blob/main/WEIGHTS_TERMS_OF_USE.md).
 
 </details>
 
