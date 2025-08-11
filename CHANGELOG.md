@@ -16,8 +16,8 @@
 
 **Results**:
 
-- With all the above changes in place, re-analyzed all baseline methods for each benchmark dataset, and updated the baseline predictions hosted on Zenodo
-- **NOTE**: The updated arXiv preprint should be publicly available by 08/15/2025
+- With all the above changes in place, re-analyzed all baseline methods for each benchmark dataset, and updated the baseline predictions hosted on Zenodo.
+- **NOTE**: The updated arXiv preprint should be publicly available by 08/15/2025.
 
 ### 0.6.0 - 02/09/2025
 
