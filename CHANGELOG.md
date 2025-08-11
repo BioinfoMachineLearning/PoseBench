@@ -1,3 +1,9 @@
+### 0.7.1 - 08/11/2025
+
+**Changes**:
+
+- Updated PyPI package and documentation.
+
 ### 0.7.0 - 08/11/2025
 
 **Additions**:
