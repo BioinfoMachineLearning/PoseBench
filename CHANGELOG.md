@@ -1,3 +1,9 @@
+### 1.0.0 - 11/04/2025
+
+**Changes**:
+
+- Added dot plots on top of bar plots for improved clarity in CASP15 results.
+
 ### 0.7.1 - 08/11/2025
 
 **Changes**:
