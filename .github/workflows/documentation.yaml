@@ -25,7 +25,8 @@ jobs:
           environment-file: docs/.docs.environment.yaml
       - name: Install dependencies
         run: |
-          $CONDA/envs/PoseBench-Documentation/bin/pip install -e .
+          $CONDA/envs/PoseBench-Documentation/bin/pip install --no-cache-dir -e .
+          conda clean --all --yes
       - name: Sphinx build
         run: |
           rm -rf docs/build/ && $CONDA/envs/PoseBench-Documentation/bin/sphinx-build docs/source/ docs/build/
