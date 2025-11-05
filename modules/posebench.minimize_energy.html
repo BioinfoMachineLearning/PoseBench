@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+
+<html class="no-js" data-content_root="../" lang="en">
+<head><meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="light dark" name="color-scheme"/><meta content="width=device-width, initial-scale=1" name="viewport">
+<script async="" src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            
+            gtag('config', '');
+            
+        </script>
+<meta content="Minimize energy" property="og:title">
+<meta content="website" property="og:type">
+<meta content="modules/posebench.minimize_energy.html" property="og:url"/>
+<meta content="PoseBench" property="og:site_name"/>
+<meta content="Energy minimization of a ligand in a protein pocket as used in the PoseBusters/DynamicBind paper. This code is based on the OpenMM user guide: http://docs.openmm.org/latest/userguide" property="og:description"/>
+<meta content="1146" property="og:image:width"/>
+<meta content="600" property="og:image:height"/>
+<meta content="_images/social_previews/summary_modules_posebench.minimize_energy_5f5c42a6.png" property="og:image"/>
+<meta content="Energy minimization of a ligand in a protein pocket as used in the PoseBusters/DynamicBind paper. This code is based on the OpenMM user guide: http://docs.openmm.org/latest/userguide" property="og:image:alt"/>
+<meta content="Energy minimization of a ligand in a protein pocket as used in the PoseBusters/DynamicBind paper. This code is based on the OpenMM user guide: http://docs.openmm.org/latest/userguide" name="description"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<link href="../genindex.html" rel="index" title="Index"/><link href="../search.html" rel="search" title="Search"/><link href="posebench.ensemble_generation.html" rel="next" title="Ensemble generation"/><link href="posebench.inference_relaxation.html" rel="prev" title="Inference relaxation"/>
+<link as="image" href="../_static/WorkBench.jpeg" rel="prefetch"/>
+<!-- Generated with Sphinx 8.1.3 and Furo 2025.09.25 -->
+<title>Minimize energy - PoseBench 1.0.0</title>
+<link href="../_static/pygments.css?v=d111a655" rel="stylesheet" type="text/css">
+<link href="../_static/styles/furo.css?v=580074bf" rel="stylesheet" type="text/css">
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css">
+<link href="../_static/tabs.css?v=4c969af8" rel="stylesheet" type="text/css">
+<link href="../_static/sphinx-codeautolink.css?v=b2176991" rel="stylesheet" type="text/css">
+<link href="../_static/styles/furo-extensions.css?v=8dab3a3b" rel="stylesheet" type="text/css"/>
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></link></link></link></link></link></meta></meta></meta></head>
+<body>
+<script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+<svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+<symbol id="svg-toc" viewbox="0 0 24 24">
+<title>Contents</title>
+<svg fill="currentColor" stroke="currentColor" stroke-width="0" viewbox="0 0 1024 1024">
+<path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"></path>
+</svg>
+</symbol>
+<symbol id="svg-menu" viewbox="0 0 24 24">
+<title>Menu</title>
+<svg class="feather-menu" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<line x1="3" x2="21" y1="12" y2="12"></line>
+<line x1="3" x2="21" y1="6" y2="6"></line>
+<line x1="3" x2="21" y1="18" y2="18"></line>
+</svg>
+</symbol>
+<symbol id="svg-arrow-right" viewbox="0 0 24 24">
+<title>Expand</title>
+<svg class="feather-chevron-right" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<polyline points="9 18 15 12 9 6"></polyline>
+</svg>
+</symbol>
+<symbol id="svg-sun" viewbox="0 0 24 24">
+<title>Light mode</title>
+<svg class="feather-sun" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="5"></circle>
+<line x1="12" x2="12" y1="1" y2="3"></line>
+<line x1="12" x2="12" y1="21" y2="23"></line>
+<line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line>
+<line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line>
+<line x1="1" x2="3" y1="12" y2="12"></line>
+<line x1="21" x2="23" y1="12" y2="12"></line>
+<line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line>
+<line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line>
+</svg>
+</symbol>
+<symbol id="svg-moon" viewbox="0 0 24 24">
+<title>Dark mode</title>
+<svg class="icon-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
+<path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+</svg>
+</symbol>
+<symbol id="svg-sun-with-moon" viewbox="0 0 24 24">
+<title>Auto light/dark, in light mode</title>
+<svg class="icon-custom-derived-from-feather-sun-and-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z" style="opacity: 50%"></path>
+<line x1="14.5" x2="14.5" y1="3.25" y2="1.25"></line>
+<line x1="14.5" x2="14.5" y1="15.85" y2="17.85"></line>
+<line x1="10.044" x2="8.63" y1="5.094" y2="3.68"></line>
+<line x1="19" x2="20.414" y1="14.05" y2="15.464"></line>
+<line x1="8.2" x2="6.2" y1="9.55" y2="9.55"></line>
+<line x1="20.8" x2="22.8" y1="9.55" y2="9.55"></line>
+<line x1="10.044" x2="8.63" y1="14.006" y2="15.42"></line>
+<line x1="19" x2="20.414" y1="5.05" y2="3.636"></line>
+<circle cx="14.5" cy="9.55" r="3.6"></circle>
+</svg>
+</symbol>
+<symbol id="svg-moon-with-sun" viewbox="0 0 24 24">
+<title>Auto light/dark, in dark mode</title>
+<svg class="icon-custom-derived-from-feather-sun-and-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"></path>
+<line style="opacity: 50%" x1="18" x2="18" y1="3.705" y2="2.5"></line>
+<line style="opacity: 50%" x1="18" x2="18" y1="11.295" y2="12.5"></line>
+<line style="opacity: 50%" x1="15.316" x2="14.464" y1="4.816" y2="3.964"></line>
+<line style="opacity: 50%" x1="20.711" x2="21.563" y1="10.212" y2="11.063"></line>
+<line style="opacity: 50%" x1="14.205" x2="13.001" y1="7.5" y2="7.5"></line>
+<line style="opacity: 50%" x1="21.795" x2="23" y1="7.5" y2="7.5"></line>
+<line style="opacity: 50%" x1="15.316" x2="14.464" y1="10.184" y2="11.036"></line>
+<line style="opacity: 50%" x1="20.711" x2="21.563" y1="4.789" y2="3.937"></line>
+<circle cx="18" cy="7.5" r="2.169" style="opacity: 50%"></circle>
+</svg>
+</symbol>
+<symbol id="svg-pencil" viewbox="0 0 24 24">
+<svg class="icon-tabler-pencil-code" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
+<path d="M13.5 6.5l4 4"></path>
+<path d="M20 21l2 -2l-2 -2"></path>
+<path d="M17 17l-2 2l2 2"></path>
+</svg>
+</symbol>
+<symbol id="svg-eye" viewbox="0 0 24 24">
+<svg class="icon-tabler-eye-code" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
+<path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path>
+<path d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008"></path>
+<path d="M20 21l2 -2l-2 -2"></path>
+<path d="M17 17l-2 2l2 2"></path>
+</svg>
+</symbol>
+</svg>
+<input aria-label="Toggle site navigation sidebar" class="sidebar-toggle" id="__navigation" name="__navigation" type="checkbox"/>
+<input aria-label="Toggle table of contents sidebar" class="sidebar-toggle" id="__toc" name="__toc" type="checkbox"/>
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+<div class="page">
+<header class="mobile-header">
+<div class="header-left">
+<label class="nav-overlay-icon" for="__navigation">
+<span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+</label>
+</div>
+<div class="header-center">
+<a href="../index.html"><div class="brand">PoseBench 1.0.0</div></a>
+</div>
+<div class="header-right">
+<div class="theme-toggle-container theme-toggle-header">
+<button aria-label="Toggle Light / Dark / Auto color theme" class="theme-toggle">
+<svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+<svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+<svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+<svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+</button>
+</div>
+<label class="toc-overlay-icon toc-header-icon" for="__toc">
+<span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+</label>
+</div>
+</header>
+<aside class="sidebar-drawer">
+<div class="sidebar-container">
+<div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+<div class="sidebar-logo-container">
+<img alt="Logo" class="sidebar-logo" src="../_static/WorkBench.jpeg"/>
+</div>
+<span class="sidebar-brand-text">PoseBench 1.0.0</span>
+</a><form action="../search.html" class="sidebar-search-container" method="get" role="search">
+<input aria-label="Search" class="sidebar-search" name="q" placeholder="Search"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_preparation.html">How to prepare <cite>PoseBench</cite> data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../available_methods.html">Available inference methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sweep_inference.html">How to run a sweep of benchmarking experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../method_inference.html">How to run inference with individual methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ensemble_inference.html">How to run inference with a method ensemble</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comparative_plots.html">How to create comparative plots of inference results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../for_developers.html">For developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../acknowledgements.html">Acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citing_this_work.html">Citing this work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bonus.html">Bonus</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Default Configs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../configs/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configs/data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configs/model.html">Model</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="posebench.binding_site_crop_preparation.html">Binding site crop preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posebench.complex_alignment.html">Complex alignment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posebench.inference_relaxation.html">Inference relaxation</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Minimize energy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posebench.ensemble_generation.html">Ensemble generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posebench.data_utils.html">Data utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posebench.model_utils.html">Model utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posebench.utils.html">General utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posebench.resolvers.html">OmegaConf resolvers</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<div class="main">
+<div class="content">
+<div class="article-container">
+<a class="back-to-top muted-link" href="#">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+</svg>
+<span>Back to top</span>
+</a>
+<div class="content-icon-container">
+<div class="view-this-page">
+<a class="muted-link" href="../_sources/modules/posebench.minimize_energy.rst.txt" title="View this page">
+<svg><use href="#svg-eye"></use></svg>
+<span class="visually-hidden">View this page</span>
+</a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+<button aria-label="Toggle Light / Dark / Auto color theme" class="theme-toggle">
+<svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+<svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+<svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+<svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+</button>
+</div>
+<label class="toc-overlay-icon toc-content-icon" for="__toc">
+<span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+</label>
+</div>
+<article id="furo-main-content" role="main">
+<section id="minimize-energy">
+<h1>Minimize energy<a class="headerlink" href="#minimize-energy" title="Link to this heading">¶</a></h1>
+<p id="module-posebench.models.minimize_energy">Energy minimization of a ligand in a protein pocket as used in the
+PoseBusters/DynamicBind paper.</p>
+<p>This code is based on the OpenMM user guide:
+<a class="reference external" href="http://docs.openmm.org/latest/userguide">http://docs.openmm.org/latest/userguide</a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.NoHydrogen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">NoHydrogen</span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#NoHydrogen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.NoHydrogen" title="Link to this definition">¶</a></dt>
+<dd><p>Select class that filters out hydrogen atoms.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.NoHydrogen.accept_atom">
+<span class="sig-name descname"><span class="pre">accept_atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#NoHydrogen.accept_atom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.NoHydrogen.accept_atom" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if the atom element is not H or D.</p>
+</dd></dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.add_ligand_to_complex">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">add_ligand_to_complex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modeller</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Modeller</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Molecule</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Modeller</span></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#add_ligand_to_complex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.add_ligand_to_complex" title="Link to this definition">¶</a></dt>
+<dd><p>Add a ligand to a protein-ligand complex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>modeller</strong> – The Modeller object for the protein-ligand complex.</p></li>
+<li><p><strong>ligand</strong> – The prepared ligand.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The updated Modeller object for the protein-ligand complex.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.compute_ligand_local_geometry_violations">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">compute_ligand_local_geometry_violations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_input_sdf_filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_sdf_filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#compute_ligand_local_geometry_violations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.compute_ligand_local_geometry_violations" title="Link to this definition">¶</a></dt>
+<dd><p>Computes the number of ligand local geometry violations in the SDF file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ref_input_sdf_filepath</strong> – Path to the reference (e.g.,
+original) ligand input SDF file.</p></li>
+<li><p><strong>input_sdf_filepath</strong> – Path to the optional latest ligand input
+SDF file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The cumulative number of ligand local geometry violations.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.compute_protein_local_geometry_violations">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">compute_protein_local_geometry_violations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pdb_filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#compute_protein_local_geometry_violations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.compute_protein_local_geometry_violations" title="Link to this definition">¶</a></dt>
+<dd><p>Computes the number of protein local geometry violations in the PDB
+file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input_pdb_filepath</strong> – Path to the latest protein input PDB
+file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the number of protein local geometry
+violations and the list of residue indices with associated
+violations.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.deserialize">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">deserialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">System</span></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#deserialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.deserialize" title="Link to this definition">¶</a></dt>
+<dd><p>Deserialize an OpenMM system from a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> – Path to the file to deserialize the system from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The deserialized system.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.generate_conformer">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">generate_conformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#generate_conformer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.generate_conformer" title="Link to this definition">¶</a></dt>
+<dd><p>Generate an RDKit conformer for a molecule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mol</strong> – The molecule for which to generate an RDKit conformer.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.generate_system">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">generate_system</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modeller</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Modeller</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligands</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Molecule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_particles_protein</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_particles_total</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_fields</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relax_protein</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">System</span></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#generate_system"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.generate_system" title="Link to this definition">¶</a></dt>
+<dd><p>Generate an OpenMM system for the protein-ligand complex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>modeller</strong> – The Modeller object for the protein-ligand complex.</p></li>
+<li><p><strong>ligands</strong> – The prepared ligands.</p></li>
+<li><p><strong>num_particles_protein</strong> – The number of particles in the
+protein.</p></li>
+<li><p><strong>num_particles_total</strong> – The total number of particles in the
+complex.</p></li>
+<li><p><strong>name</strong> – The name of the system.</p></li>
+<li><p><strong>force_fields</strong> – The force fields to use.</p></li>
+<li><p><strong>relax_protein</strong> – Whether or not to relax the protein.</p></li>
+<li><p><strong>cache_dir</strong> – The directory to cache the system in.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The generated OpenMM system.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.get_all_ligand_non_hydrogen_atoms">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">get_all_ligand_non_hydrogen_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_sdf_filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_input_sdf_filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mol</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mol</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#get_all_ligand_non_hydrogen_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.get_all_ligand_non_hydrogen_atoms" title="Link to this definition">¶</a></dt>
+<dd><p>Get all non-hydrogen atoms in the ligand SDF file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_sdf_filepath</strong> – Path to the latest ligand input SDF file.</p></li>
+<li><p><strong>ref_input_sdf_filepath</strong> – Path to the reference (e.g.,
+original) ligand input SDF file.</p></li>
+<li><p><strong>input_mol</strong> – The optional RDKit molecule to directly use for
+the input ligand.</p></li>
+<li><p><strong>ref_mol</strong> – The optional RDKit molecule to directly use for the
+reference ligand.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the NumPy ligand atom coordinates and
+the list-of-lists ligand adjacency matrix.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.get_all_protein_atoms">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">get_all_protein_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pdb_filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#get_all_protein_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.get_all_protein_atoms" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a list of all protein atoms in the PDB file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input_pdb_filepath</strong> – Path to the input PDB file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of all protein atoms in the PDB file.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.get_fastest_platform">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">get_fastest_platform</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Platform</span></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#get_fastest_platform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.get_fastest_platform" title="Link to this definition">¶</a></dt>
+<dd><p>Get the fastest available OpenMM platform.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The fastest available OpenMM platform.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.load_molecule">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">load_molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Molecule</span></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#load_molecule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.load_molecule" title="Link to this definition">¶</a></dt>
+<dd><p>Load a molecule from a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mol_path</strong> – Path to the molecule file.</p></li>
+<li><p><strong>kwargs</strong> – Additional keyword arguments to pass to the
+Molecule.from_file method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The loaded molecule.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.main">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.main" title="Link to this definition">¶</a></dt>
+<dd><p>Minimize the energy of a ligand in a protein pocket.</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.minimize_energy">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">minimize_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#minimize_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.minimize_energy" title="Link to this definition">¶</a></dt>
+<dd><p>Minimize the energy of a ligand in a protein pocket using OpenMM.</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.optimize_ligand_in_pocket">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">optimize_ligand_in_pocket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">protein_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligand_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protein_output_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complex_output_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protein_gap_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligand_stiffness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protein_stiffness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protein_residue_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'non_hydrogen'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_undefined_stereo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prep_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PosixPath('.')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_solvent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relax_protein</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_initial_protein_hydrogens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assign_each_ligand_unique_force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_ions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assign_partial_charges_manually</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">report_initial_energy_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">platform_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'fastest'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cuda_device_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Unit({BaseUnit(base_dim=BaseDimension('amount'),</span> <span class="pre">name='mole',</span> <span class="pre">symbol='mol'):</span> <span class="pre">-1.0,</span> <span class="pre">ScaledUnit(factor=4.184,</span> <span class="pre">master=kilojoule,</span> <span class="pre">name='kilocalorie',</span> <span class="pre">symbol='kcal'):</span> <span class="pre">1.0})</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Unit({BaseUnit(base_dim=BaseDimension('length'),</span> <span class="pre">name='angstrom',</span> <span class="pre">symbol='A'):</span> <span class="pre">1.0})</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#optimize_ligand_in_pocket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.optimize_ligand_in_pocket" title="Link to this definition">¶</a></dt>
+<dd><p>Optimize a ligand in a protein pocket using OpenMM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>protein_file</strong> – Path to the protein file.</p></li>
+<li><p><strong>ligand_file</strong> – Path to the ligand file.</p></li>
+<li><p><strong>output_file</strong> – Path to save the optimized ligand to.</p></li>
+<li><p><strong>protein_output_file</strong> – Path to save the optimized protein to.</p></li>
+<li><p><strong>complex_output_file</strong> – Path to save the optimized protein-ligand complex to.</p></li>
+<li><p><strong>protein_gap_mask</strong> – Mask of the protein regions in the PDB file for which to skip relaxation, represented as a sequence-length string.</p></li>
+<li><p><strong>ligand_stiffness</strong> – Stiffness of the ligand chains.</p></li>
+<li><p><strong>protein_stiffness</strong> – Stiffness of the protein chains.</p></li>
+<li><p><strong>protein_residue_set</strong> – Residue set to use for relaxation. Can be either <cite>non_hydrogen</cite> or <cite>c_alpha</cite>.</p></li>
+<li><p><strong>tolerance</strong> – The tolerance to use for energy minimization.</p></li>
+<li><p><strong>allow_undefined_stereo</strong> – Whether or not to allow undefined stereochemistry.</p></li>
+<li><p><strong>prep_only</strong> – Whether or not to only prepare the ligand and protein.</p></li>
+<li><p><strong>temp_dir</strong> – The temporary directory to use.</p></li>
+<li><p><strong>name</strong> – The name of the system.</p></li>
+<li><p><strong>add_solvent</strong> – Whether or not to add solvent to the protein.</p></li>
+<li><p><strong>relax_protein</strong> – Whether or not to relax the protein.</p></li>
+<li><p><strong>remove_initial_protein_hydrogens</strong> – Whether or not to remove the initial protein hydrogens.</p></li>
+<li><p><strong>assign_each_ligand_unique_force</strong> – Whether to assign each ligand a unique force constant.</p></li>
+<li><p><strong>model_ions</strong> – Whether or not to model ions.</p></li>
+<li><p><strong>cache_files</strong> – Whether or not to cache the prepared files.</p></li>
+<li><p><strong>assign_partial_charges_manually</strong> – Whether or not to assign partial charges manually.</p></li>
+<li><p><strong>report_initial_energy_only</strong> – Whether or not to report the initial energy only.</p></li>
+<li><p><strong>platform_name</strong> – The name of the OpenMM platform to use.</p></li>
+<li><p><strong>cuda_device_index</strong> – The index of the CUDA device to use.</p></li>
+<li><p><strong>max_iterations</strong> – The maximum number of iterations to use for energy minimization.</p></li>
+<li><p><strong>energy</strong> – When relaxing the protein, the unit of energy to use.</p></li>
+<li><p><strong>length</strong> – When relaxing the protein, the unit of length to use.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing the energy before and after minimization, and the optimized
+ligand.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.prep_ligand">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">prep_ligand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ligand_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">relax_protein</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_undefined_stereo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mol</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Molecule</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#prep_ligand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.prep_ligand" title="Link to this definition">¶</a></dt>
+<dd><p>Prepare a ligand for use in OpenMM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ligand_file</strong> – Path to the ligand file.</p></li>
+<li><p><strong>temp_file</strong> – Path to the temporary file to save the prepared
+ligand to.</p></li>
+<li><p><strong>relax_protein</strong> – Whether or not to relax the protein.</p></li>
+<li><p><strong>allow_undefined_stereo</strong> – Whether or not to allow undefined
+stereochemistry.</p></li>
+<li><p><strong>mol</strong> – The optional RDKit molecule to directly use for the
+ligand.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The prepared ligand.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.prep_protein">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">prep_protein</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">protein_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">relax_protein</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_initial_protein_hydrogens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_solvent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">PDBFile</span></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#prep_protein"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.prep_protein" title="Link to this definition">¶</a></dt>
+<dd><p>Prepare a protein for use in OpenMM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>protein_file</strong> – Path to the protein file.</p></li>
+<li><p><strong>temp_file</strong> – Path to the temporary file to save the prepared
+protein to.</p></li>
+<li><p><strong>relax_protein</strong> – Whether or not to relax the protein.</p></li>
+<li><p><strong>remove_initial_protein_hydrogens</strong> – Whether or not to remove
+the initial protein hydrogens.</p></li>
+<li><p><strong>add_solvent</strong> – Whether or not to add solvent to the protein.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The prepared protein.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.randomly_rotate_protein_side_chains">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">randomly_rotate_protein_side_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">violation_residue_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3.141592653589793</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_chi_groups</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#randomly_rotate_protein_side_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.randomly_rotate_protein_side_chains" title="Link to this definition">¶</a></dt>
+<dd><p>Randomly rotate side chains of the protein residues with local geometry
+violations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>structure</strong> – Structure to rotate.</p></li>
+<li><p><strong>violation_residue_idx</strong> – List of residue indices with local
+geometry violations.</p></li>
+<li><p><strong>min_angle</strong> – Minimum angle to rotate.</p></li>
+<li><p><strong>max_angle</strong> – Maximum angle to rotate.</p></li>
+<li><p><strong>num_chi_groups</strong> – Number of side chain groups.</p></li>
+<li><p><strong>eps</strong> – Epsilon value.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.remove_hydrogens_from_pdb">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">remove_hydrogens_from_pdb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pdb_filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_pdb_filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#remove_hydrogens_from_pdb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.remove_hydrogens_from_pdb" title="Link to this definition">¶</a></dt>
+<dd><p>Remove hydrogen atoms from a PDB file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_pdb_filepath</strong> – Path to the input PDB file.</p></li>
+<li><p><strong>output_pdb_filepath</strong> – Path to the output PDB file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.remove_mol_hydrogens_and_reorder">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">remove_mol_hydrogens_and_reorder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mol</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Mol</span></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#remove_mol_hydrogens_and_reorder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.remove_mol_hydrogens_and_reorder" title="Link to this definition">¶</a></dt>
+<dd><p>Remove hydrogens from a molecule and re-order the atoms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mol</strong> – The molecule to process.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The processed molecule.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.save_biopython_structure_to_pdb">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">save_biopython_structure_to_pdb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_pdb_filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ca_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#save_biopython_structure_to_pdb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.save_biopython_structure_to_pdb" title="Link to this definition">¶</a></dt>
+<dd><p>Saves a BioPython protein <cite>Structure</cite> objects to a PDB file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>structure</strong> – Structure to save.</p></li>
+<li><p><strong>output_pdb_filepath</strong> – Path to the input PDB file.</p></li>
+<li><p><strong>ca_only</strong> – Whether to save only the CA atoms or not.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.save_with_rdkit">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">save_with_rdkit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molecule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Molecule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">conformer_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mol</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#save_with_rdkit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.save_with_rdkit" title="Link to this definition">¶</a></dt>
+<dd><p>Save a molecule to a file using RDKit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>molecule</strong> – The molecule to save.</p></li>
+<li><p><strong>file_path</strong> – The path to save the molecule to.</p></li>
+<li><p><strong>conformer_index</strong> – The index of the conformer to save.</p></li>
+<li><p><strong>name</strong> – The name to give the molecule.</p></li>
+<li><p><strong>mol</strong> – The optional RDKit molecule to directly use for the
+ligand.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.serialize">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">serialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">System</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#serialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.serialize" title="Link to this definition">¶</a></dt>
+<dd><p>Serialize an OpenMM system to a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>system</strong> – The system to serialize.</p></li>
+<li><p><strong>path</strong> – Path to the file to serialize the system to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The path to the serialized system.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.setup_simulation">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">setup_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">modeller:</span> <span class="pre">~openmm.app.modeller.Modeller,</span> <span class="pre">system:</span> <span class="pre">~openmm.openmm.System,</span> <span class="pre">platform:</span> <span class="pre">~openmm.openmm.Platform,</span> <span class="pre">platform_properties:</span> <span class="pre">dict[str,</span> <span class="pre">~typing.Any],</span> <span class="pre">temperature:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">Quantity(value=300.0,</span> <span class="pre">unit=kelvin),</span> <span class="pre">friction_coeff:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">Quantity(value=1.0,</span> <span class="pre">unit=/picosecond),</span> <span class="pre">step_size:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">Quantity(value=0.002,</span> <span class="pre">unit=picosecond)</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Simulation</span></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#setup_simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.setup_simulation" title="Link to this definition">¶</a></dt>
+<dd><p>Set up an OpenMM simulation for the protein-ligand complex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>modeller</strong> – The Modeller object for the protein-ligand complex.</p></li>
+<li><p><strong>system</strong> – The OpenMM system for the protein-ligand complex.</p></li>
+<li><p><strong>platform</strong> – The OpenMM platform to use.</p></li>
+<li><p><strong>platform_properties</strong> – The properties to use with the OpenMM
+platform.</p></li>
+<li><p><strong>temperature</strong> – The temperature to use with a
+LangevinIntegrator.</p></li>
+<li><p><strong>friction_coeff</strong> – The friction coefficient to use with a
+LangevinIntegrator.</p></li>
+<li><p><strong>step_size</strong> – The step size to use with a LangevinIntegrator.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The setup OpenMM simulation.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="posebench.models.minimize_energy.will_restrain">
+<span class="sig-prename descclassname"><span class="pre">posebench.models.minimize_energy.</span></span><span class="sig-name descname"><span class="pre">will_restrain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Atom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residue_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/posebench/models/minimize_energy.html#will_restrain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#posebench.models.minimize_energy.will_restrain" title="Link to this definition">¶</a></dt>
+<dd><p>Returns True if the atom will be restrained by the given restraint set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom</strong> – Atom to check.</p></li>
+<li><p><strong>residue_set</strong> – Residue set to use for checking.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+</section>
+</article>
+</div>
+<footer>
+<div class="related-pages">
+<a class="next-page" href="posebench.ensemble_generation.html">
+<div class="page-info">
+<div class="context">
+<span>Next</span>
+</div>
+<div class="title">Ensemble generation</div>
+</div>
+<svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+</a>
+<a class="prev-page" href="posebench.inference_relaxation.html">
+<svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+<div class="page-info">
+<div class="context">
+<span>Previous</span>
+</div>
+<div class="title">Inference relaxation</div>
+</div>
+</a>
+</div>
+<div class="bottom-of-page">
+<div class="left-details">
+<div class="copyright">
+                Copyright © 2025, Alex Morehead
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+</div>
+<div class="right-details">
+</div>
+</div>
+</footer>
+</div>
+<aside class="toc-drawer">
+<div class="toc-sticky toc-scroll">
+<div class="toc-title-container">
+<span class="toc-title">
+            On this page
+          </span>
+</div>
+<div class="toc-tree-container">
+<div class="toc-tree">
+<ul>
+<li><a class="reference internal" href="#">Minimize energy</a><ul>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.NoHydrogen"><code class="docutils literal notranslate"><span class="pre">NoHydrogen</span></code></a><ul>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.NoHydrogen.accept_atom"><code class="docutils literal notranslate"><span class="pre">NoHydrogen.accept_atom()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.add_ligand_to_complex"><code class="docutils literal notranslate"><span class="pre">add_ligand_to_complex()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.compute_ligand_local_geometry_violations"><code class="docutils literal notranslate"><span class="pre">compute_ligand_local_geometry_violations()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.compute_protein_local_geometry_violations"><code class="docutils literal notranslate"><span class="pre">compute_protein_local_geometry_violations()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.deserialize"><code class="docutils literal notranslate"><span class="pre">deserialize()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.generate_conformer"><code class="docutils literal notranslate"><span class="pre">generate_conformer()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.generate_system"><code class="docutils literal notranslate"><span class="pre">generate_system()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.get_all_ligand_non_hydrogen_atoms"><code class="docutils literal notranslate"><span class="pre">get_all_ligand_non_hydrogen_atoms()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.get_all_protein_atoms"><code class="docutils literal notranslate"><span class="pre">get_all_protein_atoms()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.get_fastest_platform"><code class="docutils literal notranslate"><span class="pre">get_fastest_platform()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.load_molecule"><code class="docutils literal notranslate"><span class="pre">load_molecule()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.minimize_energy"><code class="docutils literal notranslate"><span class="pre">minimize_energy()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.optimize_ligand_in_pocket"><code class="docutils literal notranslate"><span class="pre">optimize_ligand_in_pocket()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.prep_ligand"><code class="docutils literal notranslate"><span class="pre">prep_ligand()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.prep_protein"><code class="docutils literal notranslate"><span class="pre">prep_protein()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.randomly_rotate_protein_side_chains"><code class="docutils literal notranslate"><span class="pre">randomly_rotate_protein_side_chains()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.remove_hydrogens_from_pdb"><code class="docutils literal notranslate"><span class="pre">remove_hydrogens_from_pdb()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.remove_mol_hydrogens_and_reorder"><code class="docutils literal notranslate"><span class="pre">remove_mol_hydrogens_and_reorder()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.save_biopython_structure_to_pdb"><code class="docutils literal notranslate"><span class="pre">save_biopython_structure_to_pdb()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.save_with_rdkit"><code class="docutils literal notranslate"><span class="pre">save_with_rdkit()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.serialize"><code class="docutils literal notranslate"><span class="pre">serialize()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.setup_simulation"><code class="docutils literal notranslate"><span class="pre">setup_simulation()</span></code></a></li>
+<li><a class="reference internal" href="#posebench.models.minimize_energy.will_restrain"><code class="docutils literal notranslate"><span class="pre">will_restrain()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div><script src="../_static/jquery.js?v=5d32c60e"></script>
+<script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+<script src="../_static/documentation_options.js?v=8d563738"></script>
+<script src="../_static/doctools.js?v=9bcbadda"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=f281be69"></script>
+<script src="../_static/tabs.js?v=3ee01567"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+</body>
+</html>

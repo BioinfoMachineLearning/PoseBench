@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+
+<html class="no-js" data-content_root="../" lang="en">
+<head><meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="light dark" name="color-scheme"/><meta content="width=device-width, initial-scale=1" name="viewport">
+<script async="" src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            
+            gtag('config', '');
+            
+        </script>
+<meta content="Data" property="og:title">
+<meta content="website" property="og:type">
+<meta content="configs/data.html" property="og:url"/>
+<meta content="PoseBench" property="og:site_name"/>
+<meta content="This section describes the configurations for various data-related scripts. Input data components: These data component configurations are used to modify how the input (apo) protein structures are ..." property="og:description"/>
+<meta content="1146" property="og:image:width"/>
+<meta content="600" property="og:image:height"/>
+<meta content="_images/social_previews/summary_configs_data_939b3d32.png" property="og:image"/>
+<meta content="This section describes the configurations for various data-related scripts. Input data components: These data component configurations are used to modify how the input (apo) protein structures are ..." property="og:image:alt"/>
+<meta content="This section describes the configurations for various data-related scripts. Input data components: These data component configurations are used to modify how the input (apo) protein structures are ..." name="description"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<link href="../genindex.html" rel="index" title="Index"/><link href="../search.html" rel="search" title="Search"/><link href="model.html" rel="next" title="Model"/><link href="analysis.html" rel="prev" title="Analysis"/>
+<link as="image" href="../_static/WorkBench.jpeg" rel="prefetch"/>
+<!-- Generated with Sphinx 8.1.3 and Furo 2025.09.25 -->
+<title>Data - PoseBench 1.0.0</title>
+<link href="../_static/pygments.css?v=d111a655" rel="stylesheet" type="text/css">
+<link href="../_static/styles/furo.css?v=580074bf" rel="stylesheet" type="text/css">
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css">
+<link href="../_static/tabs.css?v=4c969af8" rel="stylesheet" type="text/css">
+<link href="../_static/sphinx-codeautolink.css?v=b2176991" rel="stylesheet" type="text/css">
+<link href="../_static/styles/furo-extensions.css?v=8dab3a3b" rel="stylesheet" type="text/css"/>
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></link></link></link></link></link></meta></meta></meta></head>
+<body>
+<script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+<svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+<symbol id="svg-toc" viewbox="0 0 24 24">
+<title>Contents</title>
+<svg fill="currentColor" stroke="currentColor" stroke-width="0" viewbox="0 0 1024 1024">
+<path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"></path>
+</svg>
+</symbol>
+<symbol id="svg-menu" viewbox="0 0 24 24">
+<title>Menu</title>
+<svg class="feather-menu" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<line x1="3" x2="21" y1="12" y2="12"></line>
+<line x1="3" x2="21" y1="6" y2="6"></line>
+<line x1="3" x2="21" y1="18" y2="18"></line>
+</svg>
+</symbol>
+<symbol id="svg-arrow-right" viewbox="0 0 24 24">
+<title>Expand</title>
+<svg class="feather-chevron-right" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<polyline points="9 18 15 12 9 6"></polyline>
+</svg>
+</symbol>
+<symbol id="svg-sun" viewbox="0 0 24 24">
+<title>Light mode</title>
+<svg class="feather-sun" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="5"></circle>
+<line x1="12" x2="12" y1="1" y2="3"></line>
+<line x1="12" x2="12" y1="21" y2="23"></line>
+<line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line>
+<line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line>
+<line x1="1" x2="3" y1="12" y2="12"></line>
+<line x1="21" x2="23" y1="12" y2="12"></line>
+<line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line>
+<line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line>
+</svg>
+</symbol>
+<symbol id="svg-moon" viewbox="0 0 24 24">
+<title>Dark mode</title>
+<svg class="icon-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
+<path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+</svg>
+</symbol>
+<symbol id="svg-sun-with-moon" viewbox="0 0 24 24">
+<title>Auto light/dark, in light mode</title>
+<svg class="icon-custom-derived-from-feather-sun-and-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z" style="opacity: 50%"></path>
+<line x1="14.5" x2="14.5" y1="3.25" y2="1.25"></line>
+<line x1="14.5" x2="14.5" y1="15.85" y2="17.85"></line>
+<line x1="10.044" x2="8.63" y1="5.094" y2="3.68"></line>
+<line x1="19" x2="20.414" y1="14.05" y2="15.464"></line>
+<line x1="8.2" x2="6.2" y1="9.55" y2="9.55"></line>
+<line x1="20.8" x2="22.8" y1="9.55" y2="9.55"></line>
+<line x1="10.044" x2="8.63" y1="14.006" y2="15.42"></line>
+<line x1="19" x2="20.414" y1="5.05" y2="3.636"></line>
+<circle cx="14.5" cy="9.55" r="3.6"></circle>
+</svg>
+</symbol>
+<symbol id="svg-moon-with-sun" viewbox="0 0 24 24">
+<title>Auto light/dark, in dark mode</title>
+<svg class="icon-custom-derived-from-feather-sun-and-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"></path>
+<line style="opacity: 50%" x1="18" x2="18" y1="3.705" y2="2.5"></line>
+<line style="opacity: 50%" x1="18" x2="18" y1="11.295" y2="12.5"></line>
+<line style="opacity: 50%" x1="15.316" x2="14.464" y1="4.816" y2="3.964"></line>
+<line style="opacity: 50%" x1="20.711" x2="21.563" y1="10.212" y2="11.063"></line>
+<line style="opacity: 50%" x1="14.205" x2="13.001" y1="7.5" y2="7.5"></line>
+<line style="opacity: 50%" x1="21.795" x2="23" y1="7.5" y2="7.5"></line>
+<line style="opacity: 50%" x1="15.316" x2="14.464" y1="10.184" y2="11.036"></line>
+<line style="opacity: 50%" x1="20.711" x2="21.563" y1="4.789" y2="3.937"></line>
+<circle cx="18" cy="7.5" r="2.169" style="opacity: 50%"></circle>
+</svg>
+</symbol>
+<symbol id="svg-pencil" viewbox="0 0 24 24">
+<svg class="icon-tabler-pencil-code" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
+<path d="M13.5 6.5l4 4"></path>
+<path d="M20 21l2 -2l-2 -2"></path>
+<path d="M17 17l-2 2l2 2"></path>
+</svg>
+</symbol>
+<symbol id="svg-eye" viewbox="0 0 24 24">
+<svg class="icon-tabler-eye-code" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
+<path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path>
+<path d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008"></path>
+<path d="M20 21l2 -2l-2 -2"></path>
+<path d="M17 17l-2 2l2 2"></path>
+</svg>
+</symbol>
+</svg>
+<input aria-label="Toggle site navigation sidebar" class="sidebar-toggle" id="__navigation" name="__navigation" type="checkbox"/>
+<input aria-label="Toggle table of contents sidebar" class="sidebar-toggle" id="__toc" name="__toc" type="checkbox"/>
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+<div class="page">
+<header class="mobile-header">
+<div class="header-left">
+<label class="nav-overlay-icon" for="__navigation">
+<span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+</label>
+</div>
+<div class="header-center">
+<a href="../index.html"><div class="brand">PoseBench 1.0.0</div></a>
+</div>
+<div class="header-right">
+<div class="theme-toggle-container theme-toggle-header">
+<button aria-label="Toggle Light / Dark / Auto color theme" class="theme-toggle">
+<svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+<svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+<svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+<svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+</button>
+</div>
+<label class="toc-overlay-icon toc-header-icon" for="__toc">
+<span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+</label>
+</div>
+</header>
+<aside class="sidebar-drawer">
+<div class="sidebar-container">
+<div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+<div class="sidebar-logo-container">
+<img alt="Logo" class="sidebar-logo" src="../_static/WorkBench.jpeg"/>
+</div>
+<span class="sidebar-brand-text">PoseBench 1.0.0</span>
+</a><form action="../search.html" class="sidebar-search-container" method="get" role="search">
+<input aria-label="Search" class="sidebar-search" name="q" placeholder="Search"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_preparation.html">How to prepare <cite>PoseBench</cite> data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../available_methods.html">Available inference methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sweep_inference.html">How to run a sweep of benchmarking experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../method_inference.html">How to run inference with individual methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ensemble_inference.html">How to run inference with a method ensemble</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comparative_plots.html">How to create comparative plots of inference results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../for_developers.html">For developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../acknowledgements.html">Acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citing_this_work.html">Citing this work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bonus.html">Bonus</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Default Configs</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Model</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.binding_site_crop_preparation.html">Binding site crop preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.complex_alignment.html">Complex alignment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.inference_relaxation.html">Inference relaxation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.minimize_energy.html">Minimize energy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.ensemble_generation.html">Ensemble generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.data_utils.html">Data utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.model_utils.html">Model utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.utils.html">General utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.resolvers.html">OmegaConf resolvers</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<div class="main">
+<div class="content">
+<div class="article-container">
+<a class="back-to-top muted-link" href="#">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+</svg>
+<span>Back to top</span>
+</a>
+<div class="content-icon-container">
+<div class="view-this-page">
+<a class="muted-link" href="../_sources/configs/data.rst.txt" title="View this page">
+<svg><use href="#svg-eye"></use></svg>
+<span class="visually-hidden">View this page</span>
+</a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+<button aria-label="Toggle Light / Dark / Auto color theme" class="theme-toggle">
+<svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+<svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+<svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+<svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+</button>
+</div>
+<label class="toc-overlay-icon toc-content-icon" for="__toc">
+<span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+</label>
+</div>
+<article id="furo-main-content" role="main">
+<section id="data">
+<h1>Data<a class="headerlink" href="#data" title="Link to this heading">¶</a></h1>
+<p>This section describes the configurations for various data-related scripts.</p>
+<section id="input-data-components">
+<h2>Input data components<a class="headerlink" href="#input-data-components" title="Link to this heading">¶</a></h2>
+<p>These data component configurations are used to modify how the input (apo) protein structures are predicted, aligned, or analyzed or how one data format is converted to another.</p>
+<section id="convert-mmcif-to-pdb">
+<h3>Convert mmCIF to PDB<a class="headerlink" href="#convert-mmcif-to-pdb" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/components/convert_mmcif_to_pdb.yaml</span></code></span><a class="headerlink" href="#id1" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">input_mmcif_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">???</span>
+<span class="nt">output_pdb_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">???</span>
+<span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="s">"N/A"</span>
+<span class="nt">lowercase_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="esmfold-sequence-preparation">
+<h3>ESMFold sequence preparation<a class="headerlink" href="#esmfold-sequence-preparation" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/components/esmfold_sequence_preparation.yaml</span></code></span><a class="headerlink" href="#id2" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`)</span>
+<span class="nt">input_fasta_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/reference_${dataset}_sequences.fasta</span><span class="w"> </span><span class="c1"># the input FASTA file to modify</span>
+<span class="nt">output_fasta_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/reference_${dataset}_esmfold_sequences.fasta</span><span class="w"> </span><span class="c1"># the input FASTA file to modify</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="fasta-preparation">
+<h3>FASTA preparation<a class="headerlink" href="#fasta-preparation" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/components/fasta_preparation.yaml</span></code></span><a class="headerlink" href="#id3" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">posebusters_ccd_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt</span><span class="w"> </span><span class="c1"># the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts</span>
+<span class="nt">dockgen_test_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt</span><span class="w"> </span><span class="c1"># the path to the DockGen test set IDs file</span>
+<span class="nt">data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set</span><span class="w"> </span><span class="c1"># where the processed datasets (e.g., PoseBusters Benchmark) are placed</span>
+<span class="nt">out_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/reference_${dataset}_sequences.fasta</span><span class="w"> </span><span class="c1"># the output FASTA file to produce</span>
+<span class="nt">include_all_biomolecules</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># instead of just protein chains, whether to include FASTA entries for each type of biomolecule chain (e.g., protein, ligand) in the PDB file</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="plot-dataset-rmsd">
+<h3>Plot dataset RMSD<a class="headerlink" href="#plot-dataset-rmsd" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/components/plot_dataset_rmsd.yaml</span></code></span><a class="headerlink" href="#id4" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data</span>
+<span class="nt">usalign_exec_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">???</span><span class="w"> </span><span class="c1"># the path to a local USAlign executable (e.g., ~/Programs/USalign/USalign)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="prepare-boltz-1-msas">
+<h3>Prepare Boltz-1 MSAs<a class="headerlink" href="#prepare-boltz-1-msas" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/components/prepare_boltz_msas.yaml</span></code></span><a class="headerlink" href="#id5" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse</span>
+<span class="nt">input_msa_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_msas</span><span class="w"> </span><span class="c1"># where the original MSA files are placed</span>
+<span class="nt">output_msa_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_boltz_msas</span><span class="w"> </span><span class="c1"># where the processed MSA files should be stored</span>
+<span class="nt">skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip processing if the output file already exists</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to prepare the pocket-only baseline</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="prepare-chai-1-msas">
+<h3>Prepare Chai-1 MSAs<a class="headerlink" href="#prepare-chai-1-msas" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/components/prepare_chai_msas.yaml</span></code></span><a class="headerlink" href="#id6" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_msa_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_msas</span><span class="w"> </span><span class="c1"># where the original MSA files are placed</span>
+<span class="nt">output_msa_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_chai_msas</span><span class="w"> </span><span class="c1"># where the processed MSA files should be stored</span>
+<span class="nt">skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip processing if the output file already exists</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="protein-apo-to-holo-alignment">
+<h3>Protein apo-to-holo alignment<a class="headerlink" href="#protein-apo-to-holo-alignment" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/components/protein_apo_to_holo_alignment.yaml</span></code></span><a class="headerlink" href="#id7" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/</span><span class="w"> </span><span class="c1"># where the processed datasets (e.g., PoseBusters Benchmark) are placed</span>
+<span class="nt">predicted_structures_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_predicted_structures</span><span class="w"> </span><span class="c1"># where the predicted protein structures are placed</span>
+<span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_predicted_structures</span><span class="w"> </span><span class="c1"># where the holo-aligned predicted apo structures should be stored</span>
+<span class="nt">processing_esmfold_structures</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to process the ESMFold predicted structures</span>
+<span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># number of CPU workers for parallel processing</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="method-data-parsers">
+<h2>Method data parsers<a class="headerlink" href="#method-data-parsers" title="Link to this heading">¶</a></h2>
+<p>These data parser configurations are used to modify how the input (output) protein-ligand complex structures of each method are prepared (extracted).</p>
+<section id="binding-site-crop-preparation">
+<h3>Binding site crop preparation<a class="headerlink" href="#binding-site-crop-preparation" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/binding_site_crop_preparation.yaml</span></code></span><a class="headerlink" href="#id8" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`)</span>
+<span class="nt">input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse</span>
+<span class="nt">input_protein_structure_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_predicted_structures</span><span class="w"> </span><span class="c1"># the input protein structure directory to parse</span>
+<span class="nt">protein_ligand_distance_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.0</span><span class="w"> </span><span class="c1"># the heavy-atom distance threshold (in Angstrom) to use for finding protein binding site residues in interaction with ligand heavy atoms</span>
+<span class="nt">num_buffer_residues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">7</span><span class="w"> </span><span class="c1"># the number of sequence-regional buffer residues to include around the native binding site residues</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="diffdock-input-preparation">
+<h3>DiffDock input preparation<a class="headerlink" href="#diffdock-input-preparation" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/diffdock_input_preparation.yaml</span></code></span><a class="headerlink" href="#id9" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse</span>
+<span class="nt">input_protein_structure_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_predicted_structures</span><span class="w"> </span><span class="c1"># the input protein structure directory to parse</span>
+<span class="nt">output_csv_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DiffDock/inference/diffdock_${dataset}_inputs.csv</span><span class="w"> </span><span class="c1"># the output CSV filepath to which to write the parsed input data</span>
+<span class="nt">posebusters_ccd_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt</span><span class="w"> </span><span class="c1"># the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts</span>
+<span class="nt">dockgen_test_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt</span><span class="w"> </span><span class="c1"># the path to the DockGen test set IDs file</span>
+<span class="nt">protein_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the path to the protein structure file to use</span>
+<span class="nt">ligand_smiles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the ligand SMILES string for which to predict the binding pose</span>
+<span class="nt">input_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the input ID to use for inference</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to prepare the pocket-only baseline</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="fabind-input-preparation">
+<h3>FABind input preparation<a class="headerlink" href="#fabind-input-preparation" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/fabind_input_preparation.yaml</span></code></span><a class="headerlink" href="#id10" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse</span>
+<span class="nt">output_csv_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FABind/inference/fabind_${dataset}_inputs.csv</span><span class="w"> </span><span class="c1"># the output CSV filepath to which to write the parsed input data</span>
+<span class="nt">posebusters_ccd_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt</span><span class="w"> </span><span class="c1"># the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts</span>
+<span class="nt">dockgen_test_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt</span><span class="w"> </span><span class="c1"># the path to the DockGen test set IDs file</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to prepare the pocket-only baseline</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="dynamicbind-input-preparation">
+<h3>DynamicBind input preparation<a class="headerlink" href="#dynamicbind-input-preparation" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/dynamicbind_input_preparation.yaml</span></code></span><a class="headerlink" href="#id11" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse</span>
+<span class="nt">input_protein_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the input protein structure directory to recursively parse during inference</span>
+<span class="nt">output_csv_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DynamicBind/inference/dynamicbind_${dataset}_inputs</span><span class="w"> </span><span class="c1"># the output CSV directory to which to write the parsed ligand SMILES strings</span>
+<span class="nt">posebusters_ccd_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt</span><span class="w"> </span><span class="c1"># the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts</span>
+<span class="nt">dockgen_test_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt</span><span class="w"> </span><span class="c1"># the path to the DockGen test set IDs file</span>
+<span class="nt">protein_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the path to the protein structure file to use</span>
+<span class="nt">ligand_smiles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the ligand SMILES string for which to predict the binding pose</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to prepare the pocket-only baseline</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="neuralplexer-input-preparation">
+<h3>NeuralPLexer input preparation<a class="headerlink" href="#neuralplexer-input-preparation" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/neuralplexer_input_preparation.yaml</span></code></span><a class="headerlink" href="#id12" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse</span>
+<span class="nt">input_receptor_structure_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_predicted_structures</span><span class="w"> </span><span class="c1"># if not `null`, the input template protein structure directory to parse</span>
+<span class="nt">output_csv_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/inference/neuralplexer_${dataset}_inputs.csv</span><span class="w"> </span><span class="c1"># the output CSV filepath to which to write the parsed input data</span>
+<span class="nt">posebusters_ccd_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt</span><span class="w"> </span><span class="c1"># the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts</span>
+<span class="nt">dockgen_test_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt</span><span class="w"> </span><span class="c1"># the path to the DockGen test set IDs file</span>
+<span class="nt">input_receptor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the input protein sequence</span>
+<span class="nt">input_ligand</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the input ligand SMILES</span>
+<span class="nt">input_template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the input template protein structure to optionally use</span>
+<span class="nt">input_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the input ID to use for inference</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to prepare the pocket-only baseline</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="flowdock-input-preparation">
+<h3>FlowDock input preparation<a class="headerlink" href="#flowdock-input-preparation" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/flowdock_input_preparation.yaml</span></code></span><a class="headerlink" href="#id13" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse</span>
+<span class="nt">input_receptor_structure_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_predicted_structures</span><span class="w"> </span><span class="c1"># if not `null`, the input template protein structure directory to parse</span>
+<span class="nt">output_csv_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FlowDock/inference/flowdock_${dataset}_inputs.csv</span><span class="w"> </span><span class="c1"># the output CSV filepath to which to write the parsed input data</span>
+<span class="nt">posebusters_ccd_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt</span><span class="w"> </span><span class="c1"># the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts</span>
+<span class="nt">dockgen_test_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt</span><span class="w"> </span><span class="c1"># the path to the DockGen test set IDs file</span>
+<span class="nt">input_receptor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the input protein sequence</span>
+<span class="nt">input_ligand</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the input ligand SMILES</span>
+<span class="nt">input_template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the input template protein structure to optionally use</span>
+<span class="nt">input_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the input ID to use for inference</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to prepare the pocket-only baseline</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="rosettafold-all-atom-input-preparation">
+<h3>RoseTTAFold-All-Atom input preparation<a class="headerlink" href="#rosettafold-all-atom-input-preparation" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/rfaa_input_preparation.yaml</span></code></span><a class="headerlink" href="#id14" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse</span>
+<span class="nt">output_scripts_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/prediction_inputs/${dataset}</span><span class="w"> </span><span class="c1"># the output directory in which to save the input files</span>
+<span class="nt">posebusters_ccd_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt</span><span class="w"> </span><span class="c1"># the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts</span>
+<span class="nt">dockgen_test_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt</span><span class="w"> </span><span class="c1"># the path to the DockGen test set IDs file</span>
+<span class="nt">protein_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the path to the protein structure file to use</span>
+<span class="nt">ligand_smiles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the ligand SMILES string for which to predict the binding pose</span>
+<span class="nt">input_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the input ID to use for inference</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to prepare the pocket-only baseline</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="rosettafold-all-atom-output-extraction">
+<h3>RoseTTAFold-All-Atom output extraction<a class="headerlink" href="#rosettafold-all-atom-output-extraction" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/rfaa_output_extraction.yaml</span></code></span><a class="headerlink" href="#id15" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">prediction_inputs_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/prediction_inputs/${dataset}</span>
+<span class="nt">prediction_outputs_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/prediction_outputs/${dataset}_${repeat_index}</span>
+<span class="nt">inference_outputs_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/inference/rfaa_${dataset}_outputs_${repeat_index}</span>
+<span class="nt">complex_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, this should be the path to the complex PDB file for which to extract outputs</span>
+<span class="nt">complex_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, this should be the complex ID of the single complex for which to extract outputs</span>
+<span class="nt">ligand_smiles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, this should be the (i.e., `.` fragment-separated) complex ligand SMILES string of the single complex for which to extract outputs</span>
+<span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, this should be the path to the output file to which to write the extracted outputs</span>
+<span class="nt">repeat_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the repeat index with which inference was run</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to prepare the pocket-only baseline</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="chai-1-input-preparation">
+<h3>Chai-1 input preparation<a class="headerlink" href="#chai-1-input-preparation" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id16">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/chai_input_preparation.yaml</span></code></span><a class="headerlink" href="#id16" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse</span>
+<span class="nt">output_scripts_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/chai-lab/prediction_inputs/${dataset}</span><span class="w"> </span><span class="c1"># the output directory in which to save the input files</span>
+<span class="nt">posebusters_ccd_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt</span><span class="w"> </span><span class="c1"># the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts</span>
+<span class="nt">dockgen_test_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt</span><span class="w"> </span><span class="c1"># the path to the DockGen test set IDs file</span>
+<span class="nt">protein_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the path to the protein structure file to use</span>
+<span class="nt">ligand_smiles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the ligand SMILES string for which to predict the binding pose</span>
+<span class="nt">input_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the input ID to use for inference</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to prepare the pocket-only baseline</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="chai-1-output-extraction">
+<h3>Chai-1 output extraction<a class="headerlink" href="#chai-1-output-extraction" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id17">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/chai_output_extraction.yaml</span></code></span><a class="headerlink" href="#id17" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">prediction_inputs_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/chai-lab/prediction_inputs/${dataset}</span>
+<span class="nt">prediction_outputs_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/chai-lab/prediction_outputs/${dataset}_${repeat_index}</span>
+<span class="nt">inference_outputs_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/chai-lab/inference/chai-lab_${dataset}_outputs_${repeat_index}</span>
+<span class="nt">input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse</span>
+<span class="nt">posebusters_ccd_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt</span><span class="w"> </span><span class="c1"># the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts</span>
+<span class="nt">dockgen_test_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt</span><span class="w"> </span><span class="c1"># the path to the DockGen test set IDs file</span>
+<span class="nt">complex_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, this should be the path to the complex PDB file for which to extract outputs</span>
+<span class="nt">complex_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, this should be the complex ID of the single complex for which to extract outputs</span>
+<span class="nt">ligand_smiles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, this should be the (i.e., `.` fragment-separated) complex ligand SMILES string of the single complex for which to extract outputs</span>
+<span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, this should be the path to the output file to which to write the extracted outputs</span>
+<span class="nt">repeat_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the repeat index with which inference was run</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to prepare the pocket-only baseline</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="boltz-1-input-preparation">
+<h3>Boltz-1 input preparation<a class="headerlink" href="#boltz-1-input-preparation" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id18">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/boltz_input_preparation.yaml</span></code></span><a class="headerlink" href="#id18" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse</span>
+<span class="nt">msa_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_boltz_msas</span><span class="w"> </span><span class="c1"># the directory containing the `.csv` MSA files prepared for Boltz via `posebench/data/components/prepare_boltz_msas.py`; if not provided, Boltz will be run in single-sequence mode</span>
+<span class="nt">output_scripts_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/boltz/prediction_inputs/${dataset}</span><span class="w"> </span><span class="c1"># the output directory in which to save the input files</span>
+<span class="nt">posebusters_ccd_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt</span><span class="w"> </span><span class="c1"># the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts</span>
+<span class="nt">dockgen_test_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt</span><span class="w"> </span><span class="c1"># the path to the DockGen test set IDs file</span>
+<span class="nt">protein_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the path to the protein structure file to use</span>
+<span class="nt">ligand_smiles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the ligand SMILES string for which to predict the binding pose</span>
+<span class="nt">input_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the input ID to use for inference</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to prepare the pocket-only baseline</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="boltz-1-output-extraction">
+<h3>Boltz-1 output extraction<a class="headerlink" href="#boltz-1-output-extraction" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id19">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/boltz_output_extraction.yaml</span></code></span><a class="headerlink" href="#id19" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">prediction_inputs_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/boltz/prediction_inputs/${dataset}</span>
+<span class="nt">prediction_outputs_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/boltz/prediction_outputs/${dataset}_${repeat_index}</span>
+<span class="nt">inference_outputs_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/boltz/inference/boltz_${dataset}_outputs_${repeat_index}</span>
+<span class="nt">input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse</span>
+<span class="nt">posebusters_ccd_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt</span><span class="w"> </span><span class="c1"># the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts</span>
+<span class="nt">dockgen_test_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt</span><span class="w"> </span><span class="c1"># the path to the DockGen test set IDs file</span>
+<span class="nt">complex_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, this should be the path to the complex PDB file for which to extract outputs</span>
+<span class="nt">complex_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, this should be the complex ID of the single complex for which to extract outputs</span>
+<span class="nt">ligand_smiles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, this should be the (i.e., `.` fragment-separated) complex ligand SMILES string of the single complex for which to extract outputs</span>
+<span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, this should be the path to the output file to which to write the extracted outputs</span>
+<span class="nt">repeat_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the repeat index with which inference was run</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to prepare the pocket-only baseline</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="alphafold-3-output-extraction">
+<h3>AlphaFold 3 output extraction<a class="headerlink" href="#alphafold-3-output-extraction" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id20">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/af3_output_extraction.yaml</span></code></span><a class="headerlink" href="#id20" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">prediction_outputs_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/alphafold3/prediction_outputs/${dataset}_${repeat_index}</span>
+<span class="nt">inference_outputs_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/alphafold3/inference/alphafold3_${dataset}_outputs_${repeat_index}</span>
+<span class="nt">input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse</span>
+<span class="nt">posebusters_ccd_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt</span><span class="w"> </span><span class="c1"># the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts</span>
+<span class="nt">dockgen_test_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt</span><span class="w"> </span><span class="c1"># the path to the DockGen test set IDs file</span>
+<span class="nt">complex_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, this should be the path to the complex PDB file for which to extract outputs</span>
+<span class="nt">complex_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, this should be the complex ID of the single complex for which to extract outputs</span>
+<span class="nt">ligand_smiles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, this should be the (i.e., `.` fragment-separated) complex ligand SMILES string of the single complex for which to extract outputs</span>
+<span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, this should be the path to the output file to which to write the extracted outputs</span>
+<span class="nt">repeat_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the repeat index with which inference was run</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to prepare the pocket-only baseline</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="tulip-output-extraction">
+<h3>TULIP output extraction<a class="headerlink" href="#tulip-output-extraction" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id21">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">data/tulip_output_extraction.yaml</span></code></span><a class="headerlink" href="#id21" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `casp15`)</span>
+<span class="nt">prediction_outputs_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/TULIP/outputs/${dataset}_${repeat_index}</span>
+<span class="nt">inference_outputs_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/TULIP/inference/tulip_${dataset}_outputs_${repeat_index}</span>
+<span class="nt">posebusters_ccd_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/posebusters_pdb_ccd_ids.txt</span><span class="w"> </span><span class="c1"># the path to the PoseBusters PDB CCD IDs file that lists the targets that do not contain any crystal contacts</span>
+<span class="nt">dockgen_test_ids_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/dockgen_set/split_test.txt</span><span class="w"> </span><span class="c1"># the path to the DockGen test set IDs file</span>
+<span class="nt">method_top_n_to_select</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># the number of top models for each target to select for analysis</span>
+<span class="nt">repeat_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the repeat index to use</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
+</article>
+</div>
+<footer>
+<div class="related-pages">
+<a class="next-page" href="model.html">
+<div class="page-info">
+<div class="context">
+<span>Next</span>
+</div>
+<div class="title">Model</div>
+</div>
+<svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+</a>
+<a class="prev-page" href="analysis.html">
+<svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+<div class="page-info">
+<div class="context">
+<span>Previous</span>
+</div>
+<div class="title">Analysis</div>
+</div>
+</a>
+</div>
+<div class="bottom-of-page">
+<div class="left-details">
+<div class="copyright">
+                Copyright © 2025, Alex Morehead
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+</div>
+<div class="right-details">
+</div>
+</div>
+</footer>
+</div>
+<aside class="toc-drawer">
+<div class="toc-sticky toc-scroll">
+<div class="toc-title-container">
+<span class="toc-title">
+            On this page
+          </span>
+</div>
+<div class="toc-tree-container">
+<div class="toc-tree">
+<ul>
+<li><a class="reference internal" href="#">Data</a><ul>
+<li><a class="reference internal" href="#input-data-components">Input data components</a><ul>
+<li><a class="reference internal" href="#convert-mmcif-to-pdb">Convert mmCIF to PDB</a></li>
+<li><a class="reference internal" href="#esmfold-sequence-preparation">ESMFold sequence preparation</a></li>
+<li><a class="reference internal" href="#fasta-preparation">FASTA preparation</a></li>
+<li><a class="reference internal" href="#plot-dataset-rmsd">Plot dataset RMSD</a></li>
+<li><a class="reference internal" href="#prepare-boltz-1-msas">Prepare Boltz-1 MSAs</a></li>
+<li><a class="reference internal" href="#prepare-chai-1-msas">Prepare Chai-1 MSAs</a></li>
+<li><a class="reference internal" href="#protein-apo-to-holo-alignment">Protein apo-to-holo alignment</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#method-data-parsers">Method data parsers</a><ul>
+<li><a class="reference internal" href="#binding-site-crop-preparation">Binding site crop preparation</a></li>
+<li><a class="reference internal" href="#diffdock-input-preparation">DiffDock input preparation</a></li>
+<li><a class="reference internal" href="#fabind-input-preparation">FABind input preparation</a></li>
+<li><a class="reference internal" href="#dynamicbind-input-preparation">DynamicBind input preparation</a></li>
+<li><a class="reference internal" href="#neuralplexer-input-preparation">NeuralPLexer input preparation</a></li>
+<li><a class="reference internal" href="#flowdock-input-preparation">FlowDock input preparation</a></li>
+<li><a class="reference internal" href="#rosettafold-all-atom-input-preparation">RoseTTAFold-All-Atom input preparation</a></li>
+<li><a class="reference internal" href="#rosettafold-all-atom-output-extraction">RoseTTAFold-All-Atom output extraction</a></li>
+<li><a class="reference internal" href="#chai-1-input-preparation">Chai-1 input preparation</a></li>
+<li><a class="reference internal" href="#chai-1-output-extraction">Chai-1 output extraction</a></li>
+<li><a class="reference internal" href="#boltz-1-input-preparation">Boltz-1 input preparation</a></li>
+<li><a class="reference internal" href="#boltz-1-output-extraction">Boltz-1 output extraction</a></li>
+<li><a class="reference internal" href="#alphafold-3-output-extraction">AlphaFold 3 output extraction</a></li>
+<li><a class="reference internal" href="#tulip-output-extraction">TULIP output extraction</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div><script src="../_static/jquery.js?v=5d32c60e"></script>
+<script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+<script src="../_static/documentation_options.js?v=8d563738"></script>
+<script src="../_static/doctools.js?v=9bcbadda"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=f281be69"></script>
+<script src="../_static/tabs.js?v=3ee01567"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+</body>
+</html>

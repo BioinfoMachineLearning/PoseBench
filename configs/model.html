@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+
+<html class="no-js" data-content_root="../" lang="en">
+<head><meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="light dark" name="color-scheme"/><meta content="width=device-width, initial-scale=1" name="viewport">
+<script async="" src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            
+            gtag('config', '');
+            
+        </script>
+<meta content="Model" property="og:title">
+<meta content="website" property="og:type">
+<meta content="configs/model.html" property="og:url"/>
+<meta content="PoseBench" property="og:site_name"/>
+<meta content="This section describes the configurations for various method-related scripts. Method inference: These configurations are used to specify how inference is performed with each method. DiffDock infere..." property="og:description"/>
+<meta content="1146" property="og:image:width"/>
+<meta content="600" property="og:image:height"/>
+<meta content="_images/social_previews/summary_configs_model_214477e1.png" property="og:image"/>
+<meta content="This section describes the configurations for various method-related scripts. Method inference: These configurations are used to specify how inference is performed with each method. DiffDock infere..." property="og:image:alt"/>
+<meta content="This section describes the configurations for various method-related scripts. Method inference: These configurations are used to specify how inference is performed with each method. DiffDock infere..." name="description"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<link href="../genindex.html" rel="index" title="Index"/><link href="../search.html" rel="search" title="Search"/><link href="../modules/posebench.binding_site_crop_preparation.html" rel="next" title="Binding site crop preparation"/><link href="data.html" rel="prev" title="Data"/>
+<link as="image" href="../_static/WorkBench.jpeg" rel="prefetch"/>
+<!-- Generated with Sphinx 8.1.3 and Furo 2025.09.25 -->
+<title>Model - PoseBench 1.0.0</title>
+<link href="../_static/pygments.css?v=d111a655" rel="stylesheet" type="text/css">
+<link href="../_static/styles/furo.css?v=580074bf" rel="stylesheet" type="text/css">
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css">
+<link href="../_static/tabs.css?v=4c969af8" rel="stylesheet" type="text/css">
+<link href="../_static/sphinx-codeautolink.css?v=b2176991" rel="stylesheet" type="text/css">
+<link href="../_static/styles/furo-extensions.css?v=8dab3a3b" rel="stylesheet" type="text/css"/>
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></link></link></link></link></link></meta></meta></meta></head>
+<body>
+<script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+<svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+<symbol id="svg-toc" viewbox="0 0 24 24">
+<title>Contents</title>
+<svg fill="currentColor" stroke="currentColor" stroke-width="0" viewbox="0 0 1024 1024">
+<path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"></path>
+</svg>
+</symbol>
+<symbol id="svg-menu" viewbox="0 0 24 24">
+<title>Menu</title>
+<svg class="feather-menu" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<line x1="3" x2="21" y1="12" y2="12"></line>
+<line x1="3" x2="21" y1="6" y2="6"></line>
+<line x1="3" x2="21" y1="18" y2="18"></line>
+</svg>
+</symbol>
+<symbol id="svg-arrow-right" viewbox="0 0 24 24">
+<title>Expand</title>
+<svg class="feather-chevron-right" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<polyline points="9 18 15 12 9 6"></polyline>
+</svg>
+</symbol>
+<symbol id="svg-sun" viewbox="0 0 24 24">
+<title>Light mode</title>
+<svg class="feather-sun" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="5"></circle>
+<line x1="12" x2="12" y1="1" y2="3"></line>
+<line x1="12" x2="12" y1="21" y2="23"></line>
+<line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line>
+<line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line>
+<line x1="1" x2="3" y1="12" y2="12"></line>
+<line x1="21" x2="23" y1="12" y2="12"></line>
+<line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line>
+<line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line>
+</svg>
+</symbol>
+<symbol id="svg-moon" viewbox="0 0 24 24">
+<title>Dark mode</title>
+<svg class="icon-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
+<path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+</svg>
+</symbol>
+<symbol id="svg-sun-with-moon" viewbox="0 0 24 24">
+<title>Auto light/dark, in light mode</title>
+<svg class="icon-custom-derived-from-feather-sun-and-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z" style="opacity: 50%"></path>
+<line x1="14.5" x2="14.5" y1="3.25" y2="1.25"></line>
+<line x1="14.5" x2="14.5" y1="15.85" y2="17.85"></line>
+<line x1="10.044" x2="8.63" y1="5.094" y2="3.68"></line>
+<line x1="19" x2="20.414" y1="14.05" y2="15.464"></line>
+<line x1="8.2" x2="6.2" y1="9.55" y2="9.55"></line>
+<line x1="20.8" x2="22.8" y1="9.55" y2="9.55"></line>
+<line x1="10.044" x2="8.63" y1="14.006" y2="15.42"></line>
+<line x1="19" x2="20.414" y1="5.05" y2="3.636"></line>
+<circle cx="14.5" cy="9.55" r="3.6"></circle>
+</svg>
+</symbol>
+<symbol id="svg-moon-with-sun" viewbox="0 0 24 24">
+<title>Auto light/dark, in dark mode</title>
+<svg class="icon-custom-derived-from-feather-sun-and-tabler-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"></path>
+<line style="opacity: 50%" x1="18" x2="18" y1="3.705" y2="2.5"></line>
+<line style="opacity: 50%" x1="18" x2="18" y1="11.295" y2="12.5"></line>
+<line style="opacity: 50%" x1="15.316" x2="14.464" y1="4.816" y2="3.964"></line>
+<line style="opacity: 50%" x1="20.711" x2="21.563" y1="10.212" y2="11.063"></line>
+<line style="opacity: 50%" x1="14.205" x2="13.001" y1="7.5" y2="7.5"></line>
+<line style="opacity: 50%" x1="21.795" x2="23" y1="7.5" y2="7.5"></line>
+<line style="opacity: 50%" x1="15.316" x2="14.464" y1="10.184" y2="11.036"></line>
+<line style="opacity: 50%" x1="20.711" x2="21.563" y1="4.789" y2="3.937"></line>
+<circle cx="18" cy="7.5" r="2.169" style="opacity: 50%"></circle>
+</svg>
+</symbol>
+<symbol id="svg-pencil" viewbox="0 0 24 24">
+<svg class="icon-tabler-pencil-code" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
+<path d="M13.5 6.5l4 4"></path>
+<path d="M20 21l2 -2l-2 -2"></path>
+<path d="M17 17l-2 2l2 2"></path>
+</svg>
+</symbol>
+<symbol id="svg-eye" viewbox="0 0 24 24">
+<svg class="icon-tabler-eye-code" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
+<path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path>
+<path d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008"></path>
+<path d="M20 21l2 -2l-2 -2"></path>
+<path d="M17 17l-2 2l2 2"></path>
+</svg>
+</symbol>
+</svg>
+<input aria-label="Toggle site navigation sidebar" class="sidebar-toggle" id="__navigation" name="__navigation" type="checkbox"/>
+<input aria-label="Toggle table of contents sidebar" class="sidebar-toggle" id="__toc" name="__toc" type="checkbox"/>
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+<div class="page">
+<header class="mobile-header">
+<div class="header-left">
+<label class="nav-overlay-icon" for="__navigation">
+<span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+</label>
+</div>
+<div class="header-center">
+<a href="../index.html"><div class="brand">PoseBench 1.0.0</div></a>
+</div>
+<div class="header-right">
+<div class="theme-toggle-container theme-toggle-header">
+<button aria-label="Toggle Light / Dark / Auto color theme" class="theme-toggle">
+<svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+<svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+<svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+<svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+</button>
+</div>
+<label class="toc-overlay-icon toc-header-icon" for="__toc">
+<span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+</label>
+</div>
+</header>
+<aside class="sidebar-drawer">
+<div class="sidebar-container">
+<div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+<div class="sidebar-logo-container">
+<img alt="Logo" class="sidebar-logo" src="../_static/WorkBench.jpeg"/>
+</div>
+<span class="sidebar-brand-text">PoseBench 1.0.0</span>
+</a><form action="../search.html" class="sidebar-search-container" method="get" role="search">
+<input aria-label="Search" class="sidebar-search" name="q" placeholder="Search"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_preparation.html">How to prepare <cite>PoseBench</cite> data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../available_methods.html">Available inference methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sweep_inference.html">How to run a sweep of benchmarking experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../method_inference.html">How to run inference with individual methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ensemble_inference.html">How to run inference with a method ensemble</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comparative_plots.html">How to create comparative plots of inference results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../for_developers.html">For developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../acknowledgements.html">Acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citing_this_work.html">Citing this work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bonus.html">Bonus</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Default Configs</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Model</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.binding_site_crop_preparation.html">Binding site crop preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.complex_alignment.html">Complex alignment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.inference_relaxation.html">Inference relaxation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.minimize_energy.html">Minimize energy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.ensemble_generation.html">Ensemble generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.data_utils.html">Data utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.model_utils.html">Model utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.utils.html">General utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/posebench.resolvers.html">OmegaConf resolvers</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<div class="main">
+<div class="content">
+<div class="article-container">
+<a class="back-to-top muted-link" href="#">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+</svg>
+<span>Back to top</span>
+</a>
+<div class="content-icon-container">
+<div class="view-this-page">
+<a class="muted-link" href="../_sources/configs/model.rst.txt" title="View this page">
+<svg><use href="#svg-eye"></use></svg>
+<span class="visually-hidden">View this page</span>
+</a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+<button aria-label="Toggle Light / Dark / Auto color theme" class="theme-toggle">
+<svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+<svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+<svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+<svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+</button>
+</div>
+<label class="toc-overlay-icon toc-content-icon" for="__toc">
+<span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+</label>
+</div>
+<article id="furo-main-content" role="main">
+<section id="model">
+<h1>Model<a class="headerlink" href="#model" title="Link to this heading">¶</a></h1>
+<p>This section describes the configurations for various method-related scripts.</p>
+<section id="method-inference">
+<h2>Method inference<a class="headerlink" href="#method-inference" title="Link to this heading">¶</a></h2>
+<p>These configurations are used to specify how inference is performed with each method.</p>
+<section id="diffdock-inference">
+<h3>DiffDock inference<a class="headerlink" href="#diffdock-inference" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">model/diffdock_inference.yaml</span></code></span><a class="headerlink" href="#id1" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">cuda_device_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the CUDA device to use for inference, or `null` to use CPU</span>
+<span class="nt">python_exec_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DiffDock/DiffDock/bin/python3</span><span class="w"> </span><span class="c1"># the Python executable to use</span>
+<span class="nt">diffdock_exec_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DiffDock</span><span class="w"> </span><span class="c1"># the DiffDock directory in which to execute the inference scripts</span>
+<span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_csv_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DiffDock/inference/diffdock_${dataset}_inputs.csv</span><span class="w"> </span><span class="c1"># the input CSV filepath with which to run inference</span>
+<span class="nt">inference_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DiffDock/default_inference_args.yaml</span><span class="w"> </span><span class="c1"># the inference configuration file to use</span>
+<span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DiffDock/inference/diffdock_${dataset}_output_${repeat_index}</span><span class="w"> </span><span class="c1"># the output directory to which to save the inference results</span>
+<span class="nt">model_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DiffDock/workdir/v1.1/score_model</span><span class="w"> </span><span class="c1"># the directory in which the trained model is saved</span>
+<span class="nt">confidence_model_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DiffDock/workdir/v1.1/confidence_model</span><span class="w"> </span><span class="c1"># the directory in which the trained confidence model is saved</span>
+<span class="nt">inference_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w"> </span><span class="c1"># the maximum number of inference (reverse diffusion) steps to run</span>
+<span class="nt">samples_per_complex</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># the number of samples to generate per complex</span>
+<span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># the batch size to use for inference</span>
+<span class="nt">actual_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">19</span><span class="w"> </span><span class="c1"># the actual number of inference steps to run (i.e., after how many steps to halt the reverse diffusion process)</span>
+<span class="nt">no_final_step_noise</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to disable the final inference step's noise from being added</span>
+<span class="nt">repeat_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the repeat index to use for inference</span>
+<span class="nt">skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip inference for existing output directories</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to run the pocket-only baseline</span>
+<span class="nt">max_num_inputs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if provided, the number of (dataset subset) inputs over which to run inference</span>
+<span class="nt">v1_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to run the v1 baseline</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="fabind-inference">
+<h3>FABind inference<a class="headerlink" href="#fabind-inference" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">model/fabind_inference.yaml</span></code></span><a class="headerlink" href="#id2" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">cuda_device_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the CUDA device to use for inference, or `null` to use CPU</span>
+<span class="nt">python_exec_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FABind/FABind/bin/python3</span><span class="w"> </span><span class="c1"># the Python executable to use</span>
+<span class="nt">fabind_exec_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FABind/fabind</span><span class="w"> </span><span class="c1"># the FABind directory in which to execute the inference scripts</span>
+<span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_csv_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FABind/inference/fabind_${dataset}_inputs.csv</span><span class="w"> </span><span class="c1"># the input CSV filepath with which to run inference</span>
+<span class="nt">input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_predicted_structures</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse</span>
+<span class="nt">num_threads</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the number of threads to use for inference</span>
+<span class="nt">save_mols_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FABind/inference/fabind_${dataset}_temp_files/mol</span><span class="w"> </span><span class="c1"># a temporary directory in which to save the intermediate RDKit molecules</span>
+<span class="nt">save_pt_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FABind/inference/fabind_${dataset}_temp_files</span><span class="w"> </span><span class="c1"># a temporary directory in which to save the intermediate PyTorch tensors</span>
+<span class="nt">ckpt_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FABind/ckpt/best_model.bin</span><span class="w"> </span><span class="c1"># the checkpoint path to use for inference</span>
+<span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FABind/inference/fabind_${dataset}_output_${repeat_index}</span><span class="w"> </span><span class="c1"># the output directory to which to save the inference results</span>
+<span class="nt">repeat_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the repeat index to use for inference</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to run the pocket-only baseline</span>
+<span class="nt">max_num_inputs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if provided, the number of (dataset subset) inputs over which to run inference</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="dynamicbind-inference">
+<h3>DynamicBind inference<a class="headerlink" href="#dynamicbind-inference" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">model/dynamicbind_inference.yaml</span></code></span><a class="headerlink" href="#id3" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">cuda_device_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the CUDA device to use for inference, or `null` to use CPU</span>
+<span class="nt">python_exec_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DynamicBind/DynamicBind/bin/python3</span><span class="w"> </span><span class="c1"># the Python executable to use</span>
+<span class="nt">dynamicbind_exec_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DynamicBind</span><span class="w"> </span><span class="c1"># the DynamicBind directory in which to execute the inference scripts</span>
+<span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_predicted_structures</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse for protein inputs</span>
+<span class="nt">input_ligand_csv_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DynamicBind/inference/dynamicbind_${dataset}_inputs</span><span class="w"> </span><span class="c1"># the input CSV directory with which to run inference</span>
+<span class="nt">samples_per_complex</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># the number of samples to generate per complex</span>
+<span class="nt">savings_per_complex</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the (top-N) number of sample visualizations to save per complex</span>
+<span class="nt">inference_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w"> </span><span class="c1"># the number of inference steps to run for each complex</span>
+<span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># the batch size to use for inference</span>
+<span class="nt">cache_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/dynamicbind_cache/cache</span><span class="w"> </span><span class="c1"># the cache directory to use for storing intermediate data files</span>
+<span class="nt">header</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${dataset}</span><span class="w"> </span><span class="c1"># name of the results directory to create</span>
+<span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the number of workers to use for native relaxation during inference</span>
+<span class="nt">skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip existing predictions</span>
+<span class="nt">repeat_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the repeat index to use for inference</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to run the pocket-only baseline</span>
+<span class="nt">max_num_inputs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if provided, the number of (dataset subset) inputs over which to run inference</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="neuralplexer-inference">
+<h3>NeuralPLexer inference<a class="headerlink" href="#neuralplexer-inference" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">model/neuralplexer_inference.yaml</span></code></span><a class="headerlink" href="#id4" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">python_exec_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/NeuralPLexer/bin/python3</span><span class="w"> </span><span class="c1"># the Python executable to use</span>
+<span class="nt">neuralplexer_exec_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/NeuralPLexer</span><span class="w"> </span><span class="c1"># the NeuralPLexer directory in which to execute the inference scripts</span>
+<span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_csv_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/inference/neuralplexer_${dataset}_inputs.csv</span><span class="w"> </span><span class="c1"># the input CSV filepath to which parsed input data has been written</span>
+<span class="nt">skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip existing predictions</span>
+<span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">batched_structure_sampling</span><span class="w"> </span><span class="c1"># the task to run - NOTE: must be one of (`single_sample_trajectory`, `batched_structure_sampling`, `structure_prediction_benchmarking`, `pdbbind_benchmarking`, `binding_site_recovery_benchmarking`)</span>
+<span class="nt">sample_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the sample ID to use for inference</span>
+<span class="nt">template_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the template ID to use for inference</span>
+<span class="nt">cuda_device_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the CUDA device to use for inference, or `null` to use CPU</span>
+<span class="nt">model_checkpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/neuralplexermodels_downstream_datasets_predictions/models/complex_structure_prediction.ckpt</span><span class="w"> </span><span class="c1"># the model checkpoint to use for inference</span>
+<span class="nt">out_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/inference/neuralplexer_${dataset}_outputs_${repeat_index}</span><span class="w"> </span><span class="c1"># the output directory to which to write the predictions</span>
+<span class="nt">n_samples</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># the number of conformations to generate per complex</span>
+<span class="nt">chunk_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># the number of conformations to generate in parallel per complex</span>
+<span class="nt">num_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">40</span><span class="w"> </span><span class="c1"># the number of steps to take in the sampling process</span>
+<span class="nt">latent_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># which type of latent model to use - NOTE: must be one of (`null`)</span>
+<span class="nt">sampler</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">langevin_simulated_annealing</span><span class="w"> </span><span class="c1"># the sampler to use - NOTE: must be one of (`DDIM`, `VPSDE`, `simulated_annealing_simple`, `langevin_simulated_annealing`)</span>
+<span class="nt">start_time</span><span class="p">:</span><span class="w"> </span><span class="s">"1.0"</span><span class="w"> </span><span class="c1"># the start time at which to start sampling - NOTE: must be a string representation of a float</span>
+<span class="nt">max_chain_encoding_k</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"> </span><span class="c1"># the maximum chain encoding `k` to use</span>
+<span class="nt">exact_prior</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to use the exact prior</span>
+<span class="nt">discard_ligand</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to discard the ligand</span>
+<span class="nt">discard_sdf_coords</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to discard the SDF coordinates</span>
+<span class="nt">detect_covalent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to detect covalent bonds</span>
+<span class="nt">use_template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to use the input template protein structure</span>
+<span class="nt">separate_pdb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to separate the predicted protein structures into dedicated PDB files</span>
+<span class="nt">rank_outputs_by_confidence</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to rank the output conformations, by default, by ligand confidence (if available) and by protein confidence otherwise</span>
+<span class="nt">frozen_prot</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to freeze the protein structure's geometry updates</span>
+<span class="nt">plddt_ranking_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ligand</span><span class="w"> </span><span class="c1"># the type of plDDT ranking to apply to generated samples - NOTE: must be one of (`protein`, `ligand`, `protein_ligand`)</span>
+<span class="nt">no_ilcl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to score the NeuralPLexer weights trained without an inter-ligand clash loss (ILCL)</span>
+<span class="nt">csv_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the CSV filepath from which to parse benchmarking input data</span>
+<span class="nt">repeat_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the repeat index to use for inference</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to run the pocket-only baseline</span>
+<span class="nt">max_num_inputs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if provided, the number of (dataset subset) inputs over which to run inference</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="flowdock-inference">
+<h3>FlowDock inference<a class="headerlink" href="#flowdock-inference" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">model/flowdock_inference.yaml</span></code></span><a class="headerlink" href="#id5" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">python_exec_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FlowDock/FlowDock/bin/python3</span><span class="w"> </span><span class="c1"># the Python executable to use</span>
+<span class="nt">flowdock_exec_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FlowDock</span><span class="w"> </span><span class="c1"># the FlowDock directory in which to execute the inference scripts</span>
+<span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_csv_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FlowDock/inference/flowdock_${dataset}_inputs.csv</span><span class="w"> </span><span class="c1"># the input CSV filepath to which parsed input data has been written</span>
+<span class="nt">skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip existing predictions</span>
+<span class="nt">sampling_task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">batched_structure_sampling</span><span class="w"> </span><span class="c1"># the task to run - NOTE: must be one of (`batched_structure_sampling`)</span>
+<span class="nt">sample_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the sample ID to use for inference</span>
+<span class="nt">input_receptor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># NOTE: must be either a protein sequence string (with chains separated by `|`) or a path to a PDB file (from which protein chain sequences will be parsed)</span>
+<span class="nt">input_ligand</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># NOTE: must be either a ligand SMILES string (with chains/fragments separated by `|`) or a path to a ligand SDF file (from which ligand SMILES will be parsed)</span>
+<span class="nt">input_template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># path to a protein PDB file to use as a starting protein template for sampling (with an ESMFold prior model)</span>
+<span class="nt">cuda_device_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the CUDA device to use for inference, or `null` to use CPU</span>
+<span class="nt">model_checkpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FlowDock/checkpoints/esmfold_prior_paper_weights.ckpt</span><span class="w"> </span><span class="c1"># the model checkpoint to use for inference</span>
+<span class="nt">out_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FlowDock/inference/flowdock_${dataset}_outputs_${repeat_index}</span><span class="w"> </span><span class="c1"># the output directory to which to write the predictions</span>
+<span class="nt">n_samples</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># the number of conformations to generate per complex</span>
+<span class="nt">chunk_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># the number of conformations to generate in parallel per complex</span>
+<span class="nt">num_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">40</span><span class="w"> </span><span class="c1"># the number of steps to take in the sampling process</span>
+<span class="nt">latent_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># which type of latent model to use - NOTE: must be one of (`null`)</span>
+<span class="nt">sampler</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VDODE</span><span class="w"> </span><span class="c1"># sampling algorithm to use - NOTE: must be one of (`ODE`, `VDODE`)</span>
+<span class="nt">sampler_eta</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w"> </span><span class="c1"># the variance diminishing factor for the `VDODE` sampler - NOTE: offers a trade-off between exploration (1.0) and exploitation (&gt; 1.0)</span>
+<span class="nt">start_time</span><span class="p">:</span><span class="w"> </span><span class="s">"1.0"</span><span class="w"> </span><span class="c1"># the start time at which to start sampling - NOTE: must be a string representation of a float</span>
+<span class="nt">max_chain_encoding_k</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"> </span><span class="c1"># the maximum chain encoding `k` to use</span>
+<span class="nt">exact_prior</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to use the exact prior</span>
+<span class="nt">prior_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">esmfold</span><span class="w"> </span><span class="c1"># the type of prior to use for sampling - NOTE: must be one of (`gaussian`, `harmonic`, `esmfold`)</span>
+<span class="nt">discard_ligand</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to discard the ligand</span>
+<span class="nt">discard_sdf_coords</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to discard the SDF coordinates</span>
+<span class="nt">detect_covalent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to detect covalent bonds</span>
+<span class="nt">use_template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to use the input template protein structure</span>
+<span class="nt">separate_pdb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to separate the predicted protein structures into dedicated PDB files</span>
+<span class="nt">rank_outputs_by_confidence</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to rank the output conformations, by default, by ligand confidence (if available) and by protein confidence otherwise</span>
+<span class="nt">plddt_ranking_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ligand</span><span class="w"> </span><span class="c1"># the type of plDDT ranking to apply to generated samples - NOTE: must be one of (`protein`, `ligand`, `protein_ligand`)</span>
+<span class="nt">visualize_sample_trajectories</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to visualize the generated samples' trajectories</span>
+<span class="nt">auxiliary_estimation_only</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to only estimate auxiliary outputs (e.g., confidence, affinity) for the input (generated) samples (potentially derived from external sources)</span>
+<span class="nt">auxiliary_estimation_input_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if provided, an input directory of PDB-SDF file pairs (potentially derived from external sources) for which to estimate auxiliary outputs (e.g., confidence, affinity) and represent the outputs as a rank-ordered CSV file within the same directory</span>
+<span class="nt">csv_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the CSV filepath from which to parse benchmarking input data</span>
+<span class="nt">esmfold_chunk_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># chunks axial attention computation to reduce memory usage from O(L^2) to O(L); equivalent to running a for loop over chunks of of each dimension; lower values will result in lower memory usage at the cost of speed; recommended values: 128, 64, 32</span>
+<span class="nt">repeat_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the repeat index to use for inference</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to run the pocket-only baseline</span>
+<span class="nt">max_num_inputs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if provided, the number of (dataset subset) inputs over which to run inference</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="rosettafold-all-atom-inference">
+<h3>RoseTTAFold-All-Atom inference<a class="headerlink" href="#rosettafold-all-atom-inference" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">model/rfaa_inference.yaml</span></code></span><a class="headerlink" href="#id6" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">python_exec_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/RFAA/bin/python3</span><span class="w"> </span><span class="c1"># the Python executable to use</span>
+<span class="nt">rfaa_exec_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom</span><span class="w"> </span><span class="c1"># the RoseTTAFold-All-Atom directory in which to execute the inference scripts</span>
+<span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/prediction_inputs/${dataset}</span><span class="w"> </span><span class="c1"># the input directory with which to run inference</span>
+<span class="nt">config_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/rf2aa/config/inference</span><span class="w"> </span><span class="c1"># the config directory with which to run inference</span>
+<span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/prediction_outputs/${dataset}_${repeat_index}</span><span class="w"> </span><span class="c1"># the output directory to which to save the inference results</span>
+<span class="nt">max_cycles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"> </span><span class="c1"># the maximum number of recycling iterations to run</span>
+<span class="nt">cuda_device_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the CUDA device to use for inference, or `null` to use CPU</span>
+<span class="nt">run_inference_directly</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to run the inference code directly (true) or to rely on the user to run the generated scripts manually (false)</span>
+<span class="nt">inference_config_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the name of the inference config to use - NOTE: if `run_inference_directly` is true, this must reference a valid YAML config file name e.g., that was generated by `python posebench/models/rfaa_inference.py` with `run_inference_directly=false`</span>
+<span class="nt">inference_dir_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the name of the inference output directory to use</span>
+<span class="nt">repeat_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the repeat index to use for inference</span>
+<span class="nt">skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip running inference if the prediction for a target already exists</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to run the pocket-only baseline</span>
+<span class="nt">max_num_inputs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if provided, the number of (dataset subset) inputs over which to run inference</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="chai-1-inference">
+<h3>Chai-1 inference<a class="headerlink" href="#chai-1-inference" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">model/chai_inference.yaml</span></code></span><a class="headerlink" href="#id7" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/chai-lab/prediction_inputs/${dataset}</span><span class="w"> </span><span class="c1"># the input directory with which to run inference</span>
+<span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/chai-lab/prediction_outputs/${dataset}_${repeat_index}</span><span class="w"> </span><span class="c1"># the output directory to which to save the inference results</span>
+<span class="nt">msa_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_chai_msas</span><span class="w"> </span><span class="c1"># the directory containing the `.aligned.pqt` MSA files prepared for Chai-1 via `posebench/data/components/prepare_chai_msas.py`; if not provided, Chai-1 will be run in single-sequence mode</span>
+<span class="nt">cuda_device_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the CUDA device to use for inference, or `null` to use CPU</span>
+<span class="nt">repeat_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the repeat index to use for inference</span>
+<span class="nt">skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip running inference if the prediction for a target already exists</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to run the pocket-only baseline</span>
+<span class="nt">max_num_inputs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if provided, the number of (dataset subset) inputs over which to run inference</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="boltz-1-inference">
+<h3>Boltz-1 inference<a class="headerlink" href="#boltz-1-inference" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">model/boltz_inference.yaml</span></code></span><a class="headerlink" href="#id8" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">boltz1</span><span class="w"> </span><span class="c1"># the model to use for inference - NOTE: must be one of (`boltz1`, `boltz2`)</span>
+<span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">input_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/boltz/prediction_inputs/${dataset}</span><span class="w"> </span><span class="c1"># the input directory with which to run inference</span>
+<span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/boltz/prediction_outputs/${dataset}_${repeat_index}</span><span class="w"> </span><span class="c1"># the output directory to which to save the inference results</span>
+<span class="nt">cuda_device_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the CUDA device to use for inference, or `null` to use CPU</span>
+<span class="nt">repeat_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the repeat index to use for inference</span>
+<span class="nt">use_potentials</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to use inference-time potentials to potentially improve pose plausibility</span>
+<span class="nt">skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip running inference if the prediction for a target already exists</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to run the pocket-only baseline</span>
+<span class="nt">max_num_inputs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if provided, the number of (dataset subset) inputs over which to run inference</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="vina-inference">
+<h3>Vina inference<a class="headerlink" href="#vina-inference" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">model/vina_inference.yaml</span></code></span><a class="headerlink" href="#id9" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># General inference arguments:</span>
+<span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diffdock</span><span class="w"> </span><span class="c1"># the method from which to derive binding site predictions - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `flowdock`, `p2rank`, `ensemble`)</span>
+<span class="nt">ensemble_ranking_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">consensus</span><span class="w"> </span><span class="c1"># the method with which to rank-order and select the top ensemble prediction for each target - NOTE: must be one of (`consensus`, `ff`)</span>
+<span class="nt">python2_exec_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/bin/python</span><span class="w"> </span><span class="c1"># the path to the Python 2 executable</span>
+<span class="nt">p2rank_exec_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/P2Rank/p2rank_2.4.2/prank</span><span class="w"> </span><span class="c1"># the path to the P2Rank executable</span>
+<span class="nt">prepare_receptor_script_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/CCSBpckgs/AutoDockTools/Utilities24/prepare_receptor4.py</span><span class="w"> </span><span class="c1"># the path to the prepare_receptor.py script</span>
+<span class="nt">input_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${resolve_method_output_dir:${method},${dataset},${method},${ensemble_ranking_method},${repeat_index},${pocket_only_baseline},${v1_baseline}}</span><span class="w"> </span><span class="c1"># the input directory with which to run inference</span>
+<span class="nt">input_protein_structure_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${dataset}_set/${dataset}_holo_aligned_predicted_structures</span><span class="w"> </span><span class="c1"># the input protein structure directory to parse</span>
+<span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/test_cases/${dataset}/vina_${method}_${dataset}_outputs_${repeat_index}</span><span class="w"> </span><span class="c1"># the output directory to which to save the inference results</span>
+<span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the number of CPU workers to use with AutoDock Vina for parallel processing, 0 for all available</span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the random seed to use with AutoDock Vina</span>
+<span class="nt">exhaustiveness</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span><span class="w"> </span><span class="c1"># the exhaustiveness to use with AutoDock Vina</span>
+<span class="nt">ligand_ligand_distance_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">25.0</span><span class="w"> </span><span class="c1"># the distance threshold (in Angstrom) to use for finding shared binding sites amongst ligands</span>
+<span class="nt">protein_ligand_distance_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.0</span><span class="w"> </span><span class="c1"># the heavy-atom distance threshold (in Angstrom) to use for finding protein binding sites amongst grouped ligands</span>
+<span class="nt">binding_site_size_x</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">25.0</span><span class="w"> </span><span class="c1"># the x-axis size of the binding site box to use with AutoDock Vina</span>
+<span class="nt">binding_site_size_y</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">25.0</span><span class="w"> </span><span class="c1"># the y-axis size of the binding site box to use with AutoDock Vina</span>
+<span class="nt">binding_site_size_z</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">25.0</span><span class="w"> </span><span class="c1"># the z-axis size of the binding site box to use with AutoDock Vina</span>
+<span class="nt">binding_site_spacing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w"> </span><span class="c1"># the spacing of the binding site box (in Angstrom) to use with AutoDock Vina</span>
+<span class="nt">num_modes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">40</span><span class="w"> </span><span class="c1"># the number of binding modes (i.e., poses) to generate with AutoDock Vina</span>
+<span class="nt">skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip existing output files</span>
+<span class="nt">protein_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the protein file path to use for inference</span>
+<span class="nt">ligand_filepaths</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the ligand file paths to use for inference</span>
+<span class="nt">apo_protein_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the apo protein file path to use for inference</span>
+<span class="nt">input_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the input ID to use for inference</span>
+<span class="nt">repeat_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the repeat index to use for inference</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to run the pocket-only baseline</span>
+<span class="nt">v1_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to run the v1 baseline</span>
+<span class="nt">max_num_inputs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if provided, the number of (dataset subset) inputs over which to run inference</span>
+<span class="c1"># p2rank inference arguments:</span>
+<span class="nt">p2rank_exec_utility</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">predict</span><span class="w"> </span><span class="c1"># the P2Rank executable utility to use for inference</span>
+<span class="nt">p2rank_config</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alphafold</span><span class="w"> </span><span class="c1"># the P2Rank configuration to use for inference</span>
+<span class="nt">p2rank_enable_pymol_visualizations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to enable P2Rank's PyMOL visualizations</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="ensemble-inference">
+<h2>Ensemble inference<a class="headerlink" href="#ensemble-inference" title="Link to this heading">¶</a></h2>
+<p>This configuration is used to specify how inference is performed with a method ensemble (e.g., via <cite>consensus</cite> ranking).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This script not only enables inference with a method ensemble, but it also provides a unified wrapper with which one
+can relax and structure a method’s predictions in a CASP-compliant file format for scoring.</p>
+</div>
+<section id="ensemble-generation">
+<h3>Ensemble generation<a class="headerlink" href="#ensemble-generation" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">model/ensemble_generation.yaml</span></code></span><a class="headerlink" href="#id10" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># General inference arguments:</span>
+<span class="nt">ensemble_methods</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">diffdock</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">dynamicbind</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">neuralplexer</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">rfaa</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># the methods from which to gather predictions for ensembling - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `flowdock`, `rfaa`, `chai-lab`, `boltz`, `alphafold3`, `vina`, `tulip`)</span>
+<span class="nt">generate_vina_scripts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to generate Vina scripts using other methods' binding site predictions - NOTE: `resume` must also be `true` when this is `true`, meaning other methods' predictions must have already been generated locally</span>
+<span class="nt">rank_single_method_intrinsically</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to rank single-method predictions using either `consensus` or `vina` ranking (false) or instead using their intrinsic (explicit) rank assignment (true)</span>
+<span class="nt">output_bash_file_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ensemble_generation_scripts</span><span class="w"> </span><span class="c1"># the directory in which to save the generated Bash scripts</span>
+<span class="nt">cuda_device_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the CUDA device to use for inference, or `null` to use CPU</span>
+<span class="nt">input_csv_filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/test_cases/5S8I_2LY/ensemble_inputs.csv</span><span class="w"> </span><span class="c1"># path to a CSV file containing the following columns: `protein_input`, `ligand_smiles`, `name`</span>
+<span class="nt">temp_protein_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/ensemble_proteins</span><span class="w"> </span><span class="c1"># directory path to which to save temporary predicted protein structures</span>
+<span class="nt">structure_prediction_script_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/posebench/data/components/esmfold_batch_structure_prediction.py</span><span class="w"> </span><span class="c1"># path to the ESMFold structure prediction script to use</span>
+<span class="nt">structure_prediction_chunk_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># optional chunk size to use during ESMFold structure prediction to reduce memory requirements</span>
+<span class="nt">structure_prediction_cpu_only</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to only use CPU for structure prediction</span>
+<span class="nt">structure_prediction_cpu_offload</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to offload structure prediction to CPU</span>
+<span class="nt">max_method_predictions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># maximum number of predictions to make with each method</span>
+<span class="nt">method_top_n_to_select</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"> </span><span class="c1"># number of top-ranked predictions to select from each method for subsequent ranking</span>
+<span class="nt">skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to skip existing ensemble predictions</span>
+<span class="nt">relax_method_ligands_pre_ranking</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to relax the predicted ligands (method-specifically) before ranking</span>
+<span class="nt">relax_method_ligands_post_ranking</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to relax the predicted ligands (method-agnostically) after ranking</span>
+<span class="nt">relax_add_solvent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to add solvent during relaxation</span>
+<span class="nt">relax_prep_only</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># only prepare the input files for relaxation</span>
+<span class="nt">relax_platform</span><span class="p">:</span><span class="w"> </span><span class="s">"fastest"</span><span class="w"> </span><span class="c1"># platform on which to run relaxation</span>
+<span class="nt">relax_log_level</span><span class="p">:</span><span class="w"> </span><span class="s">"INFO"</span><span class="w"> </span><span class="c1"># logging level for relaxation</span>
+<span class="nt">relax_protein</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to relax the protein</span>
+<span class="nt">relax_remove_initial_protein_hydrogens</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to remove hydrogens from the initial protein</span>
+<span class="nt">relax_assign_each_ligand_unique_force</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to assign each ligand a unique force constant</span>
+<span class="nt">relax_model_ions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to model ions</span>
+<span class="nt">relax_cache_files</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to cache the prepared relaxation files</span>
+<span class="nt">relax_assign_partial_charges_manually</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to assign partial charges manually</span>
+<span class="nt">relax_max_final_e_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000.0</span><span class="w"> </span><span class="c1"># when relaxing the protein, maximum final energy value to permit</span>
+<span class="nt">relax_max_num_attempts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># when relaxing the protein, maximum number of relaxation attempts to perform</span>
+<span class="nt">relax_num_processes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># number of processes to use for relaxation</span>
+<span class="nt">relax_skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to skip existing relaxation results</span>
+<span class="nt">resume</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to resume from a previous run after generating and manually running each method's prediction script</span>
+<span class="nt">input_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># optional path to the directory from which to load the ensemble predictions to rank - NOTE: currently, only `neuralplexer` and `flowdock` make use of this for inference output parsing</span>
+<span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/test_cases/5S8I_2LY/top_${ensemble_ranking_method}_ensemble_predictions</span><span class="w"> </span><span class="c1"># path to the directory to save the top-ranked ensemble predictions</span>
+<span class="nt">export_file_format</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">casp15</span><span class="w"> </span><span class="c1"># the (optional) format (i.e., `casp15`) in which to export top-ranked predictions</span>
+<span class="nt">export_top_n</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># number of top-ranked predictions to export in CASP format</span>
+<span class="nt">casp_author</span><span class="p">:</span><span class="w"> </span><span class="s">"001"</span><span class="w"> </span><span class="c1"># group number to report in CASP format</span>
+<span class="nt">casp_method</span><span class="p">:</span><span class="w"> </span><span class="s">"Ligand_Predictor"</span><span class="w"> </span><span class="c1"># the method name to report in CASP format</span>
+<span class="nt">combine_casp_output_files</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to combine the CASP protein and ligand output files into a single file</span>
+<span class="nt">generate_hpc_scripts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to generate HPC scripts for running the ensemble generation; if `false`, then local scripts will be generated instead</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to run ensemble generation with only pocket-based baseline methods</span>
+<span class="nt">ensemble_benchmarking</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to run ensemble benchmarking</span>
+<span class="nt">ensemble_benchmarking_dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset to use for ensemble benchmarking - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">ensemble_benchmarking_repeat_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the repeat index to use for ensemble benchmarking</span>
+<span class="nt">ensemble_ranking_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">consensus</span><span class="w"> </span><span class="c1"># the method with which to rank-order and select the top ensemble prediction for each target - NOTE: must be one of (`consensus`, `ff`)</span>
+<span class="nt">ensemble_benchmarking_apo_protein_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/data/${ensemble_benchmarking_dataset}_set/${ensemble_benchmarking_dataset}_holo_aligned_predicted_structures</span><span class="w"> </span><span class="c1"># the directory containing the apo proteins to use for ensemble benchmarking</span>
+<span class="c1"># DiffDock inference arguments:</span>
+<span class="nt">diffdock_python_exec_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DiffDock/DiffDock/bin/python3</span><span class="w"> </span><span class="c1"># the Python executable to use</span>
+<span class="nt">diffdock_exec_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DiffDock</span><span class="w"> </span><span class="c1"># the DiffDock directory in which to execute the inference scripts</span>
+<span class="nt">diffdock_input_csv_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DiffDock/inference/diffdock_ensemble_inputs.csv</span><span class="w"> </span><span class="c1"># the input CSV filepath with which to run inference</span>
+<span class="nt">diffdock_inference_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DiffDock/default_inference_args.yaml</span><span class="w"> </span><span class="c1"># the inference configuration file to use</span>
+<span class="nt">diffdock_output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DiffDock/inference/diffdock_ensemble_output</span><span class="w"> </span><span class="c1"># the output directory to which to save the inference results</span>
+<span class="nt">diffdock_model_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DiffDock/workdir/v1.1/score_model</span><span class="w"> </span><span class="c1"># the directory in which the trained model is saved</span>
+<span class="nt">diffdock_confidence_model_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DiffDock/workdir/v1.1/confidence_model</span><span class="w"> </span><span class="c1"># the directory in which the trained confidence model is saved</span>
+<span class="nt">diffdock_inference_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w"> </span><span class="c1"># the maximum number of inference (reverse diffusion) steps to run</span>
+<span class="nt">diffdock_samples_per_complex</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${max_method_predictions}</span><span class="w"> </span><span class="c1"># the number of samples to generate per complex</span>
+<span class="nt">diffdock_batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># the batch size to use for inference</span>
+<span class="nt">diffdock_actual_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">19</span><span class="w"> </span><span class="c1"># the actual number of inference steps to run (i.e., after how many steps to halt the reverse diffusion process)</span>
+<span class="nt">diffdock_no_final_step_noise</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to disable the final inference step's noise from being added</span>
+<span class="nt">diffdock_skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip existing predictions</span>
+<span class="nt">diffdock_v1_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to run the v1 baseline</span>
+<span class="c1"># DynamicBind inference arguments:</span>
+<span class="nt">dynamicbind_python_exec_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DynamicBind/DynamicBind/bin/python3</span><span class="w"> </span><span class="c1"># the Python executable to use</span>
+<span class="nt">dynamicbind_exec_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DynamicBind</span><span class="w"> </span><span class="c1"># the DynamicBind directory in which to execute the inference scripts</span>
+<span class="nt">dynamicbind_dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ensemble</span><span class="w"> </span><span class="c1"># the dataset to use for inference - NOTE: must be one of (`ensemble`)</span>
+<span class="nt">dynamicbind_input_protein_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DynamicBind/inference/ensemble_predicted_structures</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse for protein inputs</span>
+<span class="nt">dynamicbind_input_ligand_csv_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/DynamicBind/inference/dynamicbind_ensemble_inputs</span><span class="w"> </span><span class="c1"># the input CSV directory with which to run inference</span>
+<span class="nt">dynamicbind_samples_per_complex</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${max_method_predictions}</span><span class="w"> </span><span class="c1"># the number of samples to generate per complex</span>
+<span class="nt">dynamicbind_savings_per_complex</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the (top-N) number of sample visualizations to save per complex</span>
+<span class="nt">dynamicbind_inference_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w"> </span><span class="c1"># the number of inference steps to run for each complex</span>
+<span class="nt">dynamicbind_batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># the batch size to use for inference</span>
+<span class="nt">dynamicbind_header</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ensemble</span><span class="w"> </span><span class="c1"># name of the results directory to create</span>
+<span class="nt">dynamicbind_num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the number of workers to use for native relaxation during inference</span>
+<span class="nt">dynamicbind_skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip existing predictions</span>
+<span class="c1"># NeuralPLexer inference arguments:</span>
+<span class="nt">neuralplexer_python_exec_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/NeuralPLexer/bin/python3</span><span class="w"> </span><span class="c1"># the Python executable to use</span>
+<span class="nt">neuralplexer_exec_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/NeuralPLexer</span><span class="w"> </span><span class="c1"># the NeuralPLexer directory in which to execute the inference scripts</span>
+<span class="nt">neuralplexer_input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse</span>
+<span class="nt">neuralplexer_input_receptor_structure_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, the input template protein structure directory to parse</span>
+<span class="nt">neuralplexer_input_csv_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/inference/neuralplexer_ensemble_inputs.csv</span><span class="w"> </span><span class="c1"># the input CSV filepath with which to run inference</span>
+<span class="nt">neuralplexer_skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip existing predictions</span>
+<span class="nt">neuralplexer_task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">batched_structure_sampling</span><span class="w"> </span><span class="c1"># the task to run - NOTE: must be one of (`single_sample_trajectory`, `batched_structure_sampling`, `structure_prediction_benchmarking`, `pdbbind_benchmarking`, `binding_site_recovery_benchmarking`)</span>
+<span class="nt">neuralplexer_sample_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the sample ID to use for inference</span>
+<span class="nt">neuralplexer_template_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the template ID to use for inference</span>
+<span class="nt">neuralplexer_model_checkpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/neuralplexermodels_downstream_datasets_predictions/models/complex_structure_prediction.ckpt</span><span class="w"> </span><span class="c1"># the model checkpoint to use for inference</span>
+<span class="nt">neuralplexer_out_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/NeuralPLexer/inference/neuralplexer_ensemble_outputs</span><span class="w"> </span><span class="c1"># the output directory to which to write the predictions</span>
+<span class="nt">neuralplexer_n_samples</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${max_method_predictions}</span><span class="w"> </span><span class="c1"># the number of conformations to generate per complex</span>
+<span class="nt">neuralplexer_chunk_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># the number of conformations to generate in parallel per complex</span>
+<span class="nt">neuralplexer_num_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">40</span><span class="w"> </span><span class="c1"># the number of steps to take in the sampling process</span>
+<span class="nt">neuralplexer_sampler</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">langevin_simulated_annealing</span><span class="w"> </span><span class="c1"># the sampler to use - NOTE: must be one of (`DDIM`, `VPSDE`, `simulated_annealing_simple`, `langevin_simulated_annealing`)</span>
+<span class="nt">neuralplexer_start_time</span><span class="p">:</span><span class="w"> </span><span class="s">"1.0"</span><span class="w"> </span><span class="c1"># the start time at which to start sampling - NOTE: must be a string representation of a float</span>
+<span class="nt">neuralplexer_max_chain_encoding_k</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"> </span><span class="c1"># the maximum chain encoding `k` to use</span>
+<span class="nt">neuralplexer_exact_prior</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to use the exact prior</span>
+<span class="nt">neuralplexer_discard_ligand</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to discard the ligand</span>
+<span class="nt">neuralplexer_discard_sdf_coords</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to discard the SDF coordinates</span>
+<span class="nt">neuralplexer_detect_covalent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to detect covalent bonds</span>
+<span class="nt">neuralplexer_use_template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to use the input template protein structure</span>
+<span class="nt">neuralplexer_separate_pdb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to separate the predicted protein structures into dedicated PDB files</span>
+<span class="nt">neuralplexer_rank_outputs_by_confidence</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to rank the output conformations, by default, by ligand confidence (if available) and by protein confidence otherwise</span>
+<span class="nt">neuralplexer_plddt_ranking_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ligand</span><span class="w"> </span><span class="c1"># the type of plDDT ranking to apply to generated samples - NOTE: must be one of (`protein`, `ligand`, `protein_ligand`)</span>
+<span class="nt">neuralplexer_no_ilcl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to score the NeuralPLexer weights trained without an inter-ligand clash loss (ILCL)</span>
+<span class="c1"># FlowDock inference arguments:</span>
+<span class="nt">flowdock_python_exec_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FlowDock/FlowDock/bin/python3</span><span class="w"> </span><span class="c1"># the Python executable to use</span>
+<span class="nt">flowdock_exec_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FlowDock</span><span class="w"> </span><span class="c1"># the FlowDock directory in which to execute the inference scripts</span>
+<span class="nt">flowdock_input_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the input protein-ligand complex directory to recursively parse</span>
+<span class="nt">flowdock_input_receptor_structure_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if not `null`, the input template protein structure directory to parse</span>
+<span class="nt">flowdock_input_csv_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FlowDock/inference/flowdock_ensemble_inputs.csv</span><span class="w"> </span><span class="c1"># the input CSV filepath to which parsed input data has been written</span>
+<span class="nt">flowdock_skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip existing predictions</span>
+<span class="nt">flowdock_sampling_task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">batched_structure_sampling</span><span class="w"> </span><span class="c1"># the task to run - NOTE: must be one of (`batched_structure_sampling`)</span>
+<span class="nt">flowdock_sample_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the sample ID to use for inference</span>
+<span class="nt">flowdock_input_receptor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># NOTE: must be either a protein sequence string (with chains separated by `|`) or a path to a PDB file (from which protein chain sequences will be parsed)</span>
+<span class="nt">flowdock_input_ligand</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># NOTE: must be either a ligand SMILES string (with chains/fragments separated by `|`) or a path to a ligand SDF file (from which ligand SMILES will be parsed)</span>
+<span class="nt">flowdock_input_template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># path to a protein PDB file to use as a starting protein template for sampling (with an ESMFold prior model)</span>
+<span class="nt">flowdock_model_checkpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FlowDock/checkpoints/esmfold_prior_paper_weights.ckpt</span><span class="w"> </span><span class="c1"># the model checkpoint to use for inference</span>
+<span class="nt">flowdock_out_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/FlowDock/inference/flowdock_ensemble_outputs</span><span class="w"> </span><span class="c1"># the output directory to which to write the predictions</span>
+<span class="nt">flowdock_n_samples</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># the number of conformations to generate per complex</span>
+<span class="nt">flowdock_chunk_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># the number of conformations to generate in parallel per complex</span>
+<span class="nt">flowdock_num_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">40</span><span class="w"> </span><span class="c1"># the number of steps to take in the sampling process</span>
+<span class="nt">flowdock_latent_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># which type of latent model to use - NOTE: must be one of (`null`)</span>
+<span class="nt">flowdock_sampler</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VDODE</span><span class="w"> </span><span class="c1"># sampling algorithm to use - NOTE: must be one of (`ODE`, `VDODE`)</span>
+<span class="nt">flowdock_sampler_eta</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w"> </span><span class="c1"># the variance diminishing factor for the `VDODE` sampler - NOTE: offers a trade-off between exploration (1.0) and exploitation (&gt; 1.0)</span>
+<span class="nt">flowdock_start_time</span><span class="p">:</span><span class="w"> </span><span class="s">"1.0"</span><span class="w"> </span><span class="c1"># the start time at which to start sampling - NOTE: must be a string representation of a float</span>
+<span class="nt">flowdock_max_chain_encoding_k</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"> </span><span class="c1"># the maximum chain encoding `k` to use</span>
+<span class="nt">flowdock_exact_prior</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to use the exact prior</span>
+<span class="nt">flowdock_prior_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">esmfold</span><span class="w"> </span><span class="c1"># the type of prior to use for sampling - NOTE: must be one of (`gaussian`, `harmonic`, `esmfold`)</span>
+<span class="nt">flowdock_discard_ligand</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to discard the ligand</span>
+<span class="nt">flowdock_discard_sdf_coords</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to discard the SDF coordinates</span>
+<span class="nt">flowdock_detect_covalent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to detect covalent bonds</span>
+<span class="nt">flowdock_use_template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to use the input template protein structure</span>
+<span class="nt">flowdock_separate_pdb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to separate the predicted protein structures into dedicated PDB files</span>
+<span class="nt">flowdock_rank_outputs_by_confidence</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to rank the output conformations, by default, by ligand confidence (if available) and by protein confidence otherwise</span>
+<span class="nt">flowdock_plddt_ranking_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ligand</span><span class="w"> </span><span class="c1"># the type of plDDT ranking to apply to generated samples - NOTE: must be one of (`protein`, `ligand`, `protein_ligand`)</span>
+<span class="nt">flowdock_visualize_sample_trajectories</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to visualize the generated samples' trajectories</span>
+<span class="nt">flowdock_auxiliary_estimation_only</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to only estimate auxiliary outputs (e.g., confidence, affinity) for the input (generated) samples (potentially derived from external sources)</span>
+<span class="nt">flowdock_auxiliary_estimation_input_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># if provided, an input directory of PDB-SDF file pairs (potentially derived from external sources) for which to estimate auxiliary outputs (e.g., confidence, affinity) and represent the outputs as a rank-ordered CSV file within the same directory</span>
+<span class="nt">flowdock_csv_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the CSV filepath from which to parse benchmarking input data</span>
+<span class="nt">flowdock_esmfold_chunk_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># chunks axial attention computation to reduce memory usage from O(L^2) to O(L); equivalent to running a for loop over chunks of of each dimension; lower values will result in lower memory usage at the cost of speed; recommended values: 128, 64, 32</span>
+<span class="c1"># RoseTTAFold-All-Atom inference arguments:</span>
+<span class="nt">rfaa_python_exec_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/RFAA/bin/python3</span><span class="w"> </span><span class="c1"># the Python executable to use</span>
+<span class="nt">rfaa_exec_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom</span><span class="w"> </span><span class="c1"># the RoseTTAFold-All-Atom directory in which to execute the inference scripts</span>
+<span class="nt">rfaa_config_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/rf2aa/config/inference</span><span class="w"> </span><span class="c1"># the config directory with which to run inference</span>
+<span class="nt">rfaa_output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/RoseTTAFold-All-Atom/inference/rfaa_ensemble_outputs</span><span class="w"> </span><span class="c1"># the output directory to which to save the inference results</span>
+<span class="nt">rfaa_max_cycles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"> </span><span class="c1"># the maximum number recycling iterations to run</span>
+<span class="nt">rfaa_inference_config_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the name of the inference config to use - NOTE: if `run_inference_directly` is true, this must reference a valid YAML config file name e.g., that was generated by `python posebench/models/rfaa_inference.py` with `run_inference_directly=false`</span>
+<span class="nt">rfaa_inference_dir_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the name of the inference output directory to use</span>
+<span class="c1"># Chai-1 inference arguments:</span>
+<span class="nt">chai_out_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/chai-lab/inference/chai-lab_ensemble_outputs</span><span class="w"> </span><span class="c1"># the output directory to which to write the predictions</span>
+<span class="nt">chai_skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip running inference if the prediction for a target already exists</span>
+<span class="c1"># Boltz inference arguments:</span>
+<span class="nt">boltz_out_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/boltz/inference/boltz_ensemble_outputs</span><span class="w"> </span><span class="c1"># the output directory to which to write the predictions</span>
+<span class="nt">boltz_skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip running inference if the prediction for a target already exists</span>
+<span class="c1"># AlphaFold 3 inference arguments:</span>
+<span class="nt">alphafold3_out_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/alphafold3/inference/alphafold3_ensemble_outputs</span><span class="w"> </span><span class="c1"># the output directory to which to write the predictions</span>
+<span class="c1"># Vina inference arguments:</span>
+<span class="nt">vina_binding_site_methods</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">p2rank</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># the methods to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `dynamicbind`, `neuralplexer`, `flowdock`, `p2rank`)</span>
+<span class="nt">vina_python2_exec_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/bin/python</span><span class="w"> </span><span class="c1"># the path to the Python 2 executable</span>
+<span class="nt">vina_prepare_receptor_script_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/Vina/ADFR/CCSBpckgs/AutoDockTools/Utilities24/prepare_receptor4.py</span><span class="w"> </span><span class="c1"># the path to the prepare_receptor.py script</span>
+<span class="nt">vina_output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/Vina/inference/vina_ensemble_outputs</span><span class="w"> </span><span class="c1"># the output directory to which to save the inference results</span>
+<span class="nt">vina_cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># the number of CPU workers to use with AutoDock Vina for parallel processing, 0 for all available</span>
+<span class="nt">vina_seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># the random seed to use with AutoDock Vina</span>
+<span class="nt">vina_exhaustiveness</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span><span class="w"> </span><span class="c1"># the exhaustiveness to use with AutoDock Vina</span>
+<span class="nt">vina_ligand_ligand_distance_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">25.0</span><span class="w"> </span><span class="c1"># the distance threshold (in Angstrom) to use for finding shared binding sites amongst ligands</span>
+<span class="nt">vina_protein_ligand_distance_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.0</span><span class="w"> </span><span class="c1"># the distance threshold (in Angstrom) to use for finding protein binding sites amongst grouped ligands</span>
+<span class="nt">vina_binding_site_size_x</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">25.0</span><span class="w"> </span><span class="c1"># the x-axis size of the binding site box to use with AutoDock Vina</span>
+<span class="nt">vina_binding_site_size_y</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">25.0</span><span class="w"> </span><span class="c1"># the y-axis size of the binding site box to use with AutoDock Vina</span>
+<span class="nt">vina_binding_site_size_z</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">25.0</span><span class="w"> </span><span class="c1"># the z-axis size of the binding site box to use with AutoDock Vina</span>
+<span class="nt">vina_binding_site_spacing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w"> </span><span class="c1"># the spacing of the binding site box (in Angstrom) to use with AutoDock Vina</span>
+<span class="nt">vina_num_modes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">40</span><span class="w"> </span><span class="c1"># the number of binding modes (i.e., poses) to generate with AutoDock Vina</span>
+<span class="nt">vina_skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip existing output files</span>
+<span class="nt">vina_p2rank_exec_utility</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">predict</span><span class="w"> </span><span class="c1"># the P2Rank executable utility to use for inference</span>
+<span class="nt">vina_p2rank_config</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alphafold</span><span class="w"> </span><span class="c1"># the P2Rank configuration to use for inference</span>
+<span class="nt">vina_p2rank_enable_pymol_visualizations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to enable P2Rank's PyMOL visualizations</span>
+<span class="c1"># TULIP inference arguments:</span>
+<span class="nt">tulip_output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.env:PROJECT_ROOT}/forks/TULIP/inference/tulip_ensemble_outputs</span><span class="w"> </span><span class="c1"># the output directory to which to save the inference results</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="structure-relaxation">
+<h2>Structure relaxation<a class="headerlink" href="#structure-relaxation" title="Link to this heading">¶</a></h2>
+<p>These configurations are used to specify how relaxation is (optionally) applied to a predicted protein-ligand complex structure using molecular dynamics (i.e., <a class="reference external" href="https://openmm.org">OpenMM</a>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <cite>inference_relaxation</cite> configuration describes the behavior of the script that serves as an entry point for the relaxation process. The <cite>minimize_energy</cite> configuration is a multi-ligand generalization of the main energy minimization script originally implemented for the <a class="reference external" href="https://github.com/maabuu/posebusters_em">PoseBusters</a> software suite.</p>
+</div>
+<section id="inference-relaxation-entry-point">
+<h3>Inference relaxation (entry point)<a class="headerlink" href="#inference-relaxation-entry-point" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">model/inference_relaxation.yaml</span></code></span><a class="headerlink" href="#id11" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diffdock</span><span class="w"> </span><span class="c1"># the method for which to relax predictions - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `flowdock`, `rfaa`, `chai-lab`, `boltz`, `alphafold3`, `vina`, `tulip`)</span>
+<span class="nt">vina_binding_site_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">p2rank</span><span class="w"> </span><span class="c1"># the method to use for Vina binding site prediction - NOTE: must be one of (`diffdock`, `fabind`, `dynamicbind`, `neuralplexer`, `flowdock`, `rfaa`, `chai-lab`, `boltz`, `alphafold3`, `p2rank`)</span>
+<span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">posebusters_benchmark</span><span class="w"> </span><span class="c1"># the dataset for which to relax predictions - NOTE: must be one of (`posebusters_benchmark`, `astex_diverse`, `dockgen`, `casp15`)</span>
+<span class="nt">ensemble_ranking_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">consensus</span><span class="w"> </span><span class="c1"># the method with which to rank-order and select the top ensemble prediction for each target - NOTE: must be one of (`consensus`, `ff`)</span>
+<span class="nt">num_processes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the number of parallel processes to use for relaxation</span>
+<span class="nt">temp_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${method}_${dataset}_cache_dir</span><span class="w"> </span><span class="c1"># temporary directory</span>
+<span class="nt">add_solvent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to add solvent during relaxation</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># name of the relaxation target</span>
+<span class="nt">prep_only</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># only prepare the input files</span>
+<span class="nt">platform</span><span class="p">:</span><span class="w"> </span><span class="s">"fastest"</span><span class="w"> </span><span class="c1"># platform on which to run relaxation</span>
+<span class="nt">cuda_device_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># CUDA device index</span>
+<span class="nt">log_level</span><span class="p">:</span><span class="w"> </span><span class="s">"INFO"</span><span class="w"> </span><span class="c1"># logging level</span>
+<span class="nt">protein_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${resolve_method_protein_dir:${method},${dataset},${repeat_index},${pocket_only_baseline}}</span><span class="w"> </span><span class="c1"># the directory from which to load (potentially inferred) proteins</span>
+<span class="nt">ligand_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${resolve_method_ligand_dir:${method},${dataset},${vina_binding_site_method},${repeat_index},${pocket_only_baseline},${v1_baseline}}</span><span class="w"> </span><span class="c1"># the directory from which to load inferred ligands</span>
+<span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${resolve_method_output_dir:${method},${dataset},${vina_binding_site_method},${ensemble_ranking_method},${repeat_index},${pocket_only_baseline},${v1_baseline}}</span><span class="w"> </span><span class="c1"># the output directory to which to save the relaxed predictions</span>
+<span class="nt">relax_protein</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to relax the protein - NOTE: currently periodically yields unpredictable protein-ligand separation</span>
+<span class="nt">remove_initial_protein_hydrogens</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to remove hydrogens from the initial protein</span>
+<span class="nt">assign_each_ligand_unique_force</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># when relaxing the protein, whether to assign each ligand a unique force constant</span>
+<span class="nt">model_ions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to model ions</span>
+<span class="nt">cache_files</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to cache the prepared relaxation files</span>
+<span class="nt">assign_partial_charges_manually</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to assign partial charges manually</span>
+<span class="nt">report_initial_energy_only</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># skip relaxation and return only the initial energy of the complex structure</span>
+<span class="nt">max_final_e_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000.0</span><span class="w"> </span><span class="c1"># when relaxing the protein, maximum final energy value to permit</span>
+<span class="nt">max_num_attempts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># when relaxing the protein, maximum number of relaxation attempts to perform</span>
+<span class="nt">skip_existing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to skip existing relaxed predictions</span>
+<span class="nt">repeat_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># the repeat index which was used for inference</span>
+<span class="nt">pocket_only_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to prepare the pocket-only baseline</span>
+<span class="nt">v1_baseline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to prepare the v1 baseline</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="minimize-energy-relaxation-engine">
+<h3>Minimize energy (relaxation engine)<a class="headerlink" href="#minimize-energy-relaxation-engine" title="Link to this heading">¶</a></h3>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text"><code class="file docutils literal notranslate"><span class="pre">model/minimize_energy.yaml</span></code></span><a class="headerlink" href="#id12" title="Link to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">protein_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">???</span><span class="w"> </span><span class="c1"># input protein file</span>
+<span class="nt">ligand_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">???</span><span class="w"> </span><span class="c1"># input ligand file</span>
+<span class="nt">output_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">???</span><span class="w"> </span><span class="c1"># ligand output file</span>
+<span class="nt">protein_output_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># optional protein output file</span>
+<span class="nt">complex_output_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># optional complex output file</span>
+<span class="nt">temp_dir</span><span class="p">:</span><span class="w"> </span><span class="s">"cache_dir"</span><span class="w"> </span><span class="c1"># temporary directory</span>
+<span class="nt">add_solvent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to add solvent during relaxation</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># name of the relaxation target</span>
+<span class="nt">prep_only</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># only prepare the input files</span>
+<span class="nt">platform</span><span class="p">:</span><span class="w"> </span><span class="s">"fastest"</span><span class="w"> </span><span class="c1"># platform on which to run relaxation</span>
+<span class="nt">cuda_device_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># CUDA device index</span>
+<span class="nt">log_level</span><span class="p">:</span><span class="w"> </span><span class="s">"INFO"</span><span class="w"> </span><span class="c1"># logging level</span>
+<span class="nt">relax_protein</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to relax the protein</span>
+<span class="nt">remove_initial_protein_hydrogens</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to remove hydrogens from the initial protein</span>
+<span class="nt">assign_each_ligand_unique_force</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to assign each ligand a unique force constant</span>
+<span class="nt">model_ions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to model ions</span>
+<span class="nt">cache_files</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># whether to cache the prepared relaxation files</span>
+<span class="nt">assign_partial_charges_manually</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># whether to assign partial charges manually</span>
+<span class="nt">report_initial_energy_only</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># skip relaxation and return only the initial energy of the complex structure</span>
+<span class="nt">max_final_e_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000.0</span><span class="w"> </span><span class="c1"># when relaxing the protein, maximum final energy value to permit</span>
+<span class="nt">max_num_attempts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># when relaxing the protein, maximum number of relaxation attempts to perform</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
+</article>
+</div>
+<footer>
+<div class="related-pages">
+<a class="next-page" href="../modules/posebench.binding_site_crop_preparation.html">
+<div class="page-info">
+<div class="context">
+<span>Next</span>
+</div>
+<div class="title">Binding site crop preparation</div>
+</div>
+<svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+</a>
+<a class="prev-page" href="data.html">
+<svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+<div class="page-info">
+<div class="context">
+<span>Previous</span>
+</div>
+<div class="title">Data</div>
+</div>
+</a>
+</div>
+<div class="bottom-of-page">
+<div class="left-details">
+<div class="copyright">
+                Copyright © 2025, Alex Morehead
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+</div>
+<div class="right-details">
+</div>
+</div>
+</footer>
+</div>
+<aside class="toc-drawer">
+<div class="toc-sticky toc-scroll">
+<div class="toc-title-container">
+<span class="toc-title">
+            On this page
+          </span>
+</div>
+<div class="toc-tree-container">
+<div class="toc-tree">
+<ul>
+<li><a class="reference internal" href="#">Model</a><ul>
+<li><a class="reference internal" href="#method-inference">Method inference</a><ul>
+<li><a class="reference internal" href="#diffdock-inference">DiffDock inference</a></li>
+<li><a class="reference internal" href="#fabind-inference">FABind inference</a></li>
+<li><a class="reference internal" href="#dynamicbind-inference">DynamicBind inference</a></li>
+<li><a class="reference internal" href="#neuralplexer-inference">NeuralPLexer inference</a></li>
+<li><a class="reference internal" href="#flowdock-inference">FlowDock inference</a></li>
+<li><a class="reference internal" href="#rosettafold-all-atom-inference">RoseTTAFold-All-Atom inference</a></li>
+<li><a class="reference internal" href="#chai-1-inference">Chai-1 inference</a></li>
+<li><a class="reference internal" href="#boltz-1-inference">Boltz-1 inference</a></li>
+<li><a class="reference internal" href="#vina-inference">Vina inference</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ensemble-inference">Ensemble inference</a><ul>
+<li><a class="reference internal" href="#ensemble-generation">Ensemble generation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#structure-relaxation">Structure relaxation</a><ul>
+<li><a class="reference internal" href="#inference-relaxation-entry-point">Inference relaxation (entry point)</a></li>
+<li><a class="reference internal" href="#minimize-energy-relaxation-engine">Minimize energy (relaxation engine)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div><script src="../_static/jquery.js?v=5d32c60e"></script>
+<script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+<script src="../_static/documentation_options.js?v=8d563738"></script>
+<script src="../_static/doctools.js?v=9bcbadda"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=f281be69"></script>
+<script src="../_static/tabs.js?v=3ee01567"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+</body>
+</html>

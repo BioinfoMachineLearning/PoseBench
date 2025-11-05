@@ -1,0 +1,435 @@
+{
+  "acknowledgements": [],
+  "available_methods": [
+    {
+      "source": "Available inference methods\n================",
+      "names": [],
+      "example": {
+        "document": "available_methods",
+        "ref_id": "available-inference-methods",
+        "headings": [
+          "Available inference methods"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "bonus": [],
+  "citing_this_work": [],
+  "comparative_plots": [
+    {
+      "source": "How to create comparative plots of inference results\n================",
+      "names": [],
+      "example": {
+        "document": "comparative_plots",
+        "ref_id": "how-to-create-comparative-plots-of-inference-results",
+        "headings": [
+          "How to create comparative plots of inference results"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "configs/analysis": [
+    {
+      "source": "Inference analysis (PoseBusters, Astex, and DockGen)\n--------------------------",
+      "names": [],
+      "example": {
+        "document": "configs/analysis",
+        "ref_id": "inference-analysis-posebusters-astex-and-dockgen",
+        "headings": [
+          "Analysis",
+          "Inference analysis (PoseBusters, Astex, and DockGen)"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "configs/data": [
+    {
+      "source": "ESMFold sequence preparation\n^^^^^^^^^^^^^^^^^^^^^^^^",
+      "names": [],
+      "example": {
+        "document": "configs/data",
+        "ref_id": "esmfold-sequence-preparation",
+        "headings": [
+          "Data",
+          "Input data components",
+          "ESMFold sequence preparation"
+        ]
+      },
+      "doc_lineno": null
+    },
+    {
+      "source": "Protein apo-to-holo alignment\n^^^^^^^^^^^^^^^^^^^^^^^^",
+      "names": [],
+      "example": {
+        "document": "configs/data",
+        "ref_id": "protein-apo-to-holo-alignment",
+        "headings": [
+          "Data",
+          "Input data components",
+          "Protein apo-to-holo alignment"
+        ]
+      },
+      "doc_lineno": null
+    },
+    {
+      "source": "Binding site crop preparation\n^^^^^^^^^^^^^^^^^^^^^^^^",
+      "names": [],
+      "example": {
+        "document": "configs/data",
+        "ref_id": "binding-site-crop-preparation",
+        "headings": [
+          "Data",
+          "Method data parsers",
+          "Binding site crop preparation"
+        ]
+      },
+      "doc_lineno": null
+    },
+    {
+      "source": "DiffDock input preparation\n^^^^^^^^^^^^^^^^^^^^^^^^",
+      "names": [],
+      "example": {
+        "document": "configs/data",
+        "ref_id": "diffdock-input-preparation",
+        "headings": [
+          "Data",
+          "Method data parsers",
+          "DiffDock input preparation"
+        ]
+      },
+      "doc_lineno": null
+    },
+    {
+      "source": "DynamicBind input preparation\n^^^^^^^^^^^^^^^^^^^^^^^^",
+      "names": [],
+      "example": {
+        "document": "configs/data",
+        "ref_id": "dynamicbind-input-preparation",
+        "headings": [
+          "Data",
+          "Method data parsers",
+          "DynamicBind input preparation"
+        ]
+      },
+      "doc_lineno": null
+    },
+    {
+      "source": "NeuralPLexer input preparation\n^^^^^^^^^^^^^^^^^^^^^^^^",
+      "names": [],
+      "example": {
+        "document": "configs/data",
+        "ref_id": "neuralplexer-input-preparation",
+        "headings": [
+          "Data",
+          "Method data parsers",
+          "NeuralPLexer input preparation"
+        ]
+      },
+      "doc_lineno": null
+    },
+    {
+      "source": "FlowDock input preparation\n^^^^^^^^^^^^^^^^^^^^^^^^",
+      "names": [],
+      "example": {
+        "document": "configs/data",
+        "ref_id": "flowdock-input-preparation",
+        "headings": [
+          "Data",
+          "Method data parsers",
+          "FlowDock input preparation"
+        ]
+      },
+      "doc_lineno": null
+    },
+    {
+      "source": "RoseTTAFold-All-Atom input preparation\n^^^^^^^^^^^^^^^^^^^^^^^^",
+      "names": [],
+      "example": {
+        "document": "configs/data",
+        "ref_id": "rosettafold-all-atom-input-preparation",
+        "headings": [
+          "Data",
+          "Method data parsers",
+          "RoseTTAFold-All-Atom input preparation"
+        ]
+      },
+      "doc_lineno": null
+    },
+    {
+      "source": "RoseTTAFold-All-Atom output extraction\n^^^^^^^^^^^^^^^^^^^^^^^^",
+      "names": [],
+      "example": {
+        "document": "configs/data",
+        "ref_id": "rosettafold-all-atom-output-extraction",
+        "headings": [
+          "Data",
+          "Method data parsers",
+          "RoseTTAFold-All-Atom output extraction"
+        ]
+      },
+      "doc_lineno": null
+    },
+    {
+      "source": "Boltz-1 input preparation\n^^^^^^^^^^^^^^^^^^^^^^^^",
+      "names": [],
+      "example": {
+        "document": "configs/data",
+        "ref_id": "boltz-1-input-preparation",
+        "headings": [
+          "Data",
+          "Method data parsers",
+          "Boltz-1 input preparation"
+        ]
+      },
+      "doc_lineno": null
+    },
+    {
+      "source": "Boltz-1 output extraction\n^^^^^^^^^^^^^^^^^^^^^^^^",
+      "names": [],
+      "example": {
+        "document": "configs/data",
+        "ref_id": "boltz-1-output-extraction",
+        "headings": [
+          "Data",
+          "Method data parsers",
+          "Boltz-1 output extraction"
+        ]
+      },
+      "doc_lineno": null
+    },
+    {
+      "source": "AlphaFold 3 output extraction\n^^^^^^^^^^^^^^^^^^^^^^^^",
+      "names": [],
+      "example": {
+        "document": "configs/data",
+        "ref_id": "alphafold-3-output-extraction",
+        "headings": [
+          "Data",
+          "Method data parsers",
+          "AlphaFold 3 output extraction"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "configs/model": [
+    {
+      "source": "RoseTTAFold-All-Atom inference\n^^^^^^^^^^^^^^^^^^^^^^^^",
+      "names": [],
+      "example": {
+        "document": "configs/model",
+        "ref_id": "rosettafold-all-atom-inference",
+        "headings": [
+          "Model",
+          "Method inference",
+          "RoseTTAFold-All-Atom inference"
+        ]
+      },
+      "doc_lineno": null
+    },
+    {
+      "source": "Inference relaxation (entry point)\n^^^^^^^^^^^^^^^^^^^^^^^^",
+      "names": [],
+      "example": {
+        "document": "configs/model",
+        "ref_id": "inference-relaxation-entry-point",
+        "headings": [
+          "Model",
+          "Structure relaxation",
+          "Inference relaxation (entry point)"
+        ]
+      },
+      "doc_lineno": null
+    },
+    {
+      "source": "Minimize energy (relaxation engine)\n^^^^^^^^^^^^^^^^^^^^^^^^",
+      "names": [],
+      "example": {
+        "document": "configs/model",
+        "ref_id": "minimize-energy-relaxation-engine",
+        "headings": [
+          "Model",
+          "Structure relaxation",
+          "Minimize energy (relaxation engine)"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "data_preparation": [
+    {
+      "source": "How to prepare `PoseBench` data\n================",
+      "names": [],
+      "example": {
+        "document": "data_preparation",
+        "ref_id": "how-to-prepare-posebench-data",
+        "headings": [
+          "How to prepare PoseBench data"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "ensemble_inference": [
+    {
+      "source": "How to run inference with a method ensemble\n================",
+      "names": [],
+      "example": {
+        "document": "ensemble_inference",
+        "ref_id": "how-to-run-inference-with-a-method-ensemble",
+        "headings": [
+          "How to run inference with a method ensemble"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "for_developers": [],
+  "index": [],
+  "installation": [],
+  "method_inference": [
+    {
+      "source": "How to run inference with individual methods\n================",
+      "names": [],
+      "example": {
+        "document": "method_inference",
+        "ref_id": "how-to-run-inference-with-individual-methods",
+        "headings": [
+          "How to run inference with individual methods"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "modules/posebench.binding_site_crop_preparation": [
+    {
+      "source": "Binding site crop preparation\n==============",
+      "names": [],
+      "example": {
+        "document": "modules/posebench.binding_site_crop_preparation",
+        "ref_id": "binding-site-crop-preparation",
+        "headings": [
+          "Binding site crop preparation"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "modules/posebench.complex_alignment": [
+    {
+      "source": "Complex alignment\n==============",
+      "names": [],
+      "example": {
+        "document": "modules/posebench.complex_alignment",
+        "ref_id": "complex-alignment",
+        "headings": [
+          "Complex alignment"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "modules/posebench.data_utils": [],
+  "modules/posebench.ensemble_generation": [
+    {
+      "source": "Ensemble generation\n==============",
+      "names": [],
+      "example": {
+        "document": "modules/posebench.ensemble_generation",
+        "ref_id": "ensemble-generation",
+        "headings": [
+          "Ensemble generation"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "modules/posebench.inference_relaxation": [
+    {
+      "source": "Inference relaxation\n==============",
+      "names": [],
+      "example": {
+        "document": "modules/posebench.inference_relaxation",
+        "ref_id": "inference-relaxation",
+        "headings": [
+          "Inference relaxation"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "modules/posebench.minimize_energy": [
+    {
+      "source": "Minimize energy\n==============",
+      "names": [],
+      "example": {
+        "document": "modules/posebench.minimize_energy",
+        "ref_id": "minimize-energy",
+        "headings": [
+          "Minimize energy"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "modules/posebench.model_utils": [
+    {
+      "source": "Model utilities\n==============",
+      "names": [],
+      "example": {
+        "document": "modules/posebench.model_utils",
+        "ref_id": "model-utilities",
+        "headings": [
+          "Model utilities"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "modules/posebench.resolvers": [
+    {
+      "source": "OmegaConf resolvers\n==============",
+      "names": [],
+      "example": {
+        "document": "modules/posebench.resolvers",
+        "ref_id": "omegaconf-resolvers",
+        "headings": [
+          "OmegaConf resolvers"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "modules/posebench.utils": [
+    {
+      "source": "General utilities\n==============",
+      "names": [],
+      "example": {
+        "document": "modules/posebench.utils",
+        "ref_id": "general-utilities",
+        "headings": [
+          "General utilities"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "sweep_inference": [
+    {
+      "source": "How to run a sweep of benchmarking experiments\n================",
+      "names": [],
+      "example": {
+        "document": "sweep_inference",
+        "ref_id": "how-to-run-a-sweep-of-benchmarking-experiments",
+        "headings": [
+          "How to run a sweep of benchmarking experiments"
+        ]
+      },
+      "doc_lineno": null
+    }
+  ],
+  "tutorials": []
+}
