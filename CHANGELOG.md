@@ -3,6 +3,8 @@
 **Changes**:
 
 - Added dot plots on top of bar plots for improved clarity in CASP15 results.
+- Enhanced figures by converting PNGs to PDFs.
+- Updated Zenodo links.
 
 ### 0.7.1 - 08/11/2025
 

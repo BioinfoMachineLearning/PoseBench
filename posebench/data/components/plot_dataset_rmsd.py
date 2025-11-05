@@ -221,12 +221,12 @@ def plot_dataset_rmsd(
     plt.clf()
     sns.histplot(dataset_df["TM-score"])
     plt.title("Apo-To-Holo Protein TM-score")
-    plt.savefig(plot_dir / f"{dataset}_a2h_TM-score_hist.png")
+    plt.savefig(plot_dir / f"{dataset}_a2h_TM-score_hist.pdf")
 
     plt.clf()
     sns.histplot(dataset_df["RMSD"])
     plt.title("Apo-To-Holo Protein RMSD")
-    plt.savefig(plot_dir / f"{dataset}_a2h_RMSD_hist.png")
+    plt.savefig(plot_dir / f"{dataset}_a2h_RMSD_hist.pdf")
 
 
 @hydra.main(
