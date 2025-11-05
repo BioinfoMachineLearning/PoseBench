@@ -546,5 +546,5 @@ for ax, interaction, plot_type in zip(axes.flatten(), interaction_types, plot_ty
     ax.grid(True)
 
 plt.tight_layout()
-plt.savefig("dataset_interaction_analysis.png", dpi=300)
+plt.savefig("dataset_interaction_analysis.pdf")
 plt.show()

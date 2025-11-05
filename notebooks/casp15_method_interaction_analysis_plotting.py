@@ -429,7 +429,7 @@ for ax, interaction, plot_type in zip(axes.flatten(), interaction_types, plot_ty
     ax.grid(True)
 
 plt.tight_layout()
-plt.savefig("casp15_method_interaction_analysis.png", dpi=300)
+plt.savefig("casp15_method_interaction_analysis.pdf")
 plt.show()
 
 # %% [markdown]
@@ -588,7 +588,7 @@ plt.figure(figsize=(20, 8))
 sns.boxplot(data=emd_values_df, x="Category", y="EMD")
 plt.xlabel("")
 plt.ylabel("PLIF-EMD")
-plt.savefig("casp15_plif_emd_values.png")
+plt.savefig("casp15_plif_emd_values.pdf")
 plt.show()
 
 plt.close("all")
@@ -597,7 +597,7 @@ plt.figure(figsize=(20, 8))
 sns.boxplot(data=emd_values_df, x="Category", y="WM")
 plt.xlabel("")
 plt.ylabel("PLIF-WM")
-plt.savefig("casp15_plif_wm_values.png")
+plt.savefig("casp15_plif_wm_values.pdf")
 plt.show()
 
 plt.close("all")
@@ -738,7 +738,7 @@ plt.ylabel("EMD Value")
 plt.title("Comparison of Structured_EMD and Unstructured_EMD by Method")
 plt.legend()
 plt.ylim(0, 50)
-plt.savefig("casp15_structured_vs_unstructured_emd_values.png")
+plt.savefig("casp15_structured_vs_unstructured_emd_values.pdf")
 plt.show()
 
 plt.close("all")
