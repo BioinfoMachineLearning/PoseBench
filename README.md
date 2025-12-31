@@ -2,7 +2,7 @@
 
 # PoseBench
 
-[![Paper](http://img.shields.io/badge/arXiv-2405.14108-B31B1B.svg)](https://arxiv.org/abs/2405.14108)
+[![Paper](http://img.shields.io/badge/arXiv-2405.14108-B31B1B.svg)](https://rdcu.be/eW5oj)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17536252.svg)](https://doi.org/10.5281/zenodo.17536252)
 [![PyPI version](https://badge.fury.io/py/posebench.svg)](https://badge.fury.io/py/posebench)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
@@ -1335,12 +1335,12 @@ We thank all their contributors and maintainers!
 If you use the code or benchmark method predictions associated with this repository or otherwise find this work useful, please cite:
 
 ```bibtex
-@inproceedings{morehead2024posebench,
+@article{morehead2025posebench,
   title={Assessing the potential of deep learning for protein-ligand docking},
   author={Morehead, Alex and Giri, Nabin and Liu, Jian and Neupane, Pawan and Cheng, Jianlin},
-  booktitle={ICML AI4Science Workshop},
-  year={2024},
-  note={selected as a spotlight presentation},
+  journal={Nature Machine Intelligence},
+  year={2025},
+  note={ICML 2024 AI4Science spotlight presentation},
 }
 ```
 
