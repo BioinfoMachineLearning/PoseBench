@@ -170,7 +170,8 @@ def select_primary_ligands_in_df(
 
             if select_most_similar_pred_frag:
                 mol_pred_frags = [
-                    find_most_similar_frag(mol_true_frag, mol_pred_frags)[0]
+                    # Break reference to original molecule objects to avoid potential side effects
+                    find_most_similar_frag(Chem.Mol(mol_true_frag), [Chem.Mol(mol_pred_frag) for mol_pred_frag in mol_pred_frags])[0]
                     for mol_true_frag in mol_true_frags
                 ]
                 if not any(mol_pred_frags):
