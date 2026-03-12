@@ -483,9 +483,9 @@ dependencies:
       - jmespath==1.0.1
       - jupyterlab-widgets==1.1.11
       - lib-detect-testenv==2.0.8
-      - lightning==2.1.3
-      - lightning-cloud==0.5.61
-      - lightning-utilities==0.10.0
+      - lightning==2.6.1
+      - lightning-cloud==0.6.0
+      - lightning-utilities==0.15.3
       - loguru==0.7.2
       - looseversion==1.1.2
       - lovely-numpy==0.2.9
