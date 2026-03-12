@@ -571,7 +571,7 @@ dependencies:
       - s3transfer==0.7.0
       - sander==22.0
       - scikit-learn==1.1.2
-      - scipy==1.9.1
+      - scipy==1.13.0
       - seaborn==0.12.2
       - selfies==2.1.1
       - sentry-sdk==1.29.2
