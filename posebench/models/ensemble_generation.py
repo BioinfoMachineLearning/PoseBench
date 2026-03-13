@@ -38,7 +38,7 @@ from posebench import register_custom_omegaconf_resolvers
 from posebench.analysis.complex_alignment import align_complex_to_protein_only
 from posebench.data.components.protein_apo_to_holo_alignment import read_molecule
 from posebench.models.inference_relaxation import relax_single_filepair
-from posebench.models.minimize_energy import minimize_energy
+# from posebench.models.minimize_energy import minimize_energy
 from posebench.utils.data_utils import (
     extract_sequences_from_protein_structure_file,
     renumber_biopython_structure_residues,
@@ -145,32 +145,26 @@ def insert_hpc_headers(
     :return: Batch headers string for SLURM job scheduling.
     """
     return f"""######################### Batch Headers #########################
-#SBATCH --partition {gpu_partition} # use reserved partition `chengji-lab-gpu`
-#SBATCH --account {gpu_account}  # NOTE: this must be specified to use the reserved partition above
-#SBATCH --nodes=1              # NOTE: this needs to match Lightning's `Trainer(num_nodes=...)`
-#SBATCH --gres gpu:{f'{gpu_type}:' if gpu_type else ''}1      # request {gpu_type} GPU resource(s)
-#SBATCH --ntasks-per-node=1    # NOTE: this needs to be `1` on SLURM clusters when using Lightning's `ddp_spawn` strategy`; otherwise, set to match Lightning's quantity of `Trainer(devices=...)`
-#SBATCH --mem={cpu_memory_in_gb}G              # NOTE: use `--mem=0` to request all memory "available" on the assigned node
-#SBATCH -t {time_limit}          # time limit for the job (up to two days: `2-00:00:00`)
-#SBATCH -J posebench_{method}_ensembling # job name
-#SBATCH --output=R-%x.%j.out   # output log file
-#SBATCH --error=R-%x.%j.err    # error log file
+#SBATCH --qos=shared                                          # use specified partition for job
+#SBATCH --image=registry.nersc.gov/m5008/acmwhb/posebench:0.0.1 # use specified container image
+#SBATCH --account=m5008                                       # use specified account for billing (e.g., `m5008` for AI4Science projects)
+#SBATCH --nodes=1                                             # NOTE: this needs to match Lightning's `Trainer(num_nodes=...)`
+#SBATCH --ntasks-per-node=1                                   # NOTE: this needs to be `1` on SLURM clusters when using Lightning's `ddp_spawn` strategy`; otherwise, set to match Lightning's quantity of `Trainer(devices=...)`
+#SBATCH --time=00-05:00:00                                    # time limit for the job (up to 2 days: `02-00:00:00`)
+#SBATCH --job-name=inference_analysis_sweep                         # job name
+#SBATCH --output=scripts/perlmutter/regular/logs/inference_analysis_sweep%j.out  # output log file
+#SBATCH --error=scripts/perlmutter/regular/logs/inference_analysis_sweep%j.err   # error log file
 
-module purge
-module load cuda/11.8.0_gcc_9.5.0
+# Wait for 5-10 seconds randomly to avoid race condition
+sleep $((RANDOM % 6 + 5))
 
-# determine location of the project directory
-use_private_project_dir=false # NOTE: customize as needed
-if [ "$use_private_project_dir" = true ]; then
-    project_dir="/home/$USER/data/Repositories/Lab_Repositories/PoseBench"
-else
-    project_dir="/cluster/pixstor/chengji-lab/$USER/Repositories/Lab_Repositories/PoseBench"
-fi
+# Determine location of the project's directory
+# PROJECT_ID="m5008"
+# PROJECT_DIR="/global/cfs/cdirs/$PROJECT_ID/$USER/Repositories/posebench"            # long term storage community drive
+PROJECT_DIR="/pscratch/sd/a/$USER/Repositories/posebench"                   # high-performance storage scratch drive with an 8-week purge policy
+cd "$PROJECT_DIR" || exit
 
-# shellcheck source=/dev/null
-source /home/$USER/mambaforge/etc/profile.d/conda.sh
-
-cd "$project_dir" || exit"""
+"""
 
 
 def create_diffdock_bash_script(

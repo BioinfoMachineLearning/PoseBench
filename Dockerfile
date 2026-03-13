@@ -46,6 +46,7 @@ WORKDIR /app/posebench
 ARG GIT_TAG=main
 RUN git clone https://github.com/BioinfoMachineLearning/posebench . --branch ${GIT_TAG} \
     && conda env update -f environments/posebench_environment.yaml \
+    && conda install -y -c conda-forge openff-toolkit=0.16.0 \
     && pip install -e . \
     && pip install numpy==1.26.4 --no-dependencies \
     && pip install prody==2.4.1 --no-dependencies \
