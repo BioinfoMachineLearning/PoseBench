@@ -20,7 +20,6 @@ methods_to_sweep: [
   ] # the methods to sweep
 datasets_to_sweep: [
     "astex_diverse",
-    "casp15",
     "dockgen",
     "posebusters_benchmark",
   ] # the datasets to sweep
