@@ -1,0 +1,26 @@
+# run arguments:
+method: diffdock # the method for which to preprocess interactions as H5 files
+dataset: astex_diverse # the dataset to use - NOTE: must be one of (`astex_diverse`, `casp15`, `dockgen`, `posebusters_benchmark`)
+repeat_index: 1 # the repeat index to preprocess - NOTE: currently only repeat_index=1 is supported
+output_script_dir: ${oc.env:PROJECT_ROOT}/scripts/inference # the directory in which to save the output script
+# sweep arguments:
+sweep: true # whether to build all combinations of method-dataset preprocessing scripts
+methods_to_sweep: [
+    "vina_p2rank",
+    "diffdock",
+    "dynamicbind",
+    "neuralplexer",
+    "rfaa",
+    "chai-lab_ss",
+    "chai-lab",
+    "boltz_ss",
+    "boltz",
+    "alphafold3_ss",
+    "alphafold3",
+  ] # the methods to sweep
+datasets_to_sweep: [
+    "astex_diverse",
+    "casp15",
+    "dockgen",
+    "posebusters_benchmark",
+  ] # the datasets to sweep
