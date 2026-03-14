@@ -36,7 +36,7 @@ RUN apt-get update \
     && apt-get clean
 
 # Install Conda dependencies
-RUN conda install -y -c conda-forge python=3.10 gcc=11.4.0 gxx=11.4.0 libstdcxx=14.1.0 libstdcxx-ng=14.1.0 libgcc=14.1.0 libgcc-ng=14.1.0 compilers=1.5.2 openff-toolkit=0.16.0 openbabel=3.1.1 && \
+RUN conda install -y -c conda-forge python=3.10 gcc=11.4.0 gxx=11.4.0 libstdcxx=14.1.0 libstdcxx-ng=14.1.0 libgcc=14.1.0 libgcc-ng=14.1.0 compilers=1.5.2 openbabel=3.1.1 && \
     conda clean -afy
 
 # Set work directory
