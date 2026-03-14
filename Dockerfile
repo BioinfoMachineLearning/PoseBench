@@ -36,7 +36,7 @@ RUN apt-get update \
     && apt-get clean
 
 # Install Conda dependencies
-RUN conda install -y -c conda-forge python=3.10 gcc=11.4.0 gxx=11.4.0 libstdcxx=14.1.0 libstdcxx-ng=14.1.0 libgcc=14.1.0 libgcc-ng=14.1.0 compilers=1.5.2 && \
+RUN conda install -y -c conda-forge python=3.10 gcc=11.4.0 gxx=11.4.0 libstdcxx=14.1.0 libstdcxx-ng=14.1.0 libgcc=14.1.0 libgcc-ng=14.1.0 compilers=1.5.2 openff-toolkit=0.16.0 openbabel=3.1.1 && \
     conda clean -afy
 
 # Set work directory
@@ -46,9 +46,8 @@ WORKDIR /app/posebench
 ARG GIT_TAG=main
 RUN git clone https://github.com/BioinfoMachineLearning/posebench . --branch ${GIT_TAG} \
     && conda env update -f environments/posebench_environment.yaml \
-    && conda install -y -c conda-forge openff-toolkit=0.16.0 \
     && pip install -e . \
     && pip install numpy==1.26.4 --no-dependencies \
     && pip install prody==2.4.1 --no-dependencies \
-    && conda clean -afy \
-    && rm -rf /root/.cache/pip
+    && pip install git+https://github.com/amorehead/posecheck.git@posebench \
+    && conda clean -afy
