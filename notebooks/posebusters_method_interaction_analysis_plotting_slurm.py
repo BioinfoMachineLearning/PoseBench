@@ -74,7 +74,7 @@ assert os.path.exists(
 ), "Please download the PoseBusters Benchmark set from `https://zenodo.org/records/17536252` before proceeding."
 
 # PoseBusters Benchmark deposition dates
-pb_deposition_dates_filepath = "posebusters_benchmark_complex_pdb_deposition_dates.csv"
+pb_deposition_dates_filepath = os.path.join("notebooks", "posebusters_benchmark_complex_pdb_deposition_dates.csv")
 assert os.path.exists(
     pb_deposition_dates_filepath
 ), "Please prepare the PoseBusters Benchmark complex PDB deposition dates CSV file via `failure_modes_analysis_plotting.ipynb` before proceeding."
