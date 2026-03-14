@@ -61,7 +61,6 @@ max_num_repeats_per_method = (
 )
 
 casp15_set_dir = os.path.join(
-    "..",
     "data",
     "casp15_set",
     "targets",
@@ -264,7 +263,6 @@ for method in methods_to_process:
 
         if not os.path.exists(f"{method}_{dataset}_interaction_dataframes_{repeat_index}.h5"):
             method_casp15_set_dir = os.path.join(
-                "..",
                 "data",
                 "test_cases",
                 "casp15",

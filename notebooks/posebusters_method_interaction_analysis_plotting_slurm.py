@@ -66,7 +66,6 @@ max_num_repeats_per_method = (
 method_max_training_cutoff_date = "2021-09-30"
 
 pb_set_dir = os.path.join(
-    "..",
     "data",
     "posebusters_benchmark_set",
 )
@@ -222,7 +221,6 @@ signal.signal(signal.SIGUSR1, signal_handler)
 # %%
 if not os.path.exists("posebusters_benchmark_interaction_dataframes.h5"):
     posebusters_ccd_ids_filepath = os.path.join(
-        "..",
         "data",
         "posebusters_pdb_ccd_ids.txt",
     )
@@ -287,9 +285,9 @@ cfg = DictConfig(
         "dataset": dataset,
         "relax_protein": relax_protein,
         "pocket_only_baseline": pocket_only_baseline,
-        "input_data_dir": os.path.join("..", "data", f"{dataset}_set"),
-        "posebusters_ccd_ids_filepath": os.path.join("..", "data", "posebusters_pdb_ccd_ids.txt"),
-        "dockgen_test_ids_filepath": os.path.join("..", "data", "dockgen_set", "split_test.txt"),
+        "input_data_dir": os.path.join("data", f"{dataset}_set"),
+        "posebusters_ccd_ids_filepath": os.path.join("data", "posebusters_pdb_ccd_ids.txt"),
+        "dockgen_test_ids_filepath": os.path.join("data", "dockgen_set", "split_test.txt"),
     }
 )
 
@@ -320,12 +318,10 @@ for method in methods_to_process:
                 cfg.method = method
                 cfg.repeat_index = repeat_index
                 cfg.input_csv_path = str(
-                    ".."
-                    / Path(resolve_method_input_csv_path(method, dataset, pocket_only_baseline))
+                    Path(resolve_method_input_csv_path(method, dataset, pocket_only_baseline))
                 )
                 cfg.output_dir = str(
-                    ".."
-                    / Path(
+                    Path(
                         resolve_method_output_dir(
                             method,
                             dataset,
