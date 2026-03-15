@@ -51,6 +51,7 @@ dependencies = [
     "ipykernel",       # for running Jupyter notebooks
     "jaxtyping>=0.2.12",  # tensor type checking
     "joblib",          # for parallel processing
+    "loguru",          # for cleaner logging
     "lovely-numpy",    # for fancy numpy debugging
     "lovely-tensors",  # for fancy pytorch debugging
     "meeko",           # for molecular docking preparation
@@ -70,9 +71,9 @@ dependencies = [
     "seaborn",         # for plotting
     "setuptools",      # for packaging
     "spyrmsd",         # for RMSD calculations
-    "wrapt_timeout_decorator", # for preventing certain functions from executing indefinitely
+    "tables",          # for parsing large data files
     "tqdm",            # progress bars
-    "loguru",          # for cleaner logging
+    "wrapt_timeout_decorator", # for preventing certain functions from executing indefinitely
 ]
 
 [project.urls]
