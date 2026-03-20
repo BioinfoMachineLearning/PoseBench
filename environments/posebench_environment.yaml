@@ -408,7 +408,7 @@ dependencies:
       - async-timeout==4.0.3
       - autopage==0.5.1
       - beartype==0.14.0
-      - biopandas==0.5.1.dev0
+      - biopandas==0.5.1
       - biopython==1.79
       - bioservices==1.11.2
       - biotite==1.2.0
@@ -521,7 +521,7 @@ dependencies:
       - optuna==2.10.1
       - packaging==25.0
       - packmol-memgen==2023.2.24
-      - pandas==1.5.0
+      - pandas==2.0.0
       - pandoc==2.3
       - pastel==0.2.1
       - pathsimanalysis==1.2.0
@@ -536,7 +536,7 @@ dependencies:
       - plumbum==1.8.3
       - ply==3.11
       - poethepoet==0.10.0
-      - git+https://github.com/amorehead/posebusters.git@posebench-0.7.0
+      - posebusters==0.6.5
       - git+https://github.com/amorehead/posecheck.git@posebench
       - pot==0.9.1
       - pre-commit==3.6.2
@@ -551,7 +551,7 @@ dependencies:
       - pydocstyle==6.3.0
       - pyjwt==2.8.0
       - pymsmt==22.0
-      - pypdb==2.3
+      - pypdb==2.5
       - pyperclip==1.8.2
       - python-dotenv==1.0.0
       - python-multipart==0.0.9
@@ -559,7 +559,7 @@ dependencies:
       - pytraj==2.0.6
       - pytz==2022.4
       - pyzmq==25.1.1
-      - rdkit==2025.3.5
+      - rdkit==2025.9.6
       - regex==2023.10.3
       - requests-cache==1.1.0
       - requests-oauthlib==2.0.0
@@ -570,7 +570,7 @@ dependencies:
       - rsa==4.9.1
       - s3transfer==0.7.0
       - sander==22.0
-      - scikit-learn==1.1.2
+      - scikit-learn==1.7.2
       - scipy==1.14.1
       - seaborn==0.12.2
       - selfies==2.1.1
@@ -586,7 +586,7 @@ dependencies:
       - sphinxcontrib-jsmath==1.0.1
       - sphinxcontrib-qthelp==2.0.0
       - sphinxcontrib-serializinghtml==2.0.0
-      - spyrmsd==0.5.2
+      - spyrmsd==0.9.0
       - sqlalchemy==2.0.20
       - starlette==0.27.0
       - stevedore==5.1.0

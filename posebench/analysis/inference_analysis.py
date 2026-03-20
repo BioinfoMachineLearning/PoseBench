@@ -171,7 +171,10 @@ def select_primary_ligands_in_df(
             if select_most_similar_pred_frag:
                 mol_pred_frags = [
                     # Break reference to original molecule objects to avoid potential side effects
-                    find_most_similar_frag(Chem.Mol(mol_true_frag), [Chem.Mol(mol_pred_frag) for mol_pred_frag in mol_pred_frags])[0]
+                    find_most_similar_frag(
+                        Chem.Mol(mol_true_frag),
+                        [Chem.Mol(mol_pred_frag) for mol_pred_frag in mol_pred_frags],
+                    )[0]
                     for mol_true_frag in mol_true_frags
                 ]
                 if not any(mol_pred_frags):
@@ -561,7 +564,7 @@ def create_mol_table(
     elif cfg.method == "vina":
         mol_table["mol_pred"] = (
             input_table["pdb_id"]
-            .transform(lambda x: "_".join(x.split("_")[:3]))
+            .transform(lambda x: x if cfg.dataset == "dockgen" else "_".join(x.split("_")[:3]))
             .apply(
                 lambda x: (
                     list(

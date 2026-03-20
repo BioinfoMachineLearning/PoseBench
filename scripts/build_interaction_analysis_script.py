@@ -54,7 +54,8 @@ def build_interaction_analysis_script(
     output_script_dir: str,
     repeat_index: int = 1,
 ):
-    """Build a SLURM script to preprocess one method's interactions for one dataset."""
+    """Build a SLURM script to preprocess one method's interactions for one
+    dataset."""
     if repeat_index != 1:
         raise ValueError("Only repeat_index=1 is supported for interaction preprocessing.")
 
@@ -81,7 +82,7 @@ def build_interaction_analysis_script(
         )
         f.write(f"echo 'Interaction preprocessing for {method} on {dataset} completed.'\n")
 
-    os.chmod(output_script, 0o755)
+    os.chmod(output_script, 0o755)  # nosec
     logger.info(f"Script {output_script} created successfully.")
 
 

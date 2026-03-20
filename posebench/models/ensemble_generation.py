@@ -38,7 +38,7 @@ from posebench import register_custom_omegaconf_resolvers
 from posebench.analysis.complex_alignment import align_complex_to_protein_only
 from posebench.data.components.protein_apo_to_holo_alignment import read_molecule
 from posebench.models.inference_relaxation import relax_single_filepair
-# from posebench.models.minimize_energy import minimize_energy
+from posebench.models.minimize_energy import minimize_energy
 from posebench.utils.data_utils import (
     extract_sequences_from_protein_structure_file,
     renumber_biopython_structure_residues,
@@ -144,7 +144,7 @@ def insert_hpc_headers(
         string.
     :return: Batch headers string for SLURM job scheduling.
     """
-    return f"""######################### Batch Headers #########################
+    return """######################### Batch Headers #########################
 #SBATCH --qos=shared                                          # use specified partition for job
 #SBATCH --image=registry.nersc.gov/m5008/acmwhb/posebench:0.0.1 # use specified container image
 #SBATCH --account=m5008                                       # use specified account for billing (e.g., `m5008` for AI4Science projects)
