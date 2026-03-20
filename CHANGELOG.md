@@ -1,3 +1,12 @@
+### 1.1.0 - 03/20/2025
+
+**Changes**:
+
+- Fixed ligand scoring bug affecting the Astex Diverse, DockGen-E, and PoseBusters Benchmark datasets' primary-ligand results. Thanks a ton, @95028!
+- Regenerated results after addressing the scoring bug. The `notebooks` directory has been updated in the process.
+- Updated Zenodo links (for `forks` and `notebooks`).
+- An updated arXiv manuscript (v7) should be online soon.
+
 ### 1.0.0 - 11/04/2025
 
 **Changes**:

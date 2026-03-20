@@ -71,7 +71,7 @@ pb_set_dir = os.path.join(
 )
 assert os.path.exists(
     pb_set_dir
-), "Please download the PoseBusters Benchmark set from `https://zenodo.org/records/17536252` before proceeding."
+), "Please download the PoseBusters Benchmark set from `https://zenodo.org/records/19138652` before proceeding."
 
 # PoseBusters Benchmark deposition dates
 pb_deposition_dates_filepath = os.path.join(
