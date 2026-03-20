@@ -2,5 +2,5 @@ Citing this work
 ================
 
 .. mdinclude:: ../../README.md
-    :start-line: 1334
-    :end-line: 1346
+    :start-line: 1336
+    :end-line: 1348

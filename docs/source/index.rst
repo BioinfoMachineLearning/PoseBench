@@ -20,6 +20,10 @@ Welcome to PoseBench's documentation!
     :start-line: 20
     :end-line: 22
 
+.. mdinclude:: ../../README.md
+    :start-line: 24
+    :end-line: 26
+
 
 .. toctree::
    :maxdepth: 2
