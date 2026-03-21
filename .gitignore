@@ -202,4 +202,5 @@ configs/local/default.yaml
 /forks/TULIP/outputs/
 /forks/Vina/ADFR/
 scripts/*inference*/
+scripts/*interactions*/
 scoring/

@@ -70,7 +70,7 @@ pb_set_dir = os.path.join(
 )
 assert os.path.exists(
     pb_set_dir
-), "Please download the PoseBusters Benchmark set from `https://zenodo.org/records/17536252` before proceeding."
+), "Please download the PoseBusters Benchmark set from `https://zenodo.org/records/19138652` before proceeding."
 
 # PoseBusters Benchmark deposition dates
 pb_deposition_dates_filepath = "posebusters_benchmark_complex_pdb_deposition_dates.csv"
@@ -107,7 +107,7 @@ method_mapping = {
     "alphafold3": "AF3",
 }
 
-MAX_POSEBUSTERS_BENCHMARK_ANALYSIS_PROTEIN_SEQUENCE_LENGTH = 2000  # Only PoseBusters Benchmark targets with protein sequences below this threshold can be analyzed
+MAX_POSEBUSTERS_BENCHMARK_ANALYSIS_PROTEIN_SEQUENCE_LENGTH = 700  # Only PoseBusters Benchmark targets with protein sequences below this threshold can be analyzed
 
 # %% [markdown]
 # #### Define utility functions

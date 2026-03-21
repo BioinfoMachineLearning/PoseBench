@@ -1,20 +1,21 @@
 # %% [markdown]
-# ## Astex Diverse Method Interaction Analysis Plotting
+# ## CASP15 Method Interaction Analysis Plotting (SLURM)
 
 # %% [markdown]
 # #### Import packages
 
 # %%
-import copy
+import argparse
 import gc
+import glob
 import os
 import re
 import shutil
 import signal
 import subprocess  # nosec
+import sys
 import tempfile
 from collections import defaultdict
-from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -23,15 +24,12 @@ import seaborn as sns
 from beartype import beartype
 from beartype.typing import Any, Literal
 from Bio.PDB import PDBIO, PDBParser, Select
-from omegaconf import DictConfig, open_dict
 from posecheck import PoseCheck
 from rdkit import Chem
 from scipy.stats import ttest_rel, wasserstein_distance
 from tqdm import tqdm
 from wrapt_timeout_decorator import timeout
 
-from posebench import resolve_method_input_csv_path, resolve_method_output_dir
-from posebench.analysis.inference_analysis import create_mol_table
 from posebench.utils.data_utils import count_num_residues_in_pdb_file
 
 # %% [markdown]
@@ -62,14 +60,14 @@ max_num_repeats_per_method = (
     1  # NOTE: Here, to simplify the analysis, we only consider the first run of each method
 )
 
-ad_set_dir = os.path.join(
-    "..",
+casp15_set_dir = os.path.join(
     "data",
-    "astex_diverse_set",
+    "casp15_set",
+    "targets",
 )
 assert os.path.exists(
-    ad_set_dir
-), "Please download the Astex Diverse set from `https://zenodo.org/records/19138652` before proceeding."
+    casp15_set_dir
+), "Please download the (public) CASP15 set from `https://zenodo.org/records/19138652` before proceeding."
 
 # Mappings
 method_mapping = {
@@ -86,9 +84,31 @@ method_mapping = {
     "alphafold3": "AF3",
 }
 
-MAX_ASTEX_DIVERSE_ANALYSIS_PROTEIN_SEQUENCE_LENGTH = (
-    2000  # Only Astex Diverse targets with protein sequences below this threshold can be analyzed
+CASP15_ANALYSIS_TARGETS_TO_SKIP = [
+    "T1170"
+]  # NOTE: these will be skipped since they were not scoreable
+MAX_CASP15_ANALYSIS_PROTEIN_SEQUENCE_LENGTH = (
+    2000  # Only CASP15 targets with protein sequences below this threshold can be analyzed
 )
+
+
+def parse_args():
+    """Parse optional CLI arguments for interaction preprocessing."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--method",
+        choices=baseline_methods,
+        help="Only preprocess interactions for the selected method.",
+    )
+    parser.add_argument(
+        "--exit-after-preprocessing",
+        action="store_true",
+        help="Exit after preprocessing method interaction H5 files and skip plotting.",
+    )
+    return parser.parse_args()
+
+
+args = parse_args()
 
 # %% [markdown]
 # #### Define utility functions
@@ -177,171 +197,162 @@ signal.signal(signal.SIGUSR1, signal_handler)
 # #### Compute interaction fingerprints
 
 # %% [markdown]
-# ##### Analyze `Astex Diverse` set interactions as a baseline
+# ##### Analyze `CASP15` set interactions as a baseline
 
 # %%
-if not os.path.exists("astex_diverse_interaction_dataframes.h5"):
-    ad_protein_ligand_filepath_pairs = []
-    for item in os.listdir(ad_set_dir):
-        ligand_item_path = os.path.join(ad_set_dir, item)
-        if os.path.isdir(ligand_item_path):
-            protein_filepath = os.path.join(ligand_item_path, f"{item}_protein.pdb")
-            ligand_filepath = os.path.join(ligand_item_path, f"{item}_ligand.sdf")
-            if os.path.exists(protein_filepath) and os.path.exists(ligand_filepath):
-                ad_protein_ligand_filepath_pairs.append((protein_filepath, ligand_filepath))
+if not os.path.exists(os.path.join("notebooks", "casp15_interaction_dataframes.h5")):
+    casp15_protein_ligand_complex_filepaths = []
+    for item in os.listdir(casp15_set_dir):
+        item_path = os.path.join(casp15_set_dir, item)
+        if item.endswith("_lig.pdb") and item.split("_")[0] not in CASP15_ANALYSIS_TARGETS_TO_SKIP:
+            casp15_protein_ligand_complex_filepaths.append(item_path)
 
     pc = PoseCheck()
-    ad_protein_ligand_interaction_dfs = []
-    for protein_filepath, ligand_filepath in tqdm(
-        ad_protein_ligand_filepath_pairs, desc="Processing Astex Diverse set"
+    casp15_protein_ligand_interaction_dfs = []
+    for protein_ligand_complex_filepath in tqdm(
+        casp15_protein_ligand_complex_filepaths, desc="Processing CASP15 set"
     ):
         try:
             temp_protein_filepath = create_temp_pdb_with_only_molecule_type_residues(
-                protein_filepath, molecule_type="protein"
+                protein_ligand_complex_filepath, molecule_type="protein"
             )
+            num_residues_in_target_protein = count_num_residues_in_pdb_file(temp_protein_filepath)
+            if num_residues_in_target_protein > MAX_CASP15_ANALYSIS_PROTEIN_SEQUENCE_LENGTH:
+                print(
+                    f"CASP15 target {protein_ligand_complex_filepath} has too many protein residues ({num_residues_in_target_protein} > {MAX_CASP15_ANALYSIS_PROTEIN_SEQUENCE_LENGTH}) for `MDAnalysis` to fit into CPU memory. Skipping..."
+                )
+                continue
+            temp_ligand_filepath = create_temp_pdb_with_only_molecule_type_residues(
+                protein_ligand_complex_filepath, molecule_type="ligand"
+            )
+            ligand_mol = Chem.MolFromPDBFile(temp_ligand_filepath)
             pc.load_protein_from_pdb(temp_protein_filepath)
-            pc.load_ligands_from_sdf(ligand_filepath)
-            ad_protein_ligand_interaction_df = timeout(dec_timeout=600)(pc.calculate_interactions)(
-                n_jobs=1
+            pc.load_ligands_from_mols(
+                Chem.GetMolFrags(ligand_mol, asMols=True, sanitizeFrags=False)
             )
-            ad_protein_ligand_interaction_df["target"] = Path(protein_filepath).stem.split(
-                "_protein"
-            )[0]
-            ad_protein_ligand_interaction_dfs.append(ad_protein_ligand_interaction_df)
+            casp15_protein_ligand_interaction_df = timeout(dec_timeout=600)(
+                pc.calculate_interactions
+            )(n_jobs=1)
+            casp15_protein_ligand_interaction_df["target"] = os.path.basename(
+                protein_ligand_complex_filepath
+            ).split("_lig")[0]
+            casp15_protein_ligand_interaction_dfs.append(casp15_protein_ligand_interaction_df)
         except Exception as e:
             print(
-                f"Error processing Astex Diverse target {protein_filepath, ligand_filepath} due to: {e}. Skipping..."
+                f"Error processing CASP15 target {protein_ligand_complex_filepath} due to: {e}. Skipping..."
             )
             continue
 
         # NOTE: we iteratively save the interaction dataframes to an HDF5 file
-        with pd.HDFStore("astex_diverse_interaction_dataframes.h5") as store:
-            for i, df in enumerate(ad_protein_ligand_interaction_dfs):
+        with pd.HDFStore(os.path.join("notebooks", "casp15_interaction_dataframes.h5")) as store:
+            for i, df in enumerate(casp15_protein_ligand_interaction_dfs):
                 store.put(f"df_{i}", df)
 
 # %% [markdown]
 # ##### Analyze interactions of each method
 
 # %%
-# calculate and cache Astex Diverse interaction statistics for each baseline method
-config = ""  # NOTE: we do not calculate interactions for relaxed predictions currently
-dataset = "astex_diverse"
-ensemble_ranking_method = "consensus"
-relax_protein = False
-pocket_only_baseline = False
+# calculate and cache CASP15 interaction statistics for each baseline method
+dataset = "casp15"
 
-cfg = DictConfig(
-    {
-        "dataset": dataset,
-        "relax_protein": relax_protein,
-        "pocket_only_baseline": pocket_only_baseline,
-        "input_data_dir": os.path.join("..", "data", f"{dataset}_set"),
-        "posebusters_ccd_ids_filepath": os.path.join("..", "data", "posebusters_pdb_ccd_ids.txt"),
-        "dockgen_test_ids_filepath": os.path.join("..", "data", "dockgen_set", "split_test.txt"),
-    }
-)
+methods_to_process = [args.method] if args.method else baseline_methods
 
-for method in copy.deepcopy(baseline_methods):
+for method in methods_to_process:
     for repeat_index in range(1, max_num_repeats_per_method + 1):
         method_title = method_mapping[method]
 
-        single_seq_method = "_ss" in method
-        v1_baseline = method == "diffdockv1"
-
-        vina_binding_site_method = (
-            method.split("_")[-1] if "_" in method and not single_seq_method else "p2rank"
-        )
-
-        vina_suffix = (
-            f"_{vina_binding_site_method}" if "_" in method and not single_seq_method else ""
-        )
-        single_seq_suffix = "_ss" if single_seq_method else ""
-
-        method = method.split("_")[0]
-
         if not os.path.exists(
-            f"{method}{single_seq_suffix}{vina_suffix}_{dataset}_interaction_dataframes_{repeat_index}.h5"
+            os.path.join(
+                "notebooks", f"{method}_{dataset}_interaction_dataframes_{repeat_index}.h5"
+            )
         ):
-            with open_dict(cfg):
-                cfg.method = method
-                cfg.repeat_index = repeat_index
-                cfg.input_csv_path = str(
-                    ".."
-                    / Path(resolve_method_input_csv_path(method, dataset, pocket_only_baseline))
-                )
-                cfg.output_dir = str(
-                    ".."
-                    / Path(
-                        resolve_method_output_dir(
-                            method,
-                            dataset,
-                            vina_binding_site_method,
-                            ensemble_ranking_method,
-                            repeat_index,
-                            pocket_only_baseline,
-                            v1_baseline,
-                            single_seq_baseline=single_seq_method,
-                        )
-                    )
-                )
-
-            output_dir = cfg.output_dir + config
-            if method == "dynamicbind":
-                output_dir = os.path.join(
-                    Path(output_dir).parent,
-                    Path(output_dir).stem.replace(f"_{repeat_index}", ""),
-                )
-
-            mol_table = create_mol_table(
-                Path(cfg.input_csv_path),
-                Path(cfg.input_data_dir),
-                Path(output_dir),
-                cfg,
-                relaxed="relaxed" in config,
-                add_pdb_ids=True,
+            method_casp15_set_dir = os.path.join(
+                "data",
+                "test_cases",
+                "casp15",
+                f"top_{method}{'' if 'ensemble' in method else '_ensemble'}_predictions_{repeat_index}",
             )
 
+            casp15_protein_ligand_complex_filepaths = []
+            for item in os.listdir(method_casp15_set_dir):
+                item_path = os.path.join(method_casp15_set_dir, item)
+                if (
+                    item.split("_")[0] not in CASP15_ANALYSIS_TARGETS_TO_SKIP
+                    and os.path.isdir(item_path)
+                    and "_relaxed" not in item
+                ):
+                    protein_pdb_filepath, ligand_sdf_filepath = None, None
+                    complex_filepaths = glob.glob(
+                        os.path.join(item_path, "*rank1*.pdb")
+                    ) + glob.glob(os.path.join(item_path, "*rank1*.sdf"))
+                    for file in complex_filepaths:
+                        if file.endswith(".pdb"):
+                            protein_pdb_filepath = file
+                        elif file.endswith(".sdf"):
+                            ligand_sdf_filepath = file
+                    if protein_pdb_filepath is not None and ligand_sdf_filepath is not None:
+                        casp15_protein_ligand_complex_filepaths.append(
+                            (protein_pdb_filepath, ligand_sdf_filepath)
+                        )
+                    else:
+                        raise FileNotFoundError(
+                            f"Could not find `rank1` protein-ligand complex files for {item}"
+                        )
+
             pc = PoseCheck()
-            astex_protein_ligand_interaction_dfs = []
-            for row in tqdm(
-                mol_table.itertuples(index=False),
+            casp15_protein_ligand_interaction_dfs = []
+            for protein_ligand_complex_filepath in tqdm(
+                casp15_protein_ligand_complex_filepaths,
                 desc=f"Processing interactions for {method_title}",
             ):
-                print(f"Processing {method_title} target {row.pdb_id}...")
+                protein_filepath, ligand_filepath = protein_ligand_complex_filepath
+                casp15_target = os.path.basename(os.path.dirname(protein_filepath))
+                print(f"Processing {method_title} target {casp15_target}...")
                 try:
-                    protein_filepath, ligand_filepath = str(row.mol_cond), str(row.mol_pred)
+                    temp_protein_filepath = create_temp_pdb_with_only_molecule_type_residues(
+                        protein_filepath, molecule_type="protein", add_element_types=True
+                    )
                     num_residues_in_target_protein = count_num_residues_in_pdb_file(
-                        protein_filepath
+                        temp_protein_filepath
                     )
                     if (
                         num_residues_in_target_protein
-                        > MAX_ASTEX_DIVERSE_ANALYSIS_PROTEIN_SEQUENCE_LENGTH
+                        > MAX_CASP15_ANALYSIS_PROTEIN_SEQUENCE_LENGTH
                     ):
                         print(
-                            f"{method_title} target {row} has too many protein residues ({num_residues_in_target_protein} > {MAX_ASTEX_DIVERSE_ANALYSIS_PROTEIN_SEQUENCE_LENGTH}) for `MDAnalysis` to fit into CPU memory. Skipping..."
+                            f"{method_title} target {casp15_target} has too many protein residues ({num_residues_in_target_protein} > {MAX_CASP15_ANALYSIS_PROTEIN_SEQUENCE_LENGTH}) for `MDAnalysis` to fit into CPU memory. Skipping..."
                         )
                         continue
                     ligand_mol = Chem.MolFromMolFile(ligand_filepath)
-                    pc.load_protein_from_pdb(protein_filepath)
+                    pc.load_protein_from_pdb(temp_protein_filepath)
                     pc.load_ligands_from_mols(
                         Chem.GetMolFrags(ligand_mol, asMols=True, sanitizeFrags=False)
                     )
-                    protein_ligand_interaction_df = timeout(dec_timeout=600, use_signals=False)(
-                        pc.calculate_interactions
-                    )(n_jobs=1)
-                    protein_ligand_interaction_df["target"] = row.pdb_id
-                    astex_protein_ligand_interaction_dfs.append(protein_ligand_interaction_df)
+                    casp15_protein_ligand_interaction_df = timeout(
+                        dec_timeout=600, use_signals=False
+                    )(pc.calculate_interactions)(n_jobs=1)
+                    casp15_protein_ligand_interaction_df["target"] = casp15_target
+                    casp15_protein_ligand_interaction_dfs.append(
+                        casp15_protein_ligand_interaction_df
+                    )
                     gc.collect()
                 except Exception as e:
-                    print(f"Error processing {method_title} target {row} due to: {e}. Skipping...")
+                    print(
+                        f"Error processing {method_title} target {casp15_target} due to: {e}. Skipping..."
+                    )
                     continue
 
                 # NOTE: we iteratively save the interaction dataframes to an HDF5 file
                 with pd.HDFStore(
-                    f"{method}{single_seq_suffix}{vina_suffix}_{dataset}_interaction_dataframes_{repeat_index}.h5"
+                    os.path.join(
+                        "notebooks", f"{method}_{dataset}_interaction_dataframes_{repeat_index}.h5"
+                    )
                 ) as store:
-                    for i, df in enumerate(astex_protein_ligand_interaction_dfs):
+                    for i, df in enumerate(casp15_protein_ligand_interaction_dfs):
                         store.put(f"df_{i}", df)
+
+if args.exit_after_preprocessing:
+    sys.exit(0)
 
 # %% [markdown]
 # #### Plot interaction statistics for each method
@@ -390,12 +401,16 @@ def process_method(file_path, category):
 for method in baseline_methods:
     for repeat_index in range(1, max_num_repeats_per_method + 1):
         method_title = method_mapping[method]
-        file_path = f"{method}_astex_diverse_interaction_dataframes_{repeat_index}.h5"
+        file_path = os.path.join(
+            "notebooks", f"{method}_casp15_interaction_dataframes_{repeat_index}.h5"
+        )
         if os.path.exists(file_path):
             dfs.append(process_method(file_path, method_title))
 
-if os.path.exists("astex_diverse_interaction_dataframes.h5"):
-    dfs.append(process_method("astex_diverse_interaction_dataframes.h5", "Reference"))
+if os.path.exists(os.path.join("notebooks", "casp15_interaction_dataframes.h5")):
+    dfs.append(
+        process_method(os.path.join("notebooks", "casp15_interaction_dataframes.h5"), "Reference")
+    )
 
 # combine statistics
 assert len(dfs) > 0, "No interaction dataframes found."
@@ -448,7 +463,7 @@ for ax, interaction, plot_type in zip(axes.flatten(), interaction_types, plot_ty
     ax.grid(True)
 
 plt.tight_layout()
-plt.savefig("astex_diverse_method_interaction_analysis.pdf")
+plt.savefig("casp15_method_interaction_analysis.pdf")
 plt.show()
 
 # %% [markdown]
@@ -516,14 +531,18 @@ def histogram_to_vector(histogram, bins):
 for method in baseline_methods:
     for repeat_index in range(1, max_num_repeats_per_method + 1):
         method_title = method_mapping[method]
-        file_path = f"{method}_astex_diverse_interaction_dataframes_{repeat_index}.h5"
+        file_path = os.path.join(
+            "notebooks", f"{method}_casp15_interaction_dataframes_{repeat_index}.h5"
+        )
         if os.path.exists(file_path):
             dfs.append(bin_interactions(file_path, method_title))
 
 assert os.path.exists(
-    "astex_diverse_interaction_dataframes.h5"
+    os.path.join("notebooks", "casp15_interaction_dataframes.h5")
 ), "No reference interaction dataframe found."
-reference_df = bin_interactions("astex_diverse_interaction_dataframes.h5", "Reference")
+reference_df = bin_interactions(
+    os.path.join("notebooks", "casp15_interaction_dataframes.h5"), "Reference"
+)
 
 # combine bins from all method dataframes
 assert len(dfs) > 0, "No interaction dataframes found."
@@ -585,15 +604,15 @@ for method in df["Category"].unique():
 
 # plot the EMD and WM values for each method
 all_emd_values = [
-    min(2.5, entry["EMD"]) for entry in emd_values
-]  # clip EMD values to 2.5 when constructing WM values
+    min(50.0, entry["EMD"]) for entry in emd_values
+]  # clip EMD values to 50.0 when constructing WM values
 min_emd = np.nanmin(all_emd_values)
 max_emd = np.nanmax(all_emd_values)
 for entry in emd_values:
     # NOTE: we normalize the EMD values to the range `[0, 1]`
     # to compute the Wasserstein Matching (WM) metric while
     # ensuring missing predictions are maximally skip-penalized
-    emd = max_emd if np.isnan(entry["EMD"]).item() else min(2.5, entry["EMD"])
+    emd = max_emd if np.isnan(entry["EMD"]).item() else min(50.0, entry["EMD"])
     normalized_score = 1 - (emd - min_emd) / (max_emd - min_emd)
     entry["WM"] = normalized_score
 
@@ -601,13 +620,13 @@ emd_values_df = pd.DataFrame(
     emd_values,
     columns=["Category", "Target", "EMD", "WM", "Method_Histogram", "Reference_Histogram"],
 )
-emd_values_df.to_csv("astex_diverse_plif_metrics.csv")
+emd_values_df.to_csv("casp15_plif_metrics.csv")
 
 plt.figure(figsize=(20, 8))
 sns.boxplot(data=emd_values_df, x="Category", y="EMD")
 plt.xlabel("")
 plt.ylabel("PLIF-EMD")
-plt.savefig("astex_diverse_plif_emd_values.pdf")
+plt.savefig("casp15_plif_emd_values.pdf")
 plt.show()
 
 plt.close("all")
@@ -616,7 +635,7 @@ plt.figure(figsize=(20, 8))
 sns.boxplot(data=emd_values_df, x="Category", y="WM")
 plt.xlabel("")
 plt.ylabel("PLIF-WM")
-plt.savefig("astex_diverse_plif_wm_values.pdf")
+plt.savefig("casp15_plif_wm_values.pdf")
 plt.show()
 
 plt.close("all")
@@ -715,7 +734,7 @@ struct_emd_values_df = pd.DataFrame(
         "Reference_Histogram",
     ],
 )
-struct_emd_values_df.to_csv("astex_diverse_structured_plif_metrics.csv")
+struct_emd_values_df.to_csv("casp15_structured_plif_metrics.csv")
 
 # get unique categories
 categories = struct_emd_values_df["Category"].unique()
@@ -756,7 +775,8 @@ plt.xlabel("Index")
 plt.ylabel("EMD Value")
 plt.title("Comparison of Structured_EMD and Unstructured_EMD by Method")
 plt.legend()
-plt.savefig("astex_diverse_structured_vs_unstructured_emd_values.pdf")
+plt.ylim(0, 50)
+plt.savefig("casp15_structured_vs_unstructured_emd_values.pdf")
 plt.show()
 
 plt.close("all")

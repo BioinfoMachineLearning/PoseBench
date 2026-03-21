@@ -155,10 +155,8 @@ def insert_hpc_headers(
 #SBATCH -J posebench_{method}_ensembling # job name
 #SBATCH --output=R-%x.%j.out   # output log file
 #SBATCH --error=R-%x.%j.err    # error log file
-
 module purge
 module load cuda/11.8.0_gcc_9.5.0
-
 # determine location of the project directory
 use_private_project_dir=false # NOTE: customize as needed
 if [ "$use_private_project_dir" = true ]; then
@@ -166,10 +164,8 @@ if [ "$use_private_project_dir" = true ]; then
 else
     project_dir="/cluster/pixstor/chengji-lab/$USER/Repositories/Lab_Repositories/PoseBench"
 fi
-
 # shellcheck source=/dev/null
 source /home/$USER/mambaforge/etc/profile.d/conda.sh
-
 cd "$project_dir" || exit"""
 
 

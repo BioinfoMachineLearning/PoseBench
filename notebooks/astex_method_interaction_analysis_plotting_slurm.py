@@ -1,10 +1,11 @@
 # %% [markdown]
-# ## Astex Diverse Method Interaction Analysis Plotting
+# ## Astex Diverse Method Interaction Analysis Plotting (SLURM)
 
 # %% [markdown]
 # #### Import packages
 
 # %%
+import argparse
 import copy
 import gc
 import os
@@ -12,6 +13,7 @@ import re
 import shutil
 import signal
 import subprocess  # nosec
+import sys
 import tempfile
 from collections import defaultdict
 from pathlib import Path
@@ -63,7 +65,6 @@ max_num_repeats_per_method = (
 )
 
 ad_set_dir = os.path.join(
-    "..",
     "data",
     "astex_diverse_set",
 )
@@ -89,6 +90,25 @@ method_mapping = {
 MAX_ASTEX_DIVERSE_ANALYSIS_PROTEIN_SEQUENCE_LENGTH = (
     2000  # Only Astex Diverse targets with protein sequences below this threshold can be analyzed
 )
+
+
+def parse_args():
+    """Parse optional CLI arguments for interaction preprocessing."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--method",
+        choices=baseline_methods,
+        help="Only preprocess interactions for the selected method.",
+    )
+    parser.add_argument(
+        "--exit-after-preprocessing",
+        action="store_true",
+        help="Exit after preprocessing method interaction H5 files and skip plotting.",
+    )
+    return parser.parse_args()
+
+
+args = parse_args()
 
 # %% [markdown]
 # #### Define utility functions
@@ -180,7 +200,7 @@ signal.signal(signal.SIGUSR1, signal_handler)
 # ##### Analyze `Astex Diverse` set interactions as a baseline
 
 # %%
-if not os.path.exists("astex_diverse_interaction_dataframes.h5"):
+if not os.path.exists(os.path.join("notebooks", "astex_diverse_interaction_dataframes.h5")):
     ad_protein_ligand_filepath_pairs = []
     for item in os.listdir(ad_set_dir):
         ligand_item_path = os.path.join(ad_set_dir, item)
@@ -215,7 +235,9 @@ if not os.path.exists("astex_diverse_interaction_dataframes.h5"):
             continue
 
         # NOTE: we iteratively save the interaction dataframes to an HDF5 file
-        with pd.HDFStore("astex_diverse_interaction_dataframes.h5") as store:
+        with pd.HDFStore(
+            os.path.join("notebooks", "astex_diverse_interaction_dataframes.h5")
+        ) as store:
             for i, df in enumerate(ad_protein_ligand_interaction_dfs):
                 store.put(f"df_{i}", df)
 
@@ -235,13 +257,15 @@ cfg = DictConfig(
         "dataset": dataset,
         "relax_protein": relax_protein,
         "pocket_only_baseline": pocket_only_baseline,
-        "input_data_dir": os.path.join("..", "data", f"{dataset}_set"),
-        "posebusters_ccd_ids_filepath": os.path.join("..", "data", "posebusters_pdb_ccd_ids.txt"),
-        "dockgen_test_ids_filepath": os.path.join("..", "data", "dockgen_set", "split_test.txt"),
+        "input_data_dir": os.path.join("data", f"{dataset}_set"),
+        "posebusters_ccd_ids_filepath": os.path.join("data", "posebusters_pdb_ccd_ids.txt"),
+        "dockgen_test_ids_filepath": os.path.join("data", "dockgen_set", "split_test.txt"),
     }
 )
 
-for method in copy.deepcopy(baseline_methods):
+methods_to_process = [args.method] if args.method else copy.deepcopy(baseline_methods)
+
+for method in methods_to_process:
     for repeat_index in range(1, max_num_repeats_per_method + 1):
         method_title = method_mapping[method]
 
@@ -260,18 +284,19 @@ for method in copy.deepcopy(baseline_methods):
         method = method.split("_")[0]
 
         if not os.path.exists(
-            f"{method}{single_seq_suffix}{vina_suffix}_{dataset}_interaction_dataframes_{repeat_index}.h5"
+            os.path.join(
+                "notebooks",
+                f"{method}{single_seq_suffix}{vina_suffix}_{dataset}_interaction_dataframes_{repeat_index}.h5",
+            )
         ):
             with open_dict(cfg):
                 cfg.method = method
                 cfg.repeat_index = repeat_index
                 cfg.input_csv_path = str(
-                    ".."
-                    / Path(resolve_method_input_csv_path(method, dataset, pocket_only_baseline))
+                    Path(resolve_method_input_csv_path(method, dataset, pocket_only_baseline))
                 )
                 cfg.output_dir = str(
-                    ".."
-                    / Path(
+                    Path(
                         resolve_method_output_dir(
                             method,
                             dataset,
@@ -338,10 +363,16 @@ for method in copy.deepcopy(baseline_methods):
 
                 # NOTE: we iteratively save the interaction dataframes to an HDF5 file
                 with pd.HDFStore(
-                    f"{method}{single_seq_suffix}{vina_suffix}_{dataset}_interaction_dataframes_{repeat_index}.h5"
+                    os.path.join(
+                        "notebooks",
+                        f"{method}{single_seq_suffix}{vina_suffix}_{dataset}_interaction_dataframes_{repeat_index}.h5",
+                    )
                 ) as store:
                     for i, df in enumerate(astex_protein_ligand_interaction_dfs):
                         store.put(f"df_{i}", df)
+
+if args.exit_after_preprocessing:
+    sys.exit(0)
 
 # %% [markdown]
 # #### Plot interaction statistics for each method
@@ -390,12 +421,18 @@ def process_method(file_path, category):
 for method in baseline_methods:
     for repeat_index in range(1, max_num_repeats_per_method + 1):
         method_title = method_mapping[method]
-        file_path = f"{method}_astex_diverse_interaction_dataframes_{repeat_index}.h5"
+        file_path = os.path.join(
+            "notebooks", f"{method}_astex_diverse_interaction_dataframes_{repeat_index}.h5"
+        )
         if os.path.exists(file_path):
             dfs.append(process_method(file_path, method_title))
 
-if os.path.exists("astex_diverse_interaction_dataframes.h5"):
-    dfs.append(process_method("astex_diverse_interaction_dataframes.h5", "Reference"))
+if os.path.exists(os.path.join("notebooks", "astex_diverse_interaction_dataframes.h5")):
+    dfs.append(
+        process_method(
+            os.path.join("notebooks", "astex_diverse_interaction_dataframes.h5"), "Reference"
+        )
+    )
 
 # combine statistics
 assert len(dfs) > 0, "No interaction dataframes found."
@@ -516,14 +553,18 @@ def histogram_to_vector(histogram, bins):
 for method in baseline_methods:
     for repeat_index in range(1, max_num_repeats_per_method + 1):
         method_title = method_mapping[method]
-        file_path = f"{method}_astex_diverse_interaction_dataframes_{repeat_index}.h5"
+        file_path = os.path.join(
+            "notebooks", f"{method}_astex_diverse_interaction_dataframes_{repeat_index}.h5"
+        )
         if os.path.exists(file_path):
             dfs.append(bin_interactions(file_path, method_title))
 
 assert os.path.exists(
-    "astex_diverse_interaction_dataframes.h5"
+    os.path.join("notebooks", "astex_diverse_interaction_dataframes.h5")
 ), "No reference interaction dataframe found."
-reference_df = bin_interactions("astex_diverse_interaction_dataframes.h5", "Reference")
+reference_df = bin_interactions(
+    os.path.join("notebooks", "astex_diverse_interaction_dataframes.h5"), "Reference"
+)
 
 # combine bins from all method dataframes
 assert len(dfs) > 0, "No interaction dataframes found."

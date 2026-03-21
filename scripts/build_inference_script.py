@@ -308,8 +308,11 @@ INFERENCE_METHODS = Literal[
     "neuralplexer",
     "flowdock",
     "rfaa",
+    "chai-lab_ss",
     "chai-lab",
+    "boltz_ss",
     "boltz",
+    "alphafold3_ss",
     "alphafold3",
     "vina",
     "tulip",
@@ -327,8 +330,11 @@ POCKET_ONLY_COMPATIBLE_METHODS = {
     "neuralplexer",
     "flowdock",
     "rfaa",
+    "chai-lab_ss",
     "chai-lab",
+    "boltz_ss",
     "boltz",
+    "alphafold3_ss",
     "alphafold3",
     "vina",
     "ensemble",
@@ -384,6 +390,11 @@ def build_inference_script(
     :param cpu_memory_in_gb: CPU memory in GB.
     :param time_limit: Time limit.
     """
+    # NOTE: Besides their output directories, single-sequence
+    # baselines are treated like their multi-sequence counterparts
+    orig_method = method
+    method = method.removesuffix("_ss")
+
     commands = COMMANDS.get(method)
 
     # Inform user of invalid function calls
@@ -435,7 +446,7 @@ def build_inference_script(
     hpc_suffix = "_hpc" if export_hpc_headers else ""
     output_script = os.path.join(
         output_script_dir,
-        f"{method}{vina_binding_site_method_suffix}{ensemble_ranking_method_suffix}{v1_baseline_suffix}{pocket_only_suffix}{no_ilcl_suffix}{relax_protein_suffix}_{dataset}{hpc_suffix}_inference_{repeat_index}.sh",
+        f"{orig_method}{vina_binding_site_method_suffix}{ensemble_ranking_method_suffix}{v1_baseline_suffix}{pocket_only_suffix}{no_ilcl_suffix}{relax_protein_suffix}_{dataset}{hpc_suffix}_inference_{repeat_index}.sh",
     )
 
     # Build script in sections

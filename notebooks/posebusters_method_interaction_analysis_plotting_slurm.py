@@ -1,10 +1,11 @@
 # %% [markdown]
-# ## Astex Diverse Method Interaction Analysis Plotting
+# ## PoseBusters Benchmark Method Interaction Analysis Plotting (SLURM)
 
 # %% [markdown]
 # #### Import packages
 
 # %%
+import argparse
 import copy
 import gc
 import os
@@ -12,6 +13,7 @@ import re
 import shutil
 import signal
 import subprocess  # nosec
+import sys
 import tempfile
 from collections import defaultdict
 from pathlib import Path
@@ -61,15 +63,37 @@ baseline_methods = [
 max_num_repeats_per_method = (
     1  # NOTE: Here, to simplify the analysis, we only consider the first run of each method
 )
+method_max_training_cutoff_date = "2021-09-30"
 
-ad_set_dir = os.path.join(
-    "..",
+pb_set_dir = os.path.join(
     "data",
-    "astex_diverse_set",
+    "posebusters_benchmark_set",
 )
 assert os.path.exists(
-    ad_set_dir
-), "Please download the Astex Diverse set from `https://zenodo.org/records/19138652` before proceeding."
+    pb_set_dir
+), "Please download the PoseBusters Benchmark set from `https://zenodo.org/records/19138652` before proceeding."
+
+# PoseBusters Benchmark deposition dates
+pb_deposition_dates_filepath = os.path.join(
+    "notebooks", "posebusters_benchmark_complex_pdb_deposition_dates.csv"
+)
+assert os.path.exists(
+    pb_deposition_dates_filepath
+), "Please prepare the PoseBusters Benchmark complex PDB deposition dates CSV file via `failure_modes_analysis_plotting.ipynb` before proceeding."
+
+pb_pdb_id_deposition_date_mapping_df = pd.read_csv(pb_deposition_dates_filepath)
+pb_pdb_id_deposition_date_mapping_df["Deposition Date"] = pd.to_datetime(
+    pb_pdb_id_deposition_date_mapping_df["Deposition Date"]
+)
+pb_pdb_id_deposition_date_mapping_df = pb_pdb_id_deposition_date_mapping_df[
+    pb_pdb_id_deposition_date_mapping_df["Deposition Date"] > method_max_training_cutoff_date
+]
+pb_pdb_id_deposition_date_mapping = dict(
+    zip(
+        pb_pdb_id_deposition_date_mapping_df["PDB ID"],
+        pb_pdb_id_deposition_date_mapping_df["Deposition Date"].astype(str),
+    )
+)
 
 # Mappings
 method_mapping = {
@@ -86,9 +110,26 @@ method_mapping = {
     "alphafold3": "AF3",
 }
 
-MAX_ASTEX_DIVERSE_ANALYSIS_PROTEIN_SEQUENCE_LENGTH = (
-    2000  # Only Astex Diverse targets with protein sequences below this threshold can be analyzed
-)
+MAX_POSEBUSTERS_BENCHMARK_ANALYSIS_PROTEIN_SEQUENCE_LENGTH = 700  # Only PoseBusters Benchmark targets with protein sequences below this threshold can be analyzed
+
+
+def parse_args():
+    """Parse optional CLI arguments for interaction preprocessing."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--method",
+        choices=baseline_methods,
+        help="Only preprocess interactions for the selected method.",
+    )
+    parser.add_argument(
+        "--exit-after-preprocessing",
+        action="store_true",
+        help="Exit after preprocessing method interaction H5 files and skip plotting.",
+    )
+    return parser.parse_args()
+
+
+args = parse_args()
 
 # %% [markdown]
 # #### Define utility functions
@@ -177,23 +218,36 @@ signal.signal(signal.SIGUSR1, signal_handler)
 # #### Compute interaction fingerprints
 
 # %% [markdown]
-# ##### Analyze `Astex Diverse` set interactions as a baseline
+# ##### Analyze `PoseBusters Benchmark` set interactions as a baseline
 
 # %%
-if not os.path.exists("astex_diverse_interaction_dataframes.h5"):
-    ad_protein_ligand_filepath_pairs = []
-    for item in os.listdir(ad_set_dir):
-        ligand_item_path = os.path.join(ad_set_dir, item)
+if not os.path.exists(
+    os.path.join("notebooks", "posebusters_benchmark_interaction_dataframes.h5")
+):
+    posebusters_ccd_ids_filepath = os.path.join(
+        "data",
+        "posebusters_pdb_ccd_ids.txt",
+    )
+    assert os.path.exists(
+        posebusters_ccd_ids_filepath
+    ), f"Invalid CCD IDs file path for PoseBusters Benchmark: {posebusters_ccd_ids_filepath}."
+    with open(posebusters_ccd_ids_filepath) as f:
+        pdb_ids = set(f.read().splitlines())
+    pb_protein_ligand_filepath_pairs = []
+    for item in os.listdir(pb_set_dir):
+        if item not in pdb_ids:
+            continue
+        ligand_item_path = os.path.join(pb_set_dir, item)
         if os.path.isdir(ligand_item_path):
             protein_filepath = os.path.join(ligand_item_path, f"{item}_protein.pdb")
             ligand_filepath = os.path.join(ligand_item_path, f"{item}_ligand.sdf")
             if os.path.exists(protein_filepath) and os.path.exists(ligand_filepath):
-                ad_protein_ligand_filepath_pairs.append((protein_filepath, ligand_filepath))
+                pb_protein_ligand_filepath_pairs.append((protein_filepath, ligand_filepath))
 
     pc = PoseCheck()
-    ad_protein_ligand_interaction_dfs = []
+    pb_protein_ligand_interaction_dfs = []
     for protein_filepath, ligand_filepath in tqdm(
-        ad_protein_ligand_filepath_pairs, desc="Processing Astex Diverse set"
+        pb_protein_ligand_filepath_pairs, desc="Processing PoseBusters Benchmark set"
     ):
         try:
             temp_protein_filepath = create_temp_pdb_with_only_molecule_type_residues(
@@ -201,31 +255,33 @@ if not os.path.exists("astex_diverse_interaction_dataframes.h5"):
             )
             pc.load_protein_from_pdb(temp_protein_filepath)
             pc.load_ligands_from_sdf(ligand_filepath)
-            ad_protein_ligand_interaction_df = timeout(dec_timeout=600)(pc.calculate_interactions)(
+            pb_protein_ligand_interaction_df = timeout(dec_timeout=600)(pc.calculate_interactions)(
                 n_jobs=1
             )
-            ad_protein_ligand_interaction_df["target"] = Path(protein_filepath).stem.split(
+            pb_protein_ligand_interaction_df["target"] = Path(protein_filepath).stem.split(
                 "_protein"
             )[0]
-            ad_protein_ligand_interaction_dfs.append(ad_protein_ligand_interaction_df)
+            pb_protein_ligand_interaction_dfs.append(pb_protein_ligand_interaction_df)
         except Exception as e:
             print(
-                f"Error processing Astex Diverse target {protein_filepath, ligand_filepath} due to: {e}. Skipping..."
+                f"Error processing PoseBusters Benchmark target {protein_filepath, ligand_filepath} due to: {e}. Skipping..."
             )
             continue
 
         # NOTE: we iteratively save the interaction dataframes to an HDF5 file
-        with pd.HDFStore("astex_diverse_interaction_dataframes.h5") as store:
-            for i, df in enumerate(ad_protein_ligand_interaction_dfs):
+        with pd.HDFStore(
+            os.path.join("notebooks", "posebusters_benchmark_interaction_dataframes.h5")
+        ) as store:
+            for i, df in enumerate(pb_protein_ligand_interaction_dfs):
                 store.put(f"df_{i}", df)
 
 # %% [markdown]
 # ##### Analyze interactions of each method
 
 # %%
-# calculate and cache Astex Diverse interaction statistics for each baseline method
+# calculate and cache PoseBusters Benchmark interaction statistics for each baseline method
 config = ""  # NOTE: we do not calculate interactions for relaxed predictions currently
-dataset = "astex_diverse"
+dataset = "posebusters_benchmark"
 ensemble_ranking_method = "consensus"
 relax_protein = False
 pocket_only_baseline = False
@@ -235,13 +291,15 @@ cfg = DictConfig(
         "dataset": dataset,
         "relax_protein": relax_protein,
         "pocket_only_baseline": pocket_only_baseline,
-        "input_data_dir": os.path.join("..", "data", f"{dataset}_set"),
-        "posebusters_ccd_ids_filepath": os.path.join("..", "data", "posebusters_pdb_ccd_ids.txt"),
-        "dockgen_test_ids_filepath": os.path.join("..", "data", "dockgen_set", "split_test.txt"),
+        "input_data_dir": os.path.join("data", f"{dataset}_set"),
+        "posebusters_ccd_ids_filepath": os.path.join("data", "posebusters_pdb_ccd_ids.txt"),
+        "dockgen_test_ids_filepath": os.path.join("data", "dockgen_set", "split_test.txt"),
     }
 )
 
-for method in copy.deepcopy(baseline_methods):
+methods_to_process = [args.method] if args.method else copy.deepcopy(baseline_methods)
+
+for method in methods_to_process:
     for repeat_index in range(1, max_num_repeats_per_method + 1):
         method_title = method_mapping[method]
 
@@ -260,18 +318,19 @@ for method in copy.deepcopy(baseline_methods):
         method = method.split("_")[0]
 
         if not os.path.exists(
-            f"{method}{single_seq_suffix}{vina_suffix}_{dataset}_interaction_dataframes_{repeat_index}.h5"
+            os.path.join(
+                "notebooks",
+                f"{method}{single_seq_suffix}{vina_suffix}_{dataset}_interaction_dataframes_{repeat_index}.h5",
+            )
         ):
             with open_dict(cfg):
                 cfg.method = method
                 cfg.repeat_index = repeat_index
                 cfg.input_csv_path = str(
-                    ".."
-                    / Path(resolve_method_input_csv_path(method, dataset, pocket_only_baseline))
+                    Path(resolve_method_input_csv_path(method, dataset, pocket_only_baseline))
                 )
                 cfg.output_dir = str(
-                    ".."
-                    / Path(
+                    Path(
                         resolve_method_output_dir(
                             method,
                             dataset,
@@ -302,7 +361,7 @@ for method in copy.deepcopy(baseline_methods):
             )
 
             pc = PoseCheck()
-            astex_protein_ligand_interaction_dfs = []
+            posebusters_protein_ligand_interaction_dfs = []
             for row in tqdm(
                 mol_table.itertuples(index=False),
                 desc=f"Processing interactions for {method_title}",
@@ -315,10 +374,10 @@ for method in copy.deepcopy(baseline_methods):
                     )
                     if (
                         num_residues_in_target_protein
-                        > MAX_ASTEX_DIVERSE_ANALYSIS_PROTEIN_SEQUENCE_LENGTH
+                        > MAX_POSEBUSTERS_BENCHMARK_ANALYSIS_PROTEIN_SEQUENCE_LENGTH
                     ):
                         print(
-                            f"{method_title} target {row} has too many protein residues ({num_residues_in_target_protein} > {MAX_ASTEX_DIVERSE_ANALYSIS_PROTEIN_SEQUENCE_LENGTH}) for `MDAnalysis` to fit into CPU memory. Skipping..."
+                            f"{method_title} target {row} has too many protein residues ({num_residues_in_target_protein} > {MAX_POSEBUSTERS_BENCHMARK_ANALYSIS_PROTEIN_SEQUENCE_LENGTH}) for `MDAnalysis` to fit into CPU memory. Skipping..."
                         )
                         continue
                     ligand_mol = Chem.MolFromMolFile(ligand_filepath)
@@ -330,7 +389,9 @@ for method in copy.deepcopy(baseline_methods):
                         pc.calculate_interactions
                     )(n_jobs=1)
                     protein_ligand_interaction_df["target"] = row.pdb_id
-                    astex_protein_ligand_interaction_dfs.append(protein_ligand_interaction_df)
+                    posebusters_protein_ligand_interaction_dfs.append(
+                        protein_ligand_interaction_df
+                    )
                     gc.collect()
                 except Exception as e:
                     print(f"Error processing {method_title} target {row} due to: {e}. Skipping...")
@@ -338,10 +399,16 @@ for method in copy.deepcopy(baseline_methods):
 
                 # NOTE: we iteratively save the interaction dataframes to an HDF5 file
                 with pd.HDFStore(
-                    f"{method}{single_seq_suffix}{vina_suffix}_{dataset}_interaction_dataframes_{repeat_index}.h5"
+                    os.path.join(
+                        "notebooks",
+                        f"{method}{single_seq_suffix}{vina_suffix}_{dataset}_interaction_dataframes_{repeat_index}.h5",
+                    )
                 ) as store:
-                    for i, df in enumerate(astex_protein_ligand_interaction_dfs):
+                    for i, df in enumerate(posebusters_protein_ligand_interaction_dfs):
                         store.put(f"df_{i}", df)
+
+if args.exit_after_preprocessing:
+    sys.exit(0)
 
 # %% [markdown]
 # #### Plot interaction statistics for each method
@@ -356,6 +423,10 @@ def process_method(file_path, category):
     with pd.HDFStore(file_path) as store:
         for key in store.keys():
             for row_index in range(len(store[key])):
+                target = store[key].iloc[row_index]["target"]
+                if not isinstance(target, str):
+                    target = target.values[0]
+
                 interaction_types = [
                     interaction[2]
                     for interaction in store[key].iloc[row_index].keys().tolist()
@@ -367,6 +438,7 @@ def process_method(file_path, category):
                 num_hydrophobic = interaction_types.count("Hydrophobic")
                 interactions.append(
                     {
+                        "Target": target,
                         "Hydrogen Bond Acceptors": num_hb_acceptors,
                         "Hydrogen Bond Donors": num_hb_donors,
                         "Van der Waals Contacts": num_vdw_contacts,
@@ -375,9 +447,11 @@ def process_method(file_path, category):
                 )
     df_rows = []
     for interaction in interactions:
+        target = interaction.pop("Target")
         for interaction_type, num_interactions in interaction.items():
             df_rows.append(
                 {
+                    "Target": target,
                     "Category": category,
                     "InteractionType": interaction_type,
                     "NumInteractions": num_interactions,
@@ -390,12 +464,19 @@ def process_method(file_path, category):
 for method in baseline_methods:
     for repeat_index in range(1, max_num_repeats_per_method + 1):
         method_title = method_mapping[method]
-        file_path = f"{method}_astex_diverse_interaction_dataframes_{repeat_index}.h5"
+        file_path = os.path.join(
+            "notebooks", f"{method}_posebusters_benchmark_interaction_dataframes_{repeat_index}.h5"
+        )
         if os.path.exists(file_path):
             dfs.append(process_method(file_path, method_title))
 
-if os.path.exists("astex_diverse_interaction_dataframes.h5"):
-    dfs.append(process_method("astex_diverse_interaction_dataframes.h5", "Reference"))
+if os.path.exists(os.path.join("notebooks", "posebusters_benchmark_interaction_dataframes.h5")):
+    dfs.append(
+        process_method(
+            os.path.join("notebooks", "posebusters_benchmark_interaction_dataframes.h5"),
+            "Reference",
+        )
+    )
 
 # combine statistics
 assert len(dfs) > 0, "No interaction dataframes found."
@@ -418,6 +499,9 @@ plot_types = ["box", "box", "violin", "violin"]
 
 for ax, interaction, plot_type in zip(axes.flatten(), interaction_types, plot_types):
     data = df[df["InteractionType"] == interaction]
+
+    data["PDBID"] = data["Target"].map(lambda x: x.lower().split("_")[0])
+    data = data[data["PDBID"].isin(pb_pdb_id_deposition_date_mapping.keys())]
 
     if plot_type == "box":
         sns.boxplot(data=data, x="Category", y="NumInteractions", ax=ax, showfliers=True)
@@ -448,7 +532,7 @@ for ax, interaction, plot_type in zip(axes.flatten(), interaction_types, plot_ty
     ax.grid(True)
 
 plt.tight_layout()
-plt.savefig("astex_diverse_method_interaction_analysis.pdf")
+plt.savefig("posebusters_benchmark_method_interaction_analysis.pdf")
 plt.show()
 
 # %% [markdown]
@@ -516,14 +600,18 @@ def histogram_to_vector(histogram, bins):
 for method in baseline_methods:
     for repeat_index in range(1, max_num_repeats_per_method + 1):
         method_title = method_mapping[method]
-        file_path = f"{method}_astex_diverse_interaction_dataframes_{repeat_index}.h5"
+        file_path = os.path.join(
+            "notebooks", f"{method}_posebusters_benchmark_interaction_dataframes_{repeat_index}.h5"
+        )
         if os.path.exists(file_path):
             dfs.append(bin_interactions(file_path, method_title))
 
 assert os.path.exists(
-    "astex_diverse_interaction_dataframes.h5"
+    os.path.join("notebooks", "posebusters_benchmark_interaction_dataframes.h5")
 ), "No reference interaction dataframe found."
-reference_df = bin_interactions("astex_diverse_interaction_dataframes.h5", "Reference")
+reference_df = bin_interactions(
+    os.path.join("notebooks", "posebusters_benchmark_interaction_dataframes.h5"), "Reference"
+)
 
 # combine bins from all method dataframes
 assert len(dfs) > 0, "No interaction dataframes found."
@@ -601,13 +689,18 @@ emd_values_df = pd.DataFrame(
     emd_values,
     columns=["Category", "Target", "EMD", "WM", "Method_Histogram", "Reference_Histogram"],
 )
-emd_values_df.to_csv("astex_diverse_plif_metrics.csv")
+emd_values_df.to_csv("posebusters_benchmark_plif_metrics.csv")
+
+emd_values_df["PDB_ID"] = emd_values_df["Target"].map(lambda x: x.lower().split("_")[0])
+emd_values_df = emd_values_df[
+    emd_values_df["PDB_ID"].isin(pb_pdb_id_deposition_date_mapping.keys())
+]
 
 plt.figure(figsize=(20, 8))
 sns.boxplot(data=emd_values_df, x="Category", y="EMD")
 plt.xlabel("")
 plt.ylabel("PLIF-EMD")
-plt.savefig("astex_diverse_plif_emd_values.pdf")
+plt.savefig("posebusters_benchmark_plif_emd_values.pdf")
 plt.show()
 
 plt.close("all")
@@ -616,7 +709,7 @@ plt.figure(figsize=(20, 8))
 sns.boxplot(data=emd_values_df, x="Category", y="WM")
 plt.xlabel("")
 plt.ylabel("PLIF-WM")
-plt.savefig("astex_diverse_plif_wm_values.pdf")
+plt.savefig("posebusters_benchmark_plif_wm_values.pdf")
 plt.show()
 
 plt.close("all")
@@ -715,7 +808,7 @@ struct_emd_values_df = pd.DataFrame(
         "Reference_Histogram",
     ],
 )
-struct_emd_values_df.to_csv("astex_diverse_structured_plif_metrics.csv")
+struct_emd_values_df.to_csv("posebusters_benchmark_structured_plif_metrics.csv")
 
 # get unique categories
 categories = struct_emd_values_df["Category"].unique()
@@ -756,7 +849,7 @@ plt.xlabel("Index")
 plt.ylabel("EMD Value")
 plt.title("Comparison of Structured_EMD and Unstructured_EMD by Method")
 plt.legend()
-plt.savefig("astex_diverse_structured_vs_unstructured_emd_values.pdf")
+plt.savefig("posebusters_benchmark_structured_vs_unstructured_plif_emd_values.pdf")
 plt.show()
 
 plt.close("all")
