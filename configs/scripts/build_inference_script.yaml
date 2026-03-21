@@ -29,5 +29,5 @@ methods_to_sweep: [
   ] # the methods to sweep
 vina_binding_site_methods_to_sweep: ["p2rank"] # the Vina binding site prediction methods to sweep
 ensemble_ranking_methods_to_sweep: ["consensus"] # the ensemble ranking methods to sweep - NOTE: must be one of (`consensus`, `ff`)
-datasets_to_sweep: ["posebusters_benchmark", "astex_diverse", "dockgen"] # the datasets to sweep
+datasets_to_sweep: ["posebusters_benchmark", "astex_diverse", "dockgen", "casp15"] # the datasets to sweep
 num_sweep_repeats: 3 # the number of repeats to run for each method-dataset sweep (if the method is a generative method)

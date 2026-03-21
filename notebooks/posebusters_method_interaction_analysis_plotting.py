@@ -107,7 +107,7 @@ method_mapping = {
     "alphafold3": "AF3",
 }
 
-MAX_POSEBUSTERS_BENCHMARK_ANALYSIS_PROTEIN_SEQUENCE_LENGTH = 2000  # Only PoseBusters Benchmark targets with protein sequences below this threshold can be analyzed
+MAX_POSEBUSTERS_BENCHMARK_ANALYSIS_PROTEIN_SEQUENCE_LENGTH = 700  # Only PoseBusters Benchmark targets with protein sequences below this threshold can be analyzed
 
 # %% [markdown]
 # #### Define utility functions

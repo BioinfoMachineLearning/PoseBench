@@ -18,4 +18,4 @@ methods_to_sweep: [
     "alphafold3_ss",
     "alphafold3",
   ] # the methods to sweep
-datasets_to_sweep: ["astex_diverse", "dockgen", "posebusters_benchmark"] # the datasets to sweep
+datasets_to_sweep: ["astex_diverse", "dockgen", "posebusters_benchmark", "casp15"] # the datasets to sweep
