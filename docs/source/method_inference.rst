@@ -2,5 +2,5 @@ How to run inference with individual methods
 ================
 
 .. mdinclude:: ../../README.md
-    :start-line: 442
-    :end-line: 1174
+    :start-line: 443
+    :end-line: 1175

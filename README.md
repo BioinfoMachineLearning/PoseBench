@@ -2,7 +2,8 @@
 
 # PoseBench
 
-[![Paper](http://img.shields.io/badge/arXiv-2405.14108-B31B1B.svg)](https://rdcu.be/eW5oj)
+[![arXiv](http://img.shields.io/badge/arXiv-2405.14108-B31B1B.svg)](https://arxiv.org/abs/2405.14108)
+[![NMI](http://img.shields.io/badge/Nature_Machine_Intelligence-B37A1B.svg)](https://rdcu.be/eW5oj)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19138652.svg)](https://doi.org/10.5281/zenodo.19138652)
 [![PyPI version](https://badge.fury.io/py/posebench.svg)](https://badge.fury.io/py/posebench)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
